@@ -1,0 +1,353 @@
+{
+  "asset": "SM_Extractor",
+  "task": "task-368-01-extractor-rebake-maps",
+  "script": "Tools/art/blender/extractor_rebake.py",
+  "uv_method": {
+    "description": "seams = edges sharper than 60 deg + borders of flat-shaded regions of at least 8 faces; extra cuts: cone charts (60 deg from the chart mean normal), small charts (< 80 faces) merged into the neighbour with the longest border while the merged chart stays within 80 deg, one boundary loop per chart (path cuts), failing charts (flipped or self-overlapping) bisected until none fails; Blender angle-based unwrap (fill holes), average island scale (uniform texel density), pack with rotation, 8.5 px margin",
+    "seam_edges_sharp_60deg": 13894,
+    "seam_edges_flat_border": 2167,
+    "topology_cut_edges": 66,
+    "seam_edges_total": 22998,
+    "rounds": [
+      {
+        "round": 0,
+        "charts": 2252,
+        "flipped": 3,
+        "overlap_pixels": 48219,
+        "failing_charts": 312
+      },
+      {
+        "round": 1,
+        "charts": 2931,
+        "flipped": 1,
+        "overlap_pixels": 34814,
+        "failing_charts": 283
+      },
+      {
+        "round": 2,
+        "charts": 3552,
+        "flipped": 4,
+        "overlap_pixels": 20537,
+        "failing_charts": 208
+      },
+      {
+        "round": 3,
+        "charts": 4008,
+        "flipped": 4,
+        "overlap_pixels": 9745,
+        "failing_charts": 119
+      },
+      {
+        "round": 4,
+        "charts": 4286,
+        "flipped": 0,
+        "overlap_pixels": 4271,
+        "failing_charts": 65
+      },
+      {
+        "round": 5,
+        "charts": 4434,
+        "flipped": 0,
+        "overlap_pixels": 1600,
+        "failing_charts": 43
+      },
+      {
+        "round": 6,
+        "charts": 4517,
+        "flipped": 0,
+        "overlap_pixels": 366,
+        "failing_charts": 19
+      },
+      {
+        "round": 7,
+        "charts": 4560,
+        "flipped": 0,
+        "overlap_pixels": 130,
+        "failing_charts": 11
+      },
+      {
+        "round": 8,
+        "charts": 4580,
+        "flipped": 0,
+        "overlap_pixels": 123,
+        "failing_charts": 12
+      },
+      {
+        "round": 9,
+        "charts": 4606,
+        "flipped": 0,
+        "overlap_pixels": 25,
+        "failing_charts": 6
+      },
+      {
+        "round": 10,
+        "charts": 4618,
+        "flipped": 0,
+        "overlap_pixels": 7,
+        "failing_charts": 5
+      },
+      {
+        "round": 11,
+        "charts": 4625,
+        "flipped": 0,
+        "overlap_pixels": 2,
+        "failing_charts": 2
+      },
+      {
+        "round": 12,
+        "charts": 4628,
+        "flipped": 0,
+        "overlap_pixels": 3,
+        "failing_charts": 3
+      },
+      {
+        "round": 13,
+        "charts": 4633,
+        "flipped": 0,
+        "overlap_pixels": 0,
+        "failing_charts": 0
+      }
+    ]
+  },
+  "uv_layout": {
+    "uv_layers": [
+      "UVMap"
+    ],
+    "loops": 141000,
+    "faces_with_nonzero_uv_area": 47000,
+    "min_uv": [
+      0.00276,
+      0.00276
+    ],
+    "max_uv": [
+      0.99724,
+      0.99085
+    ],
+    "loops_outside_0_1": 0,
+    "islands": 4631,
+    "overlap_pixel_centres_4096": 0,
+    "margin_px_2048": 11.5,
+    "stretch": {
+      "global_texels_per_cm": 2.4393,
+      "flipped_triangles": 0,
+      "degenerate_uv_triangles": 0,
+      "anisotropy_area_weighted_mean": 1.0412,
+      "anisotropy_p95": 1.183,
+      "anisotropy_p99": 1.325,
+      "anisotropy_max": 92.33,
+      "l2_stretch_area_weighted_mean": 1.0009,
+      "l2_stretch_p95": 1.053,
+      "texel_density_ratio_p5": 0.9464,
+      "texel_density_ratio_p50": 1.0,
+      "texel_density_ratio_p95": 1.0494,
+      "uv_area_share_of_unit_square": 0.2118
+    }
+  },
+  "stretch_old_uv0": {
+    "global_texels_per_cm": 3.7139,
+    "flipped_triangles": 534,
+    "degenerate_uv_triangles": 0,
+    "anisotropy_area_weighted_mean": 3.4467,
+    "anisotropy_p95": 7.448,
+    "anisotropy_p99": 25.34,
+    "anisotropy_max": 1000.0,
+    "l2_stretch_area_weighted_mean": 1.0802,
+    "l2_stretch_p95": 1.74,
+    "texel_density_ratio_p5": 0.3669,
+    "texel_density_ratio_p50": 0.9198,
+    "texel_density_ratio_p95": 1.544,
+    "uv_area_share_of_unit_square": 0.4911
+  },
+  "stretch_new_uv0": {
+    "global_texels_per_cm": 2.4393,
+    "flipped_triangles": 0,
+    "degenerate_uv_triangles": 0,
+    "anisotropy_area_weighted_mean": 1.0412,
+    "anisotropy_p95": 1.183,
+    "anisotropy_p99": 1.325,
+    "anisotropy_max": 92.33,
+    "l2_stretch_area_weighted_mean": 1.0009,
+    "l2_stretch_p95": 1.053,
+    "texel_density_ratio_p5": 0.9464,
+    "texel_density_ratio_p50": 1.0,
+    "texel_density_ratio_p95": 1.0494,
+    "uv_area_share_of_unit_square": 0.2118
+  },
+  "stretch_note": "J maps each 3D triangle (cm) to texels at 2048; anisotropy = sigma1/sigma2; l2 = Sander L2 stretch over the global density (1.0 = no stretch); density ratio = sqrt(s1 s2) over the global density; area-weighted. The old UV0 flips 534 triangles (mirrored/overlapping) and varies the texel density from 0.37 to 1.54 of the mean (p5 to p95).",
+  "bake": {
+    "engine": "Cycles CPU, selected to active (dense Meshy mesh to SM_Extractor)",
+    "samples_colour_normal": 8,
+    "cage_extrusion_cm": 0.5,
+    "max_ray_distance_cm": 3.0,
+    "dilation_px": 16,
+    "margin_type": "EXTEND",
+    "maps": {
+      "BaseColor": "Art/Meshes/extractor/T_Extractor_BaseColor.png",
+      "Metallic": "Art/Meshes/extractor/T_Extractor_Metallic.png",
+      "Roughness": "Art/Meshes/extractor/T_Extractor_Roughness.png",
+      "Normal": "Art/Meshes/extractor/T_Extractor_Normal.png"
+    },
+    "resolution": [
+      2048,
+      2048
+    ],
+    "colour_spaces": {
+      "BaseColor": "sRGB (encoded here from the linear bake)",
+      "Metallic": "Non-Color",
+      "Roughness": "Non-Color",
+      "Normal": "Non-Color"
+    },
+    "dense_source": "raw Meshy mesh in the SM_Extractor frame: Rz90, scale 1.056125, offset [-0.6037, -0.0431, 42.9407] cm (fitted on 20318 unmoved vertices, median residual 2.19e-06 cm), planar-region vertices projected flat as in task-366, region faces flat-shaded, others smooth; base colour, metallic and roughness through the Meshy UVs, normal = dense shape + Meshy normal map",
+    "fill_outside_islands": {
+      "BaseColor": [
+        0.3221,
+        0.3099,
+        0.2847
+      ],
+      "Metallic": [
+        0.0008,
+        0.0008,
+        0.0008
+      ],
+      "Roughness": [
+        0.5069,
+        0.5069,
+        0.5069
+      ],
+      "Normal": [
+        0.5,
+        0.5,
+        1.0
+      ]
+    },
+    "missed_rays": {
+      "island_pixels": 888293,
+      "missed_pixels": 1114,
+      "missed_share_pct": 0.1254,
+      "faces_touched": 666,
+      "faces_fully_missed": 25,
+      "median_share_of_face_pixels_missed": 0.111,
+      "located": "edge pixels of 666 faces, scattered over the whole mesh (z 0.0 to 81.7 cm); filled from the baked 8-neighbours (iterated, 3 round(s)); island pixels left unbaked: 0; normal vectors shorter than 0.05: 0",
+      "flat_shaded_faces_among_missed": 103
+    }
+  },
+  "normal_convention": "tangent space, OpenGL (+Y up) like the Meshy normal map; for Unreal flip the green channel at import (or enable Flip Green Channel). Tangent basis: Blender MikkTSpace on the new UV0.",
+  "normal_tilt_deg": {
+    "flat_faces": 2507,
+    "flat_face_pixels": 166921,
+    "flat_mean_deg": 4.439,
+    "flat_p95_deg": 21.426,
+    "flat_max_deg": 178.426,
+    "all_faces_mean_deg": 18.08,
+    "all_faces_p95_deg": 45.993,
+    "flat_median_deg": 1.251,
+    "flat_share_over_30deg_pct": 2.401,
+    "flat_mean_deg_excluding_pixels_over_30deg": 3.175,
+    "flat_face_centre_samples_mean_deg": 4.146,
+    "meshy_map_reference_mean_deg_on_mapped_faces": 3.699,
+    "limit_mean_deg": 3.7,
+    "note": "pixels over 30 deg are relief of the dense mesh inside the flat faces' footprint (bolts, panel borders), baked on purpose (Q2: dense shape plus Meshy detail)"
+  },
+  "geometry_check": {
+    "triangles": 47000,
+    "triangles_task366": 47000,
+    "same_face_count": true,
+    "max_corner_position_difference_cm_in_face_order": 0.0,
+    "max_face_centroid_difference_cm_sorted": 0.0,
+    "vertices_new_after_uv_split": 23020,
+    "vertices_task366": 23020,
+    "flat_shaded_faces_new": 2507,
+    "flat_shaded_faces_task366": 2507,
+    "flat_flags_identical": true,
+    "corner_normal_max_angle_deg": 0.0519,
+    "corner_normal_mean_angle_deg": 0.0103,
+    "bounds_cm": [
+      196.549,
+      201.0,
+      86.099
+    ],
+    "min_cm": [
+      -98.274,
+      -100.5,
+      0.0
+    ],
+    "max_cm": [
+      98.274,
+      100.5,
+      86.099
+    ]
+  },
+  "colour_difference": {
+    "unit": "8-bit sRGB values (0-255), mean absolute difference per channel, over the pixels where the object is drawn in any of the three renders",
+    "method": "same cameras and light for source, old SM_Extractor and new SM_Extractor; block = 8 x 8 pixel block average first (removes silhouette and sub-pixel alignment noise)",
+    "per_view": {
+      "preview_front": {
+        "old": 9.099,
+        "old_block": 5.611,
+        "new": 3.432,
+        "new_block": 1.57,
+        "object_pixels": 132053
+      },
+      "preview_side": {
+        "old": 9.514,
+        "old_block": 5.756,
+        "new": 3.7,
+        "new_block": 1.702,
+        "object_pixels": 144676
+      },
+      "preview_three_quarter": {
+        "old": 10.831,
+        "old_block": 6.98,
+        "new": 3.716,
+        "new_block": 1.772,
+        "object_pixels": 274493
+      },
+      "preview_rear_quarter": {
+        "old": 11.007,
+        "old_block": 7.129,
+        "new": 3.732,
+        "new_block": 1.814,
+        "object_pixels": 235021
+      },
+      "preview_top": {
+        "old": 11.803,
+        "old_block": 7.843,
+        "new": 4.034,
+        "new_block": 1.876,
+        "object_pixels": 309256
+      },
+      "close_panelA": {
+        "old": 18.906,
+        "old_block": 17.215,
+        "new": 4.814,
+        "new_block": 3.37,
+        "object_pixels": 996513
+      },
+      "close_panelB": {
+        "old": 6.108,
+        "old_block": 5.162,
+        "new": 2.593,
+        "new_block": 1.786,
+        "object_pixels": 998386
+      }
+    },
+    "mean_over_5_preview_views": {
+      "old": 10.451,
+      "new": 3.723,
+      "old_block": 6.664,
+      "new_block": 1.747
+    },
+    "mean_over_2_closeups": {
+      "old": 12.507,
+      "new": 3.704,
+      "old_block": 11.189,
+      "new_block": 2.578
+    },
+    "new_lower_than_old_in_every_view": true
+  },
+  "warnings": [
+    "normal tilt on flat faces above 3.7 deg",
+    "1114 island pixels had no ray hit (located, filled from baked neighbours)"
+  ],
+  "renders_dir": "Saved/ExtractorMesh/rebake (not committed)"
+}

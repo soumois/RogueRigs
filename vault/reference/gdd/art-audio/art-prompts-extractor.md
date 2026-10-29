@@ -1,6 +1,6 @@
 ---
 id: art-prompts-extractor
-description: "Extractor (Rustwing quadrotor, the shuttle) Meshy mesh: owner words, zip, file list and where each lives, measures, 50,000 triangle budget. Open for extractor art."
+description: "Extractor (Rustwing quadrotor, the shuttle) Meshy mesh: files, measures, 50,000 triangle budget, flattened game mesh and its re-baked maps. Open for extractor art."
 parent: art-prompts
 kind: note
 ---
@@ -30,10 +30,18 @@ Budget: 50,000 triangles for the whole game asset, body plus four rotors (owner 
 - Result: 47,000 triangles (budget 48,000), 190 regions used, 2,507 faces flat (5.3 % of the faces: the Meshy surface is noisy at 0.25 cm, so little of it qualifies), residual after reimport 0.000004 cm. Bulge cause: smooth shading on every face (split normals 27 deg off the face normal on average) and vertices off-plane (mean 0.06 cm, max 0.95 cm); the normal map tilt on those faces equals the whole-mesh average (3.7 against 3.2 deg), not a cause.
 - Placement (Q5, provisional): nose toward +X (raw -Y, the canopy), rotation 90 deg about Z, uniform scale 1.0561, bounds 196.6 x 201.0 x 86.1 cm, origin bottom centre. The mesh is 1.5 % wider on Y than on X (rotors), so "long side on X" cannot hold with the nose on +X and a uniform scale.
 - Silhouette against the scaled source: output vertex to source surface mean 0.056, max 0.784 cm; limit 1 % of the height = 0.861 cm.
-- Known limit: collapse decimation by 55x stretches the UVs on the big panels (rust marks distorted against the source). Re-bake decided (owner 2026-10-29, "oui rebake", provisional): new UV0 on the 47,000-triangle mesh, Meshy look baked from the dense mesh into four 2048 x 2048 maps, flat regions baked flat, normal map OpenGL like the Meshy map; done by [[task-368-extractor-rebake]], before the rotor cut.
+- Known limit (lifted by the re-bake below): collapse decimation by 55x stretched the UVs on the big panels. The maps named above were byte copies of the Meshy maps in task-366; the re-bake replaced them.
+
+## Re-bake (task-368-01, 2026-10-29)
+Owner "oui rebake" then "ok" (defaults Q1 to Q3 accepted, provisional). `SM_Extractor.fbx` has the same 47,000 triangles, vertex positions (max difference 0 cm), flat-shaded faces (2,507) and corner normals as task-366, with a new UV0 (one layer `UVMap`, 4,631 islands) and four new 2048 x 2048 maps `T_Extractor_BaseColor|Metallic|Normal|Roughness.png` (base colour and normal RGB, metallic and roughness grayscale like the Meshy maps). Script `Tools/art/blender/extractor_rebake.py` (phases uv, bake, final, compare), close-ups `extractor_rebake_closeup.py`, report `extractor_rebake.report.json`, renders in `Saved/ExtractorMesh/rebake/` (not committed).
+- UV0: seams on edges sharper than 60 deg and on flat-region borders, extra cone cuts, small charts merged, failing charts bisected until no flip and no overlap at 4096; angle-based unwrap, uniform texel density 2.44 texels/cm (a texel is 0.41 cm), packed margin at least 8 px. Stretch (area-weighted anisotropy, 1 = none): old 3.45 (534 flipped triangles, density 0.37 to 1.54 of the mean) against new 1.04.
+- Bake: the dense Meshy mesh in the SM frame (planar-region vertices projected flat), Cycles selected to active, extrusion 0.5 cm, max ray 3 cm, 16 px dilation, 1,114 of 888,293 island pixels without a ray hit (edge pixels, filled from baked neighbours). Normal map: tangent space, OpenGL (+Y); flip green at the Unreal import.
+- Fidelity from the same cameras and light: mean colour difference to the source 3.7 (new) against 10.5 (old) over five views, 3.7 against 12.5 on two panel close-ups (0 to 255 scale).
+- Known limit: the normal tilt on the flat faces is 4.44 deg mean (median 1.25; 3.17 without the 2.4 % of pixels over 30 deg, which are dense-mesh bolts and borders), above the Meshy map's 3.7 deg.
 
 ## Relations
 - [[art-prompts]] - parent: method and locked phrases.
 - [[art-prompts-turret]] - precedent: same intake, flatten recipe.
 - [[extraction]] - the shuttle this mesh is for.
 - [[task-366-extractor-flat-faces]] - task that stores and flattens it.
+- [[task-368-extractor-rebake]] - task that re-unwrapped and re-baked the maps.
