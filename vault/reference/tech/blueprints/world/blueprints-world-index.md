@@ -12,7 +12,7 @@ Arena grid, objective console, bonus chest, shuttle, spawner and barrel asset: t
 - [[bp-arena-grid]] — BP_ArenaGrid doc, the M1 arena grid Blueprint.
 - [[bp-objective-console]] — BP_ObjectiveConsole, the command console.
 - [[bp-bonus-chest]] — BP_BonusChest, the optional gold bonus chest.
-- [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle.
+- [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle (extractor body, four rotors, chevrons).
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
 - [[bp-rock-slab-material]] — M_RockSlab and MI_RockSlab, the rock piece material (top texture, cracks, shake, broken sag).
 - [[bp-floor-plates-material]] — M_FloorPlates and MI_FloorPlates, the floor material (world-aligned plate textures, noise anti-tiling, revert).

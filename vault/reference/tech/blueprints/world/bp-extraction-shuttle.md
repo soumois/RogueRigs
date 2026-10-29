@@ -1,6 +1,6 @@
 ---
 id: bp-extraction-shuttle
-description: "BP_ExtractionShuttle, Blueprint of ARRShuttle: white flat box with a teal glow that pulses each second of the countdown; open for its mesh, material and event."
+description: "BP_ExtractionShuttle, Blueprint of ARRShuttle: Rustwing extractor body with four rotors and floor chevrons; open for its meshes, rotor positions, material and event."
 parent: blueprints-world-index
 kind: doc
 ---
@@ -8,16 +8,18 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/Blueprints/Objectives/BP_ExtractionShuttle
 - parent_class: ARRShuttle (/Script/RogueRigs.RRShuttle)
-- purpose: the extraction shuttle landed by the run flow ([[sys-objectives]], [[extraction]]); visuals only.
-- components: Chevron0..3 (StaticMeshComponent, engine Plane scale 0.8, MI_Chevron, hidden, no collision, no shadow) added by task-027-02; inherited Mesh: StaticMesh = engine Cube, scale (2.4, 1.6, 0.8), relative location z 40, material slot 0 = MI_GB_Shuttle, NoCollision, no dynamic shadow.
+- purpose: the extraction shuttle landed by the run flow ([[sys-objectives]], [[extraction]]); visuals only. Shows the imported extractor since task-369-03 (4fead33b); the white box and its teal glow pulse are gone.
+- components: Chevron0..3 (StaticMeshComponent, engine Plane scale 0.8, MI_Chevron, hidden, no collision, no shadow) added by task-027-02, kept. Inherited Mesh = SM_Extractor_Body, relative location 0, scale 1 (was z 40, scale 2.4, 1.6, 0.8), no material override (M_Extractor is on the mesh slots; MI_GB_Shuttle no longer used). Inherited RotorFL/FR/RL/RR (C++, [[sys-objectives-shuttle]]) with SM_Extractor_Rotor_FL|FR|RL|RR at relative locations (uu, body frame) FL (32.808, -66.197, 61.866), FR (32.967, 66.619, 61.905), RL (-64.777, -62.144, 74.563), RR (-64.770, 62.529, 74.387). Rotors do not spin yet.
 - exposed_defaults: C++ defaults kept. Set as `ShuttleClass` in `RunFlowConfig` of [[bp-rr-game-mode]].
-- events: OnCountdown(Remaining) (every ticked frame) calls SetScalarParameterValueOnMaterials(Mesh, GlowAmount, 1 + 2 * Fraction(Remaining)) and places Chevron0..3 on the floor at 150, 300, 450, 600 uu from the miner along the miner-to-shuttle line (yaw of MakeRotFromX, z = shuttle z + 6), each visible only if it is more than 150 uu short of the shuttle; chevron arrow direction along the plane U axis not viewed on screen. OnLanded, OnExtracted and OnMissed are not implemented.
+- events: OnCountdown(Remaining) (every ticked frame) places Chevron0..3 on the floor at 150, 300, 450, 600 uu from the miner along the miner-to-shuttle line (yaw of MakeRotFromX, z = shuttle z + 6), each visible only if it is more than 150 uu short of the shuttle; chevron arrow direction along the plane U axis not viewed on screen. The former GlowAmount call was removed in task-369-03 (orphan math nodes left in the graph). OnLanded, OnExtracted and OnMissed are not implemented.
 - logic_in_bp: display only (one event).
-- assets: /Game/RogueRigs/FX/M_Chevron (M_GroundRing copy, mask |v| + u = 0.3 band, params Color, Opacity), MI_Chevron (teal, 0.8); /Game/RogueRigs/Materials/GreyBox/MI_GB_Shuttle (parent M_GreyBoxGlow: Color white, GlowColor teal, GlowAmount 1.5).
+- assets: /Game/RogueRigs/Art/Extractor/ (task-369-01, eaf3a3c3): SM_Extractor_Body (45,420 tris, bounds 196.55 x 201.0 x 86.1 cm, pivot bottom centre), SM_Extractor_Rotor_FL|FR|RL|RR (736, 684, 684, 630 tris; total 48,154), T_Extractor_BaseColor|Metallic|Normal|Roughness (normal green flipped; metallic and roughness sRGB off), M_Extractor (texture parameters BaseColor, Metallic, Roughness, Normal; on every slot). Imported with Tools/unreal/import_extractor_meshes.py run from the editor Cmd box, because StaticMeshTools.import_file gave a 100x too small mesh ([[unreal-mcp-quirks]]). /Game/RogueRigs/FX/M_Chevron (M_GroundRing copy, mask |v| + u = 0.3 band, params Color, Opacity), MI_Chevron (teal, 0.8).
 - owner_agent: agent-bp
-- verified: task-016-03 PIE: landed as BP_ExtractionShuttle_C_0, boarding gave the success screen, a 5 s countdown gave the run-lost screen, no log error; glow not viewed on screen.
+- verified: task-016-03 PIE (old box): landed as BP_ExtractionShuttle_C_0, boarding gave the success screen, a 5 s countdown gave the run-lost screen, no log error. task-369: not verified in PIE or on screen (owner refused capture and tests); material compile errors, Y mirror against the scene, Nanite state open; no collision generated on the meshes.
 
 ## Relations
 - [[blueprints-index]] — parent index.
 - [[sys-objectives]] — the C++ class and events.
 - [[bp-rr-game-mode]] — holds it in RunFlowConfig.
+- [[unreal-mcp-quirks]] — the import scale trap met by task-369-01.
+- [[task-369-extractor-level-exit]] — the task that changed it.
