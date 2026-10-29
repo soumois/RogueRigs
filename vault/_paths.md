@@ -195,6 +195,7 @@ handover-2026-10-12-gameplay-hud  reference/production/handover-2026-10-12-gamep
 handover-2026-10-14-chaser-meshy  reference/production/handover-2026-10-14-chaser-meshy.md
 handover-2026-10-18-rock-slab  reference/production/handover-2026-10-18-rock-slab.md
 handover-2026-10-21-lighting-floor  reference/production/handover-2026-10-21-lighting-floor.md
+handover-2026-10-29-shop-screen  reference/production/handover-2026-10-29-shop-screen.md
 heal-ore  reference/gdd/terrain/heal-ore.md
 hud-refactor-audit  reference/tech/blueprints/ui/hud-refactor-audit.md
 hud-refactor-audit-core  reference/tech/blueprints/ui/hud-refactor-audit-core.md
