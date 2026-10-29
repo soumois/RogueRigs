@@ -1,9 +1,9 @@
 ---
 id: task-365-new-run-packaged-map
 description: "Global task: Fix New Run on the main menu doing nothing: the packaged build cooks only L_MainMenu, so the travel to L_ArenaM1 fails."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # New Run does nothing in the packaged game
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read main-menu (spec provisional, owner 2026-10-28), sys-main-menu, wbp-main-menu, bp-main-menu-game-mode, build-toolchain (2026-10-29). No conflict: main-menu Behaviour says New Run resets the run and opens L_ArenaM1 at level 1, and a launch outside the editor (-game, packaged) opens L_MainMenu; the package must therefore contain both maps. No value the work needs is open. sys-main-menu lists "packaged build" and "real mouse click" as not seen in task-338: this is that gap. build-toolchain documents a Development BuildCookRun with -map=/Game/RogueRigs/Maps/L_ArenaM1 only, which would now drop L_MainMenu. In milestone scope (M2).
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
-- next_step: task-365-02-packaging-doc
+- next_step: none
 - started: 2026-10-29T18:25:40Z
 - waiting_for: none
-- result: open
+- result: Done. build-toolchain and sys-main-menu updated (commit 78d3ff51): MapsToCook rule, two-map command, packaged New Run verification; lint OK.
 
 ## Questions
 Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -29,7 +29,7 @@ Decided 2026-10-29 (owner "ok"): every default below is accepted; values provisi
 2. task-365-02-packaging-doc (vault/reference/tasks/task-365-new-run-packaged-map/task-365-02-packaging-doc.md) — doc: update build-toolchain (MapsToCook, packaging command with both maps) and sys-main-menu (packaged New Run verified, cook rule)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-365-01-cook-arena-map]] — step 1, cpp.
 - [[task-365-02-packaging-doc]] — step 2, doc.
 - [[main-menu]] — the design: New Run opens L_ArenaM1 at level 1.

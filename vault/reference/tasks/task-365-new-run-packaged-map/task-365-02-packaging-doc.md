@@ -3,7 +3,7 @@ id: task-365-02-packaging-doc
 description: "Update build-toolchain and sys-main-menu with the MapsToCook rule, the two-map packaging command and the packaged New Run check."
 parent: task-365-new-run-packaged-map
 kind: task
-status: in-progress
+status: done
 ---
 # Document the cook rule and the packaged New Run check
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build-toolchain shows the MapsToCook rule and the two-map BuildCookRun command; sys-main-menu gotchas record the packaged New Run verification; node vault/scripts/lint.js --write clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 20477, cache read 103219, output 3397
+- usage: turns 6, context start 11k peak 24k, resumes 0, 1 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T18:34:05Z
 - waiting_for: none
-- result: open
+- result: build-toolchain and sys-main-menu updated (commit 78d3ff51): MapsToCook rule, two-map command, packaged New Run verification; lint OK.
 
 ## Relations
 - [[task-365-new-run-packaged-map]] — parent global task.

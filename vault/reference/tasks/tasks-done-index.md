@@ -372,4 +372,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-362-agents-path-of]] — Agent definitions stop opening _paths.md: style-guide gets fixed read paths, 3d, art, bp, cpp, doc, text resolve wikilinks with path-of.js. Status done.
 - [[task-363-blender-shared-module]] — Shared Blender helper module rr_blender.py for new 3d scripts; 3d definition, agent-3d, blender-asset-route and lessons tell the agent to import it. Status done.
 - [[task-364-miner-turnaround-prompt]] — Write the ChatGPT image prompt of the miner turnaround sheet (front, side, back, A-pose) that the owner turns into the 3D mesh himself. Status done.
+- [[task-365-new-run-packaged-map]] — Fix New Run on the main menu doing nothing: cook L_ArenaM1 into the package (it was missing), repackage, verify the travel. Status done.
 - [[task-366-extractor-flat-faces]] — Save the owner Meshy extractor (Rustwing quadrotor) files, then decimate it to budget and flatten its bulged flat faces as for the turret. Status done.
