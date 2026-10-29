@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Pickups/RRPickup.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "RRPickupSubsystem.generated.h"
 
@@ -23,6 +24,8 @@ struct FRRPendingXPCube
 	float XPAmount = 0.f;
 	/** Ejection yaw in degrees. */
 	float PopYawDegrees = 0.f;
+	/** Scale pop of the cube (task-309-01); off by default. A merged big block gets none. */
+	FRRPickupScalePop ScalePop;
 };
 
 /**
@@ -68,8 +71,10 @@ public:
 	 * yaw). Same delivery rules and return value as RequestSpawn. Used by ARREnemy::DropXP.
 	 * Big XP block (task-110-01): when the PickupClass default has an XPBigPickupClass, the request is collected instead (returns
 	 * nullptr) and resolved by FlushXPCubes at the end of the frame (this subsystem's Tick).
+	 * ScalePop (task-309-01, bonus chest chips): scale pop of the cube's life; default off (robot drops, console burst).
 	 */
-	ARRPickup* RequestXPCube(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, float XPAmount, float PopYawDegrees);
+	ARRPickup* RequestXPCube(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, float XPAmount, float PopYawDegrees,
+		const FRRPickupScalePop& ScalePop = FRRPickupScalePop());
 
 	/**
 	 * Resolves the XP cube requests collected since the last flush (task-110-01): grouped per small class and per XPMergeBucketSize

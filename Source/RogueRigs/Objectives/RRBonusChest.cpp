@@ -1,7 +1,10 @@
-// Rogue Rigs - bonus chest objective: an optional console-like hack target that rewards ore and a lucky upgrade choice (direct XP off by default).
+// Rogue Rigs - bonus chest objective: an optional console-like hack target that opens (latch, lid slam, inner light) and rewards XP chips, ore and a lucky upgrade choice.
 
 #include "Objectives/RRBonusChest.h"
 
+#include "Camera/CameraShakeBase.h"
+#include "Camera/RRCameraShakeLibrary.h"
+#include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -27,6 +30,206 @@ ARRBonusChest::ARRBonusChest()
 	MarkedCellTypes.Reset();
 	bDriveStateVisuals = false; // the console lamps, screen and head drive is off; the chest drives its lock light instead (task-308-02)
 	FootprintCells = FIntPoint(2, 2); // the chest keeps the 2 x 2 footprint, the console default is 3 x 3 (task-311-01)
+
+	// task-309-01: the XP burst (3 chips of 8, inherited defaults) comes at the lid opening, not at the completion. The chips start
+	// 80 uu out (implementation choice: clears the 130 x 70 uu body, half diagonal about 74 uu; the console uses 140 for its 3 x 3 mesh).
+	bXPBurstOnComplete = false;
+	XPBurstSpawnRadius = 80.f;
+
+	// Inner light: hidden until the lid opening; colour, intensity, radius and place are Blueprint defaults (task-309-05).
+	InnerLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("InnerLight"));
+	InnerLight->SetupAttachment(Mesh);
+	InnerLight->SetRelativeLocation(FVector(0.f, 0.f, 30.f)); // inside the cavity (floor 19.25, rim 41.25 uu); the Blueprint may move it
+	InnerLight->SetVisibleFlag(false);
+	InnerLight->SetCastShadows(false);
+}
+
+void ARRBonusChest::BeginPlay()
+{
+	Super::BeginPlay();
+	if (InnerLight)
+	{
+		InnerLightOnIntensity = InnerLight->Intensity;
+		InnerLight->SetVisibility(false);
+	}
+}
+
+void ARRBonusChest::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (bOpeningStarted && !bOpeningFinished)
+	{
+		UpdateOpening(DeltaSeconds);
+	}
+}
+
+float ARRBonusChest::GetLatchAngleAt(float SecondsSinceCompletion) const
+{
+	if (SecondsSinceCompletion <= 0.f)
+	{
+		return 0.f;
+	}
+	if (SecondsSinceCompletion >= LatchSwingDuration)
+	{
+		return LatchOpenAngle;
+	}
+	return FMath::InterpEaseOut(0.f, LatchOpenAngle, SecondsSinceCompletion / LatchSwingDuration, FMath::Max(LatchEaseExponent, 1.f));
+}
+
+float ARRBonusChest::GetLidAngleAt(float SecondsSinceLidStart) const
+{
+	if (SecondsSinceLidStart <= 0.f)
+	{
+		return 0.f;
+	}
+	float Time = SecondsSinceLidStart;
+	if (Time < LidRiseDuration)
+	{
+		return FMath::InterpEaseOut(0.f, LidPeakAngle, Time / LidRiseDuration, FMath::Max(LidRiseEaseExponent, 1.f));
+	}
+	Time -= LidRiseDuration;
+	if (Time < LidHoldDuration)
+	{
+		return LidPeakAngle;
+	}
+	Time -= LidHoldDuration;
+	if (Time < LidSettleDuration)
+	{
+		return FMath::InterpEaseInOut(LidPeakAngle, LidOpenAngle, Time / LidSettleDuration, 2.f);
+	}
+	return LidOpenAngle;
+}
+
+void ARRBonusChest::SetupOpeningComponents()
+{
+	TInlineComponentArray<UStaticMeshComponent*> MeshComponents(this);
+	for (UStaticMeshComponent* Component : MeshComponents)
+	{
+		if (!Component)
+		{
+			continue;
+		}
+		if (!LidComp && Component->GetFName() == LidComponentName)
+		{
+			LidComp = Component;
+		}
+		else if (!LatchComp && Component->GetFName() == LatchComponentName)
+		{
+			LatchComp = Component;
+		}
+	}
+	LidClosedRotation = LidComp ? LidComp->GetRelativeRotation().Quaternion() : FQuat::Identity;
+	LatchClosedRotation = LatchComp ? LatchComp->GetRelativeRotation().Quaternion() : FQuat::Identity;
+	UE_LOG(LogRogueRigs, Verbose, TEXT("%s: opening lid %s, latch %s."), *GetName(), LidComp ? TEXT("yes") : TEXT("no"), LatchComp ? TEXT("yes") : TEXT("no"));
+}
+
+void ARRBonusChest::ApplyRoll(USceneComponent* Component, const FQuat& ClosedRotation, float Sign, float AngleDegrees)
+{
+	if (Component)
+	{
+		// Relative Roll = rotation about the component's own X (the hinge, or the latch top edge), after its closed rotation.
+		Component->SetRelativeRotation(ClosedRotation * FQuat(FRotator(0.f, 0.f, Sign * AngleDegrees)));
+	}
+}
+
+void ARRBonusChest::UpdateOpening(float DeltaSeconds)
+{
+	OpeningElapsed += FMath::Max(DeltaSeconds, 0.f);
+
+	LatchAngle = GetLatchAngleAt(OpeningElapsed);
+	ApplyRoll(LatchComp, LatchClosedRotation, LatchRollSign, LatchAngle);
+
+	if (!bLidOpened && OpeningElapsed >= LidOpenDelay)
+	{
+		OpenLid();
+	}
+	if (!bLidOpened)
+	{
+		return;
+	}
+
+	const float LidTime = OpeningElapsed - LidOpenDelay;
+	LidAngle = GetLidAngleAt(LidTime);
+	ApplyRoll(LidComp, LidClosedRotation, LidRollSign, LidAngle);
+
+	// Slam: the hold at LidPeakAngle starts (ground ring), then the light shake at its end (chest only, no time dilation).
+	if (!bLidSlamFired && LidTime >= LidRiseDuration)
+	{
+		bLidSlamFired = true;
+		UE_LOG(LogRogueRigs, Verbose, TEXT("%s: lid slam at %.2f s."), *GetName(), OpeningElapsed);
+		OnLidSlam(GetActorLocation());
+	}
+	if (bLidSlamFired && !bSlamShakePlayed && LidTime >= LidRiseDuration + LidHoldDuration)
+	{
+		bSlamShakePlayed = true;
+		if (LidSlamShakeScale > 0.f)
+		{
+			URRCameraShakeLibrary::PlayCameraShake(this, LidSlamShakeScale, LidSlamShakeClass);
+		}
+	}
+
+	// Inner light: Blueprint intensity for InnerLightOnDuration, then a linear fade to 0 and hidden; the interior glow stays.
+	if (!bInnerLightFaded)
+	{
+		const float FadeTime = LidTime - InnerLightOnDuration;
+		if (FadeTime >= 0.f)
+		{
+			const float Alpha = InnerLightFadeDuration > 0.f ? FMath::Clamp(FadeTime / InnerLightFadeDuration, 0.f, 1.f) : 1.f;
+			if (InnerLight)
+			{
+				InnerLight->SetIntensity(InnerLightOnIntensity * (1.f - Alpha));
+			}
+			if (Alpha >= 1.f)
+			{
+				bInnerLightFaded = true;
+				if (InnerLight)
+				{
+					InnerLight->SetVisibility(false);
+				}
+			}
+		}
+	}
+
+	const bool bLidSettled = LidTime >= LidRiseDuration + LidHoldDuration + LidSettleDuration;
+	if (bLidSettled && bSlamShakePlayed && bInnerLightFaded && OpeningElapsed >= LatchSwingDuration)
+	{
+		bOpeningFinished = true;
+		SetActorTickEnabled(false);
+		UE_LOG(LogRogueRigs, Verbose, TEXT("%s: opening finished at %.2f s."), *GetName(), OpeningElapsed);
+	}
+}
+
+void ARRBonusChest::OpenLid()
+{
+	if (bLidOpened)
+	{
+		return;
+	}
+	bLidOpened = true;
+	if (InnerLight)
+	{
+		InnerLight->SetIntensity(InnerLightOnIntensity);
+		InnerLight->SetVisibility(true);
+	}
+	ApplyInteriorGlow();
+	OnLidOpened(GetActorLocation());
+	GrantReward();
+}
+
+void ARRBonusChest::ApplyInteriorGlow()
+{
+	if (!InteriorMID)
+	{
+		const int32 Index = Mesh && !InteriorSlotName.IsNone() ? Mesh->GetMaterialIndex(InteriorSlotName) : INDEX_NONE;
+		if (Index != INDEX_NONE && Mesh->GetMaterial(Index))
+		{
+			InteriorMID = Mesh->CreateDynamicMaterialInstance(Index);
+		}
+	}
+	if (InteriorMID)
+	{
+		InteriorMID->SetScalarParameterValue(InteriorGlowParameterName, InteriorGlowOnValue);
+	}
 }
 
 float ARRBonusChest::GetHackingBlinkRate(float Progress) const
@@ -125,7 +328,12 @@ void ARRBonusChest::CompleteHack()
 		return;
 	}
 	Super::CompleteHack();
-	GrantReward();
+	// task-309-01: the latch swings now; the lid opening (and the reward) comes LidOpenDelay later, in the chest tick.
+	bOpeningStarted = true;
+	OpeningElapsed = 0.f;
+	SetupOpeningComponents();
+	SetActorTickEnabled(true);
+	UpdateOpening(0.f);
 }
 
 void ARRBonusChest::GrantReward()
@@ -145,11 +353,13 @@ void ARRBonusChest::GrantReward()
 			Progression->AddXP(RewardXP);
 		}
 	}
+	XPBurstChipsSpawned = SpawnXPBurst(ChipScalePop);
 	const int32 OreChunks = PopOreChunks();
 	URRLevelUpComponent* LevelUp = bMinerAlive ? Miner->GetLevelUp() : nullptr;
 	const bool bChoiceQueued = LevelUp && LevelUp->QueueBonusChoice(BonusLuck);
 
-	UE_LOG(LogRogueRigs, Log, TEXT("%s: reward %.1f XP, %d ore chunk(s), upgrade choice %s (+%.1f luck)."), *GetName(), RewardXP, OreChunks,
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: reward %.1f XP, %d XP chip(s) of %.1f, %d ore chunk(s), upgrade choice %s (+%.1f luck)."), *GetName(), RewardXP,
+		XPBurstChipsSpawned, XPBurstChipXP, OreChunks,
 		bChoiceQueued ? TEXT("queued") : TEXT("not queued"), BonusLuck);
 	OnRewardGranted(RewardXP, OreChunks, bChoiceQueued);
 }

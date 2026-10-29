@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Grid/RRArenaGrid.h"
+#include "Pickups/RRPickup.h"
 #include "UObject/SoftObjectPtr.h"
 #include "RRConsole.generated.h"
 
@@ -91,8 +92,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnConsoleMarkedRocksChangedSig
  * XP burst (task-303-01, objective-console owner 2026-10-23, provisional): CompleteHack spawns XPBurstChipCount big XP chips
  * (XPBurstChipClass, BP_PickupXPBig) worth XPBurstChipXP each, XPBurstSpawnRadius out from the console centre along evenly
  * spread yaws (random start), each popped outward along its yaw with the class pop arc, so they land clear of the 3 x 3 mesh.
- * Console only: the constructor sets XPBurstChipCount to 0 for ARRBonusChest (the chest keeps its own reward). Then the
- * Blueprint event OnHackCompleteBurst fires (one-shot FX, BP_ObjectiveConsole).
+ * Only when bXPBurstOnComplete: ARRBonusChest sets it false and spawns its own burst at lid opening (task-309-01, with a
+ * chip scale pop). Then the Blueprint event OnHackCompleteBurst fires (one-shot FX, BP_ObjectiveConsole).
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRConsole : public AActor
@@ -197,7 +198,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Console|Hack")
 	bool GetHackDataSocket(FVector& OutLocation, FVector& OutFacing) const;
 
-	/** Big XP chips spawned when the hack completes (3 on the console, 0 on ARRBonusChest). */
+	/** Big XP chips of the burst (3 on the console; 3 on ARRBonusChest, spawned at lid opening, task-309-01). */
 	UFUNCTION(BlueprintPure, Category = "Console|Reward")
 	int32 GetXPBurstChipCount() const { return XPBurstChipCount; }
 
@@ -209,7 +210,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Console|Reward")
 	float GetXPBurstSpawnRadius() const { return XPBurstSpawnRadius; }
 
-	/** Burst chips requested by the last completion (0 before completion; pooled chips may appear up to a few frames later). */
+	/** Burst chips requested (0 before the burst; the chest bursts at lid opening; pooled chips may appear up to a few frames later). */
 	UFUNCTION(BlueprintPure, Category = "Console|Reward")
 	int32 GetXPBurstChipsSpawned() const { return XPBurstChipsSpawned; }
 
@@ -270,8 +271,12 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Console")
 	void OnHackCompleteBurst(FVector Location, int32 ChipCount);
 
-	/** Spawns the XP burst chips (pool through URRPickupSubsystem::RequestXPCube, direct spawn without it). Returns how many were requested. Called once by CompleteHack. */
-	int32 SpawnXPBurst();
+	/**
+	 * Spawns the XP burst chips (pool through URRPickupSubsystem::RequestXPCube, direct spawn without it), each with ScalePop
+	 * (default off: the console chips keep their look). Returns how many were requested. Called once by CompleteHack when
+	 * bXPBurstOnComplete, else by ARRBonusChest at lid opening.
+	 */
+	int32 SpawnXPBurst(const FRRPickupScalePop& ScalePop = FRRPickupScalePop());
 
 	/** Marks every cell FindMarkableCells returns around Cell. */
 	void MarkRocks();
@@ -353,11 +358,15 @@ protected:
 	bool bHackAtDataSocket = true;
 
 	/**
-	 * Big XP chips spawned when the hack completes (objective-console, owner 2026-10-23, provisional: 3). The ARRConsole
-	 * constructor sets 0 for ARRBonusChest and its subclasses (the chest keeps its own reward).
+	 * Big XP chips of the burst (objective-console, owner 2026-10-23, provisional: 3). ARRBonusChest keeps 3 (task-309 Q7: 3 big
+	 * chips of 8 nuts) and spawns them at lid opening.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward", meta = (ClampMin = 0))
 	int32 XPBurstChipCount = 3;
+
+	/** True: CompleteHack spawns the XP burst at once (console). ARRBonusChest sets it false and bursts at lid opening (task-309-01). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward")
+	bool bXPBurstOnComplete = true;
 
 	/** Raw XP of each burst chip, before the XPGain stat (owner 2026-10-23, provisional: a big chip = 8 basic nuts of 1 XP, 24 in all). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward", meta = (ClampMin = 0))

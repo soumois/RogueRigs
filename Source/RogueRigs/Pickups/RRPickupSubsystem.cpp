@@ -37,7 +37,8 @@ ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, 
 	});
 }
 
-ARRPickup* URRPickupSubsystem::RequestXPCube(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, float XPAmount, float PopYawDegrees)
+ARRPickup* URRPickupSubsystem::RequestXPCube(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, float XPAmount, float PopYawDegrees,
+	const FRRPickupScalePop& ScalePop)
 {
 	++TotalXPCubesRequested;
 	// task-110-01: cubes of a class with a big block are collected and merged per bucket at the end of the frame.
@@ -48,12 +49,17 @@ ARRPickup* URRPickupSubsystem::RequestXPCube(TSubclassOf<ARRPickup> PickupClass,
 		Pending.Location = Location;
 		Pending.XPAmount = XPAmount;
 		Pending.PopYawDegrees = PopYawDegrees;
+		Pending.ScalePop = ScalePop;
 		return nullptr;
 	}
-	return AcquirePickup(PickupClass, Location, nullptr, [XPAmount, PopYawDegrees](ARRPickup* Pickup)
+	return AcquirePickup(PickupClass, Location, nullptr, [XPAmount, PopYawDegrees, ScalePop](ARRPickup* Pickup)
 	{
 		Pickup->SetXPAmount(XPAmount);
 		Pickup->SetPopYaw(PopYawDegrees);
+		if (ScalePop.IsEnabled())
+		{
+			Pickup->SetSpawnScalePop(ScalePop);
+		}
 	});
 }
 
@@ -85,10 +91,15 @@ void URRPickupSubsystem::FlushXPCubes()
 	{
 		const float XPAmount = Request.XPAmount;
 		const float PopYawDegrees = Request.PopYawDegrees;
-		AcquirePickup(Request.PickupClass, Request.Location, nullptr, [XPAmount, PopYawDegrees](ARRPickup* Pickup)
+		const FRRPickupScalePop ScalePop = Request.ScalePop;
+		AcquirePickup(Request.PickupClass, Request.Location, nullptr, [XPAmount, PopYawDegrees, ScalePop](ARRPickup* Pickup)
 		{
 			Pickup->SetXPAmount(XPAmount);
 			Pickup->SetPopYaw(PopYawDegrees);
+			if (ScalePop.IsEnabled())
+			{
+				Pickup->SetSpawnScalePop(ScalePop);
+			}
 		});
 	};
 

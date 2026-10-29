@@ -56,6 +56,47 @@ enum class ERRPickupRestOrientation : uint8
 };
 
 /**
+ * Scale pop of a pickup at the start of its life (task-309-01, bonus chest burst only): the root scale goes from StartScale to
+ * PeakScale, then to 1, as factors of the root template scale, over Duration seconds (the peak at PeakTimeFraction x Duration;
+ * ease-out up, ease-in-out down). Duration 0 = off (every other drop). Set per request (URRPickupSubsystem::RequestXPCube),
+ * cleared at pool release.
+ */
+USTRUCT(BlueprintType)
+struct FRRPickupScalePop
+{
+	GENERATED_BODY()
+
+	FRRPickupScalePop() = default;
+
+	FRRPickupScalePop(float InStartScale, float InPeakScale, float InDuration, float InPeakTimeFraction)
+		: StartScale(InStartScale), PeakScale(InPeakScale), Duration(InDuration), PeakTimeFraction(InPeakTimeFraction)
+	{
+	}
+
+	/** True when the pop runs (Duration above 0). */
+	bool IsEnabled() const { return Duration > 0.f; }
+
+	/** Scale factor at Elapsed seconds into the pop (1 once Duration has elapsed, and when off). */
+	float Evaluate(float Elapsed) const;
+
+	/** Scale factor at the start of the pop (0 = appears from nothing). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Scale Pop", meta = (ClampMin = 0))
+	float StartScale = 0.f;
+
+	/** Overshoot scale factor reached at PeakTimeFraction x Duration. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Scale Pop", meta = (ClampMin = 0))
+	float PeakScale = 1.f;
+
+	/** Total pop time in seconds, back to the template scale at its end; 0 = no pop. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Scale Pop", meta = (ClampMin = 0, Units = "s"))
+	float Duration = 0.f;
+
+	/** Fraction of Duration spent growing to PeakScale (the rest settles to 1). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Scale Pop", meta = (ClampMin = 0.01, ClampMax = 0.99))
+	float PeakTimeFraction = 0.5f;
+};
+
+/**
  * A pickup lying on the arena floor (xp-level-up: DRGS-like ejection then suction). On spawn it is ejected along a random
  * horizontal direction (or the one given by SetPopYaw) to a distance in [PopMinDistance, PopMaxDistance]: an arc of
  * PopArcHeight then a small bounce of PopBounceHeight, over PopDuration in total, ending HoverHeight above the spawn Z.
@@ -91,7 +132,9 @@ enum class ERRPickupRestOrientation : uint8
  * guard (PhysicsFallLimit) turn physics off; a refused heal in flight falls back under physics. Without physics the kinematic
  * bounce and the rest point apply as before. Movement is driven by URRPickupSubsystem in one loop per frame (actor tick
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
- * at its feet on death (XP, split over several cubes). Subclass in Blueprint: set PickupType and the mesh.
+ * at its feet on death (XP, split over several cubes). Scale pop (task-309-01): a request may carry an FRRPickupScalePop
+ * (SetSpawnScalePop, bonus chest chips only): the root scale runs StartScale -> PeakScale -> 1 times its template scale from
+ * the first motion update; cleared at pool release. Subclass in Blueprint: set PickupType and the mesh.
  */
 UCLASS(Abstract, Blueprintable)
 class ROGUERIGS_API ARRPickup : public AActor, public IRRPoolable
@@ -153,6 +196,18 @@ public:
 
 	/** Forces the ejection direction (world yaw in degrees) instead of a random one. Call before BeginPlay (deferred spawn); ARREnemy spreads its cubes evenly. */
 	void SetPopYaw(float InYawDegrees) { PopYawDegrees = InYawDegrees; bHasPopYaw = true; }
+
+	/**
+	 * Gives this life a scale pop (task-309-01, bonus chest chips). Call before the life starts (deferred spawn or pool OnInit);
+	 * the pop starts at the first motion update (after the pool read the root template scale) and is cleared at pool release.
+	 */
+	void SetSpawnScalePop(const FRRPickupScalePop& InScalePop) { SpawnScalePop = InScalePop; }
+
+	/** Current scale pop factor on the root template scale (1 when no pop runs). */
+	float GetSpawnScaleFactor() const { return SpawnScaleFactor; }
+
+	/** True while a scale pop is pending or running. */
+	bool IsSpawnScalePopActive() const { return bScalePopPending || bScalePopRunning; }
 
 	/** True between the start of a life (BeginPlay or OnPoolAcquired) and its end (OnPoolReleased). */
 	bool IsLifeStarted() const { return bLifeStarted; }
@@ -265,6 +320,12 @@ protected:
 
 	/** task-257-02: Ore and Heal pickups write the neutral phase 0 and rate 1 back and clear the spawn id (pool release); XP: nothing written. */
 	void ResetPulseDesync();
+
+	/** Advances the scale pop of this life (task-309-01): starts it on the first call (base = current root scale), writes base x factor, ends at 1. Called by UpdateMotion. */
+	void UpdateSpawnScalePop(float DeltaSeconds);
+
+	/** Stops a running scale pop (root back to its base scale) and clears the pop request: pool release. */
+	void ResetSpawnScalePop();
 
 	/**
 	 * Latches the magnet when Miner is within PickupRadiusSquared (2D) and does not refuse this pickup: Magnet phase,
@@ -574,5 +635,23 @@ protected:
 
 	/** Lives started by this actor: the pulse spawn id when no URRPickupSubsystem exists. */
 	int32 LocalLifeCount = 0;
+
+	/** Scale pop requested for this life (SetSpawnScalePop); Duration 0 = none. */
+	FRRPickupScalePop SpawnScalePop;
+
+	/** True from StartLife until the first motion update starts the requested scale pop. */
+	bool bScalePopPending = false;
+
+	/** True while the scale pop runs. */
+	bool bScalePopRunning = false;
+
+	/** Seconds elapsed in the scale pop. */
+	float ScalePopElapsed = 0.f;
+
+	/** Root relative scale when the scale pop started (the pool template scale). */
+	FVector ScalePopBaseScale = FVector::OneVector;
+
+	/** Scale factor last written (1 when no pop runs). */
+	float SpawnScaleFactor = 1.f;
 };
 

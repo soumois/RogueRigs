@@ -40,6 +40,20 @@ namespace RRPickupPhysics
 	constexpr float LandingVelocityStep = 1.f / 60.f;
 }
 
+float FRRPickupScalePop::Evaluate(float Elapsed) const
+{
+	if (!IsEnabled() || Elapsed >= Duration)
+	{
+		return 1.f;
+	}
+	const float PeakTime = FMath::Clamp(PeakTimeFraction, 0.01f, 0.99f) * Duration;
+	if (Elapsed < PeakTime)
+	{
+		return FMath::InterpEaseOut(StartScale, PeakScale, FMath::Clamp(Elapsed / PeakTime, 0.f, 1.f), 2.f);
+	}
+	return FMath::InterpEaseInOut(PeakScale, 1.f, FMath::Clamp((Elapsed - PeakTime) / (Duration - PeakTime), 0.f, 1.f), 2.f);
+}
+
 ARRPickup::ARRPickup()
 {
 	// Moved by URRPickupSubsystem; the actor tick is only the fallback when the subsystem is missing.
@@ -182,6 +196,8 @@ void ARRPickup::StartLife()
 	ResetGlowFade();
 	// task-257-02: seeded pulse phase and rate of this life (Ore and Heal only).
 	ApplyPulseDesync();
+	// task-309-01: the requested scale pop starts at the first motion update, after the pool read the root template scale.
+	bScalePopPending = SpawnScalePop.IsEnabled();
 
 	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
 	if (Pickups)
@@ -276,6 +292,7 @@ void ARRPickup::OnPoolReleased_Implementation()
 	MagnetSpeed = 0.f;
 	ResetGlowFade();
 	ResetPulseDesync();
+	ResetSpawnScalePop();
 
 	// Per-drop values back to the class defaults: the next caller sets its own before OnPoolAcquired (a heal request with
 	// HealAmount 0 keeps the class default, as a fresh spawn would).
@@ -305,8 +322,55 @@ void ARRPickup::Tick(float DeltaSeconds)
 	UpdateMotion(DeltaSeconds, Miner, FMath::Square(Radius));
 }
 
+void ARRPickup::UpdateSpawnScalePop(float DeltaSeconds)
+{
+	if (!PickupMesh)
+	{
+		bScalePopPending = false;
+		bScalePopRunning = false;
+		return;
+	}
+	if (bScalePopPending)
+	{
+		bScalePopPending = false;
+		bScalePopRunning = true;
+		ScalePopElapsed = 0.f;
+		ScalePopBaseScale = PickupMesh->GetRelativeScale3D();
+	}
+	else
+	{
+		ScalePopElapsed += DeltaSeconds;
+	}
+	SpawnScaleFactor = SpawnScalePop.Evaluate(ScalePopElapsed);
+	if (ScalePopElapsed >= SpawnScalePop.Duration)
+	{
+		bScalePopRunning = false;
+		SpawnScaleFactor = 1.f;
+	}
+	PickupMesh->SetRelativeScale3D(ScalePopBaseScale * SpawnScaleFactor);
+}
+
+void ARRPickup::ResetSpawnScalePop()
+{
+	if (bScalePopRunning && PickupMesh)
+	{
+		PickupMesh->SetRelativeScale3D(ScalePopBaseScale);
+	}
+	SpawnScalePop = FRRPickupScalePop();
+	bScalePopPending = false;
+	bScalePopRunning = false;
+	ScalePopElapsed = 0.f;
+	SpawnScaleFactor = 1.f;
+}
+
 void ARRPickup::UpdateMotion(float DeltaSeconds, ARRMiner* Miner, float PickupRadiusSquared)
 {
+	// task-309-01: scale pop of this life (bonus chest chips only), independent of the motion phase.
+	if (bScalePopPending || bScalePopRunning)
+	{
+		UpdateSpawnScalePop(DeltaSeconds);
+	}
+
 	// task-148-01: glow fade toward the target set by the last phase change; nothing to do once reached (or bGlowFade off).
 	if (bGlowFade && GlowFade != GlowFadeTarget)
 	{

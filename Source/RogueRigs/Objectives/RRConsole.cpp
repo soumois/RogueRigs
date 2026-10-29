@@ -44,12 +44,8 @@ ARRConsole::ARRConsole()
 	// The data socket hover is console only (task-313-01): the bonus chest keeps its default hack hover.
 	bHackAtDataSocket = !IsA<ARRBonusChest>();
 
-	// The XP burst is console only (task-303-01): the bonus chest keeps its own reward.
+	// The XP burst chip (task-303-01); the bonus chest bursts at lid opening instead of completion (task-309-01, its constructor).
 	XPBurstChipClass = TSoftClassPtr<ARRPickup>(FSoftObjectPath(TEXT("/Game/RogueRigs/Blueprints/Pickups/BP_PickupXPBig.BP_PickupXPBig_C")));
-	if (IsA<ARRBonusChest>())
-	{
-		XPBurstChipCount = 0;
-	}
 }
 
 bool ARRConsole::GetHackDataSocket(FVector& OutLocation, FVector& OutFacing) const
@@ -273,12 +269,15 @@ void ARRConsole::CompleteHack()
 	{
 		GroundTelegraph->Hide();
 	}
-	XPBurstChipsSpawned = SpawnXPBurst();
+	if (bXPBurstOnComplete)
+	{
+		XPBurstChipsSpawned = SpawnXPBurst();
+	}
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: hack complete, %d XP chip(s) of %.1f XP."), *GetName(), XPBurstChipsSpawned, XPBurstChipXP);
 	OnHackCompleteBurst(GetActorLocation(), XPBurstChipsSpawned);
 }
 
-int32 ARRConsole::SpawnXPBurst()
+int32 ARRConsole::SpawnXPBurst(const FRRPickupScalePop& ScalePop)
 {
 	UWorld* World = GetWorld();
 	if (XPBurstChipCount <= 0 || !World || !World->IsGameWorld())
@@ -306,7 +305,7 @@ int32 ARRConsole::SpawnXPBurst()
 		if (Pickups)
 		{
 			// Pooled: nullptr also means queued (created within the pool SpawnMaxFrames), so every request counts.
-			Pickups->RequestXPCube(ChipClass, Location, XPBurstChipXP, Yaw);
+			Pickups->RequestXPCube(ChipClass, Location, XPBurstChipXP, Yaw, ScalePop);
 			++Requested;
 			continue;
 		}
@@ -315,6 +314,10 @@ int32 ARRConsole::SpawnXPBurst()
 		{
 			Chip->SetXPAmount(XPBurstChipXP);
 			Chip->SetPopYaw(Yaw);
+			if (ScalePop.IsEnabled())
+			{
+				Chip->SetSpawnScalePop(ScalePop);
+			}
 			Chip->FinishSpawning(SpawnTransform);
 			++Requested;
 		}
