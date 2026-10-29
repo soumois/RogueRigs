@@ -3,7 +3,7 @@ id: task-373-01-cpp-extractor-rotor-spin
 description: "Cpp: spin the four rotor components per Q6, ground and flight speeds, ramp, ticking while paused; speed fraction getter and event."
 parent: task-373-extractor-rotor-spin
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: the four rotors spin: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:59:48Z
 - waiting_for: none
 - result: open
 

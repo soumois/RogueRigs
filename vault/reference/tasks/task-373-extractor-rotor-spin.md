@@ -3,7 +3,7 @@ id: task-373-extractor-rotor-spin
 description: "Global task: The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: the four rotors spin
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
 - next_step: task-373-01-cpp-extractor-rotor-spin
-- started: open
+- started: 2026-10-29T21:59:48Z
 - waiting_for: none
 - result: open
 
