@@ -19,6 +19,7 @@ kind: doc
 - depends_on: [[sys-explosions]] (barrel destruction queues into it), [[sys-ground-telegraph]] (barrel fuse zone).
 - implements: [[arena-grid]], [[destruction-rules]], [[ore-blocks]], [[explosions]] (terrain side).
 - gotchas: missing file or parse error logs on `LogRogueRigs` and leaves the grid empty. The layout folder must be packaged as a non-asset directory. Moving a shaking instance dirties the HISM tree each frame (fine for a few cells). The split doubles the block instance count (collision ISMs have no cluster tree and no render cost). A Blueprint that re-enables collision on a block HISM is overridden at build. Explosions call `DestroyCellsInRadius` only from `URRExplosionSubsystem` (queued, source Barrel or Kamikaze from the CSV row; [[sys-explosions]]); the run log will react to the delegates. Autotiling, top-face variants and the destroy particle burst: not implemented. Chaos Destruction is not used; terrain damage stays outside GAS.
+- extractor footprint (task-372-01, de889932, 0e85c9a0): the extractor set on the ground destroys the blocks under its 4 x 3-cell footprint through `ARRArenaGrid::ClearExtractorFootprint` (source `Extractor`, [[destruction-rules]] item 4), before it is spawned; entry point and log line in [[sys-grid-api]], deposit and drop rule in [[sys-grid-deposits]], barrels in [[sys-grid-barrels]].
 
 ## Relations
 - [[sys-grid-deposits]] — Ore deposit generation (OreTypes.csv, groups, seed) and the pickup drop rule of ore and heal ore. Open to change deposits or drops.

@@ -16,7 +16,7 @@ Top level:
 - `levels`: one entry per ended level, in order.
 
 Level entry (`level_index`, `layout_name`, then the 11 fields):
-1. `terrain_destroyed`: `by_source` (barrel, kamikaze, drone, shot) and `by_type` (rock, ore, heal_ore, special_ore, barrel), block counts.
+1. `terrain_destroyed`: `by_source` (barrel, kamikaze, drone, shot, extractor) and `by_type` (rock, ore, heal_ore, special_ore, barrel), block counts.
 2. `damage_dealt_by_weapon`: weapon class → raw damage to robots.
 3. `kills`: `by_robot_type` (EnemyStats row) and `by_source` (weapon, explosion, other).
 4. `upgrades_picked`: `order` (card ids in pick order) and `frequency` (card id → count).
@@ -31,6 +31,7 @@ Level entry (`level_index`, `layout_name`, then the 11 fields):
 Key names of the collected counters: [[sys-run-log]].
 
 GAS already writes to the Visual Logger; no custom GAS logging in M1 ([[gas-scope]]).
+- `terrain_destroyed.by_source` also takes the key `extractor` (task-372-01, de889932, 0e85c9a0): blocks destroyed under the extractor footprint at arrival and extraction landing ([[sys-grid-api]]); absent when none.
 
 ## Relations
 - [[pipelines-index]] — parent index.
