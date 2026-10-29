@@ -3,7 +3,7 @@ id: task-309-07-chest-hinge-recut
 description: "Lid pivot on the hinge pins and open-pose mesh fixes (3d): bonus chest opening, step 07, runs first."
 parent: task-309-chest-opening
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Lid pivot on the hinge pins and open-pose mesh fixes
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-29T18:32:25Z
-- waiting_for: none
+- waiting_for: owner go on the new 309-07 renders (Art/Source/chest/clean/renders/cut_openwide100|105|115_*.png, lid on rear seam axis, gap 0.5-0.7 cm)
 - result: open
 
 ## Relations

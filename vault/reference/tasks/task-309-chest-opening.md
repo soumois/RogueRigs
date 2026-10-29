@@ -3,7 +3,7 @@ id: task-309-chest-opening
 description: "Global task: Chest opening: latch swings, lid slams open with overshoot, freeze and shake, inner light, ground ring, three popping XP chips, sparks."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Bonus chest opening: latch, lid slam, light and XP burst
 
@@ -16,7 +16,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-309-07-chest-hinge-recut
 - started: 2026-10-29T18:32:25Z
-- waiting_for: none
+- waiting_for: owner go on the new 309-07 renders (Art/Source/chest/clean/renders/cut_openwide100|105|115_*.png, lid on rear seam axis, gap 0.5-0.7 cm)
 - result: open
 
 ## Subtasks
