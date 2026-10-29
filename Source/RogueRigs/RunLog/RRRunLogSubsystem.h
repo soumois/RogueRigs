@@ -80,7 +80,7 @@ public:
 	/** Run-log id of a card: "<Stat>_<Tier>@<Target>" (Target Player, AllWeapons or the weapon class name), "NewWeapon@<class>". */
 	static FString MakeCardId(const FRRUpgradeCard& Card);
 
-	/** Run-log name of a terrain source (barrel, kamikaze, drone, shot). */
+	/** Run-log name of a terrain source (barrel, kamikaze, drone, shot, extractor). */
 	static FString GetTerrainSourceName(ERRTerrainDamageSource Source);
 
 	/** Run-log name of a block type (rock, ore, heal_ore, special_ore, barrel; other types lower case). */

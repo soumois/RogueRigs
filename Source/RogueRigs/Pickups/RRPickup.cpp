@@ -199,6 +199,19 @@ void ARRPickup::StartLife()
 	// task-309-01: the requested scale pop starts at the first motion update, after the pool read the root template scale.
 	bScalePopPending = SpawnScalePop.IsEnabled();
 
+	// task-372-01: extractor footprint drops start at rest on their cell, no pop (the rest delay counts from now).
+	if (bSpawnAtRest)
+	{
+		PopEnd = PopStart + FVector(0.f, 0.f, HoverHeight);
+		Phase = ERRPickupPhase::Rest;
+		SetActorLocation(PopEnd, false, nullptr, ETeleportType::TeleportPhysics);
+		SetGlowFadeTarget(1.f);
+		if (CanSimulateOnLanding())
+		{
+			StartPhysics(FVector::ZeroVector, /*bWithSpin*/ false);
+		}
+	}
+
 	URRPickupSubsystem* Pickups = GetWorld() ? GetWorld()->GetSubsystem<URRPickupSubsystem>() : nullptr;
 	if (Pickups)
 	{
@@ -302,6 +315,7 @@ void ARRPickup::OnPoolReleased_Implementation()
 	HealAmount = Defaults->HealAmount;
 	PopYawDegrees = 0.f;
 	bHasPopYaw = false;
+	bSpawnAtRest = false;
 }
 
 void ARRPickup::EndPlay(const EEndPlayReason::Type EndPlayReason)

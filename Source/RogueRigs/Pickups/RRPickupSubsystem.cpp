@@ -25,15 +25,16 @@ void URRPickupSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
-ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount)
+ARRPickup* URRPickupSubsystem::RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount, bool bAtRest)
 {
-	return AcquirePickup(PickupClass, Location, Owner, [OreValue, HealAmount](ARRPickup* Pickup)
+	return AcquirePickup(PickupClass, Location, Owner, [OreValue, HealAmount, bAtRest](ARRPickup* Pickup)
 	{
 		Pickup->SetOreValue(OreValue);
 		if (HealAmount > 0.f)
 		{
 			Pickup->SetHealAmount(HealAmount);
 		}
+		Pickup->SetSpawnAtRest(bAtRest);
 	});
 }
 

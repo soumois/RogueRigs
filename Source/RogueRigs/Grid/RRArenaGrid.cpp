@@ -2089,13 +2089,90 @@ bool ARRArenaGrid::IsExplosionSource(ERRTerrainDamageSource Source)
 	return Source == ERRTerrainDamageSource::Barrel || Source == ERRTerrainDamageSource::Kamikaze;
 }
 
+bool ARRArenaGrid::BreaksDepositWhole(ERRTerrainDamageSource Source)
+{
+	return IsExplosionSource(Source) || Source == ERRTerrainDamageSource::Extractor;
+}
+
+FRRFootprintClearResult ARRArenaGrid::ClearExtractorFootprint(FIntPoint MinCell, FIntPoint Size, const FString& Context)
+{
+	FRRFootprintClearResult Result;
+	const FIntPoint ClampedSize(FMath::Max(Size.X, 1), FMath::Max(Size.Y, 1));
+	const FIntPoint MaxCell = MinCell + ClampedSize - FIntPoint(1, 1);
+	auto IsInFootprint = [&MinCell, &MaxCell](FIntPoint Cell)
+	{
+		return Cell.X >= MinCell.X && Cell.X <= MaxCell.X && Cell.Y >= MinCell.Y && Cell.Y <= MaxCell.Y;
+	};
+	auto CountBlock = [&Result, &IsInFootprint](FIntPoint Cell, ERRCellType Type)
+	{
+		switch (Type)
+		{
+		case ERRCellType::Rock: ++Result.Rock; break;
+		case ERRCellType::Ore: ++Result.Ore; break;
+		case ERRCellType::HealOre: ++Result.HealOre; break;
+		case ERRCellType::SpecialOre: ++Result.SpecialOre; break;
+		case ERRCellType::Barrel: ++Result.Barrel; break;
+		default: break;
+		}
+		Result.OutsideFootprint += IsInFootprint(Cell) ? 0 : 1;
+	};
+
+	const int32 PickupsBefore = PickupRequestCount;
+	for (int32 Y = MinCell.Y; Y <= MaxCell.Y; ++Y)
+	{
+		for (int32 X = MinCell.X; X <= MaxCell.X; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			if (!IsBlockCell(Cell))
+			{
+				continue;
+			}
+			// Whole deposit: its standing blocks (Cell first) are read before DestroyCell empties them, to count them by type.
+			TArray<FIntPoint> Targets;
+			const bool bDeposit = GetDepositId(Cell) != INDEX_NONE;
+			if (bDeposit)
+			{
+				GetDepositCells(Cell, Targets);
+			}
+			else
+			{
+				Targets.Add(Cell);
+			}
+			TArray<ERRCellType, TInlineAllocator<8>> Types;
+			for (const FIntPoint& Target : Targets)
+			{
+				Types.Add(GetCellType(Target));
+			}
+			if (!DestroyCell(Cell, ERRTerrainDamageSource::Extractor))
+			{
+				continue;
+			}
+			Result.Deposits += bDeposit ? 1 : 0;
+			for (int32 Index = 0; Index < Targets.Num(); ++Index)
+			{
+				// A block that was standing and no longer is was destroyed by this call.
+				if (!IsBlockCell(Targets[Index]))
+				{
+					CountBlock(Targets[Index], Types[Index]);
+				}
+			}
+		}
+	}
+	Result.Pickups = PickupRequestCount - PickupsBefore;
+
+	UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid: extractor footprint cleared (%s) from (%d, %d), %d x %d cells: %d block(s) (rock %d, ore %d, heal_ore %d, special_ore %d, barrel %d), %d outside the footprint, %d deposit(s) broken whole, %d pickup(s) at rest, source Extractor, frame %llu."),
+		*Context, MinCell.X, MinCell.Y, ClampedSize.X, ClampedSize.Y, Result.GetTotal(), Result.Rock, Result.Ore, Result.HealOre, Result.SpecialOre,
+		Result.Barrel, Result.OutsideFootprint, Result.Deposits, Result.Pickups, GFrameCounter);
+	return Result;
+}
+
 bool ARRArenaGrid::DestroyCell(FIntPoint Cell, ERRTerrainDamageSource Source)
 {
-	// Whole deposit (task-187-01, ore-blocks): an explosion never leaves a deposit partly destroyed. The other standing
-	// blocks are read by id before Cell leaves the deposit; each goes through DestroySingleCell (no re-expansion), and a
-	// block already broken meanwhile (a listener, the explosion queue) is skipped there.
+	// Whole deposit (task-187-01, ore-blocks): an explosion never leaves a deposit partly destroyed; nor does the extractor
+	// (task-372-01). The other standing blocks are read by id before Cell leaves the deposit; each goes through DestroySingleCell
+	// (no re-expansion), and a block already broken meanwhile (a listener, the explosion queue) is skipped there.
 	TArray<FIntPoint> DepositCells;
-	if (IsExplosionSource(Source) && GetDepositId(Cell) != INDEX_NONE)
+	if (BreaksDepositWhole(Source) && GetDepositId(Cell) != INDEX_NONE)
 	{
 		GetDepositCells(Cell, DepositCells);
 	}
@@ -2130,7 +2207,14 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 	// Barrel fuse (task-114-01): a barrel brought to 0 during play lights its fuse instead of breaking; while it fuses every
 	// destruction request is ignored, except once its explosion is queued (that explosion destroys its own cell).
 	bool bExplosionAlreadyQueued = false;
-	if (Type == ERRCellType::Barrel)
+	// Extractor (task-372-01): a barrel is removed without exploding; a lit fuse is ended (an explosion already queued in the
+	// explosion subsystem still resolves).
+	const bool bExtractor = Source == ERRTerrainDamageSource::Extractor;
+	if (Type == ERRCellType::Barrel && bExtractor)
+	{
+		EndBarrelFuse(Cell);
+	}
+	else if (Type == ERRCellType::Barrel)
 	{
 		if (const FBarrelFuse* Fuse = BarrelFuses.Find(Cell))
 		{
@@ -2207,17 +2291,18 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 	{
 		FRRGridDeposit& Deposit = Deposits[DepositId];
 		++Deposit.BrokenBlocks;
-		const int32 Owed = IsExplosionSource(Source) ? GetDepositPickupCount(DepositId) : Deposit.BrokenBlocks * FMath::Max(DestroyDropCount, 0);
-		PopDepositPickups(DepositId, Owed, 1.f, IsExplosionSource(Source) ? TEXT("explosion") : TEXT("break"));
+		const int32 Owed = BreaksDepositWhole(Source) ? GetDepositPickupCount(DepositId) : Deposit.BrokenBlocks * FMath::Max(DestroyDropCount, 0);
+		PopDepositPickups(DepositId, Owed, 1.f, bExtractor ? TEXT("extractor") : (IsExplosionSource(Source) ? TEXT("explosion") : TEXT("break")), bExtractor);
 	}
 	else
 	{
 		// Outside a deposit: one bundle per broken block whatever the source (start zone included: no protection, ore-blocks).
-		SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue, HealValue);
+		SpawnPickups(Cell, Type, DestroyDropCount, ChunkValue, HealValue, bExtractor);
 	}
 
-	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion); queued, never synchronous.
-	if (Type == ERRCellType::Barrel && !bExplosionAlreadyQueued)
+	// Every destroyed barrel explodes, whatever destroyed it (shots, dig, another explosion), except under the extractor
+	// (task-372-01); queued, never synchronous.
+	if (Type == ERRCellType::Barrel && !bExplosionAlreadyQueued && !bExtractor)
 	{
 		QueueBarrelExplosion(Cell);
 	}
@@ -2554,7 +2639,7 @@ int32 ARRArenaGrid::GetDepositPickupCount(int32 DepositId) const
 	return Deposits.IsValidIndex(DepositId) ? Deposits[DepositId].Cells.Num() * FMath::Max(DestroyDropCount, 0) : 0;
 }
 
-void ARRArenaGrid::PopDepositPickups(int32 DepositId, int32 Target, float Progress, const TCHAR* Cause)
+void ARRArenaGrid::PopDepositPickups(int32 DepositId, int32 Target, float Progress, const TCHAR* Cause, bool bAtRest)
 {
 	if (!Deposits.IsValidIndex(DepositId))
 	{
@@ -2572,7 +2657,7 @@ void ARRArenaGrid::PopDepositPickups(int32 DepositId, int32 Target, float Progre
 		// Pickup k belongs to block k / PerBlock and pops from its centre (destroyed or not: the centre stays valid).
 		const int32 Pickup = Deposit.PoppedPickups++;
 		const FIntPoint FromCell = Deposit.Cells[Pickup / PerBlock];
-		SpawnPickups(FromCell, Deposit.CellType, 1, Deposit.ChunkValue, Deposit.HealValue);
+		SpawnPickups(FromCell, Deposit.CellType, 1, Deposit.ChunkValue, Deposit.HealValue, bAtRest);
 		if (bDig)
 		{
 			UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid: deposit %d (%s) pickup %d/%d popped at %.3f s, progress %.3f (%s) from (%d, %d)."), DepositId,
@@ -2586,7 +2671,7 @@ void ARRArenaGrid::PopDepositPickups(int32 DepositId, int32 Target, float Progre
 	}
 }
 
-void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue, float HealValue)
+void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue, float HealValue, bool bAtRest)
 {
 	UWorld* World = GetWorld();
 	const TSubclassOf<ARRPickup> PickupClass = GetPickupClass(Type);
@@ -2594,6 +2679,7 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 	{
 		return;
 	}
+	PickupRequestCount += Count;
 
 	// Through the pickup subsystem: from the actor pool, missing pickups created within its SpawnMaxFrames (explosions break many blocks at once).
 	URRPickupSubsystem* Pickups = World->GetSubsystem<URRPickupSubsystem>();
@@ -2602,7 +2688,7 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 	{
 		if (Pickups)
 		{
-			Pickups->RequestSpawn(PickupClass, Location, this, OreValue, HealValue);
+			Pickups->RequestSpawn(PickupClass, Location, this, OreValue, HealValue, bAtRest);
 			continue;
 		}
 		FActorSpawnParameters SpawnParams;
@@ -2616,6 +2702,7 @@ void ARRArenaGrid::SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, i
 			{
 				Pickup->SetHealAmount(HealValue);
 			}
+			Pickup->SetSpawnAtRest(bAtRest);
 			Pickup->FinishSpawning(FTransform(Location));
 		}
 	}

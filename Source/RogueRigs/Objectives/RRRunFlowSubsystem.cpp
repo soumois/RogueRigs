@@ -561,6 +561,13 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 	}
 
 	UClass* ShuttleClass = Config.ShuttleClass ? Config.ShuttleClass.Get() : ARRShuttle::StaticClass();
+	// task-372-01: the blocks under the landing footprint are destroyed before the extractor is spawned (FindShuttleCell picks
+	// an open footprint when one exists, so this usually finds nothing; the fallback cell may overlap blocks).
+	const FIntPoint Size = RRLandingFootprint::ClampSize(ShuttleClass->GetDefaultObject<ARRShuttle>()->GetFootprintCells());
+	const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
+	Grid->ClearExtractorFootprint(RRLandingFootprint::GetMinCell(Cell, Size), Size,
+		FString::Printf(TEXT("extraction landing on (%d, %d), run level %d"), Cell.X, Cell.Y, Run ? Run->GetLevelIndex() : 0));
+
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ARRShuttle* NewShuttle = GetWorld()->SpawnActor<ARRShuttle>(ShuttleClass, Grid->GetCellCenter(Cell.X, Cell.Y), FRotator::ZeroRotator, Params);
@@ -644,6 +651,9 @@ ARRShuttle* URRRunFlowSubsystem::PlaceArrivalShuttle()
 	{
 		BlockCells += Grid->IsBlockCell(Cell) ? 1 : 0;
 	}
+	// task-372-01: the blocks under the footprint are destroyed before the extractor is spawned (drops at rest, no barrel blast).
+	const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
+	Grid->ClearExtractorFootprint(MinCell, Size, FString::Printf(TEXT("arrival, run level %d"), Run ? Run->GetLevelIndex() : 0));
 
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

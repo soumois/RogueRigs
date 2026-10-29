@@ -236,6 +236,7 @@ FString URRRunLogSubsystem::GetTerrainSourceName(ERRTerrainDamageSource Source)
 	case ERRTerrainDamageSource::Barrel: return TEXT("barrel");
 	case ERRTerrainDamageSource::Kamikaze: return TEXT("kamikaze");
 	case ERRTerrainDamageSource::Shot: return TEXT("shot");
+	case ERRTerrainDamageSource::Extractor: return TEXT("extractor");
 	default: return StaticEnum<ERRTerrainDamageSource>()->GetNameStringByValue(static_cast<int64>(Source)).ToLower();
 	}
 }

@@ -62,9 +62,10 @@ public:
 	/**
 	 * Acquires a pickup of PickupClass at Location from the pool (owner Owner, ore value OreValue, heal amount HealAmount when
 	 * above 0, else the class default). Returns the pickup when delivered now (reused idle pickup, SpawnMaxFrames 0 or no
-	 * pool), nullptr when its creation is queued (within SpawnMaxFrames frames) or on failure.
+	 * pool), nullptr when its creation is queued (within SpawnMaxFrames frames) or on failure. bAtRest (task-372-01, extractor
+	 * footprint drops): the pickup starts its life at rest at Location, without pop (ARRPickup::SetSpawnAtRest).
 	 */
-	ARRPickup* RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount = 0.f);
+	ARRPickup* RequestSpawn(TSubclassOf<ARRPickup> PickupClass, const FVector& Location, AActor* Owner, int32 OreValue, float HealAmount = 0.f, bool bAtRest = false);
 
 	/**
 	 * Acquires an XP cube of PickupClass at Location from the pool, giving XPAmount raw XP, ejected along PopYawDegrees (world

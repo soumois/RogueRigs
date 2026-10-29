@@ -40,7 +40,7 @@ struct ROGUERIGS_API FRRRunLevelStats
 	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
 	double LevelStartWorldSeconds = 0.0;
 
-	/** Destroyed blocks per destruction source (barrel, kamikaze, drone, shot). */
+	/** Destroyed blocks per destruction source (barrel, kamikaze, drone, shot, extractor). */
 	UPROPERTY(BlueprintReadOnly, Category = "Run Log")
 	TMap<FString, int32> TerrainDestroyedBySource;
 

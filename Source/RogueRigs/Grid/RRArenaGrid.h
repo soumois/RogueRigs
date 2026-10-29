@@ -20,7 +20,7 @@ struct FHitResult;
 struct FRROreTypeRow;
 struct FRRLayoutData;
 
-/** What damaged or destroyed a block: the three terrain-breaking sources (destruction-rules), plus shots, which only break barrels. */
+/** What damaged or destroyed a block: the four terrain-breaking sources (destruction-rules), plus shots, which only break barrels. */
 UENUM(BlueprintType)
 enum class ERRTerrainDamageSource : uint8
 {
@@ -31,7 +31,54 @@ enum class ERRTerrainDamageSource : uint8
 	/** An exploding kamikaze robot. */
 	Kamikaze,
 	/** Projectiles: only barrels take shot damage (BarrelShotHealth); the barrel then explodes. */
-	Shot
+	Shot,
+	/**
+	 * The extractor set on the ground (arrival and extraction landing, task-372-01): ARRArenaGrid::ClearExtractorFootprint.
+	 * Breaks a touched deposit whole, its pickups appear at rest on their cells (no pop), and a barrel is removed without exploding.
+	 */
+	Extractor
+};
+
+/** Counts of one ARRArenaGrid::ClearExtractorFootprint call (task-372-01), by block type; logged once per extractor placement. */
+USTRUCT(BlueprintType)
+struct FRRFootprintClearResult
+{
+	GENERATED_BODY()
+
+	/** Rock blocks destroyed (inside the footprint, or in a deposit broken whole). */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 Rock = 0;
+
+	/** Ore blocks destroyed. */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 Ore = 0;
+
+	/** Heal ore blocks destroyed. */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 HealOre = 0;
+
+	/** Special ore blocks destroyed. */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 SpecialOre = 0;
+
+	/** Barrels removed (never exploded). */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 Barrel = 0;
+
+	/** Blocks of the counts above that lie outside the footprint: the other blocks of the deposits it broke whole. */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 OutsideFootprint = 0;
+
+	/** Deposits (ore or heal vein) broken whole. */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 Deposits = 0;
+
+	/** Pickups requested at rest on the floor (ore chunks and heal pickups). */
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Destruction")
+	int32 Pickups = 0;
+
+	/** Every block destroyed or removed (sum of the type counts). */
+	int32 GetTotal() const { return Rock + Ore + HealOre + SpecialOre + Barrel; }
 };
 
 /**
@@ -463,6 +510,16 @@ public:
 	 * blocks handled at once or queued.
 	 */
 	int32 QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
+
+	/**
+	 * Extractor ground placement (task-372-01, destruction-rules item 4): destroys at once every block of the Size footprint
+	 * whose lowest cell is MinCell (cells outside the grid ignored), with source Extractor. A deposit (ore or heal vein) touching
+	 * the footprint breaks whole, every pickup it still owes appearing at rest on the floor of its own block (no pop arc); an ore
+	 * or heal block outside any deposit leaves its DestroyDropCount pickups at rest the same way; a barrel is removed without
+	 * exploding (a lit fuse is ended). OnCellDestroyed fires per block (run log source "extractor"). Logs one line on LogRogueRigs
+	 * with Context and the counts by type, even when nothing was in the way. Call before the extractor is shown.
+	 */
+	FRRFootprintClearResult ClearExtractorFootprint(FIntPoint MinCell, FIntPoint Size, const FString& Context);
 
 	/** Blocks queued by QueueDestroyCellsInRadius and not destroyed yet. */
 	int32 GetPendingCellDestructionCount() const { return PendingCellDestructions.Num() - PendingCellDestructionHead; }
@@ -914,9 +971,9 @@ protected:
 	/**
 	 * Pops the pickups of deposit DepositId until PoppedPickups reaches Target (clamped to GetDepositPickupCount), pickup k
 	 * from the centre of its block Cells[k / DestroyDropCount]; Progress and Cause are only logged (Log for a dig, Verbose
-	 * otherwise, with the world time).
+	 * otherwise, with the world time). bAtRest: the pickups appear at rest on their block's floor instead of popping (source Extractor).
 	 */
-	void PopDepositPickups(int32 DepositId, int32 Target, float Progress, const TCHAR* Cause);
+	void PopDepositPickups(int32 DepositId, int32 Target, float Progress, const TCHAR* Cause, bool bAtRest = false);
 
 	/** Queues the explosion of the barrel in Cell (row BarrelExplosionRow, at the cell center, source GetBarrelSource) in the world's URRExplosionSubsystem, during play only. Returns true when queued. */
 	bool QueueBarrelExplosion(FIntPoint Cell);
@@ -956,12 +1013,19 @@ protected:
 	/**
 	 * Requests Count pickups of the class dropped by Type at the center of Cell (floor top), each worth OreValue (ore) and
 	 * HealValue (heal, 0 = pickup default), during play only, through URRPickupSubsystem::RequestSpawn (at most its
-	 * MaxSpawnsPerFrame per frame, the rest queued).
+	 * MaxSpawnsPerFrame per frame, the rest queued). bAtRest (source Extractor, task-372-01): each pickup starts its life at rest
+	 * on that floor (ARRPickup::SetSpawnAtRest) instead of popping. Adds Count to PickupRequestCount when it requests.
 	 */
-	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue = 1, float HealValue = 0.f);
+	void SpawnPickups(FIntPoint Cell, ERRCellType Type, int32 Count, int32 OreValue = 1, float HealValue = 0.f, bool bAtRest = false);
 
 	/** True for the explosion terrain sources (Barrel, Kamikaze): they break a touched deposit whole (DestroyCell). */
 	static bool IsExplosionSource(ERRTerrainDamageSource Source);
+
+	/** True for the sources that break a touched deposit whole and pop all its remaining pickups: the explosion sources and Extractor (task-372-01). */
+	static bool BreaksDepositWhole(ERRTerrainDamageSource Source);
+
+	/** Pickups requested by SpawnPickups since the grid was spawned; ClearExtractorFootprint counts its drops with it. */
+	int32 PickupRequestCount = 0;
 
 	/**
 	 * Destroys the single block in Cell (DestroyCell without the whole-deposit rule): barrel fuse, instances, floor, drops,

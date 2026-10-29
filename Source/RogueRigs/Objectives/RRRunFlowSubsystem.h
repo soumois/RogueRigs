@@ -216,7 +216,8 @@ public:
 	 * Arrival extractor (level-flow step 1, task-371-01), once per level: spawns ShuttleClass in arrival mode
 	 * (ARRShuttle::InitializeArrival: no board, no countdown, not the run's shuttle, so no locator, minimap or drone use) with its
 	 * footprint ArrivalDistanceCells from the miner's cell along the screen up axis (camera yaw snapped to the nearest grid axis),
-	 * centred on that cell across it. Takeoff (ARRShuttle::StartTakeoff): when a level transition is running or fading in
+	 * centred on that cell across it; the blocks of that footprint are destroyed first (ARRArenaGrid::ClearExtractorFootprint,
+	 * task-372-01). Takeoff (ARRShuttle::StartTakeoff): when a level transition is running or fading in
 	 * (URRRunTransitionSubsystem phase not None, or fade FadingIn), in the frame OnScreenFadeFinished(FadingIn) fires; otherwise
 	 * (level 1 from the menu, direct start) on the first run flow tick, when the level plays. Called by
 	 * URRRunTransitionSubsystem::PlaceMinerAtStart (next level prepared in the same world) and by the first tick that resolves the
@@ -497,7 +498,7 @@ protected:
 	/** Picks the shuttle cell (see class comment). False when no reachable floor cell exists. */
 	bool FindShuttleCell(FIntPoint& OutCell);
 
-	/** Spawns and initializes the shuttle and binds its events. Null when no cell qualifies or the spawn failed. */
+	/** Clears the landing footprint (ARRArenaGrid::ClearExtractorFootprint, task-372-01), then spawns and initializes the shuttle and binds its events. Null when no cell qualifies or the spawn failed. */
 	ARRShuttle* LandShuttle();
 
 	/**

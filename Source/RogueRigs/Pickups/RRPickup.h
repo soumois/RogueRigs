@@ -198,6 +198,16 @@ public:
 	void SetPopYaw(float InYawDegrees) { PopYawDegrees = InYawDegrees; bHasPopYaw = true; }
 
 	/**
+	 * Starts the next life at rest (task-372-01, extractor footprint drops): no pop arc, the pickup appears HoverHeight above its
+	 * spawn point in the Rest phase (physics body dropped onto the floor when physics on landing is available), then follows the
+	 * normal rest and magnet rules. Call before the life starts (deferred spawn or pool OnInit); cleared at pool release.
+	 */
+	void SetSpawnAtRest(bool bInSpawnAtRest) { bSpawnAtRest = bInSpawnAtRest; }
+
+	/** True when the current or next life starts at rest (SetSpawnAtRest). */
+	bool IsSpawnAtRest() const { return bSpawnAtRest; }
+
+	/**
 	 * Gives this life a scale pop (task-309-01, bonus chest chips). Call before the life starts (deferred spawn or pool OnInit);
 	 * the pop starts at the first motion update (after the pool read the root template scale) and is cleared at pool release.
 	 */
@@ -617,6 +627,9 @@ protected:
 
 	/** True when SetPopYaw chose the ejection direction. */
 	bool bHasPopYaw = false;
+
+	/** True when SetSpawnAtRest asked the life to start in Rest, without pop (cleared at pool release). */
+	bool bSpawnAtRest = false;
 
 	/** True while a life runs (see IsLifeStarted). */
 	bool bLifeStarted = false;
