@@ -9,10 +9,11 @@ status: approved
 
 - Shots never break blocks.
 - Blocks stop all projectiles, the player's and the robots'. Nobody shoots over a block.
-- Only three things break blocks:
+- Only four things break blocks:
   1. an exploding [[barrel]] (or other industrial equipment);
   2. an exploding [[enemy-kamikaze]];
-  3. the [[drone]]'s cutting laser.
+  3. the [[drone]]'s cutting laser;
+  4. the extractor set on the ground (arrival and extraction landing): every block of its 4 x 3-cell footprint is removed before it is seen; an ore deposit or heal vein it touches breaks whole and its chunks or heal pickups lie at rest on the floor of their cells, pickable; a barrel is removed without exploding (owner 2026-10-29, provisional, task-372).
 - Breaking terrain is therefore a decision, not a side effect of shooting (pillar P3).
 - Player explosive shots: out of scope. Grenades are cut; if they return, charges are limited.
 - Destroyed blocks are logged by source and by type ([[run-log-schema]]).

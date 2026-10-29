@@ -7,7 +7,7 @@ status: approved
 ---
 # Level flow
 
-1. **Land.** The alert bar starts filling with time and kills ([[difficulty]]).
+1. **Land.** The alert bar starts filling with time and kills ([[difficulty]]). Arrival (owner 2026-10-29, provisional, task-371): the miner starts standing next to the extractor, whose 4 x 3-cell footprint lies 1 cell from his spawn cell, above him on screen; it takes off as at extraction ([[extraction]]) when the fade in ends, or as soon as the level plays when there is no fade (level 1, direct start); controls are free meanwhile, it has no collision and robots ignore it.
 2. **Alert tiers.** A level has 4 to 7 tiers; the exact count is a balance value. Each tier triggers one event, drawn from a pool with conditions (swarms most often):
    - an enemy swarm;
    - a bonus chest ([[objective-bonus-chest]]);
