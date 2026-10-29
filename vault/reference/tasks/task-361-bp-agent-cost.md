@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: agent-bp (bp already runs on Sonnet: lever 3 is about units), `.claude/agents/bp.md`, bp-mcp-lessons, unreal-mcp (tool inventory: toolset names only, no argument shapes). Every bp run calls describe_toolset, so the transcripts already hold the argument shapes: the sheet can be generated from them without the editor (Q10). A hand-written sheet in a vault node would exceed the 400-word limit: the generated file lives in Tools/unreal and a short section of bp-mcp-lessons links it (Q11).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-361-01-bp-agent-cost-sheet
+- next_step: task-361-02-bp-agent-cost-doc
 - started: 2026-10-29T14:27:34Z
 - waiting_for: none
 - result: open

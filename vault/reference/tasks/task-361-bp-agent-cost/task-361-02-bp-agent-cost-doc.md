@@ -3,7 +3,7 @@ id: task-361-02-bp-agent-cost-doc
 description: "Doc: batching, sheet-first and single-widget rules in the bp definition and agent-bp; bp-mcp-lessons and unreal-mcp link the generated tool sheet."
 parent: task-361-bp-agent-cost
 kind: task
-status: todo
+status: in-progress
 ---
 # bp agent cost: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:30:17Z
 - waiting_for: none
 - result: open
 
