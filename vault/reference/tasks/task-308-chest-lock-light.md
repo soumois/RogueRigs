@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: objective-bonus-chest, color-code, art-style-guide read (2026-10-23). No A7 conflict: the chest is corporate, the light is a detail (colour principle 2026-10-13). Pending owner answers, defaults Q8: blink 2 Hz on/off like the console lamp; same red, orange and green values as task-302; reuse M_ConsoleLamp (task-301-04) through MI_ChestLockLight; the state drive extends the console code of task-302-01. Owner video (2026-10-23) technique A, pending owner answer, default Q17 (provisional): orange blink rate linear from 2 Hz at 0 % to 6 Hz at 100 % hack progress, updated continuously (fall back to steps 2, 3, 4, 6 Hz if the capture shows phase jumps); red Idle stays 2 Hz; leaving the zone goes back to red 2 Hz; re-entering resumes at the rate of the current progress. Runs after task-306, task-301-04 and task-302-01. M_Chest, on every chest slot since task-306-03, has no emissive input: the LockLight glow comes from MI_ChestLockLight (task-308-01).
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - milestone: M2
-- next_step: task-308-01-bp-chest-lock-light
+- next_step: task-308-02-chest-lock-light-drive
 - started: 2026-10-29T17:38:20Z
 - result: open
 
