@@ -3,7 +3,7 @@ id: task-359-02-capture-tooling-doc
 description: "Doc: new tool doc node tool-capture for capture.js, sheet.js and commands.js under pipelines-index; agent-cpp capture_script points to it."
 parent: task-359-capture-tooling
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture tooling: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T14:21:50Z
 - waiting_for: none
 - result: open
 

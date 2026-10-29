@@ -3,7 +3,7 @@ id: task-359-01-capture-tooling-scripts
 description: "Cpp: Tools/capture/sheet.js for crops and labelled comparison sheets with the ffmpeg finder shared with capture.js, and commands.js listing rr.* console commands."
 parent: task-359-capture-tooling
 kind: task
-status: in-progress
+status: done
 ---
 # Capture tooling: scripts
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sheet.js run on three PNGs of `Saved/ShopFix/task-355/` writes a labelled sheet and fraction crops (outputs in Saved/, not committed); `commands.js shop` lists `rr.Shop.Buy` and `rr.Shop.Reroll` with their file; `commands.js` with no filter lists the rr.Cheat, rr.Debug, rr.Run, rr.Menu commands; capture.js usage unchanged and its contact sheet still builds through the shared finder (checked on existing PNGs, no game run); committed.
 - editor_state: any
 - token_ceiling: 0.8 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 50, cache write 83548, cache read 1510420, output 23622
+- usage: turns 23, context start 12k peak 89k, resumes 2 (message x2), 4 min, units 0.37 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T14:17:36Z
 - waiting_for: none
-- result: open
+- result: Done in 53816cce: sheet.js, commands.js, shared ffmpeg.js; all done_when checks passed. Note: existing capture.js contact sheet shows only first tile on mixed resolutions (pre-existing, untouched).
 
 ## Relations
 - [[task-359-capture-tooling]] — parent global task.

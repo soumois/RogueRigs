@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: `Tools/capture/capture.js` (already finds ffmpeg on PATH or in WinGet packages, `findFfmpeg`, but only for its own contact sheet), agent-cpp (`capture_script`, `capture_rules`), sys-cheats (lists the rr.Cheat, rr.Debug, rr.Run, rr.Shop, rr.Menu commands in one dense paragraph; capture subtask task-355-02 had it as input and its run still grepped the source), task-355-02. Console registrations exist in 13 source files (Debug, Run, Menu, RunLog, Enemies, FlowField, Pickups), ~82 `rr.*` names. A hand-written command node would duplicate sys-cheats and sys-stress ([[_authoring]] forbids duplicated facts) and go stale, hence Q5. No tool doc node exists for capture.js today (only the agent-cpp field).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-359-01-capture-tooling-scripts
+- next_step: task-359-02-capture-tooling-doc
 - started: 2026-10-29T14:17:36Z
 - waiting_for: none
 - result: open
