@@ -8,8 +8,7 @@ Cut: 1 the latch = faces in a box in front of the lock (|x| <= 11.6, y < -24, 8 
      3 the rest is bisected at the seam plane z = zs (inside the vertex gap 41.0 to 41.5 of the lid / body groove); above = lid, below = body;
      4 every open loop is closed with a flat cap (cap faces get one dark texel of the base colour); 5 the body top cap is inset by --wall and pushed down
      by --depth: its walls and floor are the Interior slot; 6 the red lock-light faces of the latch (UV triangle mostly red) are the LockLight slot;
-     7 normals recomputed, triangulated, flat shading; 8 origins: body bottom-centre, lid on the axis of the hinge pins (PIN_Y, PIN_Z, measured on the pin
-     cylinders of the source), latch on its top edge (X axis at mid depth of its top face). The export keeps every vertex local to its origin; the report gives
+     7 normals recomputed, triangulated, flat shading; 8 origins: body bottom-centre, lid on the rear seam line (PIN_Y, PIN_Z = 32.0, 41.25; task-309-07 recut, was the pin axis), latch on its top edge (X axis at mid depth of its top face). The export keeps every vertex local to its origin; the report gives
      the origins relative to the body origin.
 task-309-07: each hinge block (the bracket from the pins down the back wall, HX0..HX1 / y > HY / z >= HZ) is cut whole into the lid (no stub left on the body);
      the recess fill behind the latch takes the texel of the front wall around it (not the dark cap texel); the render pose swings the latch -90 deg about its
@@ -89,7 +88,7 @@ def nonmanifold(bm):
 if mode == "cut":
     ZS = opt("--zs", 41.25); WALL = opt("--wall", 3.0); DEPTH = opt("--depth", 22.0)
     LX, LY, LZ0, LZ1 = 11.6, -24.0, 8.0, 54.0
-    PIN_Y, PIN_Z = 24.6, 59.5                      # axis of the hinge pins (cm, body frame): mean of the fitted outer pin ends at x = +-45
+    PIN_Y, PIN_Z = opt("--piny", 32.0), opt("--pinz", 41.25)   # task-309-07 recut: hinge axis on the real rear seam line (back wall outer face, seam height), was the pins (24.6, 59.5)
     HX0, HX1, HY, HZ = 20.5, 47.8, 27.5, 33.0      # hinge block box: |x| in HX0..HX1, y > HY, face centre z >= HZ -> lid
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.fbx(filepath=SRC)
@@ -349,9 +348,9 @@ if mode == "cut":
         assembled_dimensions_cm_xyz=[round(float(x), 2) for x in dims],
         pivots_relative_to_body_origin_cm=dict(body=[0, 0, 0], lid_hinge_axis_X=[round(float(x), 3) for x in pivots["lid"]], latch_top_edge_axis_X=[round(float(x), 3) for x in pivots["latch"]]),
         latch_pivot_relative_to_lid_origin_cm=[round(float(x), 3) for x in lp],
-        pivot_notes="lid: origin on the axis of the hinge pins (a line along X at y = %.1f, z = %.1f in the body frame, measured on the pin cylinders at x = +-45); the whole hinge block (bracket from the pins down the back wall) belongs to the lid. "
+        pivot_notes="lid: origin on the rear seam line (a line along X at y = %.1f, z = %.1f in the body frame: outer back wall face at the seam height; the pin cylinders sit 18 cm higher at y 24.6, z 59.5 and are cosmetic); the whole hinge block (bracket from the pins down the back wall) belongs to the lid. "
                     "latch: origin on the top edge of the latch block (X axis, mid depth of its top face, x centred); it hangs on the lid front, so in the Blueprint it is a child of the lid." % (PIN_Y, PIN_Z),
-        hinge=dict(pin_axis_y_z_cm=[PIN_Y, PIN_Z], block_box=dict(abs_x=[HX0, HX1], y_above=HY, face_centre_z_min=HZ), block_faces_to_lid=n_hinge, block_faces_centred_below_the_seam_moved_to_lid=n_hinge_below),
+        hinge=dict(pin_cylinders_y_z_cm=[24.6, 59.5], lid_axis_y_z_cm=[PIN_Y, PIN_Z], block_box=dict(abs_x=[HX0, HX1], y_above=HY, face_centre_z_min=HZ), block_faces_to_lid=n_hinge, block_faces_centred_below_the_seam_moved_to_lid=n_hinge_below),
         recess_fill_uv=recess_uv,
         opening_signs=dict(
             blender_frame="Lid: rotation about +X of NEGATIVE angle opens it up and backward (lid -105 deg = open; the front, at -Y, goes to +Z). Latch, local, about its top edge: NEGATIVE angle swings its bottom outward (-Y) and up (-90 deg = hasp perpendicular to the lid front face, pointing away from the lid, above the lid front edge when the lid is open).",
@@ -441,12 +440,36 @@ elif mode == "render":
                                        lid_min_z=round(min(v.z for v in lidv), 1), clearance_lid_over_body_rim=round(min(v.z for v in lidv) - body_top, 1),
                                        latch_min_z_over_body_rim=round(min(v.z for v in latv) - body_top, 1),
                                        latch_pivot_world_z=round((objs["latch"].matrix_world @ V3((0, 0, 0))).z, 1), latch_min_z_minus_its_pivot_z=round(min(v.z for v in latv) - (objs["latch"].matrix_world @ V3((0, 0, 0))).z, 1))
-        shoot("cut_openwide%d" % ld, (("q", -35, 28), ("side", 90, 10)))
+        # gap lid <-> body (cm): nearest-surface distances both ways, rear rim (body verts y > 25, z > 38), penetration = lid verts inside the body (normal test)
+        from mathutils.bvhtree import BVHTree
+        dg = bpy.context.evaluated_depsgraph_get()
+        def bvh(name):
+            o = objs[name]; M = o.matrix_world
+            vs = [M @ v.co for v in o.data.vertices]
+            return BVHTree.FromPolygons(vs, [tuple(p.vertices) for p in o.data.polygons]), vs
+        bt_b, bv = bvh("body"); bt_l, lv = bvh("lid")
+        d_lb = []; inside = []
+        for p in lv:
+            h = bt_b.find_nearest(p)
+            if h[0] is None: continue
+            d_lb.append(h[3]);
+            n_hit = 0; q = p.copy(); dr = Vector((0, 0, 1))
+            while True:
+                r_ = bt_b.ray_cast(q + dr * 1e-3, dr)
+                if r_[0] is None: break
+                n_hit += 1; q = r_[0]
+            if n_hit % 2 == 1: inside.append(round(h[3], 2))
+        d_bl = [bt_l.find_nearest(p)[3] for p in bv]
+        rear = [bt_l.find_nearest(p)[3] for p in bv if p.y > 25 and p.z > 38]
+        checks["lid_%d" % ld].update(gap_min_lid_to_body_cm=round(min(d_lb), 2), gap_min_body_to_lid_cm=round(min(d_bl), 2), gap_rear_rim_cm=round(min(rear), 2) if rear else None,
+                                     gap_front_rim_cm=round(min([bt_l.find_nearest(p)[3] for p in bv if p.y < -25 and p.z > 38] or [-1]), 2),
+                                     lid_verts_inside_body=len(inside), max_penetration_cm=max(inside) if inside else 0.0)
+        shoot("cut_openwide%d" % ld, (("front", 0, 10), ("q", -35, 28), ("side", 90, 10), ("back", 180, 10)))
     print("OPENCHECKS", json.dumps(checks))
     rep["open_pose_checks"] = checks
     rep["open_pose_note"] = ("latch_min_z_minus_its_pivot_z is the no-dangling check: the lowest latch point is its own top edge (0 to -2.4 cm, its thickness), so nothing hangs below the hinge line. "
                              "The latch top edge sits 6.5 cm behind the lid front face and 10 cm above its bottom edge, so it is 7 to 12 cm below the lid front-bottom edge in world z. "
-                             "The pins are at the top rear of the lid (z 59.5), 18 cm above the seam: opened about them the lid hovers 9 to 12 cm above the body rim (clearance_lid_over_body_rim), it never touches the body.")
+                             "task-309-07 recut: the lid origin is on the rear seam line (y 32 = outer back wall, z 41.25 = seam), not on the pins (24.6, 59.5) that floated the lid 9 to 12 cm above the rim: the lid turns about its rear bottom edge, the gap lid to body is gap_min_lid_to_body_cm (0.5 to 0.7 cm, no lid vertex inside the body).")
     rep["renders"] = dict(dir="Art/Source/chest/clean/renders/", files=sorted(f for f in os.listdir(RENDERS) if f.startswith("cut_")), before=sorted(f for f in os.listdir(RENDERS) if f.startswith("before_")),
                           camera="ortho 170, target (0,0,33), 500 cm, EEVEE, one sun 4.0 rotated (50,10,-60), world 0.85 at 0.6 (the cut_* renders of 306-02)",
                           poses="closed = identity; latch released = latch -60 about X; open = lid -105 about X at the pin axis, latch child of the lid with -90 local; cut_openwide* = wide camera (ortho 260, target (0,20,70)); cut_openwide100 / cut_openwide115 = lid -100 / -115")
