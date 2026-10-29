@@ -1,9 +1,9 @@
 ---
 id: task-359-capture-tooling
 description: "Global task: Capture tooling: crops and labelled comparison sheets with ffmpeg built in, and a generated list of rr.* debug console commands per system."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Capture tooling: crops, comparison sheets, debug command list
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: crew tooling, no gdd node involved (Planner, 2026-10-29). Read: `Tools/capture/capture.js` (already finds ffmpeg on PATH or in WinGet packages, `findFfmpeg`, but only for its own contact sheet), agent-cpp (`capture_script`, `capture_rules`), sys-cheats (lists the rr.Cheat, rr.Debug, rr.Run, rr.Shop, rr.Menu commands in one dense paragraph; capture subtask task-355-02 had it as input and its run still grepped the source), task-355-02. Console registrations exist in 13 source files (Debug, Run, Menu, RunLog, Enemies, FlowField, Pickups), ~82 `rr.*` names. A hand-written command node would duplicate sys-cheats and sys-stress ([[_authoring]] forbids duplicated facts) and go stale, hence Q5. No tool doc node exists for capture.js today (only the agent-cpp field).
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut" to Q1-Q12 and the plan, relayed by the main session)
 - milestone: M2
-- next_step: task-359-02-capture-tooling-doc
+- next_step: none
 - started: 2026-10-29T14:17:36Z
 - waiting_for: none
-- result: open
+- result: Done. Done in c19a342e: tool-capture node created, linked from pipelines-index and agent-cpp; lint clean.
 
 ## Questions
 Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-29.
@@ -28,7 +28,7 @@ Decided 2026-10-29 (owner "OK, tout par défaut"): every default below is accept
 2. task-359-02-capture-tooling-doc (vault/reference/tasks/task-359-capture-tooling/task-359-02-capture-tooling-doc.md) — doc: new tool doc node tool-capture (capture.js, sheet.js, commands.js) under pipelines-index; agent-cpp capture_script points to it.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-359-01-capture-tooling-scripts]] — step 1, cpp.
 - [[task-359-02-capture-tooling-doc]] — step 2, doc.
 - [[task-360-capture-agent]] — runs after this task; its definition uses these tools.

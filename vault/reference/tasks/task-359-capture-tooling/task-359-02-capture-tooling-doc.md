@@ -3,7 +3,7 @@ id: task-359-02-capture-tooling-doc
 description: "Doc: new tool doc node tool-capture for capture.js, sheet.js and commands.js under pipelines-index; agent-cpp capture_script points to it."
 parent: task-359-capture-tooling
 kind: task
-status: in-progress
+status: done
 ---
 # Capture tooling: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: tool-capture lists the usage line of the three scripts from the change summary; pipelines-index and agent-cpp link it; lint clean; committed.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 21638, cache read 143093, output 4509
+- usage: turns 8, context start 11k peak 26k, resumes 0, 3 min, units 0.06 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T14:21:50Z
 - waiting_for: none
-- result: open
+- result: Done in c19a342e: tool-capture node created, linked from pipelines-index and agent-cpp; lint clean.
 
 ## Relations
 - [[task-359-capture-tooling]] — parent global task.
