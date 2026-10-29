@@ -317,6 +317,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-305-console-hack-10s]] — The console hack takes 10 s instead of 12 s; the bonus chest is unchanged. Status done.
 - [[task-306-chest-flat-faces]] — Flatten the puffed Meshy chest faces after the sheet, cut it into body, lid and latch, and show it in BP_BonusChest. Status done.
 - [[task-307-chest-one-upgrade]] — Opening the bonus chest gives exactly one upgrade choice: its direct XP grant no longer triggers a second level-up. Status done.
+- [[task-308-chest-lock-light]] — Chest lock light: red blinking while waiting, orange blinking faster with hack progress in the zone, steady green once open. Status done.
 - [[task-310-camera-shake]] — A shared C++ camera shake any actor can play on the player camera; first used by the bonus chest lid slam (task-309). Status done.
 - [[task-311-console-bigger-50]] — The objective console is 50 % bigger and lands only on a fully free 3 x 3 floor footprint; the bonus chest is unchanged. Status done.
 - [[task-312-zone-colour-off-console]] — The hack zone colour stays on the ground: the console, miner and drone inside the zone are no longer washed out. Status done.
