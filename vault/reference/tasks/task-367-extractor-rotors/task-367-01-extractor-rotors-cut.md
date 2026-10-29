@@ -3,7 +3,7 @@ id: task-367-01-extractor-rotors-cut
 description: "3d: cut the four rotors (blades and hub) from SM_Extractor into their own FBX with origins on their spin axes, cap the cuts, sweep 360 degrees, render."
 parent: task-367-extractor-rotors
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: extract the four rotors so they can spin: 3d
 
@@ -21,7 +21,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-10-29T18:30:42Z
+- started: 2026-10-29T20:49:01Z
 - waiting_for: none
 - result: open
 

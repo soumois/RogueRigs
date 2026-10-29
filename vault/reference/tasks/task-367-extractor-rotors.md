@@ -3,7 +3,7 @@ id: task-367-extractor-rotors
 description: "Global task: Cut the four rotors of the flattened extractor mesh into separate meshes pivoting on their spin axes, body kept fixed, ready to spin later."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: extract the four rotors so they can spin
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-367-01-extractor-rotors-cut
-- started: 2026-10-29T18:30:42Z
+- started: 2026-10-29T20:49:01Z
 - waiting_for: none
 - result: open
 
