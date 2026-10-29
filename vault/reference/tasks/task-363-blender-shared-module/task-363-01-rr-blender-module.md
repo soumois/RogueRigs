@@ -3,7 +3,7 @@ id: task-363-01-rr-blender-module
 description: "3d: write `Tools/art/blender/rr_blender.py` with the decided helpers and prove it with one headless import check, no asset."
 parent: task-363-blender-shared-module
 kind: task
-status: todo
+status: in-progress
 ---
 # Shared Blender helper module for the 3d agent: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T15:39:34Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-363-blender-shared-module
 description: "Global task: shared bpy module rr_blender.py (FBX import and export, report json, preview, tris, sRGB, material) that new 3d scripts import."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shared Blender helper module for the 3d agent
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "OK, tout par défaut")
 - milestone: M2
 - next_step: task-363-01-rr-blender-module
-- started: open
+- started: 2026-10-29T15:39:34Z
 - waiting_for: none
 - result: open
 
