@@ -3,7 +3,7 @@ id: task-371-01-cpp-extractor-arrival
 description: "Cpp: spawn an arrival extractor next to the miner spawn and start its takeoff at the end of the fade in, or at once without fade."
 parent: task-371-extractor-arrival
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: drops the miner and takes off at level start: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:29:55Z
 - waiting_for: none
 - result: open
 

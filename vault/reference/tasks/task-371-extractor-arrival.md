@@ -3,7 +3,7 @@ id: task-371-extractor-arrival
 description: "Global task: At level start the miner stands beside the extractor, which takes off as soon as the fade in ends."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: drops the miner and takes off at level start
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "Pas de vérification visuel pour le point 8, prépare les tâches avec les informations dedans, je les lancerais déjà que le mesh est prés.")
 - milestone: M2
 - next_step: task-371-01-cpp-extractor-arrival
-- started: open
+- started: 2026-10-29T21:29:55Z
 - waiting_for: none
 - result: open
 
