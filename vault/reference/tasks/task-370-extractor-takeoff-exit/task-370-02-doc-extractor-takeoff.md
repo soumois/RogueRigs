@@ -3,7 +3,7 @@ id: task-370-02-doc-extractor-takeoff
 description: "Doc: update sys-objectives-shuttle and sys-objectives-events for the takeoff and hidden miner."
 parent: task-370-extractor-takeoff-exit
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: helicopter takeoff behind the end screen: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T21:28:51Z
 - waiting_for: none
 - result: open
 

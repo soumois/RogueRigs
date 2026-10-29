@@ -3,7 +3,7 @@ id: task-370-01-cpp-extractor-takeoff
 description: "Cpp: hide miner and drone on extraction, helicopter takeoff of ARRShuttle ticking while paused, StartTakeoff entry and events."
 parent: task-370-extractor-takeoff-exit
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: helicopter takeoff behind the end screen: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; a -game log of rr.Run.EndLevel or a walked extraction shows takeoff start, the out-of-view frame and the removal while the run flow is paused; RogueRigs.Extraction.* and RogueRigs.RunFlow.* pass; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 144393, cache read 3773763, output 32552
+- usage: turns 34, context start 58k peak 144k, resumes 0, 11 min, units 0.72 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T21:17:31Z
 - waiting_for: none
-- result: open
+- result: Commit 2e1bde02: ARRShuttle::StartTakeoff, takeoff ticking while paused, OnTakeoffStarted/Finished, miner and drone hidden on extraction; build ok, Extraction.* 5/5 and RunFlow.* 3/3 pass, -game log shows start and removal. Agent-chosen provisional values needing owner confirmation: TiltSeconds 0.4, ForwardAcceleration 1500, TakeoffMaxSeconds 12.
 
 ## Relations
 - [[task-370-extractor-takeoff-exit]] — parent global task.
