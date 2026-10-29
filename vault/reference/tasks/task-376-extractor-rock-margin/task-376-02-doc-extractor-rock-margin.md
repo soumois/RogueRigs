@@ -3,7 +3,7 @@ id: task-376-02-doc-extractor-rock-margin
 description: "Doc: doc: update sys-objectives-shuttle, sys-objectives-run-flow and sys-grid-api."
 parent: task-376-extractor-rock-margin
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: rock destroyed under it and in a margin around it: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes written; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 33948, cache read 315891, output 3286
+- usage: turns 5, context start 59k peak 78k, resumes 0, 0 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T23:55:31Z
 - waiting_for: none
-- result: open
+- result: ClearMarginCells, GetClearRect and in-band landing documented in 3 nodes; commit c02cf3d6; lint OK
 
 ## Relations
 - [[task-376-extractor-rock-margin]] — parent global task.

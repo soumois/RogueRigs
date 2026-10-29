@@ -384,3 +384,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-373-extractor-rotor-spin]] — The four extractor rotors spin on their axes, opposite diagonal pairs, slower on the ground, faster in flight. Status done.
 - [[task-374-extractor-rotor-wash]] — A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed. Status done.
 - [[task-375-extractor-scale-x4]] — Scale the extractor x4 (body and rotors), its level-ending board radius and its footprint in cells; chevrons follow. Status done.
+- [[task-376-extractor-rock-margin]] — At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band. Status done.
