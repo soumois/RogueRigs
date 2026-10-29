@@ -3,7 +3,7 @@ id: task-366-extractor-flat-faces
 description: "Global task: Save the owner Meshy extractor (Rustwing quadrotor) files, then decimate it to budget and flatten its bulged flat faces as for the turret."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: save the Meshy files, decimate to budget, flatten the faces
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-29, "ok")
 - milestone: M2
 - next_step: task-366-01-extractor-meshy-files
-- started: open
+- started: 2026-10-29T18:18:53Z
 - waiting_for: none
 - result: open
 

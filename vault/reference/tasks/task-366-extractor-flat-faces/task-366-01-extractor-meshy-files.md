@@ -3,7 +3,7 @@ id: task-366-01-extractor-meshy-files
 description: "3d: extract the owner zip safely, measure the Meshy mesh, store it per Q3 and create node art-prompts-extractor."
 parent: task-366-extractor-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor mesh: save the Meshy files, decimate to budget, flatten the faces: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-29T18:18:53Z
 - waiting_for: none
 - result: open
 
