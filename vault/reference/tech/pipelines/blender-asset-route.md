@@ -10,8 +10,13 @@ Used when a 3D subtask says "Blender route" ([[agent-3d]]): no Meshy call, no cr
 
 ## Running
 - Headless: `"$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/<script>.py -- <args>`. `BLENDER_EXE` is a Windows user variable (Blender 5.2). Python exists only inside Blender, numpy included.
-- Scripts in `Tools/art/blender/`: `barrel.py` (mesh, FBX, report), `warning_sign.py` (sign texture), `wear_mask.py` (scratch mask, seed 108, deterministic), `barrel_preview.py <fbx> <out.png>` (render), `heal_chunk.py` (heal pickup chunks, mesh, FBX, report and renders), `cleanup.py` (Meshy meshes only).
+- Scripts in `Tools/art/blender/`: `barrel.py` (mesh, FBX, report), `warning_sign.py` (sign texture), `wear_mask.py` (scratch mask, seed 108, deterministic), `barrel_preview.py <fbx> <out.png>` (render), `heal_chunk.py` (heal pickup chunks, mesh, FBX, report and renders), `cleanup.py` (Meshy meshes only), `rr_blender.py` (shared helper module, see below).
 - Output: `Art/Meshes/<asset>/SM_<Name>.fbx` in centimetres, bottom-centre pivot, plus `SM_<Name>.report.json` (`tris_out`, `dimensions_cm`, `materials`, `uv_layers`, `uv_checks`, `mask_contract`, `warnings`).
+
+## Shared module
+- `Tools/art/blender/rr_blender.py` (task-363): generic bpy helpers for Blender-route scripts. Import: `sys.path.insert(0, <Tools/art/blender>)` then `import rr_blender as rr`.
+- API: the module header docstring (`import_fbx`, `export_fbx`, `tri_count`, `dimensions_cm`, `srgb`, `make_material`, `setup_preview`, `render_preview`, `render_turntable`, `write_report`); read only that.
+- Rule: a generic helper goes in the module, task geometry stays in the script, never change an existing signature (add a new function). A script never redefines a module helper. Existing scripts are untouched; `apply_pose` is excluded.
 
 ## Conventions (art charter level 1, [[art-style-guide]] A1)
 - Flat shading, flat colour per material ([[color-code]]) by default; painted, normal and roughness textures are allowed since 2026-10-17 ([[art-style-guide]] A1 level 3).

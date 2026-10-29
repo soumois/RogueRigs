@@ -23,6 +23,8 @@ From the barrel (2026-10-11), XP meshes, chaser and card sessions (to 2026-10-14
 - A headless Blender run can outlive the agent (task-230-06 left `blender -b ... rock_slab_broken.py` at 13 GB for hours): the 3d agent stops its Blender processes before reporting; the Orchestrator checks `Get-Process blender` when closing a 3d subtask.
 - A resumed agent keeps its first label: later subtasks are costed under it. One agent per subtask when cost matters.
 
+- A Blender-route script imports `rr_blender` and never redefines its helpers; it reads only the module header docstring for the API ([[blender-asset-route]]).
+
 ## Engine and import traps
 - Blender FBX export uses `FBX_SCALE_UNITS`; `FBX_SCALE_NONE` imports 100 times too large ([[chaser-meshy-pipeline]]). For an existing asset, reimport with [[tool-unreal-reimport]], editor closed.
 - Generate Lightmap UVs can overwrite an extra UV channel in the render data only: read RENDER_DATA with Geometry Script (`copy_mesh_from_static_mesh`) and check every triangle corner.
