@@ -3,7 +3,7 @@ id: task-309-05-bp-chest-open-wiring
 description: "BP_BonusChest opening wiring (bp): ground ring, rays, sparks and inner light defaults, step 05."
 parent: task-309-chest-opening
 kind: task
-status: todo
+status: in-progress
 ---
 # BP_BonusChest opening wiring
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-10-29T19:08:08Z
 - result: open
 
 ## Relations

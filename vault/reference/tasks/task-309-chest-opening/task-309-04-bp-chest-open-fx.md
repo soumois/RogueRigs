@@ -3,7 +3,7 @@ id: task-309-04-bp-chest-open-fx
 description: "NS_BonusChestOpen, turning rays and floating sparks (bp): bonus chest opening, step 04."
 parent: task-309-chest-opening
 kind: task
-status: in-progress
+status: done
 ---
 # NS_BonusChestOpen, turning rays and floating sparks
 
@@ -15,12 +15,13 @@ status: in-progress
 - done_when: system compiles with 0 errors; emitter values read back; doc node and index relation; lint clean; committed
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet
+- tokens: input 68, cache write 84424, cache read 1682124, output 23166
+- usage: turns 34, context start 12k peak 90k, resumes 0, 4 min, units 0.39 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-29T19:03:56Z
-- result: open
+- result: Done (13349d35): NS_BonusChestOpen, Rays (4 blades, 3 s, 30 deg/s turn) and Sparks (20, 2-2.5 s) in linear yellow (1,0.58,0), additive M_DroneThruster, no params, no flash; 0 errors. Look unverified; ray spacing assumes UniqueID 0..3.
 
 ## Relations
 - [[task-309-chest-opening]] — parent global task.
