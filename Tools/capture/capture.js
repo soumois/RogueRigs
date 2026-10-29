@@ -22,6 +22,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
+const { findFfmpeg } = require('./ffmpeg'); // shared with sheet.js (task-359-01)
 
 const REPO = path.resolve(__dirname, '..', '..');
 const ENGINE = 'C:\\Program Files\\Epic Games\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe';
@@ -84,22 +85,6 @@ function findScreenshots(startMs, prefixes) {
   };
   walk(root);
   return found.sort((a, b) => path.basename(a).localeCompare(path.basename(b)));
-}
-
-function findFfmpeg() {
-  const probe = spawnSync('ffmpeg', ['-version'], { stdio: 'ignore' });
-  if (!probe.error && probe.status === 0) return 'ffmpeg';
-  const winget = path.join(process.env.LOCALAPPDATA || '', 'Microsoft', 'WinGet', 'Packages');
-  if (fs.existsSync(winget)) {
-    for (const d of fs.readdirSync(winget).filter((x) => /ffmpeg/i.test(x))) {
-      const sub = path.join(winget, d);
-      for (const v of fs.readdirSync(sub)) {
-        const exe = path.join(sub, v, 'bin', 'ffmpeg.exe');
-        if (fs.existsSync(exe)) return exe;
-      }
-    }
-  }
-  return null;
 }
 
 function makeSheet(files, outFile, cols) {
@@ -226,4 +211,7 @@ async function main() {
   process.exit(problems.some((p) => !/error line/.test(p)) ? 1 : 0);
 }
 
-main().catch((e) => { console.error(`capture.js: ${e.stack || e.message}`); process.exit(1); });
+// Exported for a check of the contact sheet on existing PNGs without a game run (task-359-01).
+module.exports = { makeSheet };
+
+if (require.main === module) main().catch((e) => { console.error(`capture.js: ${e.stack || e.message}`); process.exit(1); });
