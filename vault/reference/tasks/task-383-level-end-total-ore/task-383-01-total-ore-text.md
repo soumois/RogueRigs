@@ -3,7 +3,7 @@ id: task-383-01-total-ore-text
 description: "Text: replace the two ore lines of intermission_recap in screen_texts.json by the single Total Ore label."
 parent: task-383-level-end-total-ore
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Stats screen Total Ore: text
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-30T05:00:22Z
-- waiting_for: none
+- waiting_for: Owner decision: validator requires 3 to 12 words per screen_texts lines entry, Q2 label 'Total Ore:' has 2 words
 - result: open
 
 ## Relations
