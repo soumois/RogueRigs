@@ -1,9 +1,9 @@
 ---
 id: task-389-robot-particles-cleared-between-levels
 description: "Global task: Death puffs and debris of robots killed on the previous level no longer show when the next level starts."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Robot particles removed between levels
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[intermission]] (next level prepared in the same world; no rule on leftover effects): no conflict. Tech read: [[sys-run-transition-preload]] (ClearingLevel returns enemies to the pool and clears explosion FX; robot death Niagara one-shots not listed). Effect nodes: [[bp-robot-death-puff]], [[bp-heavy-death-puff]], [[bp-robot-debris]], [[bp-shield-debris]]. Open values: none. Scope M2. Runs after task-388 (Q2). No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path).
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
-- next_step: task-389-02-doc-robot-effects
+- next_step: none
 - started: 2026-10-30T20:58:58Z
 - waiting_for: none
-- result: open
+- result: Done. Documented the ClearingLevel robot effect clear and its log lines in sys-run-transition-preload, sys-enemies and bp-shield-debris; lint clean. Commit 4d6a8e18.
 
 ## Questions
 Decided 2026-10-30 (owner answers relayed by the main session); values provisional, owner 2026-10-30.
@@ -27,7 +27,7 @@ Decided 2026-10-30 (owner answers relayed by the main session); values provision
 2. task-389-02-doc-robot-effects (vault/reference/tasks/task-389-robot-particles-cleared-between-levels/task-389-02-doc-robot-effects.md) — doc: update the preload and enemies docs with the robot effects cleared between levels
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-389-01-clear-robot-effects]] — step 1, cpp.
 - [[task-389-02-doc-robot-effects]] — step 2, doc.
 - [[task-388-chest-glow-cleared-between-levels]] — previous task, same transition step, chest effects.

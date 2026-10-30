@@ -3,7 +3,7 @@ id: task-389-02-doc-robot-effects
 description: "Doc: update the preload and enemies docs with the robot effects cleared between levels"
 parent: task-389-robot-particles-cleared-between-levels
 kind: task
-status: in-progress
+status: done
 ---
 # Robot particles removed between levels: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The listed nodes state the clear and its log line; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 30733, cache read 105386, output 4920
+- usage: turns 6, context start 12k peak 31k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T21:13:40Z
 - waiting_for: none
-- result: open
+- result: Documented the ClearingLevel robot effect clear and its log lines in sys-run-transition-preload, sys-enemies and bp-shield-debris; lint clean. Commit 4d6a8e18.
 
 ## Relations
 - [[task-389-robot-particles-cleared-between-levels]] — parent global task.
