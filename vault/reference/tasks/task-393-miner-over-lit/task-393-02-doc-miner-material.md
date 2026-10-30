@@ -3,7 +3,7 @@ id: task-393-02-doc-miner-material
 description: "Doc: refresh bp-miner (SK_Miner, ABP_Miner, M_Miner, MI_Miner, BaseColorScale, how to tune)"
 parent: task-393-miner-over-lit
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner too bright in the arena: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:04:25Z
 - waiting_for: none
 - result: open
 

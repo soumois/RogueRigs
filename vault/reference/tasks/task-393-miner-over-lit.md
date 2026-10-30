@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[visual-style]] and [[color-code]] not changed (rendering only; rules versus rendering: no game rule changes). [[handover-2026-10-21-lighting-floor]]: lighting values decided by the owner (sun 3, sky 0.3, exposure -0.94, mask 0.08 / 200 / 1.8), "the later player light" still an open owner decision (not touched here). [[lights-dark-ambient]], [[ppv-xp-glow]], [[mpp-player-light-mask]], [[bp-miner]] (out of date: Quinn mesh), [[task-386-miner-mixamo-animation]] (Meshy miner import and mesh swap). Open values: the lever (Q9) and the brightness value (Q10, provisional default, owner tunes). Scope M2. No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path).
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
-- next_step: task-393-01-miner-material-scale
+- next_step: task-393-02-doc-miner-material
 - started: 2026-10-30T22:02:49Z
 - waiting_for: none
 - result: open

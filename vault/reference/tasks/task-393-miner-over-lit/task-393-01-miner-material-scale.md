@@ -3,7 +3,7 @@ id: task-393-01-miner-material-scale
 description: "Bp: read M_Miner, add MI_Miner with BaseColorScale 0.6 and assign it to the miner"
 parent: task-393-miner-over-lit
 kind: task
-status: in-progress
+status: done
 ---
 # Miner too bright in the arena: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: MI_Miner exists with BaseColorScale 0.6 read back, assigned to every miner material slot (read back), M_Miner compiles with no error, a PIE start logs no material error; readings reported; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 56879, cache read 856669, output 10579
+- usage: turns 20, context start 12k peak 62k, resumes 0, 1 min, units 0.21 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:02:49Z
 - waiting_for: none
-- result: open
+- result: MI_Miner BaseColorScale 0.6 on SK_Miner slot, commit 6a8b51fe; normal map wired; roughness/spec/metallic unwired defaults; albedo mean ~0.35 sRGB; PIE/render unverified
 
 ## Relations
 - [[task-393-miner-over-lit]] — parent global task.
