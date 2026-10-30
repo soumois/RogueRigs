@@ -3,7 +3,7 @@ id: task-392-03-end-screen-duskite-label
 description: "Bp: WBP_AlertObjectives: run-won ore label "Duskite secured: "; check the other UI assets for a visible "Ore""
 parent: task-392-duskite-on-screen
 kind: task
-status: in-progress
+status: done
 ---
 # On-screen ore word: Duskite: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Graph read back: run-won label "Duskite secured: ", Main Menu button and the GetSecuredOre number intact; compiled with warnings as errors, no error; saved; check list reported; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 52661, cache read 287696, output 6093
+- usage: turns 13, context start 12k peak 58k, resumes 0, 1 min, units 0.13 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T21:59:57Z
 - waiting_for: none
-- result: open
+- result: ShowRunEnd label Duskite secured: (3 Append literals), compiled warnings-as-errors, saved, commit 464b5620. UI check found player-visible Ore left: ShopCard ShortLabel 'Short on ore' (ShopCard0-4 in WBP_ShopScreen, probably WBP_ShopCard default) and EndOreText designer default 'Ore secured: 0' (overwritten at runtime); not changed, reported
 
 ## Relations
 - [[task-392-duskite-on-screen]] — parent global task.

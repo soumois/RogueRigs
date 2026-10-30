@@ -3,7 +3,7 @@ id: task-392-04-intermission-duskite-label
 description: "Bp: WBP_Intermission: design-time "Total Ore:" text becomes "Total Duskite:""
 parent: task-392-duskite-on-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # On-screen ore word: Duskite: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:01:14Z
 - waiting_for: none
 - result: open
 
