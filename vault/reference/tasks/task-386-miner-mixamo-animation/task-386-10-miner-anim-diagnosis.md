@@ -3,7 +3,7 @@ id: task-386-10-miner-anim-diagnosis
 description: "Bp: diagnose why the miner stays in T-pose in game, step by step without guessing, and fix the cause found"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: cancelled
 ---
 # Miner animated with the owner Mixamo clips: bp diagnosis
 
@@ -22,7 +22,7 @@ status: in-progress
 - milestone: M2
 - started: 2026-10-30T06:09:35Z
 - waiting_for: none
-- result: open
+- result: replaced by the stepped approach (owner 2026-10-30)
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.

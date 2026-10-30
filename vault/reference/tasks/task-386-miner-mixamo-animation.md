@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[miner]] (spec approved: moves freely, aims with mouse or right stick; asset line: Meshy auto-rig delivered, animation route, Unreal import and triangle budget open), [[sys-player]] (`bUseControllerRotationYaw` and `bOrientRotationToMovement` off: the pawn yaw follows only the aim, so moving away from or sideways to the aim needs backward and strafe clips: the nine clips fit the game; MaxWalkSpeed 600 uu/s = 6 m/s from MoveSpeed, changed by upgrades: faster than every clip, Q4), [[sys-player-input-aim]] (stick input is analog, so speeds under the maximum happen and use the walk clips), [[bp-miner]] (SKM_Quinn_Simple with ABP_Unarmed_C, location (0, 0, -95), yaw -90, capsule half height 88 radius 34; weapons attached to the capsule at WeaponAttachOffset (0, 20, -40), WeaponAttachSocketName None since task-008-03), [[bp-burst-rifle]] (placeholder cube, Muzzle at +40 X; on `hand_r` the muzzle pointed up and shots flew over rock: why the weapon stays on the capsule, Q6), [[art-prompts-miner]] (rigged mesh measures: 25,744 tris, 66 bones, root `mixamorig:Hips`, no clip, textures texture_0 and normal 2048), [[asset-pipeline]] (no miner triangle budget; stale line "miner auto-rig, Tripo, deferred": corrected in the edits; Blender FBX export with FBX_SCALE_UNITS), [[cpp-bp-split]] (logic in C++: speed, direction and play rate are computed in a C++ anim instance, ABP_Miner only wires its graph), [[unreal-mcp-quirks]] (MCP import of FBX gave a 100x scale; editor Python FbxImportUI + AssetImportTask worked; no skeletal or animation import done before in this project: first time, risk noted in steps 03 to 06). Conflicts: none. Open values the work needs: triangle budget (Q5), in-place method (Q2), clip mapping (Q3), speed mismatch (Q4), weapon hand socket (Q6, default: stays open). Decided by the owner words: animation route = Mixamo clips on the miner skeleton, in place, new ABP_Miner, movement from gameplay (edit in miner.md). Not in scope: weapon in the hands, death or hit clips, deleting the Quinn template assets, new tests. Untrusted downloads: copied and read only with the path as argument. Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
-- next_step: task-386-10-miner-anim-diagnosis
+- next_step: task-386-11-abp-palier1-idle
 - started: 2026-10-30T06:09:35Z
 - waiting_for: none
 - result: open
@@ -35,10 +35,14 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 5. task-386-05-miner-locomotion-blendspace (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-05-miner-locomotion-blendspace.md) — bp: BS_Miner_Locomotion: 2D blend space, direction and speed, nine clips at their measured positions
 6. task-386-06-abp-miner (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-06-abp-miner.md) — bp: ABP_Miner: Animation Blueprint of URRMinerAnimInstance playing BS_Miner_Locomotion
 7. task-386-07-bp-miner-mesh-swap (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-07-bp-miner-mesh-swap.md) — bp: BP_Miner: SK_Miner and ABP_Miner_C instead of SKM_Quinn_Simple and ABP_Unarmed, feet on the floor, facing the aim
-8. task-386-10-miner-anim-diagnosis (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-10-miner-anim-diagnosis.md) — bp: diagnose and fix the T-pose seen in the capture (owner 2026-10-30)
-9. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: -game capture of the animated miner against the checklist C1 to C7
-10. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
-
+8. task-386-10-miner-anim-diagnosis (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-10-miner-anim-diagnosis.md) — bp: diagnose the T-pose (cancelled 2026-10-30, replaced by the stepped approach 9 to 13)
+9. task-386-11-abp-palier1-idle (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-11-abp-palier1-idle.md) — bp: step 1: ABP_Miner reduced to Rifle Aiming Idle looping
+10. task-386-12-capture-palier1 (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-12-capture-palier1.md) — capture: step 1 seen on screen, no T-pose
+11. task-386-13-abp-palier2-run (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-13-abp-palier2-run.md) — bp: step 2: idle to Rifle Run driven by speed
+12. task-386-14-capture-palier2 (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-14-capture-palier2.md) — capture: step 2 seen on screen, run plays
+13. task-386-15-abp-palier3-directions (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-15-abp-palier3-directions.md) — bp: step 3: walk and the other directions, reusing or rebuilding BS_Miner_Locomotion by groups
+14. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: final -game capture of the animated miner against the checklist C1 to C7
+15. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-386-01-miner-clips-in-place]] — step 1, 3d.
@@ -48,9 +52,14 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 - [[task-386-05-miner-locomotion-blendspace]] — step 5, bp.
 - [[task-386-06-abp-miner]] — step 6, bp.
 - [[task-386-07-bp-miner-mesh-swap]] — step 7, bp.
-- [[task-386-10-miner-anim-diagnosis]] — step 8, bp diagnosis of the T-pose.
-- [[task-386-08-miner-animation-capture]] — step 8, capture.
-- [[task-386-09-doc-miner-animation]] — step 9, doc.
+- [[task-386-10-miner-anim-diagnosis]] — cancelled diagnosis of the T-pose.
+- [[task-386-11-abp-palier1-idle]] — step 9, bp, idle only.
+- [[task-386-12-capture-palier1]] — step 10, capture of the idle.
+- [[task-386-13-abp-palier2-run]] — step 11, bp, run forward.
+- [[task-386-14-capture-palier2]] — step 12, capture of the run.
+- [[task-386-15-abp-palier3-directions]] — step 13, bp, other directions.
+- [[task-386-08-miner-animation-capture]] — step 14, final capture.
+- [[task-386-09-doc-miner-animation]] — step 15, doc.
 - [[miner]] — the character this animates.
 - [[art-prompts-miner]] — the rigged mesh these clips play on.
 - [[task-382-miner-rigged-meshy-files]] — saved and measured the rigged mesh.
