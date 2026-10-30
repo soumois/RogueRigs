@@ -1,7 +1,7 @@
 // Rogue Rigs - run debug console commands (compiled out of shipping): rr.Run.Status (logs the run state), rr.Run.Stats.Next (the
 // stats screen Next level button, task-317-01), rr.Run.Continue (the shop screen Continue button), rr.Run.NextLevel (successful
 // extraction, Next level, Continue), rr.Run.EndLevel (successful extraction, the stats screen stays open), rr.Run.Restart (the end
-// screen restart button: run reset, level 1), rr.Shop.Buy and rr.Shop.Reroll (the shop card and reroll buttons, task-316-05).
+// screen restart button: run reset, level 1), rr.Run.MainMenu (the run won end screen Main Menu button, task-390-01), rr.Shop.Buy and rr.Shop.Reroll (the shop card and reroll buttons, task-316-05).
 
 #include "CoreMinimal.h"
 
@@ -170,6 +170,19 @@ namespace RRRunDebug
 			{
 				RunFlow->RestartLevel();
 			}
+		}),
+		ECVF_Cheat);
+
+	/** rr.Run.MainMenu: the run won end screen "Main Menu" button (URRRunFlowSubsystem::ReturnToMainMenu: run reset, menu map opened). */
+	FAutoConsoleCommand MainMenuCommand(
+		TEXT("rr.Run.MainMenu"),
+		TEXT("rr.Run.MainMenu: presses the run won end screen Main Menu button (run reset, the main menu map opens)."),
+		FConsoleCommandDelegate::CreateLambda([]()
+		{
+			UWorld* World = RRCheats::FindCheatWorld();
+			URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+			const bool bAccepted = RunFlow && RunFlow->ReturnToMainMenu();
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.MainMenu: %s."), bAccepted ? TEXT("accepted") : TEXT("refused (no run flow, no world or no menu map name)"));
 		}),
 		ECVF_Cheat);
 }

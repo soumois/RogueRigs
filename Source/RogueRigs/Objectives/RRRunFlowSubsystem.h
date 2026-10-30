@@ -264,6 +264,14 @@ public:
 	void RestartLevel();
 
 	/**
+	 * Run won end screen "Main Menu" button (task-390-01, main-menu gdd): resets the run (URRRunSubsystem::ResetRun: level 1 next,
+	 * secured ore 0), then opens URRRunSettings::MainMenuMapName directly (no loading screen, no fade). The menu controller sets
+	 * its own UI input and cursor at BeginPlay. False (warning, nothing reset) without a world or with an empty map name.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "RunFlow")
+	bool ReturnToMainMenu();
+
+	/**
 	 * Next run level prepared in the same world (task-318-01): destroys the console, bonus chest and shuttle and puts the flow back
 	 * to its level start (alert 0, kills 0, no objective, run not ended, carried ore 0 and open again). Config and the registered
 	 * miner and spawner are kept. Nothing is broadcast (the HUD is recreated by the controller).

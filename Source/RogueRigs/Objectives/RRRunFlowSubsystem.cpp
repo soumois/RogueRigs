@@ -2,6 +2,7 @@
 
 #include "Objectives/RRRunFlowSubsystem.h"
 
+#include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
 #include "RunLog/RRRunLogSubsystem.h"
@@ -846,6 +847,30 @@ void URRRunFlowSubsystem::RestartLevel()
 	const FString LevelName = UGameplayStatics::GetCurrentLevelName(World, true);
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: restarting level %s."), *LevelName);
 	UGameplayStatics::OpenLevel(World, FName(*LevelName));
+}
+
+bool URRRunFlowSubsystem::ReturnToMainMenu()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: back to the main menu refused (no world)."));
+		return false;
+	}
+	const FString& MapName = GetDefault<URRRunSettings>()->MainMenuMapName;
+	if (MapName.IsEmpty())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: back to the main menu refused (URRRunSettings::MainMenuMapName is empty)."));
+		return false;
+	}
+	// Run won (task-390-01): the run ends here, so the next New Run begins level 1 with no secured ore.
+	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
+	{
+		Run->ResetRun();
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run won: back to the main menu, opening %s."), *MapName);
+	UGameplayStatics::OpenLevel(World, FName(*MapName));
+	return true;
 }
 
 void URRRunFlowSubsystem::ResetForNextLevel()
