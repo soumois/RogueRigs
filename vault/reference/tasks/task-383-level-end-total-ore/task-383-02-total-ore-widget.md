@@ -3,7 +3,7 @@ id: task-383-02-total-ore-widget
 description: "Bp: WBP_Intermission shows one Total Ore line in a thinner band and moves the columns up."
 parent: task-383-level-end-total-ore
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen Total Ore: WBP_Intermission
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: CompileWidgetBlueprint true and compile_blueprint with warnings as errors gives no error; tree read back: OreLevelText and OreRunText gone, the Q2 ore texts present, the moved widgets at their new anchors; graph pins read back: the ore value comes from RunSecuredOre, the label from Lines[0], no Lines[1] read; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 94458, cache read 1635769, output 17799
+- usage: turns 28, context start 12k peak 94k, resumes 0, 3 min, units 0.37 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:20:48Z
 - waiting_for: none
-- result: open
+- result: WBP_Intermission: OreLevelText/OreRunText renamed OreLabel (Lines[0]) and OreValue (RunSecuredOre), OreTexts removed, ore line centre 0.31, dividers/labels/lines/rows up 0.057, list bottoms unchanged; compile clean; no render seen; commit 9b443efb
 
 ## Relations
 - [[task-383-level-end-total-ore]] — parent global task.

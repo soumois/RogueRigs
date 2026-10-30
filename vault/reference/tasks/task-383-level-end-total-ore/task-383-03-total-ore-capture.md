@@ -3,7 +3,7 @@ id: task-383-03-total-ore-capture
 description: "Capture: -game check of the Total Ore band and the taller columns at four resolutions and on level 4."
 parent: task-383-level-end-total-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen Total Ore: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:23:47Z
 - waiting_for: none
 - result: open
 
