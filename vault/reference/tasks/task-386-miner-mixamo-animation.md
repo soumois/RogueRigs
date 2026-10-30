@@ -3,7 +3,7 @@ id: task-386-miner-mixamo-animation
 description: "Global task: Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-386-22-capture-four-samples
-- started: 2026-10-30T16:39:53Z
-- waiting_for: see subtask 22: T-pose arms in the 4-sample blend space during real movement, not reproduced with forced values
+- started: 2026-10-30T17:09:39Z
+- waiting_for: none
 - result: open
 
 ## Questions
@@ -47,9 +47,11 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 17. task-386-20-run-clips-arm-check (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-20-run-clips-arm-check.md) — 3d: arm bone motion of the run clips (T-pose arms seen with the blend space)
 18. task-386-21-force-move-cvar (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-21-force-move-cvar.md) - cpp: debug cvar forcing MoveX and MoveY
 19. task-386-22-capture-four-samples (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-22-capture-four-samples.md) - capture: each blend space sample forced
-20. task-386-19-remove-old-anim-vars (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-19-remove-old-anim-vars.md) — cpp: remove unused Direction and BlendSpeed
-21. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: final -game capture of the animated miner against the checklist C1 to C7
-22. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
+20. task-386-23-run-clip-asset-check (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-23-run-clip-asset-check.md) - bp: read the run clips, all samples = RunFwd test
+21. task-386-24-capture-sample-test (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-24-capture-sample-test.md) - capture: real run with the sample test
+22. task-386-19-remove-old-anim-vars (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-19-remove-old-anim-vars.md) — cpp: remove unused Direction and BlendSpeed
+23. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: final -game capture of the animated miner against the checklist C1 to C7
+24. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-386-01-miner-clips-in-place]] — step 1, 3d.
@@ -71,6 +73,8 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 - [[task-386-20-run-clips-arm-check]] — step 17, 3d arm check.
 - [[task-386-21-force-move-cvar]] - cpp debug cvar.
 - [[task-386-22-capture-four-samples]] - capture per sample.
+- [[task-386-23-run-clip-asset-check]] - bp clip check.
+- [[task-386-24-capture-sample-test]] - capture of the test.
 - [[task-386-19-remove-old-anim-vars]] — step 18, cpp cleanup.
 - [[task-386-08-miner-animation-capture]] — step 19, final capture.
 - [[task-386-09-doc-miner-animation]] — step 20, doc.
