@@ -3,7 +3,7 @@ id: task-391-final-screens-count-level-ore
 description: "Global task: The run-won end screen ore line shows the run total (same as the level 4 Total Ore), not a smaller number; the stats screen total is checked too."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Run-won end screen shows the run ore total
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-391-02-run-won-ore-line
 - started: 2026-10-30T21:21:26Z
-- waiting_for: none
+- waiting_for: Unreal MCP (mcp__unreal) unreachable, editor closed: owner must open the editor, then resume task-391-02 (bp) then the doc subtask
 - result: open
 
 ## Questions
