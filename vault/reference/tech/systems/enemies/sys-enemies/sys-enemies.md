@@ -13,7 +13,7 @@ kind: doc
 - depends_on: [[sys-gas-core]], [[sys-damage]], [[sys-flow-field]], [[sys-pickups]], [[sys-player]], [[sys-explosions]], [[sys-world-queries]], [[sys-grid]], [[sys-projectiles]].
 - implements: [[enemy-chaser]], [[enemy-kamikaze]], [[enemy-shooter]], [[enemy-heavy]], [[enemy-death]] (M1 shrink and drop).
 - shadows (task-263-01): `ARREnemy::PostInitializeComponents` calls `RRShadows::DisableCastShadows` (`World/RRShadows.h`): every primitive of every robot (C++ and Blueprint meshes of BP_Chaser, BP_ShieldChaser, BP_Kamikaze, BP_Shooter, BP_Heavy) casts no shadow, once per actor, kept across pool reuse (the pool never touches CastShadow); the fake blob shadow is `BlobShadow` on the base (task-264-02, [[sys-blob-shadow]]; [[lights-no-shadows]]).
-- gotchas: the CSV is parsed once and cached by `FRRBaseStatsLoader::FindRow` (re-parsed when the file timestamp changes; R3 of [[code-review-m1-plan]]). Tests: [[sys-automation-tests]].
+- gotchas: the CSV is parsed once and cached by `FRRBaseStatsLoader::FindRow` (re-parsed when the file timestamp changes; R3 of [[code-review-m1-plan]]). Death effects and level change (task-389-01): robot death effects (pooled `NS_RobotDeathPuff`, `NS_HeavyDeathPuff`, `NS_ChaserV2Debris`, `NS_HeavyDebris` through `URRNiagaraPoolSubsystem`; `NS_ShieldDebris` spawned by the shield chaser Blueprint's OnShieldBroken, owned by the world settings in 5.8) are not actors, so the actor clear misses them; the paused world froze them and level 2 (same world) resumed them. `URRRunTransitionSubsystem::ClearLevelActors` calls `URRNiagaraPoolSubsystem::ClearForNextLevel()` at ClearingLevel (log and detail: [[sys-run-transition-preload]]). Shield chaser: `ARRShieldChaser::HandleShieldBroken` collects the world-owned effects before and after OnShieldBroken (`CollectWorldOwnedEffects`) and registers the new ones with `TrackWorldEffect` (`TrackWorldEffectsSpawnedSince`), so the clear can stop them; any new robot effect spawned outside the pool must be tracked the same way. Tests: [[sys-automation-tests]].
 
 ## Relations
 - [[systems-index]] — parent index.
@@ -29,3 +29,5 @@ kind: doc
 - [[sys-pickups]] — the XP pickup dropped on death.
 - [[sys-spawner]] — the actor that spawns the robots.
 - [[sys-explosions]] — the queue the kamikaze explodes through.
+- [[sys-run-transition-preload]] — the ClearingLevel step that removes the robot death effects.
+- [[task-389-robot-particles-cleared-between-levels]] — the task that added the clear.
