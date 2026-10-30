@@ -3,7 +3,7 @@ id: task-390-02-end-screen-menu-button
 description: "Bp: WBP_AlertObjectives: run-won end screen button "Main Menu" calls the return-to-menu entry"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: wait-answers
+status: done
 ---
 # Run won: back to the main menu: bp
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: Graph read back: run-won branch sets "Main Menu" and calls the new entry, other branches unchanged; compiled with warnings as errors, no error; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 94, cache write 132865, cache read 1687943, output 25895
+- usage: turns 47, context start 11k peak 66k, resumes 0, 5 min, units 0.46 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T21:52:48Z
-- waiting_for: bp subtask 02 edits compiled in the open editor but save_assets fails (file lock on WBP_AlertObjectives.uasset, two UnrealEditor.exe running); owner must close the other editor then re-save, edits are in memory only
-- result: open
+- waiting_for: none
+- result: WBP_AlertObjectives saved and compiled (warnings as errors, clean); bReturnToMenu, Main Menu label, click branch; commit 99d91848. Not run in PIE.
 
 ## Relations
 - [[task-390-run-won-back-to-main-menu]] — parent global task.

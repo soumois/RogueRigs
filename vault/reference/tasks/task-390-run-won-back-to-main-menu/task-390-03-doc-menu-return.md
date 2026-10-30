@@ -3,7 +3,7 @@ id: task-390-03-doc-menu-return
 description: "Doc: update the run flow, main menu, run and end screen docs with the return to the menu"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: todo
+status: in-progress
 ---
 # Run won: back to the main menu: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:57:17Z
 - waiting_for: none
 - result: open
 
