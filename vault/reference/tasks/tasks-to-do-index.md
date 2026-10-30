@@ -17,5 +17,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-391-final-screens-count-level-ore]] — The run-won end screen ore line shows the run total (same as the level 4 Total Ore), not a smaller number; the stats screen total is checked too. Status todo.
 - [[task-392-burst-rifle-flat-faces]] — Save the owner Meshy burst rifle (Aqua Wasteland Carbine), scale and pivot it for the hand, flatten its bulged flat faces. Status wait-answers.
 - [[task-393-burst-rifle-rebake]] — Re-unwrap the flattened burst rifle and re-bake its four Meshy maps onto it, as for the extractor; runs after task-392. Status wait-answers.
-- [[task-392-duskite-on-screen]] — Every player-facing "Ore" text becomes "Duskite": stats screen total label, run-won ore line, the extraction bark; code identifiers and vault ids unchanged. Status wait-answers.
-- [[task-393-miner-over-lit]] — The new Meshy miner looks burnt out (blown highlights) in the arena; reduce his brightness with the lever the owner picks. Status wait-answers.
+- [[task-392-duskite-on-screen]] — Every player-facing "Ore" text becomes "Duskite": stats screen total label, run-won ore line, the extraction bark; code identifiers and vault ids unchanged. Status todo.
+- [[task-393-miner-over-lit]] — The new Meshy miner looks burnt out (blown highlights) in the arena; reduce his brightness with the lever the owner picks. Status todo.
