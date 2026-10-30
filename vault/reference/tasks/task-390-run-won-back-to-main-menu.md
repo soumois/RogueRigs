@@ -3,7 +3,7 @@ id: task-390-run-won-back-to-main-menu
 description: "Global task: After the level 4 extraction, the run-won end screen button reads Main Menu and returns to the main menu instead of restarting a run."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Run won: back to the main menu
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-390-02-end-screen-menu-button
 - started: 2026-10-30T21:52:47Z
-- waiting_for: none
+- waiting_for: bp subtask 02 edits compiled in the open editor but save_assets fails (file lock on WBP_AlertObjectives.uasset, two UnrealEditor.exe running); owner must close the other editor then re-save, edits are in memory only
 - result: open
 
 ## Questions
