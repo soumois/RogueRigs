@@ -403,3 +403,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-393-miner-over-lit]] — The new Meshy miner looks burnt out (blown highlights) in the arena; reduce his brightness with the lever the owner picks. Status done.
 - [[task-394-burst-rifle-flat-faces]] — Save the owner Meshy burst rifle (Aqua Wasteland Carbine), scale and pivot it for the hand, flatten its bulged flat faces. Status done.
 - [[task-395-burst-rifle-rebake]] — Re-unwrap the flattened burst rifle and re-bake its four Meshy maps onto it, as for the extractor; runs after task-394. Status cancelled.
+- [[task-396-duskite-leftover-labels]] — The last player-visible "ore" texts left by task-392 become "Duskite": shop card "Short on ore" and the end screen designer default. Status done.

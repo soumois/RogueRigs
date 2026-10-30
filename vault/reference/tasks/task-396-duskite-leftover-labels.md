@@ -1,9 +1,9 @@
 ---
 id: task-396-duskite-leftover-labels
 description: "Global task: The last player-visible "ore" texts left by task-392 become "Duskite": shop card "Short on ore" and the end screen designer default."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Duskite: leftover on-screen "ore" labels
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[ore-blocks]] and [[gdd-glossary]] (on screen the ore is always "Duskite", provisional name; identifiers and vault ids keep "ore"): the request applies this rule, no conflict. Open values: none (wording follows the task-392 forms "Total Duskite:", "Duskite secured: N"). Tech: [[wbp-shop-screen]], [[wbp-shop-card]], [[wbp-alert-objectives]]; previous task [[task-392-duskite-on-screen]]. Scope M2. No capture (owner rule 2026-10-30). Repo state 2026-10-30: task-393 (bp, editor open) in progress at task-393-01; this task runs after it. Config/DefaultGame.ini and Config/DefaultEditor.ini hold uncommitted owner changes: never commit them (commit by path).
 - confirmed_by_owner: yes (2026-10-30, scope approved by the owner, relayed by the main session: "change every occurrence of ore to Duskite" on screen)
 - milestone: M2
-- next_step: task-396-03-doc-duskite-leftovers
+- next_step: none
 - started: 2026-10-30T22:05:28Z
 - waiting_for: none
-- result: open
+- result: Done. Docs updated (982a8bd8): wbp-shop-screen, wbp-shop-card, wbp-alert-objectives.
 
 ## Subtasks
 1. task-396-01-shop-short-label (vault/reference/tasks/task-396-duskite-leftover-labels/task-396-01-shop-short-label.md) — bp: WBP_ShopScreen: ShopCard0..4 ShortLabel "Short on ore" becomes "Short on Duskite"; read WBP_ShopCard runtime texts
@@ -24,7 +24,7 @@ status: in-progress
 3. task-396-03-doc-duskite-leftovers (vault/reference/tasks/task-396-duskite-leftover-labels/task-396-03-doc-duskite-leftovers.md) — doc: update the shop screen, shop card and end screen docs with the Duskite labels
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-396-01-shop-short-label]] — step 1, bp.
 - [[task-396-02-end-ore-text-default]] — step 2, bp.
 - [[task-396-03-doc-duskite-leftovers]] — step 3, doc.
