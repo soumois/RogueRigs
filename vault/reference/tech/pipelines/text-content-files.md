@@ -127,7 +127,7 @@ Envelope, text rules and run id: [[text-content-schema]]. Examples below are ref
 ), e.g. `end_run_won`; not a closed list |
 | `title` | string | required; 1 to 4 words; the screen heading |
 | `subtitle` | string | optional; 3 to 12 words; the line under the title |
-| `lines` | array of strings | optional, non-empty when present; each 3 to 12 words; body lines in display order |
+| `lines` | array of strings | optional, non-empty when present; each 3 to 12 words, except an entry ending with `:` (a caption for a value drawn beside it), 1 to 4 words (owner 2026-10-30, task-385); body lines in display order |
 | `labels` | array of strings | optional, non-empty when present; each 1 to 4 words; short captions or button texts |
 
 - Unique texts: across every slot of every item (case-insensitive). Digits: allowed only when they appear in an excerpt of the item's log entries.
