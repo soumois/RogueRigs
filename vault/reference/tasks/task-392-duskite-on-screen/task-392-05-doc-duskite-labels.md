@@ -3,7 +3,7 @@ id: task-392-05-doc-duskite-labels
 description: "Doc: update the end screen and stats screen widget docs with the Duskite labels"
 parent: task-392-duskite-on-screen
 kind: task
-status: in-progress
+status: done
 ---
 # On-screen ore word: Duskite: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Both nodes state the Duskite labels and the check list; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 8, cache write 24113, cache read 66277, output 2734
+- usage: turns 4, context start 12k peak 29k, resumes 0, 0 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:01:43Z
 - waiting_for: none
-- result: open
+- result: wbp-alert-objectives and wbp-intermission updated with Duskite labels and ui_check, lint OK, commit 0d68fdd8
 
 ## Relations
 - [[task-392-duskite-on-screen]] — parent global task.

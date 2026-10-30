@@ -399,5 +399,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-388-chest-glow-cleared-between-levels]] — Nothing of an opened bonus chest (interior glow, opening rays and sparks, lid slam ring) stays visible in the next level of the run. Status done.
 - [[task-389-robot-particles-cleared-between-levels]] — Death puffs and debris of robots killed on the previous level no longer show when the next level starts. Status done.
 - [[task-390-run-won-back-to-main-menu]] — After the level 4 extraction, the run-won end screen button reads Main Menu and returns to the main menu instead of restarting a run. Status done.
+- [[task-392-duskite-on-screen]] — Every player-facing "Ore" text becomes "Duskite": stats screen total label, run-won ore line, the extraction bark; code identifiers and vault ids unchanged. Status done.
 - [[task-394-burst-rifle-flat-faces]] — Save the owner Meshy burst rifle (Aqua Wasteland Carbine), scale and pivot it for the hand, flatten its bulged flat faces. Status done.
 - [[task-395-burst-rifle-rebake]] — Re-unwrap the flattened burst rifle and re-bake its four Meshy maps onto it, as for the extractor; runs after task-394. Status cancelled.
