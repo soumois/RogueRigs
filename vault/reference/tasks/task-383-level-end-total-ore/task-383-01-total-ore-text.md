@@ -7,9 +7,9 @@ status: wait-answers
 ---
 # Stats screen Total Ore: text
 
-- goal: In `Content/RogueRigs/Data/Text/screen_texts.json`, item `intermission_recap`: `lines` becomes the single entry of the Total Ore label as decided in the global Q2 (default: "Total Ore:" with no {ORE}, the number is a separate widget text; other choice: "Total Ore: {ORE}"); "Ore secured this level: {ORE}" and "Ore secured this run: {ORE}" removed. Labels and their indices unchanged; no other item touched.
+- goal: In `Content/RogueRigs/Data/Text/screen_texts.json`, item `intermission_recap`: `lines` becomes the single entry of the Total Ore label as decided in the global Q2 (default: "Total Ore:" with no {ORE}, the number is a separate widget text; other choice: "Total Ore: {ORE}"); "Ore secured this level: {ORE}" and "Ore secured this run: {ORE}" removed. Labels and their indices unchanged; no other item touched. Block of 2026-10-30 (commit b72069c7): the validator required 3 to 12 words per `lines` entry; owner answer "Assouplir la règle": task-385 lets a `lines` entry ending with ":" have 1 to 4 words, so "Total Ore:" is kept as is. Log: the highest-loop `output` of the intermission_recap entry equals the item title ("LEVEL {N} CLEARED"), as in the earlier screen_texts logs.
 - agent: text
-- depends_on: none
+- depends_on: task-385-text-caption-lines (global, must be done first)
 - inputs: agent-text (vault/reference/agents/agent-text.md), sys-text-content (vault/reference/tech/systems/ui/sys-text-content.md), text-content-schema (vault/reference/tech/pipelines/text-content-schema.md), wbp-intermission (vault/reference/tech/blueprints/ui/wbp-intermission.md) (reads Lines[0..1] today), Global request and Questions of task-383-level-end-total-ore for the decided wording
 - expected_output: screen_texts.json updated with a new valid `run_id`; retrieval log in `Tools/content/logs/`; one commit `task-383-01-total-ore-text: <summary>`.
 - done_when: the validator passes; `intermission_recap` lines hold only the Q2 label, labels unchanged (index map in `result`); committed by path.
@@ -21,7 +21,7 @@ status: wait-answers
 - runs: open
 - milestone: M2
 - started: 2026-10-30T05:00:22Z
-- waiting_for: Owner decision: validator requires 3 to 12 words per screen_texts lines entry, Q2 label 'Total Ore:' has 2 words
+- waiting_for: task-385-text-caption-lines done (validator accepts the caption line Total Ore:)
 - result: open
 
 ## Relations
