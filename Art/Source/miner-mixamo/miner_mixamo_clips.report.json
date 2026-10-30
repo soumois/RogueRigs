@@ -1,0 +1,336 @@
+{
+  "export_settings": {
+    "apply_scale_options": "FBX_SCALE_UNITS",
+    "add_leaf_bones": false,
+    "use_selection": true,
+    "mesh_smooth_type": "FACE",
+    "axis_forward": "-Z",
+    "axis_up": "Y",
+    "path_mode": "COPY",
+    "embed_textures": false
+  },
+  "clips": {
+    "Idle": {
+      "frames": 94,
+      "fps": 30,
+      "duration_s": 3.1,
+      "displacement_cm_right_forward": [
+        -0.0,
+        0.0
+      ],
+      "horizontal_cm_per_cycle": 0.0,
+      "speed_cm_s": 0.0,
+      "direction_deg": null,
+      "vertical_range_cm": 0.33,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_Idle.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Rifle Aiming Idle.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 94,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 0.33
+      }
+    },
+    "RunFwd": {
+      "frames": 23,
+      "fps": 30,
+      "duration_s": 0.7333,
+      "displacement_cm_right_forward": [
+        -0.09,
+        204.45
+      ],
+      "horizontal_cm_per_cycle": 204.45,
+      "speed_cm_s": 278.8,
+      "direction_deg": -0.0,
+      "vertical_range_cm": 13.76,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_RunFwd.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Rifle Run.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 23,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 13.76
+      }
+    },
+    "WalkFwd": {
+      "frames": 44,
+      "fps": 30,
+      "duration_s": 1.4333,
+      "displacement_cm_right_forward": [
+        0.06,
+        322.02
+      ],
+      "horizontal_cm_per_cycle": 322.02,
+      "speed_cm_s": 224.7,
+      "direction_deg": 0.0,
+      "vertical_range_cm": 8.58,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_WalkFwd.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Walk With Rifle.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 44,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 8.58
+      }
+    },
+    "RunBwd": {
+      "frames": 17,
+      "fps": 30,
+      "duration_s": 0.5333,
+      "displacement_cm_right_forward": [
+        -0.02,
+        -129.96
+      ],
+      "horizontal_cm_per_cycle": 129.96,
+      "speed_cm_s": 243.7,
+      "direction_deg": -180.0,
+      "vertical_range_cm": 4.99,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_RunBwd.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Run Backwards.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 17,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 4.99
+      }
+    },
+    "WalkBwd": {
+      "frames": 39,
+      "fps": 30,
+      "duration_s": 1.2667,
+      "displacement_cm_right_forward": [
+        -0.02,
+        -111.48
+      ],
+      "horizontal_cm_per_cycle": 111.48,
+      "speed_cm_s": 88.0,
+      "direction_deg": -180.0,
+      "vertical_range_cm": 4.46,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_WalkBwd.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Backwards Rifle Walk.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 39,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 4.46
+      }
+    },
+    "RunLeft": {
+      "frames": 16,
+      "fps": 30,
+      "duration_s": 0.5,
+      "displacement_cm_right_forward": [
+        -213.54,
+        0.04
+      ],
+      "horizontal_cm_per_cycle": 213.54,
+      "speed_cm_s": 427.1,
+      "direction_deg": -90.0,
+      "vertical_range_cm": 8.01,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_RunLeft.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Run Left.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 16,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 8.01
+      }
+    },
+    "StrafeLeft": {
+      "frames": 32,
+      "fps": 30,
+      "duration_s": 1.0333,
+      "displacement_cm_right_forward": [
+        -126.83,
+        0.02
+      ],
+      "horizontal_cm_per_cycle": 126.83,
+      "speed_cm_s": 122.7,
+      "direction_deg": -90.0,
+      "vertical_range_cm": 6.73,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_StrafeLeft.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Strafe Left.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 32,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 6.73
+      }
+    },
+    "RunRight": {
+      "frames": 16,
+      "fps": 30,
+      "duration_s": 0.5,
+      "displacement_cm_right_forward": [
+        213.56,
+        -0.02
+      ],
+      "horizontal_cm_per_cycle": 213.56,
+      "speed_cm_s": 427.1,
+      "direction_deg": 90.0,
+      "vertical_range_cm": 11.39,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_RunRight.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Run Right.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 16,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 11.39
+      }
+    },
+    "StrafeRight": {
+      "frames": 21,
+      "fps": 30,
+      "duration_s": 0.6667,
+      "displacement_cm_right_forward": [
+        194.77,
+        -0.03
+      ],
+      "horizontal_cm_per_cycle": 194.77,
+      "speed_cm_s": 292.2,
+      "direction_deg": 90.0,
+      "vertical_range_cm": 8.83,
+      "character_right_axis": [
+        -1.0,
+        -0.0,
+        0.0
+      ],
+      "character_forward_axis": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "export": "Anims/A_Miner_StrafeRight.fbx",
+      "in_place_max_horizontal_hips_cm": 0.0,
+      "source": "Strafe.fbx",
+      "reread": {
+        "actions": 1,
+        "frames": 21,
+        "fps": 30,
+        "hips_horizontal_after_cm": 0.0,
+        "hips_vertical_range_cm": 8.83
+      }
+    }
+  },
+  "sk_miner": "SK_Miner.fbx",
+  "skeleton_check": {
+    "bones": 66,
+    "root": [
+      "mixamorig:Hips"
+    ],
+    "sk_miner_triangles": 25744,
+    "sk_miner_dimensions_cm": [
+      185.5,
+      46.5,
+      170.0
+    ],
+    "sk_miner_actions": 0,
+    "clips_identical_hierarchy": {
+      "Idle": true,
+      "RunFwd": true,
+      "WalkFwd": true,
+      "RunBwd": true,
+      "WalkBwd": true,
+      "RunLeft": true,
+      "StrafeLeft": true,
+      "RunRight": true,
+      "StrafeRight": true
+    }
+  }
+}

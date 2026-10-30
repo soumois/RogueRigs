@@ -27,6 +27,7 @@ kind: note
 - [[barrel-asset]] — the barrel as built and integrated: files, slots, decals, wear, rejected approaches, Unreal side.
 - [[asteroid-asset]] — the four background asteroid meshes (Blender route): files, budget, seeds, rebuild command.
 - [[kie-image-workflow]] — Kie.ai image generation in practice: hosts, variables, costs, permissions, rules.
+- [[miner-mixamo-clips]] — the nine Mixamo clips of the miner: measures per clip (direction, speed), in-place method, FBX export settings.
 - [[barrel-asset-history]] — task map of the barrel work, what each step superseded, Kie credits spent.
 
 ## Relations
