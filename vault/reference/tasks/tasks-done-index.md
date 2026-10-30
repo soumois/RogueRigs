@@ -407,3 +407,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-396-duskite-leftover-labels]] — The last player-visible "ore" texts left by task-392 become "Duskite": shop card "Short on ore" and the end screen designer default. Status done.
 - [[task-397-shuttle-stays-gone]] — After the end-of-level takeoff, the extractor never shows again at its start spot behind the stats, shop or upgrade screens. Status done.
 - [[task-398-upgrade-screen-backdrop]] — A full-screen black at 70 % opacity behind the Spare Parts shop screen (WBP_ShopScreen), as on the level-up cards; the finished level dimly visible. Status done.
+- [[task-399-total-duskite-number-overlap]] — on the level-end stats screen the Total Duskite number is drawn over the end of its label; place it beside the label. Status done.

@@ -3,7 +3,7 @@ id: task-399-03-doc-total-duskite-row
 description: "Doc: update the wbp-intermission doc: ore band layout after the fix"
 parent: task-399-total-duskite-number-overlap
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen: Total Duskite number overlaps its label: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: wbp-intermission lists the ore band widgets with anchors, alignment, offsets or slot paddings after the fix, the task-399 reference and the verification state; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 8, cache write 22200, cache read 48797, output 2374
+- usage: turns 4, context start 11k peak 22k, resumes 0, 0 min, units 0.04 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T23:42:38Z
 - waiting_for: none
-- result: open
+- result: wbp-intermission updated (OreRow, anchor_rule, Q1 A exception, verification); commit 9ffae3d0; lint OK
 
 ## Relations
 - [[task-399-total-duskite-number-overlap]] — parent global task.

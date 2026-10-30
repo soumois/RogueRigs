@@ -1,9 +1,9 @@
 ---
 id: task-399-total-duskite-number-overlap
 description: "Global task: on the level-end stats screen the Total Duskite number is drawn over the end of its label; place it beside the label."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen: Total Duskite number overlaps its label
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[intermission]] (provisional): the top band holds the single Total Duskite line beside the ore icon, label and a larger number as the mockup (task-383 Q2, Q3): the request matches it, no conflict, no gdd edit. Rules versus rendering: layout fix only, no rule or text change. Tech read: [[wbp-intermission]] (OreIcon (0.40,0.31) 88 x 88, OreLabel (0.43,0.31) align (0,0.5) auto, OreValue (0.525,0.31) align (0,0.5) auto, task-383-02), [[umg-layout]] (rule: Canvas and anchors, no HorizontalBox to centre elements on a text line; the Q1 default is an exception the owner decides, the rule node is not edited). Open values: the fix method (Q1) and the capture (Q2). Scope M2. Repo state 2026-10-30: Config/DefaultGame.ini, Config/DefaultEditor.ini and vault/.obsidian/community-plugins.json have uncommitted owner changes: leave them untouched, commit by path.
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-399-03-doc-total-duskite-row
+- next_step: none
 - started: 2026-10-30T23:32:52Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-intermission updated (OreRow, anchor_rule, Q1 A exception, verification); commit 9ffae3d0; lint OK
 
 ## Questions
 Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -29,7 +29,7 @@ Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; v
 3. task-399-03-doc-total-duskite-row (vault/reference/tasks/task-399-total-duskite-number-overlap/task-399-03-doc-total-duskite-row.md) — doc: update the wbp-intermission doc: ore band layout after the fix
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-399-01-total-duskite-row]] — step 1, bp.
 - [[task-399-02-total-duskite-capture]] — step 2, capture.
 - [[task-399-03-doc-total-duskite-row]] — step 3, doc.
