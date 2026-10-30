@@ -1,0 +1,44 @@
+---
+id: task-380-level-end-frame-sprites
+description: "Global task: Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Level-end screen frame sprites in 3x3 (9-slice)
+
+- request: Owner, 2026-10-30, verbatim (relayed by the main session, after task-378): "Je te laisse utiliser l'api pour reprendre les éléments que tu as besoin. N'oublie pas de faire les cadres avec le système 3x3". He brought two images he generated with ChatGPT from the task-378 prompt: the mockup of the level-end stats screen (LEVEL 1 CLEARED, title with side bars, subtitle NEXT UP: LEVEL 2 OF 4, a riveted teal and gunmetal frame with a Total Ore 61 band on top and two columns Robots destroyed / Damage dealt, NEXT LEVEL cream button, dimmed arena behind) and an asset sheet (title bar, main panel, modular panel components corners and edges, panel variants, stats sub-panel single row, stats panel two columns, divider components, corner details, NEXT LEVEL / REROLL / BUY button states, duskite ore icons and effects, misc elements, text styles). Reading (main session and Planner, to confirm in Q1 to Q3): "l'api" = the Kie.ai image API (Tools/art/kie_image.js, art agent) to regenerate the elements the screen needs, as in task-348; "les cadres avec le système 3x3" = the frames are made as 9-slice sprites (4 fixed corners, 4 stretching edges, a stretching centre) for UMG Draw As Box. The images are archived in the repo and a vault node (rule: every owner image is saved in the repo). No widget change is assumed: Q1.
+- goal: The two owner images are saved in the repo and described in a node art-prompts-level-end-screen-mockup; the frame sprites the level-end screen lacks are generated with Kie.ai GPT Image 2, keyed, retained by the owner and stored in Art/UI/LevelEnd/ as 9-slice (main frame) and 3-slice (dividers) sprites with their margins written down; the existing Spare Parts sprites are reused where they match.
+- acceptance: Art/Source/level-end-screen/reference/ holds both owner images as received; node vault/reference/gdd/art-audio/art-prompts-level-end-screen-mockup.md lists files, contents, elements taken and not taken, reused sprites and the 3x3 method, linked from art-prompts and art-prompts-level-end-screen; Art/UI/LevelEnd/ holds the retained keyed PNGs T_LevelEnd_Frame.png (9-slice: details only in the corners, uniform edges, flat dark centre), T_LevelEnd_DividerH.png and T_LevelEnd_DividerV.png (3-slice: fixed bolted ends, uniform middle), each with its margins in px and as UMG fractions in the node; ui_icon_prepare.js --check clean; no baked text; every candidate sent to the owner; credits within Q5; no widget, Blueprint or C++ change (Q1); lint clean; committed by path.
+- gdd_check: Read 2026-10-30: intermission (stats screen spec: over the paused finished level, ore secured this level and run total, robots destroyed per type as text, damage per weapon, Next level), wbp-intermission (current widget: Border RecapPanel, no sprite), art-prompts-level-end-screen (task-378 prompt and decisions), art-prompts-shop-screen-mockup (task-348 method: Kie.ai GPT Image 2 image-to-image with the ChatGPT images as refs, magenta key, 2 variants, sprites retained in Art/UI/Shop/; T_Shop_Panel 9-slice estimated left/right 150 px top/bottom 75 px, untested, with bolted tabs in the middle of its long sides: not clean for 9-slice), wbp-shop-screen (UMG form: Border or Button brush Draw As Box, margins as fractions, e.g. ShopPanel 0.146 / 0.183, Reroll 0.164, Continue 0.155), handover-2026-10-29-shop-screen, agent-art, kie-image-workflow, art-3d-lessons, umg-layout. 9-slice in the vault so far: one PNG per frame, margins estimated and written in the mockup node, applied in UMG as Box brush; no separate corner pieces. Conflicts and gaps: (1) the mockup shows one "Total Ore" line while intermission has ore secured this level and run total: a widget question, not a sprite one (Q1); (2) the mockup frame and its dividers carry bolts and tabs in the middle of edges, which a 9-slice would stretch (Q3); (3) the sheet is too small to cut final sprites from (about 1500 x 850 for 20 groups), as in task-348; (4) the asset sheet labels ore "duskite": not in the GDD, not taken (icons are not taken, Q2). Open values touched: robot type icons (open in the GDD, not on this screen: names as text). Rule A6 (white plates): the gunmetal and teal look was accepted on purpose for Spare Parts (task-348-01), assumed to carry over (Q5). In milestone scope (M2 UI art).
+- confirmed_by_owner: no (plan and questions handed back 2026-10-30)
+- milestone: M2
+- next_step: task-380-01-archive-mockup
+- started: open
+- waiting_for: owner confirmation of the plan
+- result: open
+
+## Questions
+Asked 2026-10-30, each with a default; open until the owner answers.
+- Q1 Scope: this task makes and stores the sprites only (art); importing them and rebuilding WBP_Intermission to the mockup is not in it. Default: sprites only; the screen rebuild (import, WBP_Intermission, capture, doc) is a separate task planned when you ask for it after retaining the sprites; then the GDD keeps the two ore lines (this level and run total) although the mockup shows only Total Ore, unless you say otherwise.
+- Q2 Elements: new sprites = the main frame (teal corner brackets, riveted gunmetal edges), a horizontal divider and a vertical divider with bolted ends (they split the frame into the Total Ore band and the two columns, so the single-row sub-panel and the two-column panel of the sheet are not separate sprites). Reused: T_Shop_TitleBar (title side bars), T_Shop_ButtonContinue for NEXT LEVEL (hover, pressed, disabled by UMG tint as on Spare Parts), T_Icon_Ore. Not taken: REROLL and BUY, the ore icons and effects, panel variants hovered and disabled, misc elements, the thin lines beside the subtitle and under the column headers (plain UMG lines). Default: as listed.
+- Q3 3x3 method: one PNG per frame; only the corners carry details (teal brackets, bolts); the four edges are uniform strips with no bolt or tab between the corners (unlike T_Shop_Panel and the mockup dividers); the centre is a flat dark plate that stretches without visible change; margins measured in px and written with their UMG fraction (Draw As Box, as WBP_ShopScreen). The dividers are 3-slice (fixed bolted ends, uniform middle). Not 9 separate pieces as in the sheet modular components. Default: as described.
+- Q4 Reach of the 3x3 rule: this screen only; T_Shop_Panel of Spare Parts is not remade and no rule node is edited. Default: this screen only.
+- Q5 Generation: Kie.ai GPT Image 2 image-to-image, refs the asset sheet (Image 1) and the mockup (Image 2), 1K, magenta key, 2 variants per sprite, at most 1 correction run per art subtask: 36 credits planned (3 sprites), 72 at most; the ChatGPT images count as your own design reproduced closely (as task-348 Q1); every candidate sent to you, you pick; the gunmetal and teal look without white plates (A6) accepted as for Spare Parts. Default: yes.
+- Q6 Archive: the two images saved as received in Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp and chatgpt-level-end-asset-sheet-2026-10-30.webp, described in a new node art-prompts-level-end-screen-mockup (child of art-prompts), committed. Default: yes.
+
+## Subtasks
+1. task-380-01-archive-mockup (vault/reference/tasks/task-380-level-end-frame-sprites/task-380-01-archive-mockup.md) — art: save the owner mockup and asset sheet in the repo and write the node art-prompts-level-end-screen-mockup; no generation
+2. task-380-02-main-frame-sprite (vault/reference/tasks/task-380-level-end-frame-sprites/task-380-02-main-frame-sprite.md) — art: main frame sprite after the sheet, 9-slice (corners only detailed, uniform edges, flat centre), keyed, retained by the owner
+3. task-380-03-divider-sprites (vault/reference/tasks/task-380-level-end-frame-sprites/task-380-03-divider-sprites.md) — art: horizontal and vertical divider sprites with bolted ends, 3-slice, keyed, retained by the owner
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-380-01-archive-mockup]] — step 1, art.
+- [[task-380-02-main-frame-sprite]] — step 2, art.
+- [[task-380-03-divider-sprites]] — step 3, art.
+- [[art-prompts-level-end-screen]] — the task-378 prompt these images answer.
+- [[art-prompts-shop-screen-mockup]] — Spare Parts sprites, method and 9-slice record this task follows.
+- [[intermission]] — the stats screen spec.
+- [[wbp-intermission]] — the current widget, not changed here (Q1).
+- [[task-378-level-end-screen-prompt]] — previous task: the prompt.
