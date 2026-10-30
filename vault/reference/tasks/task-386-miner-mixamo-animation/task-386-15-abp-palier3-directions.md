@@ -3,7 +3,7 @@ id: task-386-15-abp-palier3-directions
 description: "Bp: add the other clips and directions to ABP_Miner, by steps, reusing or rebuilding BS_Miner_Locomotion"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: step 3 other directions
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T06:45:26Z
 - waiting_for: none
 - result: open
 
