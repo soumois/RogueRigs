@@ -1,9 +1,9 @@
 ---
 id: task-388-chest-glow-cleared-between-levels
 description: "Global task: Nothing of an opened bonus chest (interior glow, opening rays and sparks, lid slam ring) stays visible in the next level of the run."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Bonus chest glow removed between levels
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[objective-bonus-chest]] (approved; opening: interior glow point light 3 s then fades, interior stays lit, rays and sparks, ground ring): nothing says the effects outlive the level; no conflict. [[intermission]] (provisional): next level prepared in the same world; no rule on leftover effects; no conflict. Tech read: [[sys-run-transition-preload]] (ClearingLevel destroys console, chest, shuttle and returns enemies, pickups, projectiles, ARRExplosionFX, turrets; world-spawned Niagara systems not listed), [[bp-bonus-chest]] (OnLidSlam and OnLidOpened use SpawnSystemAtLocation; InnerLight is a Mesh child). Open values: none. Scope M2. No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path).
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
-- next_step: task-388-02-doc-chest-effects
+- next_step: none
 - started: 2026-10-30T20:43:17Z
 - waiting_for: none
-- result: open
+- result: Done. Doc: sys-run-transition-preload, sys-objectives-console-chest, bp-bonus-chest updated (commit 3114f850); look left to owner.
 
 ## Questions
 Decided 2026-10-30 (owner answers relayed by the main session); values provisional, owner 2026-10-30.
@@ -27,7 +27,7 @@ Decided 2026-10-30 (owner answers relayed by the main session); values provision
 2. task-388-02-doc-chest-effects (vault/reference/tasks/task-388-chest-glow-cleared-between-levels/task-388-02-doc-chest-effects.md) — doc: update the preload and chest docs with the effects cleared between levels
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-388-01-clear-chest-effects]] — step 1, cpp.
 - [[task-388-02-doc-chest-effects]] — step 2, doc.
 - [[objective-bonus-chest]] — the chest opening whose effects must not outlive the level.

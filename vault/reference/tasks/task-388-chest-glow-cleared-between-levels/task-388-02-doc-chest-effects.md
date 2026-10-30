@@ -3,7 +3,7 @@ id: task-388-02-doc-chest-effects
 description: "Doc: update the preload and chest docs with the effects cleared between levels"
 parent: task-388-chest-glow-cleared-between-levels
 kind: task
-status: in-progress
+status: done
 ---
 # Bonus chest glow removed between levels: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The listed nodes state the new clear, its log line and that the look is left to the owner (no capture); lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 40725, cache read 142313, output 3680
+- usage: turns 6, context start 11k peak 41k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T20:57:48Z
 - waiting_for: none
-- result: open
+- result: Doc: sys-run-transition-preload, sys-objectives-console-chest, bp-bonus-chest updated (commit 3114f850); look left to owner.
 
 ## Relations
 - [[task-388-chest-glow-cleared-between-levels]] — parent global task.
