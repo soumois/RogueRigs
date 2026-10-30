@@ -105,11 +105,15 @@ struct ROGUERIGS_API FRRIntermissionRecap
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	int32 LevelCount = 0;
 
-	/** Ore secured by the extraction of this level. */
+	/** Ore secured by the extraction of this level (data and logs; never shown as the total). */
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	int32 OreSecuredThisLevel = 0;
 
-	/** Ore secured since the run started (this level included). */
+	/**
+	 * Stats screen "Total Ore" (WBP_Intermission reads it by name): the secured ore balance held after this extraction, every
+	 * purchase and reroll subtracted (URROreBankSubsystem::GetSecuredOre, task-391-04); equals the shop balance that follows
+	 * and the run won end screen line.
+	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Run|Transition")
 	int32 RunSecuredOre = 0;
 

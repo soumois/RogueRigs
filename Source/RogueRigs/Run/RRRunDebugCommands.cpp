@@ -30,23 +30,24 @@ namespace RRRunDebug
 		}
 	}
 
-	/** rr.Run.Status: logs level index, layout, last-level flag, pending snapshot, run ore and transition phase. */
+	/** rr.Run.Status: logs level index, layout, last-level flag, pending snapshot, secured ore balance and transition phase. */
 	FAutoConsoleCommand StatusCommand(
 		TEXT("rr.Run.Status"),
-		TEXT("rr.Run.Status: logs the run state (level index, layout, last level, pending snapshot, run secured ore, transition phase)."),
+		TEXT("rr.Run.Status: logs the run state (level index, layout, last level, pending snapshot, secured ore balance, transition phase)."),
 		FConsoleCommandDelegate::CreateLambda([]()
 		{
 			UWorld* World = RRCheats::FindCheatWorld();
 			const URRRunSubsystem* Run = URRRunSubsystem::Get(World);
 			const URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(World);
+			const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
 			if (!Run)
 			{
 				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Run.Status: no game instance run subsystem."));
 				return;
 			}
-			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.Status: run %s, level %d/%d, layout %s, last level %d, snapshot pending %d, run secured ore %d, transition %s, run won %d."),
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Run.Status: run %s, level %d/%d, layout %s, last level %d, snapshot pending %d, secured ore balance %d, transition %s, run won %d."),
 				Run->IsRunInProgress() ? TEXT("in progress") : TEXT("none"), Run->GetLevelIndex(), Run->GetLevelCount(), *Run->GetCurrentLayoutName(),
-				Run->IsLastLevel() ? 1 : 0, Run->HasPendingSnapshot() ? 1 : 0, Run->GetRunSecuredOre(),
+				Run->IsLastLevel() ? 1 : 0, Run->HasPendingSnapshot() ? 1 : 0, RunFlow ? RunFlow->GetSecuredOre() : -1,
 				Transition ? PhaseName(Transition->GetPhase()) : TEXT("no subsystem"), Transition && Transition->IsRunWon() ? 1 : 0);
 		}),
 		ECVF_Cheat);

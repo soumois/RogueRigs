@@ -86,6 +86,7 @@ bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
 		return false;
 	}
 	UWorld* World = Miner ? Miner->GetWorld() : nullptr;
+	const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
 	Recap = FRRIntermissionRecap();
 	Recap.FinishedLevelIndex = Run->GetLevelIndex();
 	Recap.LevelCount = Run->GetLevelCount();
@@ -95,8 +96,9 @@ bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
 		// Last level (task-317-01): stats screen with the run won flag; its button leads to the run won end screen, no shop.
 		bRunWon = true;
 		Recap.bRunWon = true;
-		Recap.OreSecuredThisLevel = Run->GetLevelSecuredOre();
-		Recap.RunSecuredOre = Run->GetRunSecuredOre();
+		// Total Ore = the balance held (task-391-04), the same figure as the run won end screen line.
+		Recap.OreSecuredThisLevel = RunFlow ? RunFlow->GetExtractionSecuredOre() : 0;
+		Recap.RunSecuredOre = RunFlow ? RunFlow->GetSecuredOre() : 0;
 		MapToOpen.Reset();
 	}
 	else
@@ -119,20 +121,18 @@ bool URRRunTransitionSubsystem::HandleLevelExtracted(ARRMiner* Miner)
 	IntermissionWorld = World;
 	IntermissionMiner = Miner;
 	Phase = ERRRunTransitionPhase::Stats;
-	// Ore figures next to each other (task-391-01): the recap total, the run getters, the spendable balance and the objective count.
-	const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	// Ore figures next to each other (task-391-01, task-391-04): the recap total (balance), the live bank balance and the objective count.
 	const ARRConsole* Console = RunFlow ? RunFlow->GetConsole() : nullptr;
-	const FString OreState = FString::Printf(TEXT("level getter %d, run getter %d, spendable secured %d, console marked rocks %d/%d"),
-		Run->GetLevelSecuredOre(), Run->GetRunSecuredOre(), RunFlow ? RunFlow->GetSecuredOre() : -1,
-		Console ? Console->GetMarkedRockCount() : -1, Console ? Console->GetInitialMarkedRockCount() : -1);
+	const FString OreState = FString::Printf(TEXT("secured balance now %d, console marked rocks %d/%d"),
+		RunFlow ? RunFlow->GetSecuredOre() : -1, Console ? Console->GetMarkedRockCount() : -1, Console ? Console->GetInitialMarkedRockCount() : -1);
 	if (Recap.bRunWon)
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d/%d extracted, run won: stats screen (ore secured this level %d, run %d; %d kills, %d weapons; %s)."),
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d/%d extracted, run won: stats screen (ore secured this level %d, Total Ore balance %d; %d kills, %d weapons; %s)."),
 			Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.TotalKills, Recap.DamageByWeapon.Num(), *OreState);
 	}
 	else
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: stats screen after level %d/%d: ore secured this level %d, run %d; %d kills, %d weapons; next level %d on %s (layout %s), map %s; %s."),
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: stats screen after level %d/%d: ore secured this level %d, Total Ore balance %d; %d kills, %d weapons; next level %d on %s (layout %s), map %s; %s."),
 			Recap.FinishedLevelIndex, Recap.LevelCount, Recap.OreSecuredThisLevel, Recap.RunSecuredOre, Recap.TotalKills, Recap.DamageByWeapon.Num(),
 			Recap.NextLevelIndex, *Recap.NextLayoutName,
 			Run->IsLayoutReady(Recap.NextLevelIndex) ? TEXT("ready") : (Run->IsLayoutPending(Recap.NextLevelIndex) ? TEXT("pending") : TEXT("failed")), *MapToOpen, *OreState);

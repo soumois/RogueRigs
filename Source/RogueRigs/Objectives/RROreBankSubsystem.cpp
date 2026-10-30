@@ -19,8 +19,7 @@ int32 URROreBankSubsystem::AddSecuredOre(int32 Amount)
 	if (Amount > 0)
 	{
 		SecuredOre += Amount;
-		SecuredSinceReset += Amount;
-		UE_LOG(LogRogueRigs, Log, TEXT("URROreBankSubsystem: %d ore secured, session total %d, secured since the run start %d."), Amount, SecuredOre, SecuredSinceReset);
+		UE_LOG(LogRogueRigs, Log, TEXT("URROreBankSubsystem: %d ore secured, session total %d."), Amount, SecuredOre);
 	}
 	return SecuredOre;
 }
@@ -39,9 +38,7 @@ int32 URROreBankSubsystem::RemoveSecuredOre(int32 Amount)
 int32 URROreBankSubsystem::ResetSecuredOre()
 {
 	const int32 Cleared = SecuredOre;
-	const int32 ClearedSinceReset = SecuredSinceReset;
 	SecuredOre = 0;
-	SecuredSinceReset = 0;
-	UE_LOG(LogRogueRigs, Log, TEXT("URROreBankSubsystem: run ended, %d secured ore cleared (%d secured during the run), session total 0."), Cleared, ClearedSinceReset);
+	UE_LOG(LogRogueRigs, Log, TEXT("URROreBankSubsystem: run ended, %d secured ore cleared, session total 0."), Cleared);
 	return Cleared;
 }

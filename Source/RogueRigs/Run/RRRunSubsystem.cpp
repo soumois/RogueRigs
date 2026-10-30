@@ -238,8 +238,6 @@ void URRRunSubsystem::BeginRun(const FString& Level1LayoutName)
 	LastSnapshot = FRRRunMinerSnapshot();
 	bSnapshotPending = false;
 	CaptureWorld.Reset();
-	SecuredOreAtRunStart = GetBankSecuredSinceReset();
-	SecuredOreAtLevelStart = SecuredOreAtRunStart;
 	ClearLayoutRequest();
 	const FString Layout = GetCurrentLayoutName();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run started, level 1/%d on layout %s."), GetLevelCount(), *Layout);
@@ -278,11 +276,11 @@ bool URRRunSubsystem::CaptureLevelEndSnapshot(ARRMiner* Miner)
 		Snapshot.Health = HealthSet->GetHealth();
 		Snapshot.MaxHealth = HealthSet->GetMaxHealth();
 	}
-	const int32 BankOre = GetBankSecuredOre();
-	Snapshot.OreSecuredThisLevel = GetLevelSecuredOre();
-	Snapshot.RunSecuredOre = GetRunSecuredOre();
+	// Recap total = the balance held after this extraction, every purchase and reroll already subtracted (task-391-04).
+	Snapshot.RunSecuredOre = GetBankSecuredOre();
 	if (const URRRunFlowSubsystem* RunFlow = Miner->GetWorld() ? Miner->GetWorld()->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
 	{
+		Snapshot.OreSecuredThisLevel = RunFlow->GetExtractionSecuredOre();
 		Snapshot.CarriedOreAtCapture = RunFlow->GetCarriedOre();
 	}
 	if (Snapshot.CarriedOreAtCapture > 0)
@@ -293,9 +291,9 @@ bool URRRunSubsystem::CaptureLevelEndSnapshot(ARRMiner* Miner)
 	LastSnapshot = Snapshot;
 	bSnapshotPending = true;
 	CaptureWorld = Miner->GetWorld();
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: snapshot of level %d: miner level %d XP %.2f, health %.1f/%.1f, weapons [%s], %d cards [%s], ore secured this level %d, run %d, bank %d."),
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: snapshot of level %d: miner level %d XP %.2f, health %.1f/%.1f, weapons [%s], %d cards [%s], ore secured this level %d, bank balance %d."),
 		LevelIndex, Snapshot.MinerLevel, Snapshot.MinerXP, Snapshot.Health, Snapshot.MaxHealth, *DescribeWeaponClasses(Snapshot.WeaponClasses),
-		Snapshot.PickedCards.Num(), *DescribeCards(Snapshot.PickedCards), Snapshot.OreSecuredThisLevel, Snapshot.RunSecuredOre, BankOre);
+		Snapshot.PickedCards.Num(), *DescribeCards(Snapshot.PickedCards), Snapshot.OreSecuredThisLevel, Snapshot.RunSecuredOre);
 	OnLevelSnapshotCaptured.Broadcast(LastSnapshot);
 	return true;
 }
@@ -329,7 +327,6 @@ bool URRRunSubsystem::AdvanceToNextLevel()
 		return false;
 	}
 	++LevelIndex;
-	SecuredOreAtLevelStart = GetBankSecuredSinceReset();
 	const FString Layout = GetCurrentLayoutName();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: advanced to level %d/%d, layout %s, snapshot %s."),
 		LevelIndex, GetLevelCount(), *Layout, bSnapshotPending ? TEXT("pending") : TEXT("none"));
@@ -477,24 +474,6 @@ FString URRRunSubsystem::GetLayoutNameForLevel(int32 InLevelIndex) const
 	}
 	const TArray<FString>& Layouts = GetDefault<URRRunSettings>()->LevelLayouts;
 	return Layouts.IsValidIndex(InLevelIndex - 1) ? Layouts[InLevelIndex - 1] : FString();
-}
-
-int32 URRRunSubsystem::GetRunSecuredOre() const
-{
-	// Secured-since-reset total, not the spendable balance: purchases and rerolls do not lower the run total (task-391-01).
-	return bRunInProgress ? GetBankSecuredSinceReset() - SecuredOreAtRunStart : 0;
-}
-
-int32 URRRunSubsystem::GetLevelSecuredOre() const
-{
-	return bRunInProgress ? GetBankSecuredSinceReset() - SecuredOreAtLevelStart : 0;
-}
-
-int32 URRRunSubsystem::GetBankSecuredSinceReset() const
-{
-	const UGameInstance* GameInstance = GetGameInstance();
-	const URROreBankSubsystem* Bank = GameInstance ? GameInstance->GetSubsystem<URROreBankSubsystem>() : nullptr;
-	return Bank ? Bank->GetSecuredSinceReset() : 0;
 }
 
 int32 URRRunSubsystem::GetBankSecuredOre() const

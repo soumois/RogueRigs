@@ -827,10 +827,9 @@ bool URRRunFlowSubsystem::ShowRunWonEndScreen()
 	{
 		return false;
 	}
-	// The end screen ore line reads URRRunSubsystem::GetRunSecuredOre (task-391-01); GetSecuredOre is the spendable balance.
-	const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, miner extracted, run won (after the stats screen): run secured ore %d, spendable secured %d, console marked rocks %d/%d."),
-		Run ? Run->GetRunSecuredOre() : -1, GetSecuredOre(), Console ? Console->GetMarkedRockCount() : -1, Console ? Console->GetInitialMarkedRockCount() : -1);
+	// The end screen ore line reads GetSecuredOre, the balance held, the same figure as the stats screen Total Ore (task-391-04).
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, miner extracted, run won (after the stats screen): secured ore balance %d (ore secured by this extraction %d), console marked rocks %d/%d."),
+		GetSecuredOre(), ExtractionSecuredOre, Console ? Console->GetMarkedRockCount() : -1, Console ? Console->GetInitialMarkedRockCount() : -1);
 	OnRunEnded.Broadcast(true);
 	return true;
 }
@@ -912,6 +911,7 @@ void URRRunFlowSubsystem::ResetForNextLevel()
 	bShuttleFailureLogged = false;
 	bDropFailureLogged = false;
 	CarriedOre = 0;
+	ExtractionSecuredOre = 0;
 	bCarriedOreClosed = false;
 	DoneHordePositions.Reset();
 	AlertBarEvents.Reset();
@@ -1090,6 +1090,7 @@ void URRRunFlowSubsystem::SecureCarriedOre()
 		return;
 	}
 	CarriedOre = 0;
+	ExtractionSecuredOre += Amount;
 	int32 Secured = 0;
 	if (URROreBankSubsystem* Bank = URROreBankSubsystem::Get(this))
 	{

@@ -356,6 +356,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "RunFlow|Ore")
 	int32 GetSecuredOre() const;
 
+	/** Ore this level's successful extraction moved from carried to secured (0 before it and after ResetForNextLevel); recap OreSecuredThisLevel. */
+	int32 GetExtractionSecuredOre() const { return ExtractionSecuredOre; }
+
 	/**
 	 * Adds Amount (> 0) to the carried ore and broadcasts OnOreChanged. Refused (false) once the run ended or the miner died.
 	 * Called by ARRPickup::Collect for Ore pickups (their OreValue) and by the GrantOre cheat.
@@ -436,6 +439,9 @@ protected:
 
 	/** Secured total used when the world has no ore bank (bare test worlds without an initialized game instance). */
 	int32 LocalSecuredOre = 0;
+
+	/** Ore secured by this level's extraction (SecureCarriedOre); cleared by ResetForNextLevel. */
+	int32 ExtractionSecuredOre = 0;
 
 	/** True once the run ended or the miner died: the carried count no longer grows. */
 	bool bCarriedOreClosed = false;

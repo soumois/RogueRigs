@@ -65,11 +65,11 @@ struct ROGUERIGS_API FRRRunMinerSnapshot
 	UPROPERTY(BlueprintReadOnly, Category = "Run")
 	float MaxHealth = 0.f;
 
-	/** Ore secured during this level (recap): URRRunSubsystem::GetLevelSecuredOre at capture, spending not subtracted. */
+	/** Ore secured by this level's extraction (recap data, URRRunFlowSubsystem::GetExtractionSecuredOre at capture). */
 	UPROPERTY(BlueprintReadOnly, Category = "Run")
 	int32 OreSecuredThisLevel = 0;
 
-	/** Ore secured since the run started (recap run total, URRRunSubsystem::GetRunSecuredOre at capture, spending not subtracted). */
+	/** Secured ore balance held at capture, every purchase and reroll subtracted (recap Total Ore, bank GetSecuredOre, task-391-04). */
 	UPROPERTY(BlueprintReadOnly, Category = "Run")
 	int32 RunSecuredOre = 0;
 
