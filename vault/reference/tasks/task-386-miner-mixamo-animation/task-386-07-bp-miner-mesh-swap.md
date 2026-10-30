@@ -3,7 +3,7 @@ id: task-386-07-bp-miner-mesh-swap
 description: "Bp: BP_Miner: SK_Miner and ABP_Miner_C instead of SKM_Quinn_Simple and ABP_Unarmed, feet on the floor, facing the aim"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:53:06Z
 - waiting_for: none
 - result: open
 
