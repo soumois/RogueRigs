@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-379-new-run-loading-screen]] — Main menu New Run shows the level-change loading screen before the map opens and until level 1 is ready, instead of a direct OpenLevel. Status wait-answers.
+- [[task-379-new-run-loading-screen]] — Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar. Status wait-answers.

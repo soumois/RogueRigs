@@ -22,7 +22,7 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 - No animation, no music.
 
 ## Behaviour
-- New Run: resets the run and opens L_ArenaM1 at level 1 ([[run-structure]]).
+- New Run: resets the run and opens L_ArenaM1 at level 1 ([[run-structure]]) behind the loading screen of the level changes ([[wbp-loading]], "DROPPING IN", "Level 1"): drawn over the menu before the map opens, kept in the arena until level 1 is ready (gameplay held as between levels), then a 0.5 s fade in from black. The map loading has no measured progress, so the loading animation of [[intermission]] replaces the bar (owner 2026-10-30, provisional, task-379).
 - Options: shown greyed out, does nothing (built later).
 - Exit: quits the game.
 - Mouse cursor shown; keyboard focus on New Run (Enter starts a run).
