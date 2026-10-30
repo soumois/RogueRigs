@@ -40,6 +40,15 @@ Kie.ai GPT Image 2 image-to-image, refs the sheet (Image 1) and the mockup (Imag
 - Draw As Box margins (margin / texture size): L and R 90 / 942 = 0.0955; T and B 86 / 458 = 0.1878. The earlier eye guess was about 92 px L/R and 81 px T/B: L/R confirmed, T/B 5 px larger.
 - Gaps accepted by the owner: rivets along the four edges stretch into ovals when the frame is scaled (the brief asked for none); A6 and A7 reminders accepted.
 
+### T_LevelEnd_DividerH and T_LevelEnd_DividerV (task-380-03)
+- Files: `Art/UI/LevelEnd/T_LevelEnd_DividerH.png` 984 x 62 RGBA (H1 keyed, 1024 x 102 cropped to the alpha bounding box) and `Art/UI/LevelEnd/T_LevelEnd_DividerV.png` 58 x 984 RGBA (V1 keyed, 98 x 1024 cropped). `ui_icon_prepare.js --check`: corners transparent, no magenta or pink spill.
+- Prompts: `Art/Source/level-end-screen/prompts/02-divider-h.txt` (run `20261029-174247-level-end-screen`, log `Art/Source/level-end-screen/20261029-174247-level-end-screen.json`) and `Art/Source/level-end-screen/prompts/03-divider-v.txt` (run `20261029-174426-level-end-screen`, log `Art/Source/level-end-screen/20261029-174426-level-end-screen.json`). 2 variants each, 12 credits per run, 24 credits total, no correction run.
+- Retained: H1 (raw `20261029-174247-level-end-screen-1.png`, keyed `-1-keyed.png`) and V1 (raw `20261029-174426-level-end-screen-1.png`, keyed `-1-keyed.png`), both chosen by the owner as is. V2 rejected: shading break.
+- Reviews: `Art/Source/level-end-screen/20261029-174247.review.json`, `Art/Source/level-end-screen/20261029-174426.review.json`.
+- End-cap margins measured by pixel profile on the cropped files (column or row mean against the middle, where the cap becomes uniform; tolerance 10 of 255, 6 gives 70/67 and 76/57): H left 68, right 65 of 984, fractions 0.069 and 0.066, short side 62; V top 56, bottom 57 of 984, fractions 0.057 and 0.058, short side 58. The uniform middle has alpha about 165 to 171 of 255 (semi-transparent body, caps about 250).
+- Draw As Box (margin / texture size): H left 0.069, right 0.066 (top and bottom 0); V top 0.057, bottom 0.058 (left and right 0).
+- Gaps accepted by the owner: all four candidates failed A6 (cleaner than the frame, no rust, no rivets).
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[art-prompts-level-end-screen]] — the ChatGPT prompt these images answer.

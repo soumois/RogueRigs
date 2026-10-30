@@ -1,0 +1,39 @@
+{
+  "run_id": "20261029-174426-level-end-screen",
+  "asset": "level-end-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "9:16",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/level-end-screen/prompts/03-divider-v.txt",
+  "prompt": "Image 1 is a UI asset sheet (see its divider components), Image 2 is a full level-end screen mockup (see the vertical bar between the two columns), Image 3 is the already finished frame of the same screen: match its exact style, gunmetal and teal colours, bolt shape and facet look. All three are only visual references. Draw, as a clean own version at high resolution, ONE vertical divider bar for a 3-slice sprite: a very tall thin straight vertical bar, ratio about 1 to 12, perfectly axis-aligned, flat front view, no perspective. Dark gunmetal bar with a thin weathered rust tint, with a slim teal accent line along its left edge. Each of the two ends (top and bottom) carries one identical bevelled teal end cap with one large faceted bolt: ALL detail lives only inside the two end caps, the same at the top and at the bottom. Between the end caps the bar is a plain uniform strip of identical width along its whole length: flat gunmetal with flat facets and the thin teal line, NO rivet, NO bolt, NO rust patch, NO scratch, NO notch, NO tab, NO plate, NO ornament anywhere in the middle, the middle looks the same at its centre as near the end caps. Flat-shaded low-poly look, visible flat facets, clean flat colour planes (not blotchy or painterly paint), no textures, strong directional light with lifted shadows so everything stays readable. The bar fills about 92 percent of the image height, centred, with a margin of flat magenta FF00FF all around; the background is flat magenta FF00FF, no shadow, no glow, nothing sticks out of the bar outline. No text, no letters, no numbers, no icons, no characters, no UI.",
+  "refs": [
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-asset-sheet-2026-10-30.webp",
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp",
+    "Art/UI/LevelEnd/T_LevelEnd_Frame.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "b4bbae1c7d2ac8333bc174b68da9e0d8",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000026d4822fb72aa9ec987aa5e8.png"
+      ]
+    },
+    {
+      "task_id": "245a86783ade86400d9cbb5114a72033",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000f9a081fd9d8f317ab7e96ac4.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/level-end-screen/20261029-174426-level-end-screen-1.png",
+    "Art/Source/level-end-screen/20261029-174426-level-end-screen-2.png"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "run_id": "20261029-174247",
+  "items": [
+    {
+      "file": "20261029-174247-level-end-screen-1-keyed.png",
+      "verdict": "fail",
+      "rule": "A6",
+      "reason": "Player-side gunmetal and teal divider is clean and unworn: no rust chips, no rivets along the bar, while the T_LevelEnd_Frame it must match has rust edges and a rivet row.",
+      "correction": "Add rust chips and orange-brown rust streaks on the teal end caps and along the bar edges, matching T_LevelEnd_Frame; keep the middle wear evenly spread so it stays uniform for 3-slice."
+    },
+    {
+      "file": "20261029-174247-level-end-screen-2-keyed.png",
+      "verdict": "fail",
+      "rule": "A6",
+      "reason": "Clean, unworn divider with a bright saturated teal strip and no rust or rivets, so it reads newer and brighter than the rusty, muted-teal T_LevelEnd_Frame.",
+      "correction": "Mute the teal to the frame's corner-plate teal and add rust chips on the end caps and bar edges, matching T_LevelEnd_Frame."
+    }
+  ]
+}
