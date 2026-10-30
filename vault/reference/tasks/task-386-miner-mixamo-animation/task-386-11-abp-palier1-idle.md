@@ -3,7 +3,7 @@ id: task-386-11-abp-palier1-idle
 description: "Bp: reduce ABP_Miner to one Sequence Player of Rifle Aiming Idle looping into Output Pose, verify it plays"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: step 1 idle only
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: ABP_Miner graph is Sequence Player (Rifle Aiming Idle, loop) to Output Pose, compiled without error, saved and committed by path as task-386-11-abp-palier1-idle: <summary> with its .uasset; BP_Miner and the placed instance read back as Use Animation Blueprint and ABP_Miner_C; any editor command that hangs more than 3 minutes is killed (kill UnrealEditor, relaunch, retry) rather than waited for
 - editor_state: open
 - token_ceiling: 0.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 107086, cache read 1804044, output 14599
+- usage: turns 32, context start 12k peak 107k, resumes 0, 2 min, units 0.39 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T06:25:48Z
 - waiting_for: none
-- result: open
+- result: ABP_Miner = single looping Sequence Player A_Miner_Idle to Output Pose, compiled, saved, commit a2894680; CDO and PIE mesh read back AnimationBlueprint + ABP_Miner_C; no placed instance (GameMode spawns it); runtime pose unverified, left to the capture
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
