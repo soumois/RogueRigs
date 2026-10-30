@@ -11,5 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-379-new-run-loading-screen]] — Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar. Status wait-answers.
+- [[task-379-new-run-loading-screen]] — Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar. Status todo.
 - [[task-380-level-end-frame-sprites]] — Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG. Status wait-answers.
