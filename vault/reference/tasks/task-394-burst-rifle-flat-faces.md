@@ -1,9 +1,9 @@
 ---
 id: task-394-burst-rifle-flat-faces
 description: "Global task: Save the owner Meshy burst rifle (Aqua Wasteland Carbine) files, then scale, orient and pivot it and flatten its bulged flat faces as for the turret and extractor."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle mesh: save the Meshy files, flatten the faces
 
@@ -14,10 +14,10 @@ status: in-progress
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - renumbered: was task-392-burst-rifle-flat-faces, point 2 was task-393-burst-rifle-rebake (id clash with task-392-duskite-on-screen and task-393-miner-over-lit, owner-approved, 2026-10-30); commits 49ab8c99, 85dc033a and 257aa367 carry the old ids.
 - milestone: M2
-- next_step: task-394-02-burst-rifle-flatten
+- next_step: none
 - started: 2026-10-30T20:47:56Z
 - waiting_for: none
-- result: open
+- result: Done. Done 3d9d8cb5: 9,892 tris (not decimated), residual max 0.000291 cm, 60.000 cm along X muzzle +X, pivot at grip, UV0 identical, silhouette max 0.1125 cm. Deviation: 2,231 faces (22.5 %) flat-shaded, 250 region faces left smooth (82 move over 0.25 cm, 168 conflicting planes); owner to judge on renders.
 
 ## Questions
 Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -33,7 +33,7 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 2. task-394-02-burst-rifle-flatten (vault/reference/tasks/task-394-burst-rifle-flat-faces/task-394-02-burst-rifle-flatten.md) — 3d: scale, orient and pivot the Meshy rifle per Q4, project its planar regions flat per Q5, export SM_BurstRifle.fbx, render before and after.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-394-01-burst-rifle-meshy-files]] — step 1, 3d.
 - [[task-394-02-burst-rifle-flatten]] — step 2, 3d.
 - [[burst-rifle]] — the weapon this mesh is for.

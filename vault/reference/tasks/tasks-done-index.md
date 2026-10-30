@@ -397,3 +397,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-386-miner-mixamo-animation]] — Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner. Status cancelled.
 - [[task-387-burst-rifle-ref-prompt]] — Write the ChatGPT turnaround prompt of the burst rifle (default weapon held by the miner) and prepare its reference images, as the source for Meshy. Status done.
 - [[task-388-chest-glow-cleared-between-levels]] — Nothing of an opened bonus chest (interior glow, opening rays and sparks, lid slam ring) stays visible in the next level of the run. Status done.
+- [[task-394-burst-rifle-flat-faces]] — Save the owner Meshy burst rifle (Aqua Wasteland Carbine), scale and pivot it for the hand, flatten its bulged flat faces. Status done.
