@@ -17,6 +17,8 @@
  * than authored; under the run speed the blend space picks the walk clips instead.
  * task-386-16: LocomotionPlayRate is fixed at 1 for now (Q4 rule off) and MoveX/MoveY expose the move vector in the aim
  * frame over MaxWalkSpeed, length clamped to 1, for the simple 2D blend space.
+ * task-386-21: the cheat cvar rr.Debug.MinerAnimForce "x y" overrides MoveX, MoveY (clamped to length 1) and
+ * GroundSpeed (length * MaxWalkSpeed) for captures; empty = off.
  */
 UCLASS()
 class ROGUERIGS_API URRMinerAnimInstance : public UAnimInstance

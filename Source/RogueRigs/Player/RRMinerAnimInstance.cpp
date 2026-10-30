@@ -19,6 +19,32 @@ namespace RRMinerAnimDebug
 
 	/** Seconds between two debug log lines (about 2 Hz). Debug-only, not a gameplay tunable. */
 	static constexpr double LogIntervalSeconds = 0.5;
+
+	/** rr.Debug.MinerAnimForce "x y": forces MoveX=x, MoveY=y (length clamped to 1) and GroundSpeed = length * MaxWalkSpeed; empty = off. */
+	static TAutoConsoleVariable<FString> CVarMinerAnimForce(
+		TEXT("rr.Debug.MinerAnimForce"), TEXT(""),
+		TEXT("\"x y\" (two floats) forces the miner anim instance MoveX=x, MoveY=y (length clamped to 1) and GroundSpeed = length * MaxWalkSpeed; empty = off."),
+		ECVF_Cheat);
+
+	/** Parses the force cvar; true with the clamped move vector when it holds two floats. */
+	static bool TryGetForcedMove(FVector2D& OutMove)
+	{
+		const FString Value = CVarMinerAnimForce.GetValueOnGameThread();
+		TArray<FString> Tokens;
+		Value.ParseIntoArrayWS(Tokens);
+		float X = 0.f;
+		float Y = 0.f;
+		if (Tokens.Num() != 2 || !LexTryParseString(X, *Tokens[0]) || !LexTryParseString(Y, *Tokens[1]))
+		{
+			return false;
+		}
+		OutMove = FVector2D(X, Y);
+		if (OutMove.SizeSquared() > 1.0)
+		{
+			OutMove.Normalize();
+		}
+		return true;
+	}
 }
 
 void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -71,6 +97,15 @@ void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		MoveX = 0.f;
 		MoveY = 0.f;
+	}
+
+	// task-386-21: debug override of the move vector (rr.Debug.MinerAnimForce), so each blend space sample can be captured.
+	FVector2D ForcedMove;
+	if (RRMinerAnimDebug::TryGetForcedMove(ForcedMove))
+	{
+		MoveX = static_cast<float>(ForcedMove.X);
+		MoveY = static_cast<float>(ForcedMove.Y);
+		GroundSpeed = static_cast<float>(ForcedMove.Size()) * MaxWalkSpeed;
 	}
 
 	LogDebugValues();
