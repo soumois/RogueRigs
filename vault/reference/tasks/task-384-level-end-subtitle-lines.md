@@ -1,9 +1,9 @@
 ---
 id: task-384-level-end-subtitle-lines
 description: "Global task: the two thin lines beside the stats screen subtitle no longer cross a long subtitle (level 4 run-won text)."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: todo
+status: cancelled
 ---
 # Level-end stats screen: subtitle lines fit any subtitle
 
@@ -13,10 +13,10 @@ status: todo
 - gdd_check: Read 2026-10-30: [[intermission]] (look sentence: "subtitle" only, the lines are a widget detail; no gdd change), [[wbp-intermission]] (SubtitleLineL (0.5,0.21) align (1,0.5) (-300,0,140,2), SubtitleLineR align (0,0.5) (300,0,140,2); Subtitle (0.5,0.21) auto size; verified: level 4 crossing defect), [[art-prompts-level-end-screen-mockup]] (the thin lines beside the subtitle are plain UMG lines, task-380 Q2), [[umg-layout]] (no Row to centre elements on a text line: so the default places the lines from the text width, not a HorizontalBox). Conflicts: none. Open values: none. Depends on task-383 (same asset, one agent at a time). Scope M2.
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-384-01-subtitle-lines-widget
+- next_step: none
 - started: open
 - waiting_for: none
-- result: open
+- result: Owner 2026-10-30: "Non, annule"; owner validated the screen as is, subtitle lines not fixed.
 
 ## Questions
 Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -29,7 +29,7 @@ Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; v
 3. task-384-03-doc-subtitle-lines (vault/reference/tasks/task-384-level-end-subtitle-lines/task-384-03-doc-subtitle-lines.md) — doc: update the wbp-intermission doc: subtitle line placement, graph, capture result
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-384-01-subtitle-lines-widget]] — step 1, bp.
 - [[task-384-02-subtitle-lines-capture]] — step 2, capture.
 - [[task-384-03-doc-subtitle-lines]] — step 3, doc.

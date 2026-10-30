@@ -3,7 +3,7 @@ id: task-384-03-doc-subtitle-lines
 description: "Doc: update the wbp-intermission doc node with the subtitle line placement and the capture result."
 parent: task-384-level-end-subtitle-lines
 kind: task
-status: todo
+status: cancelled
 ---
 # Stats screen subtitle lines: doc
 
@@ -22,7 +22,7 @@ status: todo
 - milestone: M2
 - started: open
 - waiting_for: none
-- result: open
+- result: Owner 2026-10-30: "Non, annule"; owner validated the screen as is, subtitle lines not fixed.
 
 ## Relations
 - [[task-384-level-end-subtitle-lines]] — parent global task.

@@ -3,7 +3,7 @@ id: task-384-02-subtitle-lines-capture
 description: "Capture: -game check that the subtitle lines stay outside the subtitle on levels 1 and 4."
 parent: task-384-level-end-subtitle-lines
 kind: task
-status: todo
+status: cancelled
 ---
 # Stats screen subtitle lines: capture
 
@@ -22,7 +22,7 @@ status: todo
 - milestone: M2
 - started: open
 - waiting_for: none
-- result: open
+- result: Owner 2026-10-30: "Non, annule"; owner validated the screen as is, subtitle lines not fixed.
 
 ## Relations
 - [[task-384-level-end-subtitle-lines]] — parent global task.

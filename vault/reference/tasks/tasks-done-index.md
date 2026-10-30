@@ -392,4 +392,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-381-level-end-screen-rebuild]] — Rebuild WBP_Intermission (stats screen at the extractor) to the ChatGPT mockup with the task-380 sprites. Status done.
 - [[task-382-miner-rigged-meshy-files]] — Save the owner rigged Meshy character FBX (the miner) in the repo, measure mesh, skeleton and textures in headless Blender, record it in art-prompts-miner. Status done.
 - [[task-383-level-end-total-ore]] — Stats screen: one Total Ore line in a thinner band instead of the two ore lines, more room for the two columns. Status done.
+- [[task-384-level-end-subtitle-lines]] — Stats screen: the thin lines beside the subtitle no longer cross the long level 4 subtitle. Status cancelled.
 - [[task-385-text-caption-lines]] — Text validator: a screen_texts lines entry ending with a colon is a caption, 1 to 4 words (unblocks task-383-01). Status done.
