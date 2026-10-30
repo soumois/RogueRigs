@@ -3,7 +3,7 @@ id: task-381-01-level-end-sprites-import
 description: "Bp: import the three level-end sprites from Art/UI/LevelEnd as UI textures in /Game/RogueRigs/UI/LevelEnd."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen rebuild: import the sprites
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:32:03Z
 - waiting_for: none
 - result: open
 

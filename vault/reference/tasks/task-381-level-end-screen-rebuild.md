@@ -3,7 +3,7 @@ id: task-381-level-end-screen-rebuild
 description: "Global task: rebuild WBP_Intermission, the stats screen at the extractor, to the ChatGPT mockup with the task-380 frame and divider sprites."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end stats screen rebuilt to the mockup
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-381-01-level-end-sprites-import
-- started: open
+- started: 2026-10-30T04:32:03Z
 - waiting_for: none
 - result: open
 
