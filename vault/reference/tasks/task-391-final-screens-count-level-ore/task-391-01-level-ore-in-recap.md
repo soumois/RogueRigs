@@ -3,7 +3,7 @@ id: task-391-01-level-ore-in-recap
 description: "Cpp: find what the run-won end screen ore value counts, fix the recap totals, pure getter of the run total"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Run-won end screen shows the run ore total: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:21:27Z
 - waiting_for: none
 - result: open
 

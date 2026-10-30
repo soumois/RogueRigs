@@ -3,7 +3,7 @@ id: task-391-final-screens-count-level-ore
 description: "Global task: The run-won end screen ore line shows the run total (same as the level 4 Total Ore), not a smaller number; the stats screen total is checked too."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Run-won end screen shows the run ore total
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
 - next_step: task-391-01-level-ore-in-recap
-- started: open
+- started: 2026-10-30T21:21:26Z
 - waiting_for: none
 - result: open
 
