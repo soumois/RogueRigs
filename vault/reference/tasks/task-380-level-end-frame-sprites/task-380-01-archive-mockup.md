@@ -3,7 +3,7 @@ id: task-380-01-archive-mockup
 description: "Art: save the owner mockup and asset sheet in the repo and write the node art-prompts-level-end-screen-mockup; no generation"
 parent: task-380-level-end-frame-sprites
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen frame sprites in 3x3 (9-slice): art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T01:34:40Z
 - waiting_for: none
 - result: open
 
