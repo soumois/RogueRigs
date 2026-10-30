@@ -35,8 +35,9 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 5. task-386-05-miner-locomotion-blendspace (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-05-miner-locomotion-blendspace.md) — bp: BS_Miner_Locomotion: 2D blend space, direction and speed, nine clips at their measured positions
 6. task-386-06-abp-miner (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-06-abp-miner.md) — bp: ABP_Miner: Animation Blueprint of URRMinerAnimInstance playing BS_Miner_Locomotion
 7. task-386-07-bp-miner-mesh-swap (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-07-bp-miner-mesh-swap.md) — bp: BP_Miner: SK_Miner and ABP_Miner_C instead of SKM_Quinn_Simple and ABP_Unarmed, feet on the floor, facing the aim
-8. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: -game capture of the animated miner against the checklist C1 to C7
-9. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
+8. task-386-10-miner-anim-diagnosis (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-10-miner-anim-diagnosis.md) — bp: diagnose and fix the T-pose seen in the capture (owner 2026-10-30)
+9. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: -game capture of the animated miner against the checklist C1 to C7
+10. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
@@ -47,6 +48,7 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 - [[task-386-05-miner-locomotion-blendspace]] — step 5, bp.
 - [[task-386-06-abp-miner]] — step 6, bp.
 - [[task-386-07-bp-miner-mesh-swap]] — step 7, bp.
+- [[task-386-10-miner-anim-diagnosis]] — step 8, bp diagnosis of the T-pose.
 - [[task-386-08-miner-animation-capture]] — step 8, capture.
 - [[task-386-09-doc-miner-animation]] — step 9, doc.
 - [[miner]] — the character this animates.

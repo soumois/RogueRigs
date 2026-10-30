@@ -3,7 +3,7 @@ id: task-386-08-miner-animation-capture
 description: "Capture: -game capture of the animated miner against the checklist C1 to C7"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: wait-answers
+status: todo
 ---
 # Miner animated with the owner Mixamo clips: capture
 
@@ -21,7 +21,7 @@ status: wait-answers
 - runs: open
 - milestone: M2
 - started: 2026-10-30T05:54:55Z
-- waiting_for: Capture shows miner in T-pose when idle (C3 failed), C1/C2/C4/C6/C7 ambiguous: diagnose animation (ABP/clip/skeleton mapping) and facing
+- waiting_for: none
 - result: open
 
 ## Relations
