@@ -3,7 +3,7 @@ id: task-377-extractor-board-box
 description: "Global task: The level-ending zone of the extractor becomes a box component the owner resizes and moves in BP_ExtractionShuttle, replacing the 12-cell radius."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: adjustable box collision for the end of the level
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-377-01-cpp-extractor-board-box
-- started: open
+- started: 2026-10-30T00:40:20Z
 - waiting_for: none
 - result: open
 

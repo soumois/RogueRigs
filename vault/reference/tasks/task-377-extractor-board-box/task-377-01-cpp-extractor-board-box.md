@@ -3,7 +3,7 @@ id: task-377-01-cpp-extractor-board-box
 description: "Cpp: BoardZone box component on ARRShuttle, miner overlap ends the level, radius removed, broken test expectations updated."
 parent: task-377-extractor-board-box
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: adjustable box collision for the end of the level: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T00:40:20Z
 - waiting_for: none
 - result: open
 
