@@ -3,7 +3,7 @@ id: task-386-02-miner-anim-instance
 description: "Cpp: URRMinerAnimInstance: ground speed, direction to the aim, blend speed and play rate for ABP_Miner"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the editor target builds with no error and no new warning (Build.bat RogueRigsEditor Win64 Development); the class is not Abstract and exposes GroundSpeed, Direction, BlendSpeed, LocomotionPlayRate (BlueprintReadOnly) and the five EditDefaultsOnly tunables with the report values; committed by path as `task-386-02-miner-anim-instance: <summary>`.
 - editor_state: closed
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 22, cache write 42833, cache read 309351, output 8425
+- usage: turns 11, context start 12k peak 43k, resumes 0, 3 min, units 0.13 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:37:44Z
 - waiting_for: none
-- result: open
+- result: URRMinerAnimInstance built (editor target OK, no new warning); GroundSpeed, Direction, BlendSpeed, LocomotionPlayRate + 5 tunables; commit bf05885d; Direction math inline (no AnimGraphRuntime dep); min play rate 1 fixed in code
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.

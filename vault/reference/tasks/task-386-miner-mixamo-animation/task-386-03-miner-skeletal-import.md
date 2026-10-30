@@ -3,7 +3,7 @@ id: task-386-03-miner-skeletal-import
 description: "Bp: import SK_Miner with SKEL_Miner, its physics asset and a material from the two Meshy textures"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:41:13Z
 - waiting_for: none
 - result: open
 
