@@ -3,7 +3,7 @@ id: task-396-02-end-ore-text-default
 description: "Bp: WBP_AlertObjectives: EndOreText designer default "Ore secured: 0" becomes "Duskite secured: 0""
 parent: task-396-duskite-leftover-labels
 kind: task
-status: todo
+status: in-progress
 ---
 # Duskite: leftover on-screen "ore" labels: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:06:41Z
 - waiting_for: none
 - result: open
 

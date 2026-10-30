@@ -3,7 +3,7 @@ id: task-396-01-shop-short-label
 description: "Bp: WBP_ShopScreen: ShopCard0..4 ShortLabel "Short on ore" becomes "Short on Duskite"; read WBP_ShopCard runtime texts"
 parent: task-396-duskite-leftover-labels
 kind: task
-status: in-progress
+status: done
 ---
 # Duskite: leftover on-screen "ore" labels: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: ShortLabel of ShopCard0..4 read back "Short on Duskite"; no "Short on ore" string left in the package; WBP_ShopCard check reported; compiled with warnings as errors, no error; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 60728, cache read 309314, output 6392
+- usage: turns 9, context start 12k peak 66k, resumes 0, 1 min, units 0.14 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:05:28Z
 - waiting_for: none
-- result: open
+- result: ShortLabel ShopCard0..4 set to Short on Duskite (da2076cd); readback ShopCard0 and 4; WBP_ShopCard has no visible ore text; compiled, saved. Note: LoadLabels overwrites ShortLabel at runtime with NEED {n} MORE.
 
 ## Relations
 - [[task-396-duskite-leftover-labels]] — parent global task.
