@@ -44,6 +44,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-robots-meshy]] — shooter, heavy, kamikaze, chaser v2: Meshy prompts and owner sheets, views not made yet.
 - [[art-prompts-drone]] — drone turnaround prompt as used, Meshy mesh files, game meshes.
 - [[art-prompts-miner]] — miner A-pose turnaround prompt for ChatGPT, images to attach; the owner makes the 3D.
+- [[art-prompts-burst-rifle]] — burst rifle four-view turnaround prompt for ChatGPT, images to attach; the owner makes the sheet.
 - [[art-prompts-xp-core]] — four any-angle proposals to replace the big XP chip; choice open.
 - [[art-prompts-rock-top-texture]] — tileable painted rock top texture for the slab material: prompt, seam method, review.
 - [[art-prompts-floor-texture]] — ChatGPT prompts for the tileable painted floor of cracked faceted plates: chain, seam method, review.

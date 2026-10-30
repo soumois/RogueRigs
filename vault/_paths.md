@@ -33,6 +33,7 @@ art-audio-index  reference/gdd/art-audio/art-audio-index.md
 art-prompts  reference/gdd/art-audio/art-prompts.md
 art-prompts-arena-draft  reference/gdd/art-audio/art-prompts-arena-draft.md
 art-prompts-arena-final  reference/gdd/art-audio/art-prompts-arena-final.md
+art-prompts-burst-rifle  reference/gdd/art-audio/art-prompts-burst-rifle.md
 art-prompts-card-back  reference/gdd/art-audio/art-prompts-card-back.md
 art-prompts-chest  reference/gdd/art-audio/art-prompts-chest.md
 art-prompts-console  reference/gdd/art-audio/art-prompts-console.md
