@@ -41,6 +41,7 @@ art-prompts-extractor  reference/gdd/art-audio/art-prompts-extractor.md
 art-prompts-floor-texture  reference/gdd/art-audio/art-prompts-floor-texture.md
 art-prompts-floor-texture-maps  reference/gdd/art-audio/art-prompts-floor-texture-maps.md
 art-prompts-heal-pickup  reference/gdd/art-audio/art-prompts-heal-pickup.md
+art-prompts-level-end-screen  reference/gdd/art-audio/art-prompts-level-end-screen.md
 art-prompts-main-menu-background  reference/gdd/art-audio/art-prompts-main-menu-background.md
 art-prompts-miner  reference/gdd/art-audio/art-prompts-miner.md
 art-prompts-ore-deposit  reference/gdd/art-audio/art-prompts-ore-deposit.md
