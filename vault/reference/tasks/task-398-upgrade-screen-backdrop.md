@@ -1,9 +1,9 @@
 ---
 id: task-398-upgrade-screen-backdrop
 description: "Global task: A full-screen black at 70 % opacity behind the Spare Parts shop screen (WBP_ShopScreen), as on the level-up cards; the finished level dimly visible."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Spare Parts screen: black backdrop at 70 %
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[run-shop]] and [[intermission]] (provisional: cards shop "on its own screen with an opaque black background", "the finished level is no longer visible"): conflict with the owner decision, changed 2026-10-30 to "black at 70 % over the finished level". [[xp-level-up]]: no backdrop value in the GDD (the line added by the first confirmation, option A, was removed). Tech: [[wbp-shop-screen]] (Backdrop Border black alpha 1, first child of Root, full screen; owner hand edit d1c7766d not documented), [[wbp-upgrade-choice]] (Backdrop Border black alpha 0.7 inside UpgradeScreen), [[wbp-intermission]] (0.85, not touched). Open values: none. Scope M2. Repo state 2026-10-30: task-397 (cpp, editor closed) runs first. Config/DefaultGame.ini and Config/DefaultEditor.ini hold uncommitted owner changes: never commit them (commit by path). No packaged build, no capture (owner).
 - confirmed_by_owner: yes (2026-10-30, Spare Parts screen (screenshot), then 70 % chosen by the owner)
 - milestone: M2
-- next_step: task-398-02-doc-shop-backdrop-70
+- next_step: none
 - started: 2026-10-30T22:39:27Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-shop-screen and wbp-upgrade-choice updated, commit 6d93ac06, lint OK
 
 ## Questions
 Decided 2026-10-30 (owner answers relayed by the main session).
@@ -27,7 +27,7 @@ Decided 2026-10-30 (owner answers relayed by the main session).
 2. task-398-02-doc-shop-backdrop-70 (vault/reference/tasks/task-398-upgrade-screen-backdrop/task-398-02-doc-shop-backdrop-70.md) — doc: update wbp-shop-screen (70 % backdrop, cause) and note the WBP_UpgradeChoice finding in wbp-upgrade-choice
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-398-01-shop-backdrop-70]] — step 1, bp.
 - [[task-398-02-doc-shop-backdrop-70]] — step 2, doc.
 - [[wbp-shop-screen]] — the widget changed here.

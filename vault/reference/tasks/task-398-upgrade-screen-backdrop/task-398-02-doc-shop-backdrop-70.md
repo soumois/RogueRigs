@@ -3,7 +3,7 @@ id: task-398-02-doc-shop-backdrop-70
 description: "Doc: update wbp-shop-screen (70 % backdrop, cause) and note the WBP_UpgradeChoice finding in wbp-upgrade-choice"
 parent: task-398-upgrade-screen-backdrop
 kind: task
-status: in-progress
+status: done
 ---
 # Spare Parts screen: black backdrop at 70 %: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: wbp-shop-screen states alpha 0.70, the previous state and the cause; wbp-upgrade-choice states the finding; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 8, cache write 32697, cache read 87068, output 2882
+- usage: turns 4, context start 12k peak 37k, resumes 0, 0 min, units 0.06 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:40:31Z
 - waiting_for: none
-- result: open
+- result: wbp-shop-screen and wbp-upgrade-choice updated, commit 6d93ac06, lint OK
 
 ## Relations
 - [[task-398-upgrade-screen-backdrop]] — parent global task.
