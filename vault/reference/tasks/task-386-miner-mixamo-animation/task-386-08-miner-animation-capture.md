@@ -3,7 +3,7 @@ id: task-386-08-miner-animation-capture
 description: "Capture: -game capture of the animated miner against the checklist C1 to C7"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Miner animated with the owner Mixamo clips: capture
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-30T06:49:33Z
-- waiting_for: none
+- waiting_for: Capture task386_08 (Saved/Captures/task386_08/crops_a.png) shows arms-spread T/A-like pose in 4 of 16 moving frames and no clear idle: diagnose blend space Run state (log Direction/BlendSpeed, needs code) or fall back to the seen step-2 Rifle Run
 - result: open
 
 ## Relations
