@@ -3,7 +3,7 @@ id: task-379-new-run-loading-screen
 description: "Global task: Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Main menu New Run: show the loading screen
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-379-02-menu-game-mode-loading-class
 - started: 2026-10-30T01:34:27Z
-- waiting_for: none
+- waiting_for: owner: start the Unreal editor (MCP port 8000) for bp subtasks 02 and 03
 - result: open
 
 ## Questions
