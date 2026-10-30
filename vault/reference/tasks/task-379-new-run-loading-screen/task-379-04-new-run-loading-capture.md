@@ -3,7 +3,7 @@ id: task-379-04-new-run-loading-capture
 description: "Capture: Rendered -game check from the main menu: loading screen with the animation over the menu, in the arena, then level 1 with the HUD"
 parent: task-379-new-run-loading-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu New Run: show the loading screen: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:22:55Z
 - waiting_for: none
 - result: open
 
