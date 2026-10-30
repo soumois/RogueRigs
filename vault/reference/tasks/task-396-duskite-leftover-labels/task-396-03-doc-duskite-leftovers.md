@@ -3,7 +3,7 @@ id: task-396-03-doc-duskite-leftovers
 description: "Doc: update the shop screen, shop card and end screen docs with the Duskite labels"
 parent: task-396-duskite-leftover-labels
 kind: task
-status: todo
+status: in-progress
 ---
 # Duskite: leftover on-screen "ore" labels: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:07:12Z
 - waiting_for: none
 - result: open
 

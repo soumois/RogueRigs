@@ -3,7 +3,7 @@ id: task-396-02-end-ore-text-default
 description: "Bp: WBP_AlertObjectives: EndOreText designer default "Ore secured: 0" becomes "Duskite secured: 0""
 parent: task-396-duskite-leftover-labels
 kind: task
-status: in-progress
+status: done
 ---
 # Duskite: leftover on-screen "ore" labels: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: EndOreText Text read back "Duskite secured: 0", ShowRunEnd graph unchanged; no "Ore secured" string left in the package; compiled with warnings as errors, no error; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 16138, cache read 104011, output 2562
+- usage: turns 7, context start 12k peak 21k, resumes 0, 0 min, units 0.04 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:06:41Z
 - waiting_for: none
-- result: open
+- result: EndOreText default set to Duskite secured: 0 (32fc68e7); readback ok, compiled, saved.
 
 ## Relations
 - [[task-396-duskite-leftover-labels]] — parent global task.
