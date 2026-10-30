@@ -58,6 +58,7 @@ void ARRPlayerController::BeginPlay()
 		}
 	}
 
+	RestoreGameInputMode();
 	CreateHUDWidget();
 
 	// The world opened by a transition starts behind the loading screen: no HUD until OnLevelReady (task-207-01).
@@ -126,6 +127,18 @@ void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	BoundTransition.Reset();
 	RemoveScreenFadeOverlay();
 	Super::EndPlay(EndPlayReason);
+}
+
+void ARRPlayerController::RestoreGameInputMode()
+{
+	if (!IsLocalPlayerController())
+	{
+		return;
+	}
+	FInputModeGameOnly InputMode;
+	InputMode.SetConsumeCaptureMouseDown(false);
+	SetInputMode(InputMode);
+	SetShowMouseCursor(GetClass()->GetDefaultObject<APlayerController>()->bShowMouseCursor);
 }
 
 bool ARRPlayerController::IsGameplayInputHeld() const
@@ -202,6 +215,7 @@ void ARRPlayerController::RemoveShopScreenWidget()
 void ARRPlayerController::HandleLevelReady(int32 LevelIndex, const FString& LayoutName)
 {
 	RemoveLoadingScreenWidget();
+	RestoreGameInputMode();
 	// Fade path (task-318-02): no OnLoadingStarted, the cards screen stayed under the black until this switch.
 	RemoveIntermissionWidget();
 	RemoveShopScreenWidget();

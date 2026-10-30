@@ -51,6 +51,9 @@ public:
 	/** True while a level transition is loading (URRRunTransitionSubsystem::IsLevelLoading): move, aim and turret input ignored. */
 	bool IsGameplayInputHeld() const;
 
+	/** Game-only input mode: the main menu leaves the viewport in UI-only mode, which would swallow the move keys in a packaged build. */
+	void RestoreGameInputMode();
+
 	/** True while the HUD widget is hidden by a run transition (intermission or loading, task-207-01). */
 	bool IsHUDHiddenForTransition() const { return bHUDHiddenForTransition; }
 
