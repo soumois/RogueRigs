@@ -117,7 +117,7 @@ public:
 	void TrackWorldEffect(UFXSystemComponent* Effect);
 
 	/**
-	 * Fills Out with the effect components outered to World (SpawnSystemAtLocation without an actor, engine FX pool) that are
+	 * Fills Out with the effect components outered to World or its world settings (SpawnSystemAtLocation, engine FX pool) that are
 	 * alive: active, or waiting for their system to compile (editor builds, first use) before they start.
 	 */
 	static void CollectWorldOwnedEffects(const UWorld& World, TSet<const UFXSystemComponent*>& Out);

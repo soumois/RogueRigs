@@ -302,9 +302,14 @@ void URRNiagaraPoolSubsystem::TrackWorldEffect(UFXSystemComponent* Effect)
 
 void URRNiagaraPoolSubsystem::CollectWorldOwnedEffects(const UWorld& World, TSet<const UFXSystemComponent*>& Out)
 {
-	// SpawnSystemAtLocation without an actor outers its component to the world (engine FX pool too): only direct children.
+	// SpawnSystemAtLocation outers its component to the world settings (engine 5.8 NiagaraFunctionLibrary); the engine FX
+	// pool outers its components to the world. Only direct children of both.
 	TArray<UObject*> Children;
 	GetObjectsWithOuter(&World, Children, EGetObjectsFlags::None);
+	if (const AWorldSettings* Settings = World.GetWorldSettings())
+	{
+		GetObjectsWithOuter(Settings, Children, EGetObjectsFlags::None);
+	}
 	for (const UObject* Child : Children)
 	{
 		const UFXSystemComponent* Effect = Cast<UFXSystemComponent>(Child);
