@@ -3,7 +3,7 @@ id: task-400-burst-rifle-in-hand
 description: "Global task: import SM_BurstRifle, put it on BP_BurstRifle in a miner right hand socket, remove the weapon grey cubes."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-400-01-weapon-hand-socket
-- started: open
+- started: 2026-10-30T23:54:46Z
 - waiting_for: none
 - result: open
 

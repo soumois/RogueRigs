@@ -3,7 +3,7 @@ id: task-400-01-weapon-hand-socket
 description: "Cpp: per-weapon hand socket on ARRWeapon, used by ARRMiner when attaching"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T23:54:46Z
 - waiting_for: none
 - result: open
 
