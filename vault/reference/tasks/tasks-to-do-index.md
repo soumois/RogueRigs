@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-399-total-duskite-number-overlap]] — on the level-end stats screen the Total Duskite number is drawn over the end of its label; place it beside the label. Status todo.
+- [[task-399-total-duskite-number-overlap]] — on the level-end stats screen the Total Duskite number is drawn over the end of its label; place it beside the label. Status in-progress.

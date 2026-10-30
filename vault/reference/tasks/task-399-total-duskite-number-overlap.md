@@ -3,7 +3,7 @@ id: task-399-total-duskite-number-overlap
 description: "Global task: on the level-end stats screen the Total Duskite number is drawn over the end of its label; place it beside the label."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen: Total Duskite number overlaps its label
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-399-01-total-duskite-row
-- started: open
+- started: 2026-10-30T23:32:52Z
 - waiting_for: none
 - result: open
 

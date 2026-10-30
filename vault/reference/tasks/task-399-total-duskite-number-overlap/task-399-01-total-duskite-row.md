@@ -3,7 +3,7 @@ id: task-399-01-total-duskite-row
 description: "Bp: WBP_Intermission: lay out OreIcon, OreLabel and OreValue so the number sits right of the label (Q1)"
 parent: task-399-total-duskite-number-overlap
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen: Total Duskite number overlaps its label: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T23:32:52Z
 - waiting_for: none
 - result: open
 
