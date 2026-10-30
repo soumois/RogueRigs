@@ -346,15 +346,31 @@ ARRWeapon* ARRMiner::AddWeapon(TSubclassOf<ARRWeapon> WeaponClass)
 		return nullptr;
 	}
 
+	// Per-weapon hand socket first (task-400), when the miner mesh has it; otherwise the shared miner socket.
+	FName AttachSocketName = WeaponAttachSocketName;
+	const FName HandSocketName = Weapon->GetHandSocketName();
+	if (!HandSocketName.IsNone())
+	{
+		if (GetMesh() && GetMesh()->DoesSocketExist(HandSocketName))
+		{
+			AttachSocketName = HandSocketName;
+		}
+		else
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: weapon %s hand socket %s not found on the miner mesh; shared attachment used."),
+				*GetName(), *Weapon->GetName(), *HandSocketName.ToString());
+		}
+	}
+
 	// No socket: the capsule, which turns with the aim yaw, so the weapon points forward.
-	if (WeaponAttachSocketName.IsNone() || !GetMesh())
+	if (AttachSocketName.IsNone() || !GetMesh())
 	{
 		Weapon->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		Weapon->SetActorRelativeLocation(WeaponAttachOffset);
 	}
 	else
 	{
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachSocketName);
 	}
 	// The weapon is carried inside the capsule: never let it block the miner's own moves.
 	GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);

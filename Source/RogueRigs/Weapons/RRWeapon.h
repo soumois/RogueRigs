@@ -91,6 +91,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Projectile")
 	float GetShotForwardOffset() const { return ShotForwardOffset; }
 
+	/**
+	 * Socket of the miner mesh this weapon attaches to (e.g. WeaponSocket_R on the right hand), or None to keep the miner's
+	 * shared attachment (ARRMiner WeaponAttachSocketName, or the capsule at WeaponAttachOffset). Read by ARRMiner::AddWeapon.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Attach")
+	FName GetHandSocketName() const { return HandSocketName; }
+
 	/** The component that decides when this weapon fires. */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	URRAutoFireComponent* GetAutoFireComponent() const { return AutoFire; }
@@ -236,6 +243,14 @@ protected:
 	/** Distance of the shot origin ahead of the owning miner's capsule surface, along the aim, in uu (origin = capsule radius + this value from the miner axis). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
 	float ShotForwardOffset = 20.f;
+
+	/**
+	 * Per-weapon socket of the miner mesh (task-400): when set and present on the miner mesh, ARRMiner::AddWeapon snaps the
+	 * weapon to it (the burst rifle: WeaponSocket_R in the right hand). None (default) = the miner's shared attachment
+	 * (WeaponAttachSocketName, or the capsule at WeaponAttachOffset). Visual only: the shot origin (GetShotOrigin) ignores it.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Attach")
+	FName HandSocketName;
 
 	/** True = the auto-fire starts at acquisition. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")

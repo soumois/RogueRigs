@@ -573,15 +573,25 @@ bool FRRWeaponMinerStartingWeaponTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("the weapon fired during the first second"), Weapon->GetAutoFireComponent()->GetTotalShotsFired() > 0);
 	TestTrue(TEXT("miner walking on the floor"), Miner->GetCharacterMovement()->IsMovingOnGround());
 
-	// Attachment with WeaponAttachSocketName None: on the capsule at WeaponAttachOffset, turning with the aim.
+	// Attachment with WeaponAttachSocketName None: the rifle hand socket when set and present on the miner mesh (task-400),
+	// else on the capsule at WeaponAttachOffset, turning with the aim.
 	UCapsuleComponent* Capsule = Miner->GetCapsuleComponent();
-	const FVector AttachOffset = FMinerAccess::WeaponAttachOffsetOf(Miner);
 	TestEqual(TEXT("attached to the miner"), Weapon->GetAttachParentActor(), static_cast<AActor*>(Miner));
-	TestEqual(TEXT("attached to the capsule"), Weapon->GetRootComponent()->GetAttachParent(), static_cast<USceneComponent*>(Capsule));
-	TestEqual(TEXT("no attach socket"), Weapon->GetAttachParentSocketName(), FName(NAME_None));
-	TestTrue(FString::Printf(TEXT("relative location = WeaponAttachOffset %s"), *AttachOffset.ToCompactString()),
-		Weapon->GetRootComponent()->GetRelativeLocation().Equals(AttachOffset, 0.01f));
-	TestTrue(TEXT("weapon points along the miner aim"), Weapon->GetActorForwardVector().Equals(Miner->GetAimDirection(), 1e-3f));
+	const FName HandSocketName = Weapon->GetHandSocketName();
+	if (!HandSocketName.IsNone() && Miner->GetMesh() && Miner->GetMesh()->DoesSocketExist(HandSocketName))
+	{
+		TestEqual(TEXT("attached to the miner mesh"), Weapon->GetRootComponent()->GetAttachParent(), static_cast<USceneComponent*>(Miner->GetMesh()));
+		TestEqual(TEXT("attached to the weapon hand socket"), Weapon->GetAttachParentSocketName(), HandSocketName);
+	}
+	else
+	{
+		const FVector AttachOffset = FMinerAccess::WeaponAttachOffsetOf(Miner);
+		TestEqual(TEXT("attached to the capsule"), Weapon->GetRootComponent()->GetAttachParent(), static_cast<USceneComponent*>(Capsule));
+		TestEqual(TEXT("no attach socket"), Weapon->GetAttachParentSocketName(), FName(NAME_None));
+		TestTrue(FString::Printf(TEXT("relative location = WeaponAttachOffset %s"), *AttachOffset.ToCompactString()),
+			Weapon->GetRootComponent()->GetRelativeLocation().Equals(AttachOffset, 0.01f));
+		TestTrue(TEXT("weapon points along the miner aim"), Weapon->GetActorForwardVector().Equals(Miner->GetAimDirection(), 1e-3f));
+	}
 	TestFalse(TEXT("weapon actor has no collision"), Weapon->GetActorEnableCollision());
 	TestEqual(TEXT("capsule overlaps the Projectile channel"), static_cast<int32>(Capsule->GetCollisionResponseToChannel(RRCollisionChannels::Projectile)), static_cast<int32>(ECR_Overlap));
 

@@ -68,8 +68,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * URRProgressionComponent (GetProgression; XP pickups call AddXP on it). Upgrade offers and picked upgrades live in its
  * URRUpgradeComponent (GetUpgrades); the level-up flow (heal, effect, paused choice screens) in its URRLevelUpComponent
  * (GetLevelUp). Weapons: at BeginPlay each class of StartingWeapons, then each GuaranteedWeaponClasses entry no
- * StartingWeapons entry provides (default: none), is spawned (owner: the miner), attached (mesh socket WeaponAttachSocketName, or the capsule at
- * WeaponAttachOffset when the socket is None) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
+ * StartingWeapons entry provides (default: none), is spawned (owner: the miner), attached (mesh socket ARRWeapon::GetHandSocketName
+ * when set and present on the mesh, else WeaponAttachSocketName, or the capsule at WeaponAttachOffset when that is None too) and acquired (ARRWeapon::Acquire); they are destroyed at EndPlay.
  * Collision: the capsule overlaps the Projectile channel (never blocked by any projectile; projectiles still get
  * overlap events) and ignores its weapons when moving. No dash or item logic.
  * Damage (sys-damage): on each hit of its health set (OnDamageReceived) that leaves Health above 0, the miner applies
@@ -165,7 +165,8 @@ public:
 
 	/**
 	 * Gives the miner a weapon of WeaponClass: spawned at the miner (owner and instigator: this miner), attached (mesh socket
-	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset), ignored by the capsule when moving, acquired
+	 * ARRWeapon::GetHandSocketName when set and present on the mesh, else WeaponAttachSocketName, or the capsule at
+	 * WeaponAttachOffset when both are None), ignored by the capsule when moving, acquired
 	 * (ARRWeapon::Acquire: CSV stats, upgrade replay), added to GetWeapons, then OnWeaponAdded. Null (logged) when the class is
 	 * unset or the spawn fails. Used by the starting loadout; tests and weapon cards call it at runtime.
 	 */
@@ -328,7 +329,7 @@ protected:
 
 	/**
 	 * Spawns each class of StartingWeapons, then each GuaranteedWeaponClasses entry not provided by StartingWeapons, at the miner (owner and instigator: this miner), attaches it (mesh socket
-	 * WeaponAttachSocketName, or the capsule at WeaponAttachOffset when None), makes the capsule ignore it when moving and calls Acquire (AddWeapon).
+	 * the weapon hand socket, else WeaponAttachSocketName, or the capsule at WeaponAttachOffset when None), makes the capsule ignore it when moving and calls Acquire (AddWeapon).
 	 */
 	void SpawnStartingWeapons();
 
@@ -505,11 +506,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons", meta = (ClampMin = 1))
 	int32 MaxWeapons = 4;
 
-	/** Socket of the miner mesh the weapons attach to. None = attach to the capsule (root) at WeaponAttachOffset, so the weapon turns with the aim yaw. */
+	/**
+	 * Socket of the miner mesh the weapons attach to, for weapons without their own hand socket (ARRWeapon::GetHandSocketName,
+	 * which wins when set). None = attach to the capsule (root) at WeaponAttachOffset, so the weapon turns with the aim yaw.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
 	FName WeaponAttachSocketName;
 
-	/** Location of the weapons relative to the capsule center (X forward along the aim, Y right, Z up), in uu. Used only when WeaponAttachSocketName is None. */
+	/** Location of the weapons relative to the capsule center (X forward along the aim, Y right, Z up), in uu. Used only when the weapon gets no socket (its hand socket and WeaponAttachSocketName both None or missing). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons", meta = (Units = "cm"))
 	FVector WeaponAttachOffset = FVector(0.f, 20.f, -40.f);
 
