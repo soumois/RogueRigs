@@ -23,6 +23,19 @@ Colors and wear: patched, mismatched white and teal plates with rust chips, bolt
 Background and light: plain white background, even neutral lighting, no shadows, no weapon, nothing in the hands, no effects, no text, no UI, no logo.
 ```
 
+## Rigged mesh (owner 2026-10-30)
+The owner delivered the rigged miner made from the turnaround sheet (Meshy auto-rig, no credit spent by the crew; task-382).
+
+Owner words (2026-10-30, French): "Le personnage riggé".
+
+- Source file: `C:/Users/soumo/Downloads/Meshy_AI_Character_output.fbx` (12,468,364 bytes, SHA-256 f929daa5bef58f556567dbc447b3169aa9f88bfec1ce2a7378e2650a3fc4d22f), binary FBX 7.4.
+- Saved files in `Art/Source/miner-meshy/`: `Meshy_AI_Character_output.fbx` (byte-identical to the download), `texture_0.png` (base colour) and `normal.png` (both 2048 x 2048, extracted from the FBX), `miner_meshy_identify.report.json`. Script `Tools/art/blender/miner_identify.py` (headless Blender 5.2, no mesh edit).
+- Measured: one mesh `output_unwrapped`, 25,744 triangles, 40,681 vertices; bounding box 185.53 x 46.54 x 170.00 cm (X x Y x Z, A-pose, height 170 cm); one material `BakedMaterial`; one UV layer `UVMap`.
+- Skeleton: armature `SmartRigArmature`, 66 bones, single root `mixamorig:Hips` (Mixamo names, five fingers per hand with four bones each, legs to `Toe_End`, plus a `headfront` bone). Skin: 52 vertex groups, 0 vertices without weight, 4 influences at most, one Armature modifier.
+- Animation: no action in the file (rig only, no clip).
+- Turnaround sheet: not in the repo (owner Q3 default, 2026-10-30), to save when the owner sends it.
+- Open: triangle budget of the miner (none in [[asset-pipeline]], decided with the import task); animation route (no clips: Quinn retarget, Mixamo or Meshy clips, or hand-made); Unreal import and replacing the Quinn mannequin on BP_Miner; weapon held and its hand socket.
+
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
 - [[art-prompts-rigs]] — the first miner sheet and the T-pose turnaround this one replaces for 3D.
