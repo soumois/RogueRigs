@@ -29,6 +29,7 @@ Commands themselves: [[orchestrator-runbook]]. Observed 2026-10-11 to 2026-10-14
 
 ## Shells
 - The Windows Store `python3` alias hangs on stdin and leaves stuck shells: use node; kill stuck `bash.exe` and `python3.exe` trees.
+- Git Bash rewrites an argument starting with `/` into `C:/Program Files/Git/...` (a `/Game/...` map path broke launches, task-402): prefix the command with `MSYS_NO_PATHCONV=1` or use the helpers (capture.js, Run-StressTest.ps1, [[tool-capture]]), which repair it.
 - An agent may leave a shell stuck on an unterminated heredoc: find it by command line (`Win32_Process`) and stop it after checking its work was committed.
 
 ## Permission classifier
@@ -43,3 +44,4 @@ Commands themselves: [[orchestrator-runbook]]. Observed 2026-10-11 to 2026-10-14
 - [[orchestrator-runbook]] — the commands these quirks qualify.
 - [[orchestrator-lessons]] — owner rules.
 - [[cost-log]] — where record-cost writes.
+- [[tool-capture]] — capture.js and Run-StressTest.ps1 repair the MSYS-rewritten /Game map path.
