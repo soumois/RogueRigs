@@ -395,3 +395,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-384-level-end-subtitle-lines]] — Stats screen: the thin lines beside the subtitle no longer cross the long level 4 subtitle. Status cancelled.
 - [[task-385-text-caption-lines]] — Text validator: a screen_texts lines entry ending with a colon is a caption, 1 to 4 words (unblocks task-383-01). Status done.
 - [[task-386-miner-mixamo-animation]] — Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner. Status cancelled.
+- [[task-387-burst-rifle-ref-prompt]] — Write the ChatGPT turnaround prompt of the burst rifle (default weapon held by the miner) and prepare its reference images, as the source for Meshy. Status done.

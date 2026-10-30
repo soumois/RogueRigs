@@ -3,7 +3,7 @@ id: task-387-01-prompt-and-refs
 description: "Art: crop the rifle from rigs-lineup.jpg, write the burst rifle turnaround prompt and the node art-prompts-burst-rifle; no generation"
 parent: task-387-burst-rifle-ref-prompt
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle turnaround prompt and reference images: art
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The crop exists, shows the whole rifle (stock to muzzle brake) with no other subject cut in; the prompt file and the node exist and are committed; the prompt follows Q1 to Q5 as decided and lists the attachments with paths; art-prompts links the new node; no kie_image.js and no meshy_3d.js run (unless Q1 option b); node vault/scripts/lint.js --write clean.
 - editor_state: not needed
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 33329, cache read 215978, output 4970
+- usage: turns 10, context start 11k peak 33k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T18:43:23Z
 - waiting_for: none
-- result: open
+- result: Crop 1065x420 (3x of 355x140 at x205,y300) and turnaround prompt written, node art-prompts-burst-rifle created, no generation; commit 1f0142ca
 
 ## Relations
 - [[task-387-burst-rifle-ref-prompt]] — parent global task.
