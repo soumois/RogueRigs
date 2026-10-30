@@ -19,6 +19,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "HAL/PlatformTime.h"
 #include "Kismet/GameplayStatics.h"
+#include "Objectives/RRBonusChest.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
@@ -507,6 +508,8 @@ void URRRunTransitionSubsystem::FinishLoading(const TCHAR* Reason)
 	const double Now = FPlatformTime::Seconds();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d ready on layout %s (%s; %.1f ms after the map load, %.1f ms after %s): run flow starts."),
 		Level, *Layout, Reason, (Now - MapLoadedSeconds) * 1000.0, (Now - LoadingStartSeconds) * 1000.0, GetLoadingStartLabel());
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (new world, map travel): bonus chest opening effects alive %d."), Level,
+		ARRBonusChest::CountLiveOpeningEffects(HeldWorld.Get()));
 	bNewRunLoading = false;
 	HeldRunFlow.Reset();
 	HeldSpawner.Reset();
@@ -937,6 +940,8 @@ void URRRunTransitionSubsystem::StartPreparedLevel()
 	const FString Layout = LoadingLayoutName;
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d ready on layout %s (prepared in this world, no map load; %.1f ms after Continue): run flow starts."),
 		Level, *Layout, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (same world): bonus chest opening effects alive %d."), Level,
+		ARRBonusChest::CountLiveOpeningEffects(World));
 	IntermissionWorld.Reset();
 	Phase = ERRRunTransitionPhase::None;
 	SetLoadingStage(ERRRunLoadingStage::None);

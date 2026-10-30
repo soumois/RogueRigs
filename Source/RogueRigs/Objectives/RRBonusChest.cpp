@@ -7,7 +7,11 @@
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "NiagaraComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "UObject/UObjectHash.h"
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
@@ -22,6 +26,8 @@ namespace RRChestLockLight
 	static const FName BlinkRateParam(TEXT("BlinkRate"));
 	static const FName BlinkAmountParam(TEXT("BlinkAmount"));
 }
+
+const FName ARRBonusChest::OpeningEffectTag(TEXT("RRBonusChestOpeningEffect"));
 
 ARRBonusChest::ARRBonusChest()
 {
@@ -157,7 +163,10 @@ void ARRBonusChest::UpdateOpening(float DeltaSeconds)
 	{
 		bLidSlamFired = true;
 		UE_LOG(LogRogueRigs, Verbose, TEXT("%s: lid slam at %.2f s."), *GetName(), OpeningElapsed);
+		TSet<const UFXSystemComponent*> EffectsBefore;
+		CollectActiveWorldEffects(EffectsBefore);
 		OnLidSlam(GetActorLocation());
+		TrackEffectsSpawnedSince(EffectsBefore, TEXT("OnLidSlam"));
 	}
 	if (bLidSlamFired && !bSlamShakePlayed && LidTime >= LidRiseDuration + LidHoldDuration)
 	{
@@ -212,8 +221,127 @@ void ARRBonusChest::OpenLid()
 		InnerLight->SetVisibility(true);
 	}
 	ApplyInteriorGlow();
+	TSet<const UFXSystemComponent*> EffectsBefore;
+	CollectActiveWorldEffects(EffectsBefore);
 	OnLidOpened(GetActorLocation());
+	TrackEffectsSpawnedSince(EffectsBefore, TEXT("OnLidOpened"));
 	GrantReward();
+}
+
+void ARRBonusChest::CollectActiveWorldEffects(TSet<const UFXSystemComponent*>& Out) const
+{
+	const UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	ForEachObjectOfClass(UFXSystemComponent::StaticClass(), [World, &Out](UObject* Object)
+	{
+		const UFXSystemComponent* Effect = static_cast<const UFXSystemComponent*>(Object);
+		if (IsValid(Effect) && !Effect->IsTemplate() && Effect->GetWorld() == World && Effect->IsActive())
+		{
+			Out.Add(Effect);
+		}
+	});
+}
+
+int32 ARRBonusChest::TrackEffectsSpawnedSince(const TSet<const UFXSystemComponent*>& Before, const TCHAR* EventName)
+{
+	TSet<const UFXSystemComponent*> After;
+	CollectActiveWorldEffects(After);
+	TArray<FString> Names;
+	for (const UFXSystemComponent* Effect : After)
+	{
+		if (Before.Contains(Effect))
+		{
+			continue;
+		}
+		// Spawned by the Blueprint event just now: the chest does not own it (SpawnSystemAtLocation outers it to the world).
+		UFXSystemComponent* Tracked = const_cast<UFXSystemComponent*>(Effect);
+		Tracked->ComponentTags.AddUnique(OpeningEffectTag);
+		OpeningEffects.Add(Tracked);
+		Names.Add(GetNameSafe(Tracked->GetFXSystemAsset()));
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: %s spawned %d world effect(s) [%s] (tracked %d)."), *GetName(), EventName, Names.Num(), *FString::Join(Names, TEXT(", ")),
+		OpeningEffects.Num());
+	return Names.Num();
+}
+
+int32 ARRBonusChest::ClearOpeningEffects()
+{
+	int32 Cleared = 0;
+	TArray<FString> Names;
+	for (const TWeakObjectPtr<UFXSystemComponent>& WeakEffect : OpeningEffects)
+	{
+		UFXSystemComponent* Effect = WeakEffect.Get();
+		if (!IsValid(Effect) || Effect->IsBeingDestroyed())
+		{
+			continue;
+		}
+		if (Effect->IsActive())
+		{
+			++Cleared;
+			Names.Add(GetNameSafe(Effect->GetFXSystemAsset()));
+		}
+		Effect->ComponentTags.Remove(OpeningEffectTag);
+		Effect->DeactivateImmediate();
+		// Pooled Niagara components go back to their pool (auto release on completion, manual release here); the others are destroyed.
+		const UNiagaraComponent* Niagara = Cast<UNiagaraComponent>(Effect);
+		const ENCPoolMethod PoolMethod = Niagara ? Niagara->PoolingMethod : ENCPoolMethod::None;
+		if (PoolMethod == ENCPoolMethod::ManualRelease)
+		{
+			Effect->ReleaseToPool();
+		}
+		else if (PoolMethod == ENCPoolMethod::None)
+		{
+			Effect->DestroyComponent();
+		}
+	}
+	OpeningEffects.Reset();
+
+	if (InnerLight && InnerLight->IsVisible())
+	{
+		++Cleared;
+		Names.Add(TEXT("InnerLight"));
+		InnerLight->SetVisibility(false);
+	}
+	if (Cleared > 0)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: opening effects still alive removed: %d [%s]."), *GetName(), Cleared, *FString::Join(Names, TEXT(", ")));
+	}
+	return Cleared;
+}
+
+int32 ARRBonusChest::CountLiveOpeningEffects(const UWorld* World)
+{
+	if (!World)
+	{
+		return 0;
+	}
+	int32 Count = 0;
+	ForEachObjectOfClass(UFXSystemComponent::StaticClass(), [World, &Count](UObject* Object)
+	{
+		const UFXSystemComponent* Effect = static_cast<const UFXSystemComponent*>(Object);
+		if (IsValid(Effect) && !Effect->IsTemplate() && Effect->GetWorld() == World && Effect->IsActive() && Effect->ComponentHasTag(OpeningEffectTag))
+		{
+			++Count;
+		}
+	});
+	for (TActorIterator<ARRBonusChest> It(const_cast<UWorld*>(World)); It; ++It)
+	{
+		const UPointLightComponent* Light = IsValid(*It) ? It->GetInnerLight() : nullptr;
+		if (Light && Light->IsVisible())
+		{
+			++Count;
+		}
+	}
+	return Count;
+}
+
+void ARRBonusChest::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	ClearOpeningEffects();
+	Super::EndPlay(EndPlayReason);
 }
 
 void ARRBonusChest::ApplyInteriorGlow()

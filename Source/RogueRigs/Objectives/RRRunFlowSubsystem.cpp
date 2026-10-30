@@ -850,6 +850,11 @@ void URRRunFlowSubsystem::RestartLevel()
 
 void URRRunFlowSubsystem::ResetForNextLevel()
 {
+	// task-388-01: the opening effects are spawned into the world by BP_BonusChest, not owned by the chest; the world is paused
+	// behind the cards screen, so they would resume in the next level. Remove them (and the inner light) before the chest goes.
+	const int32 ChestEffectsCleared = IsValid(BonusChest) ? BonusChest->ClearOpeningEffects() : 0;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: chest effects cleared for the next level: %d (chest %s)."), ChestEffectsCleared,
+		IsValid(BonusChest) ? (BonusChest->IsComplete() ? TEXT("opened") : TEXT("not opened")) : TEXT("none"));
 	for (AActor* Objective : TArray<AActor*>{ Console.Get(), BonusChest.Get(), Shuttle.Get(), ArrivalShuttle.Get() })
 	{
 		if (IsValid(Objective))

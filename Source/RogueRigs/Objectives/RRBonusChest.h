@@ -9,6 +9,7 @@
 
 class ARRPickup;
 class UCameraShakeBase;
+class UFXSystemComponent;
 class UMaterialInstanceDynamic;
 class UPointLightComponent;
 class UStaticMeshComponent;
@@ -126,7 +127,34 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Bonus Chest|Lock Light")
 	float GetHackingBlinkRate(float Progress) const;
 
+	/**
+	 * Removes what the opening left in the world (task-388-01): every effect component the Blueprint spawned in OnLidOpened and
+	 * OnLidSlam (world-owned, so not destroyed with the chest; a paused world freezes them and they resume in the next level) is
+	 * deactivated at once and destroyed (or returned to the Niagara pool), and InnerLight is hidden. Call it before the chest is
+	 * destroyed between two levels in the same world (URRRunFlowSubsystem::ResetForNextLevel); EndPlay also calls it.
+	 * Returns how many were still alive: active effects plus the light when it was visible.
+	 */
+	int32 ClearOpeningEffects();
+
+	/** Number of effects spawned by the opening events that are still tracked (alive or not). */
+	int32 GetTrackedOpeningEffectCount() const { return OpeningEffects.Num(); }
+
+	/** Component tag put on every effect the opening events spawned, so a later check can find them without the chest. */
+	static const FName OpeningEffectTag;
+
+	/** Opening effects alive in World: active effect components tagged OpeningEffectTag plus visible InnerLights of bonus chests. */
+	static int32 CountLiveOpeningEffects(const UWorld* World);
+
 protected:
+	/** Clears the opening effects (ClearOpeningEffects) whatever ends the chest, then ARRConsole::EndPlay. */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Fills Out with the effect components (Niagara or Cascade) of this world that are active now. */
+	void CollectActiveWorldEffects(TSet<const UFXSystemComponent*>& Out) const;
+
+	/** Tracks and tags the effect components of this world active now and not in Before (spawned by EventName). Returns how many. */
+	int32 TrackEffectsSpawnedSince(const TSet<const UFXSystemComponent*>& Before, const TCHAR* EventName);
+
 	/** Completes the hack (ARRConsole), then starts the opening sequence (the reward comes at the lid opening). */
 	virtual void CompleteHack() override;
 
@@ -383,6 +411,12 @@ protected:
 
 	/** True once every opening step ran (the tick is then turned off). */
 	bool bOpeningFinished = false;
+
+	/**
+	 * Effect components spawned by OnLidOpened and OnLidSlam (BP_BonusChest: NS_BonusChestOpen, NS_HeavySlamImpact through
+	 * SpawnSystemAtLocation, owned by the world, not by the chest). Weak: auto-destroyed one-shots disappear on their own.
+	 */
+	TArray<TWeakObjectPtr<UFXSystemComponent>> OpeningEffects;
 
 	/** Dynamic instance of the lock light slot (null without the Blueprint latch, e.g. headless tests). */
 	UPROPERTY(Transient)
