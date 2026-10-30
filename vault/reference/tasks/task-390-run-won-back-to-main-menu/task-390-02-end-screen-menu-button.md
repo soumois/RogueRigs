@@ -3,7 +3,7 @@ id: task-390-02-end-screen-menu-button
 description: "Bp: WBP_AlertObjectives: run-won end screen button "Main Menu" calls the return-to-menu entry"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Run won: back to the main menu: bp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-30T21:20:45Z
-- waiting_for: none
+- waiting_for: Unreal MCP (mcp__unreal) unreachable (ECONNREFUSED): owner starts the editor with the MCP server, then resume at this subtask
 - result: open
 
 ## Relations
