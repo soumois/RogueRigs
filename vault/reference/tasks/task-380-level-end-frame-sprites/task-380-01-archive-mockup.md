@@ -3,7 +3,7 @@ id: task-380-01-archive-mockup
 description: "Art: save the owner mockup and asset sheet in the repo and write the node art-prompts-level-end-screen-mockup; no generation"
 parent: task-380-level-end-frame-sprites
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen frame sprites in 3x3 (9-slice): art
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Both files exist, byte-identical to the sources; the node exists with files, contents, decisions Q2 to Q6, and is linked both ways; no kie_image.js run; node vault/scripts/lint.js --write clean; committed by path.
 - editor_state: not needed
 - token_ceiling: 0.1 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 35600, cache read 200412, output 5547
+- usage: turns 9, context start 11k peak 36k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T01:34:40Z
 - waiting_for: none
-- result: open
+- result: Both owner images archived byte-identical (1672x941, 1500x844), node art-prompts-level-end-screen-mockup written and linked; commit 9033cac7; no generation.
 
 ## Relations
 - [[task-380-level-end-frame-sprites]] — parent global task.

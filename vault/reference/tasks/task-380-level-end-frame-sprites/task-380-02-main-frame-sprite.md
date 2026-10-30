@@ -3,7 +3,7 @@ id: task-380-02-main-frame-sprite
 description: "Art: main frame sprite after the sheet, 9-slice (corners only detailed, uniform edges, flat centre), keyed, retained by the owner"
 parent: task-380-level-end-frame-sprites
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen frame sprites in 3x3 (9-slice): art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T01:35:43Z
 - waiting_for: none
 - result: open
 
