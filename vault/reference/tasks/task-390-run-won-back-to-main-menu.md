@@ -3,7 +3,7 @@ id: task-390-run-won-back-to-main-menu
 description: "Global task: After the level 4 extraction, the run-won end screen button reads Main Menu and returns to the main menu instead of restarting a run."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Run won: back to the main menu
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
 - next_step: task-390-02-end-screen-menu-button
-- started: 2026-10-30T21:14:50Z
-- waiting_for: bp subtask 02 blocked: Unreal MCP unreachable (ECONNREFUSED)
+- started: 2026-10-30T21:42:28Z
+- waiting_for: none
 - result: open
 
 ## Questions
