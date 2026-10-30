@@ -3,7 +3,7 @@ id: task-379-05-doc-new-run-loading
 description: "Doc: Update the menu, run, transition, loading widget and menu game mode docs"
 parent: task-379-new-run-loading-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu New Run: show the loading screen: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:30:34Z
 - waiting_for: none
 - result: open
 
