@@ -3,7 +3,7 @@ id: task-383-01-total-ore-text
 description: "Text: replace the two ore lines of intermission_recap in screen_texts.json by the single Total Ore label."
 parent: task-383-level-end-total-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen Total Ore: text
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:00:22Z
 - waiting_for: none
 - result: open
 
