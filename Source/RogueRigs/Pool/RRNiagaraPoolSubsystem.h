@@ -8,6 +8,7 @@
 
 class UNiagaraComponent;
 class UNiagaraSystem;
+class UFXSystemComponent;
 
 /** Components of one Niagara system held by URRNiagaraPoolSubsystem: free ones wait inactive, in-use ones are playing. */
 USTRUCT()
@@ -98,6 +99,35 @@ public:
 	/** Appends the Niagara systems that have a pool (stress logs iterate them with the counters above). */
 	void GetPooledSystems(TArray<UNiagaraSystem*>& OutSystems) const;
 
+	/**
+	 * Next level in the same world (task-389-01, ClearingLevel step): stops at once every pooled effect still playing or waiting
+	 * to start (robot death puffs and debris: the world is paused behind the intermission screens, so they would resume in the
+	 * next level) and puts it back in its free list, then stops every tracked world effect (TrackWorldEffect: shield debris).
+	 * Logs the count per system. Returns how many effects were still alive.
+	 */
+	int32 ClearForNextLevel();
+
+	/** Pooled effects playing or waiting to start plus tracked world effects still alive (level start check). */
+	int32 CountLiveEffects() const;
+
+	/**
+	 * Registers an effect spawned outside the pools by a robot (Blueprint SpawnSystemAtLocation: world-owned, so not removed
+	 * with the robot) so ClearForNextLevel stops it. Weak reference; finished or destroyed entries are dropped on the next call.
+	 */
+	void TrackWorldEffect(UFXSystemComponent* Effect);
+
+	/**
+	 * Fills Out with the effect components outered to World (SpawnSystemAtLocation without an actor, engine FX pool) that are
+	 * alive: active, or waiting for their system to compile (editor builds, first use) before they start.
+	 */
+	static void CollectWorldOwnedEffects(const UWorld& World, TSet<const UFXSystemComponent*>& Out);
+
+	/** Tracks (TrackWorldEffect) every active world-owned effect of this world not in Before; returns how many. */
+	int32 TrackWorldEffectsSpawnedSince(const TSet<const UFXSystemComponent*>& Before);
+
+	/** World effects tracked by TrackWorldEffect (alive or not, until the next prune). */
+	int32 GetTrackedWorldEffectCount() const { return TrackedWorldEffects.Num(); }
+
 protected:
 	/** Creates one registered, inactive component of System owned by the world settings; null on failure. */
 	UNiagaraComponent* CreateComponent(UNiagaraSystem* System);
@@ -114,6 +144,9 @@ protected:
 	 */
 	static bool IsWaitingToStart(const UNiagaraComponent& Component);
 
+	/** True when Effect is playing, or is a Niagara component waiting to start (IsWaitingToStart): both would show later. */
+	static bool IsEffectAlive(const UFXSystemComponent& Effect);
+
 	/** OnSystemFinished of a pooled component: back to the free list of its system. */
 	UFUNCTION()
 	void HandleSystemFinished(UNiagaraComponent* Component);
@@ -121,4 +154,7 @@ protected:
 	/** One pool per Niagara system asset. */
 	UPROPERTY()
 	TMap<TObjectPtr<UNiagaraSystem>, FRRNiagaraSystemPool> Pools;
+
+	/** Robot effects spawned outside the pools (TrackWorldEffect), stopped by ClearForNextLevel. Weak: auto-destroyed one-shots go on their own. */
+	TArray<TWeakObjectPtr<UFXSystemComponent>> TrackedWorldEffects;
 };

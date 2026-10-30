@@ -64,7 +64,11 @@ protected:
 	/** Pool reuse: chaser reset (shield back through the CSV stats, shell through the restored visual parts), break count cleared. */
 	virtual void ResetForNewLife() override;
 
-	/** Health set callback: counts the break and calls OnShieldBroken. Runs inside the GE execution (sys-damage safety rules). */
+	/**
+	 * Health set callback: counts the break and calls OnShieldBroken; the world-owned effects the Blueprint spawned there are
+	 * tracked by URRNiagaraPoolSubsystem (TrackWorldEffectsSpawnedSince) so the next level preparation stops them (task-389-01).
+	 * Runs inside the GE execution (sys-damage safety rules).
+	 */
 	void HandleShieldBroken();
 
 	/** Blueprint: the hit took the shield to 0 (fired once, before the death event when the same hit kills). Hide the shell, play the burst. */

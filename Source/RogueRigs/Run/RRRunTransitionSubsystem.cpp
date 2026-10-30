@@ -24,6 +24,7 @@
 #include "Pickups/RRPickup.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Projectiles/RRProjectile.h"
 #include "RogueRigs.h"
@@ -510,6 +511,9 @@ void URRRunTransitionSubsystem::FinishLoading(const TCHAR* Reason)
 		Level, *Layout, Reason, (Now - MapLoadedSeconds) * 1000.0, (Now - LoadingStartSeconds) * 1000.0, GetLoadingStartLabel());
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (new world, map travel): bonus chest opening effects alive %d."), Level,
 		ARRBonusChest::CountLiveOpeningEffects(HeldWorld.Get()));
+	const URRNiagaraPoolSubsystem* FXPool = HeldWorld.IsValid() ? HeldWorld->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (new world, map travel): robot death effects alive %d."), Level,
+		FXPool ? FXPool->CountLiveEffects() : 0);
 	bNewRunLoading = false;
 	HeldRunFlow.Reset();
 	HeldSpawner.Reset();
@@ -849,6 +853,11 @@ int32 URRRunTransitionSubsystem::ClearLevelActors(UWorld& World)
 	{
 		Explosions->ClearForNextLevel();
 	}
+	// task-389-01: robot death puffs and debris still playing (paused with the world) would resume in the next level.
+	if (URRNiagaraPoolSubsystem* FXPool = World.GetSubsystem<URRNiagaraPoolSubsystem>())
+	{
+		FXPool->ClearForNextLevel();
+	}
 	if (ARREnemySpawner* Spawner = RunFlow ? RunFlow->GetSpawner() : nullptr)
 	{
 		Spawner->ResetForNextLevel();
@@ -942,6 +951,9 @@ void URRRunTransitionSubsystem::StartPreparedLevel()
 		Level, *Layout, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (same world): bonus chest opening effects alive %d."), Level,
 		ARRBonusChest::CountLiveOpeningEffects(World));
+	const URRNiagaraPoolSubsystem* FXPool = World ? World->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (same world): robot death effects alive %d."), Level,
+		FXPool ? FXPool->CountLiveEffects() : 0);
 	IntermissionWorld.Reset();
 	Phase = ERRRunTransitionPhase::None;
 	SetLoadingStage(ERRRunLoadingStage::None);

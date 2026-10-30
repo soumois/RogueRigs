@@ -2,7 +2,10 @@
 
 #include "Enemies/RRShieldChaser.h"
 
+#include "Engine/World.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
+#include "RogueRigs.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRShieldChaser)
 
@@ -73,5 +76,20 @@ void ARRShieldChaser::HandleShieldBroken()
 	// so the last hit direction is the one of the hit that broke the shield. Stored apart: later hits overwrite the last one.
 	ShieldBreakDirection = GetLastHitDirection();
 	++ShieldBreakCount;
+	// task-389-01: the Blueprint spawns NS_ShieldDebris with SpawnSystemAtLocation (world-owned, not removed with the robot);
+	// track what it spawned so the next level preparation stops it (URRNiagaraPoolSubsystem::ClearForNextLevel).
+	UWorld* World = GetWorld();
+	URRNiagaraPoolSubsystem* FXPool = World ? World->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	TSet<const UFXSystemComponent*> EffectsBefore;
+	if (FXPool)
+	{
+		URRNiagaraPoolSubsystem::CollectWorldOwnedEffects(*World, EffectsBefore);
+	}
 	OnShieldBroken();
+	if (FXPool)
+	{
+		const int32 Tracked = FXPool->TrackWorldEffectsSpawnedSince(EffectsBefore);
+		UE_LOG(LogRogueRigs, Verbose, TEXT("%s: OnShieldBroken spawned %d world effect(s) (tracked %d)."), *GetName(), Tracked,
+			FXPool->GetTrackedWorldEffectCount());
+	}
 }

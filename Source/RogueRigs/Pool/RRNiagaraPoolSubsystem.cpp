@@ -6,7 +6,9 @@
 #include "GameFramework/WorldSettings.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "RogueRigs.h"
+#include "UObject/UObjectHash.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRNiagaraPoolSubsystem)
 
@@ -35,6 +37,7 @@ void URRNiagaraPoolSubsystem::Deinitialize()
 		DestroyAll(Pair.Value.Free);
 	}
 	Pools.Reset();
+	TrackedWorldEffects.Reset();
 	Super::Deinitialize();
 }
 
@@ -168,6 +171,171 @@ void URRNiagaraPoolSubsystem::GetPooledSystems(TArray<UNiagaraSystem*>& OutSyste
 	}
 }
 
+int32 URRNiagaraPoolSubsystem::ClearForNextLevel()
+{
+	int32 Cleared = 0;
+	TArray<FString> Parts;
+	for (TPair<TObjectPtr<UNiagaraSystem>, FRRNiagaraSystemPool>& Pair : Pools)
+	{
+		FRRNiagaraSystemPool& Pool = Pair.Value;
+		int32 SystemCleared = 0;
+		// Copy: DeactivateImmediate completes the system and the finish callback moves the component to Free meanwhile.
+		const TArray<TObjectPtr<UNiagaraComponent>> InUse = Pool.InUse;
+		for (UNiagaraComponent* Component : InUse)
+		{
+			if (!IsValid(Component))
+			{
+				continue;
+			}
+			if (Component->IsActive())
+			{
+				++SystemCleared;
+				Component->DeactivateImmediate();
+			}
+			else if (IsWaitingToStart(*Component))
+			{
+				// Deactivate clears the pending activation (DeactivateInternal); the tick that would start it later goes off.
+				++SystemCleared;
+				Component->Deactivate();
+				Component->SetComponentTickEnabled(false);
+			}
+		}
+		for (UNiagaraComponent* Component : Pool.InUse)
+		{
+			if (IsValid(Component))
+			{
+				Pool.Free.Add(Component);
+			}
+		}
+		Pool.InUse.Reset();
+		if (SystemCleared > 0)
+		{
+			Cleared += SystemCleared;
+			Parts.Add(FString::Printf(TEXT("%s %d"), *GetNameSafe(Pair.Key), SystemCleared));
+		}
+	}
+
+	int32 WorldCleared = 0;
+	TArray<FString> WorldNames;
+	for (const TWeakObjectPtr<UFXSystemComponent>& WeakEffect : TrackedWorldEffects)
+	{
+		UFXSystemComponent* Effect = WeakEffect.Get();
+		if (!IsValid(Effect) || Effect->IsBeingDestroyed() || !IsEffectAlive(*Effect))
+		{
+			continue;
+		}
+		++WorldCleared;
+		WorldNames.Add(GetNameSafe(Effect->GetFXSystemAsset()));
+		const bool bWaiting = !Effect->IsActive();
+		// Completion destroys an auto-destroy one-shot and returns an auto-release one to the engine pool.
+		Effect->DeactivateImmediate();
+		if (!IsValid(Effect) || Effect->IsBeingDestroyed())
+		{
+			continue;
+		}
+		if (bWaiting)
+		{
+			// Still waiting for its system (compile, PSOs): drop the pending activation and the tick that would start it.
+			Effect->Deactivate();
+			Effect->SetComponentTickEnabled(false);
+		}
+		// Same end as the bonus chest effects (task-388-01): manual-release components go back to the engine pool, unpooled ones are destroyed.
+		const UNiagaraComponent* Niagara = Cast<UNiagaraComponent>(Effect);
+		const ENCPoolMethod PoolMethod = Niagara ? Niagara->PoolingMethod : ENCPoolMethod::None;
+		if (PoolMethod == ENCPoolMethod::ManualRelease)
+		{
+			Effect->ReleaseToPool();
+		}
+		else if (PoolMethod == ENCPoolMethod::None)
+		{
+			Effect->DestroyComponent();
+		}
+	}
+	TrackedWorldEffects.Reset();
+	if (WorldCleared > 0)
+	{
+		Cleared += WorldCleared;
+		Parts.Add(FString::Printf(TEXT("world-owned %d (%s)"), WorldCleared, *FString::Join(WorldNames, TEXT(", "))));
+	}
+
+	UE_LOG(LogRogueRigs, Log, TEXT("URRNiagaraPoolSubsystem: robot death effects still alive removed for the next level: %d [%s]."), Cleared,
+		*FString::Join(Parts, TEXT(", ")));
+	return Cleared;
+}
+
+int32 URRNiagaraPoolSubsystem::CountLiveEffects() const
+{
+	int32 Count = 0;
+	for (const TPair<TObjectPtr<UNiagaraSystem>, FRRNiagaraSystemPool>& Pair : Pools)
+	{
+		for (const UNiagaraComponent* Component : Pair.Value.InUse)
+		{
+			if (IsValid(Component) && (Component->IsActive() || IsWaitingToStart(*Component)))
+			{
+				++Count;
+			}
+		}
+	}
+	for (const TWeakObjectPtr<UFXSystemComponent>& WeakEffect : TrackedWorldEffects)
+	{
+		const UFXSystemComponent* Effect = WeakEffect.Get();
+		if (IsValid(Effect) && IsEffectAlive(*Effect))
+		{
+			++Count;
+		}
+	}
+	return Count;
+}
+
+void URRNiagaraPoolSubsystem::TrackWorldEffect(UFXSystemComponent* Effect)
+{
+	TrackedWorldEffects.RemoveAllSwap([](const TWeakObjectPtr<UFXSystemComponent>& WeakEffect)
+	{
+		const UFXSystemComponent* Tracked = WeakEffect.Get();
+		return !IsValid(Tracked) || !IsEffectAlive(*Tracked);
+	}, EAllowShrinking::No);
+	if (IsValid(Effect))
+	{
+		TrackedWorldEffects.AddUnique(Effect);
+	}
+}
+
+void URRNiagaraPoolSubsystem::CollectWorldOwnedEffects(const UWorld& World, TSet<const UFXSystemComponent*>& Out)
+{
+	// SpawnSystemAtLocation without an actor outers its component to the world (engine FX pool too): only direct children.
+	TArray<UObject*> Children;
+	GetObjectsWithOuter(&World, Children, EGetObjectsFlags::None);
+	for (const UObject* Child : Children)
+	{
+		const UFXSystemComponent* Effect = Cast<UFXSystemComponent>(Child);
+		if (IsValid(Effect) && !Effect->IsBeingDestroyed() && IsEffectAlive(*Effect))
+		{
+			Out.Add(Effect);
+		}
+	}
+}
+
+int32 URRNiagaraPoolSubsystem::TrackWorldEffectsSpawnedSince(const TSet<const UFXSystemComponent*>& Before)
+{
+	const UWorld* World = GetWorld();
+	if (!World)
+	{
+		return 0;
+	}
+	TSet<const UFXSystemComponent*> After;
+	CollectWorldOwnedEffects(*World, After);
+	int32 Tracked = 0;
+	for (const UFXSystemComponent* Effect : After)
+	{
+		if (!Before.Contains(Effect))
+		{
+			TrackWorldEffect(const_cast<UFXSystemComponent*>(Effect));
+			++Tracked;
+		}
+	}
+	return Tracked;
+}
+
 UNiagaraComponent* URRNiagaraPoolSubsystem::CreateComponent(UNiagaraSystem* System)
 {
 	UWorld* World = GetWorld();
@@ -214,6 +382,12 @@ bool URRNiagaraPoolSubsystem::IsWaitingToStart(const UNiagaraComponent& Componen
 	// inactive with its tick enabled, and the tick activates it once ready; every other path out of Activate that leaves it
 	// inactive (cannot render, not allowed, completed) disables the tick. Read in engine 5.8 source (task-194-01).
 	return !Component.IsActive() && Component.IsComponentTickEnabled();
+}
+
+bool URRNiagaraPoolSubsystem::IsEffectAlive(const UFXSystemComponent& Effect)
+{
+	const UNiagaraComponent* Niagara = Cast<UNiagaraComponent>(&Effect);
+	return Effect.IsActive() || (Niagara && IsWaitingToStart(*Niagara));
 }
 
 void URRNiagaraPoolSubsystem::HandleSystemFinished(UNiagaraComponent* Component)
