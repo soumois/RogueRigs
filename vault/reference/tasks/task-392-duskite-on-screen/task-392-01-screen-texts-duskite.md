@@ -3,7 +3,7 @@ id: task-392-01-screen-texts-duskite
 description: "Text: screen_texts.json: intermission_recap "Total Ore:" becomes "Total Duskite:""
 parent: task-392-duskite-on-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # On-screen ore word: Duskite: text
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:58:25Z
 - waiting_for: none
 - result: open
 

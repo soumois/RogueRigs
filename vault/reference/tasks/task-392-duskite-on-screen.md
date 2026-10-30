@@ -3,7 +3,7 @@ id: task-392-duskite-on-screen
 description: "Global task: Every player-facing "Ore" text becomes "Duskite": stats screen total label, run-won ore line, the extraction bark; code identifiers and vault ids unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # On-screen ore word: Duskite
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-392-01-screen-texts-duskite
-- started: open
+- started: 2026-10-30T21:58:25Z
 - waiting_for: none
 - result: open
 
