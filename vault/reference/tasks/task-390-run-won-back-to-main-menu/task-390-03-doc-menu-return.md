@@ -3,7 +3,7 @@ id: task-390-03-doc-menu-return
 description: "Doc: update the run flow, main menu, run and end screen docs with the return to the menu"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: in-progress
+status: done
 ---
 # Run won: back to the main menu: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Entry, setting, debug command and button branch stated in the nodes; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 50654, cache read 121266, output 4720
+- usage: turns 5, context start 11k peak 51k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T21:57:17Z
 - waiting_for: none
-- result: open
+- result: Six doc nodes updated (wbp-alert-objectives, sys-objectives-run-flow, sys-run, sys-run-transition, sys-main-menu, sys-cheats); commit f9ced5ee; lint OK
 
 ## Relations
 - [[task-390-run-won-back-to-main-menu]] — parent global task.

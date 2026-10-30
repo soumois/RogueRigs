@@ -1,9 +1,9 @@
 ---
 id: task-390-run-won-back-to-main-menu
 description: "Global task: After the level 4 extraction, the run-won end screen button reads Main Menu and returns to the main menu instead of restarting a run."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Run won: back to the main menu
 
@@ -13,10 +13,10 @@ status: wait-answers
 - gdd_check: Read 2026-10-30: [[run-structure]] (approved: win at level 4 = stats screen then run-won screen; lose = run-lost screen, restart at level 1) and [[main-menu]] (provisional; "Not in scope: a back to menu button on end screens"): conflict with the owner words, both nodes changed 2026-10-30 after his approval (run won returns to the menu, Q3, Q4). [[ore-economy]]: all ore reset at run end (ResetRun does it). Tech read: [[wbp-alert-objectives]] (EndScreen, RestartButton "Play again" calls RunFlow RestartLevel; ShowRunEnd uses IsRunWon for the end_run_won texts), [[sys-run-transition]] (NextLevel on the last level calls ShowRunWonEndScreen), [[sys-main-menu]] (L_MainMenu, menu game mode, NewRunMapName; packaged MapsToCook lists L_MainMenu and L_ArenaM1). Open values: none (label "Main Menu" in English, hardcoded like the menu labels). Scope M2. task-391 and task-392 change the same widget afterwards. No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path).
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
-- next_step: task-390-03-doc-menu-return
+- next_step: none
 - started: 2026-10-30T21:52:47Z
-- waiting_for: bp subtask 02 edits compiled in the open editor but save_assets fails (file lock on WBP_AlertObjectives.uasset, two UnrealEditor.exe running); owner must close the other editor then re-save, edits are in memory only
-- result: open
+- waiting_for: none
+- result: Done. Six doc nodes updated (wbp-alert-objectives, sys-objectives-run-flow, sys-run, sys-run-transition, sys-main-menu, sys-cheats); commit f9ced5ee; lint OK
 
 ## Questions
 Decided 2026-10-30 (owner answers relayed by the main session); values provisional, owner 2026-10-30.
@@ -29,7 +29,7 @@ Decided 2026-10-30 (owner answers relayed by the main session); values provision
 3. task-390-03-doc-menu-return (vault/reference/tasks/task-390-run-won-back-to-main-menu/task-390-03-doc-menu-return.md) — doc: update the run flow, main menu, run and end screen docs with the return to the menu
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-390-01-return-to-menu-code]] — step 1, cpp.
 - [[task-390-02-end-screen-menu-button]] — step 2, bp.
 - [[task-390-03-doc-menu-return]] — step 3, doc.
