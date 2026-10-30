@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-10-30T01:48:54Z
 - waiting_for: none
-- result: Owner retained H1 + V1 as is (24 credits, runs 20261029-174247 and 174426); T_LevelEnd_DividerH 984x62 margins L 68 / R 65 px (0.069/0.066), T_LevelEnd_DividerV 58x984 margins T 56 / B 57 px (0.057/0.058); Sprites section updated; commit 20ddfe24. Style-guide A6 (cleaner than frame) accepted by owner. Runs 3 = generate, review, close-out.
+- result: Owner retained H1 + V1 as is (24 credits, runs 20261029-174247 and 174426); T_LevelEnd_DividerH 984x62 margins L 68 / R 65 px (0.069/0.066), T_LevelEnd_DividerV 58x984 margins T 56 / B 57 px (0.057/0.058); Sprites section updated; commit 20ddfe24. A6 (cleaner than frame) accepted by owner. ALERT causes: units over ceiling because two sprites and three agent calls (generate, review, close-out) each re-read inputs; resumed = close-out after owner wait.
 
 ## Relations
 - [[task-380-level-end-frame-sprites]] — parent global task.
