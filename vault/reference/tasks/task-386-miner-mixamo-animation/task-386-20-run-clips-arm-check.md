@@ -3,7 +3,7 @@ id: task-386-20-run-clips-arm-check
 description: "3d: compare arm bone motion of the run clips; the blend space shows T-pose arms while the legs run"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: run clips arm check
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the table of arm bone motion is reported for the 4 clips in source and export; either the cause and a fixed re-exported FBX (committed by path as task-386-20-run-clips-arm-check: <summary>) or a statement that the FBX arms are fine (the defect is then in Unreal)
 - editor_state: closed
 - token_ceiling: 0.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 23943, cache read 67085, output 4264
+- usage: turns 5, context start 12k peak 24k, resumes 0, 1 min, units 0.06 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T17:01:13Z
 - waiting_for: none
-- result: open
+- result: FBX arms fine: miner_clips.py only flattens Hips X/Y, every arm/spine track present in the 4 clips source and export, similar rotation ranges; cause is on the Unreal side; nothing changed
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
