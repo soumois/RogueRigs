@@ -1,9 +1,9 @@
 ---
 id: task-391-final-screens-count-level-ore
 description: "Global task: every on-screen ore number (stats Total Ore, shop balance, run-won line, HUD) shows the ore the player holds, the balance."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # On-screen ore numbers show the balance held
 
@@ -13,10 +13,10 @@ m=>m
 - gdd_check: Read 2026-10-30: [[intermission]] (provisional, task-383 Q1: "Total Ore" = ore secured since the run start, purchases not subtracted): no conflict, the defect is in the code. [[ore-economy]] (approved): no conflict. [[run-structure]]: run-won ore line = the stats screen total, written 2026-10-30 (Q6). Tech read: [[sys-run-transition]] (recap RunSecuredOre, OreSecuredThisLevel; level 4 uses GetLevelSecuredOre), [[sys-run]] (RecordIntermissionOreSpent lowers the baselines), [[sys-objectives-ore-counter]] (EndRun(true) secures the carried ore before HandleLevelExtracted), [[wbp-alert-objectives]] (run-won line "Ore secured: " + GetSecuredOre(RunFlow), the bank balance, purchases subtracted), [[wbp-intermission]] (Total Ore from the recap RunSecuredOre). Open values: none. Scope M2. Runs after task-390 (same widget); task-392 then renames the label. No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path). Re-check 2026-10-30 after the owner spec change: [[intermission]] said "the ore secured since the run start, purchases not subtracted" (task-383 Q1): conflict, changed to the balance; [[run-structure]] (run-won line = stats screen total) wording changed to the balance; [[ore-economy]] gets the rule "every on-screen ore number is the balance held". [[wbp-intermission]]: Total Ore reads the recap field RunSecuredOre by name, so the cpp keeps the field name. No longer touches WBP_AlertObjectives: no order constraint with task-390 or task-392.
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
-- next_step: task-391-05-doc-ore-balance
+- next_step: none
 - started: 2026-10-30T22:14:00Z
 - waiting_for: none
-- result: open
+- result: Done. Seven tech nodes state the balance rule and current code; commit 6045f7c0
 
 ## Questions
 Decided 2026-10-30 (owner answers relayed by the main session); values provisional, owner 2026-10-30.
@@ -33,7 +33,7 @@ Decided 2026-10-30 (owner answers relayed by the main session); values provision
 5. task-391-05-doc-ore-balance (vault/reference/tasks/task-391-final-screens-count-level-ore/task-391-05-doc-ore-balance.md) — doc: run, transition, ore counter, shop and screen docs state the balance rule
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-391-01-level-ore-in-recap]] — step 1, cpp.
 - [[task-391-02-run-won-ore-line]] — step 2, bp (cancelled).
 - [[task-391-03-doc-level-ore]] — step 3, doc (cancelled).
