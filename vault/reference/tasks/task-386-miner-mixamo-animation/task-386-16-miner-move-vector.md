@@ -3,7 +3,7 @@ id: task-386-16-miner-move-vector
 description: "Cpp: URRMinerAnimInstance exposes MoveX and MoveY, ground velocity in the aim frame over max speed, clamped to length 1, with a debug log"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: movement vector
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: builds with the editor closed, logic in C++ only, no new test, committed by path as task-386-16-miner-move-vector: <summary>
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 35798, cache read 250928, output 9250
+- usage: turns 12, context start 12k peak 36k, resumes 1 (message x1), 3 min, units 0.12 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-30T16:39:53Z
 - waiting_for: none
-- result: open
+- result: MoveX/MoveY (velocity in actor frame / MaxWalkSpeed, clamped to 1), LocomotionPlayRate fixed 1, rr.Debug.MinerAnim log; build ok; commit f6dccd5c; first run blocked by owner editor open, resumed after closing it
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
