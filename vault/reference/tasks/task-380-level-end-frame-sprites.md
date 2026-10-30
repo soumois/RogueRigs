@@ -3,7 +3,7 @@ id: task-380-level-end-frame-sprites
 description: "Global task: Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Level-end screen frame sprites in 3x3 (9-slice)
 
@@ -13,9 +13,9 @@ status: wait-answers
 - gdd_check: Read 2026-10-30: intermission (stats screen spec: over the paused finished level, ore secured this level and run total, robots destroyed per type as text, damage per weapon, Next level), wbp-intermission (current widget: Border RecapPanel, no sprite), art-prompts-level-end-screen (task-378 prompt and decisions), art-prompts-shop-screen-mockup (task-348 method: Kie.ai GPT Image 2 image-to-image with the ChatGPT images as refs, magenta key, 2 variants, sprites retained in Art/UI/Shop/; T_Shop_Panel 9-slice estimated left/right 150 px top/bottom 75 px, untested, with bolted tabs in the middle of its long sides: not clean for 9-slice), wbp-shop-screen (UMG form: Border or Button brush Draw As Box, margins as fractions, e.g. ShopPanel 0.146 / 0.183, Reroll 0.164, Continue 0.155), handover-2026-10-29-shop-screen, agent-art, kie-image-workflow, art-3d-lessons, umg-layout. 9-slice in the vault so far: one PNG per frame, margins estimated and written in the mockup node, applied in UMG as Box brush; no separate corner pieces. Conflicts and gaps: (1) the mockup shows one "Total Ore" line while intermission has ore secured this level and run total: a widget question, not a sprite one (Q1); (2) the mockup frame and its dividers carry bolts and tabs in the middle of edges, which a 9-slice would stretch (Q3); (3) the sheet is too small to cut final sprites from (about 1500 x 850 for 20 groups), as in task-348; (4) the asset sheet labels ore "duskite": not in the GDD, not taken (icons are not taken, Q2). Open values touched: robot type icons (open in the GDD, not on this screen: names as text). Rule A6 (white plates): the gunmetal and teal look was accepted on purpose for Spare Parts (task-348-01), assumed to carry over (Q5). In milestone scope (M2 UI art).
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-380-02-main-frame-sprite
-- started: 2026-10-30T01:34:40Z
-- waiting_for: owner pick of main frame candidate (task-380-02)
+- next_step: task-380-03-divider-sprites
+- started: 2026-10-30T01:41:01Z
+- waiting_for: none
 - result: open
 
 ## Questions

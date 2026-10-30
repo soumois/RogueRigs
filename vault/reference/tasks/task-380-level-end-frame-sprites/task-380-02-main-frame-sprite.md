@@ -3,7 +3,7 @@ id: task-380-02-main-frame-sprite
 description: "Art: main frame sprite after the sheet, 9-slice (corners only detailed, uniform edges, flat centre), keyed, retained by the owner"
 parent: task-380-level-end-frame-sprites
 kind: task
-status: wait-answers
+status: done
 ---
 # Level-end screen frame sprites in 3x3 (9-slice): art
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: T_LevelEnd_Frame.png exists, `ui_icon_prepare.js --check` clean (no magenta, no pink spill), no baked text; no detail between the corners on any edge and a flat centre, as stated by the agent and seen by the owner; margins written in px and fraction; at most 2 variants and 1 correction run; images sent to the owner and retained by him; node updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 48, cache write 83489, cache read 470930, output 18970
+- usage: turns 23, context start 11k peak 43k, resumes 1 (message x1), 4 min, units 0.25 M
+- runs: 3
 - milestone: M2
-- started: 2026-10-30T01:35:43Z
-- waiting_for: owner pick of candidate 1 or 2 of run 20261029-173616-level-end-screen
-- result: open
+- started: 2026-10-30T01:41:00Z
+- waiting_for: none
+- result: Owner retained candidate 2 as is (12 credits, run 20261029-173616); T_LevelEnd_Frame.png 942x458 cropped, margins L/R 90 px (0.0955), T/B 86 px (0.1878); Sprites section written; commit d4a62495. Rivets on edges accepted by owner; style-guide fails: 9-slice rivets (accepted), A6/A7 reminders. Runs 3 = generate, review, close-out.
 
 ## Relations
 - [[task-380-level-end-frame-sprites]] — parent global task.
