@@ -3,7 +3,7 @@ id: task-379-new-run-loading-screen
 description: "Global task: Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu New Run: show the loading screen
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-379-01-new-run-loading-code
-- started: open
+- started: 2026-10-30T01:34:27Z
 - waiting_for: none
 - result: open
 

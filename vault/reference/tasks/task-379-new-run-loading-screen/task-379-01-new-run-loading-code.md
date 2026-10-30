@@ -3,7 +3,7 @@ id: task-379-01-new-run-loading-code
 description: "Cpp: New Run goes through the transition Loading phase (loading screen in the menu world, hold in the arena, fade in); loading widget tells Blueprint whether progress is measured"
 parent: task-379-new-run-loading-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu New Run: show the loading screen: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T01:34:27Z
 - waiting_for: none
 - result: open
 
