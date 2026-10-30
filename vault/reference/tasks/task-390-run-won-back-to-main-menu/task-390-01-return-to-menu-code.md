@@ -3,7 +3,7 @@ id: task-390-01-return-to-menu-code
 description: "Cpp: BlueprintCallable return to the main menu: run reset then L_MainMenu, menu map setting, debug command"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: todo
+status: in-progress
 ---
 # Run won: back to the main menu: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:14:50Z
 - waiting_for: none
 - result: open
 
