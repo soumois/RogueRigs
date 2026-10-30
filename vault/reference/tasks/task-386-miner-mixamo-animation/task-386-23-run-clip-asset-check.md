@@ -3,7 +3,7 @@ id: task-386-23-run-clip-asset-check
 description: "Bp: read the four run AnimSequences in Unreal and test the blend space with all samples set to one clip"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: run clip assets in Unreal
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: read-back table per clip; BS samples all A_Miner_RunFwd, saved; not committed (temporary test) unless a clip defect is found and fixed
 - editor_state: open
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 26834, cache read 143762, output 5784
+- usage: turns 8, context start 12k peak 27k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T17:09:50Z
 - waiting_for: none
-- result: open
+- result: 4 AnimSequences identical in skeleton/compression/additive/root settings, only lengths differ; per-bone tracks unreadable via MCP; test A applied (all 4 samples = RunFwd, uncommitted)
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] - parent global task.
