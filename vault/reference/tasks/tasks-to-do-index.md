@@ -11,7 +11,9 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-388-chest-glow-cleared-between-levels]] — Nothing of an opened bonus chest (interior glow, opening rays and sparks, lid slam ring) stays visible in the next level of the run. Status wait-answers.
-- [[task-389-robot-particles-cleared-between-levels]] — Death puffs and debris of robots killed on the previous level no longer show when the next level starts. Status wait-answers.
-- [[task-390-run-won-back-to-main-menu]] — After the level 4 extraction, the run-won end screen button returns to the main menu instead of restarting a run. Status wait-answers.
-- [[task-391-final-screens-count-level-ore]] — The stats screen Total Ore and the run-won Ore secured line include the ore secured by the extraction just made. Status wait-answers.
+- [[task-388-chest-glow-cleared-between-levels]] — Nothing of an opened bonus chest (interior glow, opening rays and sparks, lid slam ring) stays visible in the next level of the run. Status todo.
+- [[task-389-robot-particles-cleared-between-levels]] — Death puffs and debris of robots killed on the previous level no longer show when the next level starts. Status todo.
+- [[task-390-run-won-back-to-main-menu]] — After the level 4 extraction, the run-won end screen button reads Main Menu and returns to the main menu instead of restarting a run. Status todo.
+- [[task-391-final-screens-count-level-ore]] — The run-won end screen ore line shows the run total (same as the level 4 Total Ore), not a smaller number; the stats screen total is checked too. Status todo.
+- [[task-392-duskite-on-screen]] — Every player-facing "Ore" text becomes "Duskite": stats screen total label, run-won ore line, the extraction bark; code identifiers and vault ids unchanged. Status wait-answers.
+- [[task-393-miner-over-lit]] — The new Meshy miner looks burnt out (blown highlights) in the arena; reduce his brightness with the lever the owner picks. Status wait-answers.

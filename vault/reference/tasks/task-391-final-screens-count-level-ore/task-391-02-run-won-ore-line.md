@@ -5,9 +5,9 @@ parent: task-391-final-screens-count-level-ore
 kind: task
 status: todo
 ---
-# End screens count the ore of the level just extracted: bp
+# Run-won end screen shows the run ore total: bp
 
-- goal: In WBP_AlertObjectives ShowRunEnd, on the run-won branch, EndOreText = "Ore secured: " + the task-391-01 run total getter instead of GetSecuredOre(RunFlow); other branches unchanged. Starts from the widget as left by task-390-02.
+- goal: In WBP_AlertObjectives ShowRunEnd, on the run-won branch, the ore number = the task-391-01 run total getter instead of GetSecuredOre(RunFlow); label text unchanged here (task-392 renames it); other branches unchanged. Starts from the widget as left by task-390-02.
 - agent: bp
 - depends_on: task-391-01-level-ore-in-recap, task-390-02-end-screen-menu-button
 - inputs: agent-bp (vault/reference/agents/agent-bp.md), wbp-alert-objectives (vault/reference/tech/blueprints/ui/wbp-alert-objectives.md), task-391-01-level-ore-in-recap (vault/reference/tasks/task-391-final-screens-count-level-ore/task-391-01-level-ore-in-recap.md) change summary (getter name), task-390-02-end-screen-menu-button (vault/reference/tasks/task-390-run-won-back-to-main-menu/task-390-02-end-screen-menu-button.md) result, global request and gdd_check: vault/reference/tasks/task-391-final-screens-count-level-ore.md

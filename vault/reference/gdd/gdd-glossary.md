@@ -16,7 +16,7 @@ kind: note
 - **Risk window**: time between shuttle landing and countdown end.
 - **Drone**: the miner's small helper; digs, hacks, carries dialogue.
 - **Heal ore**: a block that drops heal pickups when broken.
-- **Ore / special ore**: meta-progression resource / rare objective resource.
+- **Ore / special ore**: meta-progression resource / rare objective resource. The only ore, Duskite (provisional name, [[ore-blocks]]), is called "Duskite" in every on-screen text (owner 2026-10-30).
 
 ## Relations
 - [[gdd-index]] — parent index.

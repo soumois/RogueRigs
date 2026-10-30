@@ -1,18 +1,18 @@
 ---
-id: task-391-04-doc-level-ore
+id: task-391-03-doc-level-ore
 description: "Doc: update the run, transition, ore counter and end screen docs with the corrected ore count"
 parent: task-391-final-screens-count-level-ore
 kind: task
 status: todo
 ---
-# End screens count the ore of the level just extracted: doc
+# Run-won end screen shows the run ore total: doc
 
-- goal: Record the cause, the fix, the getter, the end screen change and the verification.
+- goal: Record the cause, the fix, the getter, the end screen change and the log verification.
 - agent: doc
-- depends_on: task-391-01-level-ore-in-recap, task-391-02-run-won-ore-line, task-391-03-ore-screens-capture
+- depends_on: task-391-01-level-ore-in-recap, task-391-02-run-won-ore-line
 - inputs: agent-doc (vault/reference/agents/agent-doc.md), sys-run (vault/reference/tech/systems/world/sys-run.md), sys-run-transition (vault/reference/tech/systems/world/sys-run/sys-run-transition.md), sys-objectives-ore-counter (vault/reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md), wbp-alert-objectives (vault/reference/tech/blueprints/ui/wbp-alert-objectives.md), global request and gdd_check: vault/reference/tasks/task-391-final-screens-count-level-ore.md
-- expected_output: The listed doc nodes updated; commit `task-391-04-doc-level-ore: ...`.
-- done_when: Cause, fix, getter, button branch and capture result stated; lint clean; committed by path.
+- expected_output: The listed doc nodes updated; commit `task-391-03-doc-level-ore: ...`.
+- done_when: Cause, fix, getter and end screen branch stated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
 - model: open

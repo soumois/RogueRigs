@@ -27,7 +27,8 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 - Exit: quits the game.
 - Mouse cursor shown; keyboard focus on New Run (Enter starts a run).
 - Start-up: a launch outside the editor (-game, packaged) opens the menu map L_MainMenu; the editor and PIE keep L_ArenaM1 and start a run directly.
-- Not in scope: a "back to menu" button on end screens or in pause.
+- Run won (owner 2026-10-30, provisional, task-390 Q3, Q4): the button of the run-won end screen reads "Main Menu"; it resets the run (ore back to 0) and opens L_MainMenu directly (no loading screen, no fade), in the packaged game, -game and PIE alike. The run-lost screen keeps "Play again" (restart at level 1).
+- Not in scope: a "back to menu" button on the run-lost screen or in pause.
 
 ## Relations
 - [[run-index]] — parent index.
