@@ -457,7 +457,7 @@ protected:
 	/** Step ClearingLevel: releases or destroys the level actors and resets the run flow, spawner and explosions. Returns actors removed. */
 	int32 ClearLevelActors(UWorld& World);
 
-	/** Step PlacingMiner: miner (and drone) moved to the player start, velocity cleared; flow field recomputed; arrival extractor placed (URRRunFlowSubsystem::PlaceArrivalShuttle). */
+	/** Step PlacingMiner: miner (and drone) moved to the player start, velocity cleared; flow field recomputed; arrival extractor placed (URRRunFlowSubsystem::PlaceArrivalShuttle) and hidden until StartPreparedLevel (task-397-01). */
 	void PlaceMinerAtStart(UWorld& World);
 
 	/** Stops the preparation ticker and forgets the preparation (no broadcast). */

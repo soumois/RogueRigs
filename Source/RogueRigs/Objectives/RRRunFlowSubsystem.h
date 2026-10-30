@@ -235,6 +235,14 @@ public:
 	 */
 	ARRShuttle* PlaceArrivalShuttle();
 
+	/**
+	 * Hides or shows the arrival extractor in game (task-397-01). The next level preload places it during the cards screen
+	 * (URRRunTransitionSubsystem::PlaceMinerAtStart), when the paused level is still drawn behind the intermission screens: it is
+	 * hidden there and shown again by URRRunTransitionSubsystem::StartPreparedLevel, under black, before the fade in. Logs the change.
+	 * Returns false when there is no arrival extractor.
+	 */
+	bool SetArrivalShuttleHidden(bool bHidden, const TCHAR* Reason);
+
 	/** True once the run ended (win or loss). */
 	UFUNCTION(BlueprintPure, Category = "RunFlow")
 	bool IsRunEnded() const { return bRunEnded; }

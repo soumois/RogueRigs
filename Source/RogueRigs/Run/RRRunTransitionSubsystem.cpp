@@ -910,6 +910,9 @@ void URRRunTransitionSubsystem::PlaceMinerAtStart(UWorld& World)
 	if (URRRunFlowSubsystem* RunFlow = World.GetSubsystem<URRRunFlowSubsystem>())
 	{
 		RunFlow->PlaceArrivalShuttle();
+		// task-397-01: the paused level is still drawn behind the cards and upgrade screens; the arrival stays hidden until the
+		// level starts (StartPreparedLevel), so no extractor shows at the start spot during the intermission.
+		RunFlow->SetArrivalShuttleHidden(true, TEXT("next level prepared behind the intermission screens"));
 	}
 }
 
@@ -960,6 +963,11 @@ void URRRunTransitionSubsystem::StartPreparedLevel()
 	const URRNiagaraPoolSubsystem* FXPool = World ? World->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d start (same world): robot death effects alive %d."), Level,
 		FXPool ? FXPool->CountLiveEffects() : 0);
+	// task-397-01: the arrival hidden since PlaceMinerAtStart shows again under black (fade out finished or loading screen), before the fade in.
+	if (URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
+	{
+		RunFlow->SetArrivalShuttleHidden(false, TEXT("level start, under black before the fade in"));
+	}
 	IntermissionWorld.Reset();
 	Phase = ERRRunTransitionPhase::None;
 	SetLoadingStage(ERRRunLoadingStage::None);

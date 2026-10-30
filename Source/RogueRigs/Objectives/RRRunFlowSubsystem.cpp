@@ -716,6 +716,19 @@ ARRShuttle* URRRunFlowSubsystem::PlaceArrivalShuttle()
 	return NewArrival;
 }
 
+bool URRRunFlowSubsystem::SetArrivalShuttleHidden(bool bHidden, const TCHAR* Reason)
+{
+	ARRShuttle* Arrival = GetArrivalShuttle();
+	if (!Arrival)
+	{
+		return false;
+	}
+	Arrival->SetActorHiddenInGame(bHidden);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: arrival extractor %s %s at %s (%s), frame %llu."), *Arrival->GetName(), bHidden ? TEXT("hidden") : TEXT("shown"),
+		*Arrival->GetActorLocation().ToCompactString(), Reason, GFrameCounter);
+	return true;
+}
+
 void URRRunFlowSubsystem::StartArrivalTakeoff(const TCHAR* Trigger)
 {
 	StopWaitingForArrivalFade();
