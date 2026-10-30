@@ -3,7 +3,7 @@ id: task-380-03-divider-sprites
 description: "Art: horizontal and vertical divider sprites with bolted ends, 3-slice, keyed, retained by the owner"
 parent: task-380-level-end-frame-sprites
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Level-end screen frame sprites in 3x3 (9-slice): art
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-30T01:42:11Z
-- waiting_for: none
+- waiting_for: owner pick of divider H (1 or 2) and V (1 or 2)
 - result: open
 
 ## Relations
