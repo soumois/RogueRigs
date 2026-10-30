@@ -8,6 +8,8 @@
 #     [-Exe Saved/StagedBuilds/Windows/RogueRigs/Binaries/Win64/RogueRigs.exe]  (staged cooked game instead of the editor binary;
 #      results then go to <staged>/RogueRigs/Saved/Stress; vault: sys-stress)
 # Build the RogueRigsEditor target first (vault: build-toolchain), editor closed; for -Exe, stage with BuildCookRun first.
+# -Map given from Git Bash: MSYS rewrites /Game/X into <drive>:/.../Git/[usr/]Game/X; the script turns it back into /Game/X
+#   and prints "map: repaired MSYS path -> /Game/X" (task-402).
 
 param(
 	[string]$Counts = "50+100+200+300+400",
@@ -28,6 +30,21 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+# Git Bash (MSYS) path conversion turns "/Game/X" into "C:/Program Files/Git/Game/X" (or ".../Git/usr/Game/X"): turn it back
+# into "/Game/X" (task-402). Matched on the Git[/usr]/Game/ segment, case-insensitive, not on the install folder.
+function Repair-MsysGamePath([string]$Value) {
+	if ($Value -match '^[A-Za-z]:[\\/](?:.*?[\\/])?Git[\\/](?:usr[\\/])?Game[\\/](.*)$') {
+		return "/Game/" + ($Matches[1] -replace '\\', '/')
+	}
+	return $Value
+}
+
+$RepairedMap = Repair-MsysGamePath $Map
+if ($RepairedMap -ne $Map) {
+	Write-Host "map: repaired MSYS path -> $RepairedMap"
+	$Map = $RepairedMap
+}
 $ProjectDir = Split-Path -Parent $PSScriptRoot
 $Project = Join-Path $ProjectDir "RogueRigs.uproject"
 $Editor = Join-Path $EngineDir "Binaries\Win64\UnrealEditor.exe"

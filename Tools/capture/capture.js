@@ -15,6 +15,9 @@
 //   --keep    regex (case-insensitive): extra LogRogueRigs lines to keep besides rr.* debug lines
 //   --ignore  regex (case-insensitive): drop any log line that matches, whatever its category
 //   --map     map to open (default /Game/RogueRigs/Maps/L_ArenaM1); "none" passes no map, so GameDefaultMap (L_MainMenu) opens
+//             From Git Bash, MSYS rewrites an argument starting with /Game/ into <drive>:/.../Git/[usr/]Game/... before node
+//             starts (task-402). The script repairs it back to /Game/... (match on the /Git/ or /Git/usr/ segment followed by
+//             Game/, case-insensitive) and prints "map: repaired MSYS path -> /Game/..."; same repair on such prefixes inside --exec.
 // Kept in the report: rr.* debug lines and --keep matches of LogRogueRigs, every Error/Fatal/ensure line, and Warning lines
 // of game categories (other warnings are only counted). Repeated lines are merged ("x12"), long lines cut at 160 characters.
 // Exit code: 0 run ended and screenshot count as expected, 1 timeout, crash or missing screenshots, 2 bad arguments.
@@ -136,10 +139,30 @@ function summariseLog(logPath, keepRe, ignoreRe, maxLines) {
   return { out, errors, noise, fatal, otherWarnings, tail, total: lines.length };
 }
 
+// Git Bash (MSYS) path conversion turns "/Game/X" into "C:/Program Files/Git/Game/X" (or ".../Git/usr/Game/X"): turn it back
+// into "/Game/X" (task-402). Matched on the Git[/usr]/Game/ segment, not on the install folder.
+const MSYS_MAP_RE = /^[A-Za-z]:[\\/](?:.*?[\\/])?Git[\\/](?:usr[\\/])?Game[\\/](.*)$/i;
+const MSYS_EXEC_RE = /[A-Za-z]:[\\/](?:[^,"]*?[\\/])?Git[\\/](?:usr[\\/])?Game[\\/]/gi;
+
+function repairMsysMap(value) {
+  const m = value.match(MSYS_MAP_RE);
+  return m ? `/Game/${m[1].replace(/\\/g, '/')}` : value;
+}
+
+function repairMsysExec(value) {
+  return value.replace(MSYS_EXEC_RE, '/Game/');
+}
+
 async function main() {
   const a = parseArgs(process.argv.slice(2));
   if (!a.name || !a.exec) usage('--name and --exec are required');
   if (!/^[A-Za-z0-9_.-]+$/.test(a.name)) usage('--name may only hold letters, digits, _ . -');
+  if (a.map && a.map !== 'none') {
+    const fixed = repairMsysMap(a.map);
+    if (fixed !== a.map) { console.log(`map: repaired MSYS path -> ${fixed}`); a.map = fixed; }
+  }
+  const fixedExec = repairMsysExec(a.exec);
+  if (fixedExec !== a.exec) { console.log(`exec: repaired MSYS path(s) -> ${fixedExec}`); a.exec = fixedExec; }
   const timeoutS = Number(a.timeout || 240);
   const maxLines = Number(a['max-lines'] || 40);
   const expect = a.expect === undefined ? null : Number(a.expect);
@@ -211,7 +234,7 @@ async function main() {
   process.exit(problems.some((p) => !/error line/.test(p)) ? 1 : 0);
 }
 
-// Exported for a check of the contact sheet on existing PNGs without a game run (task-359-01).
-module.exports = { makeSheet };
+// Exported for a check of the contact sheet on existing PNGs without a game run (task-359-01) and of the MSYS repair (task-402).
+module.exports = { makeSheet, repairMsysMap, repairMsysExec };
 
 if (require.main === module) main().catch((e) => { console.error(`capture.js: ${e.stack || e.message}`); process.exit(1); });
