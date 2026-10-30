@@ -3,7 +3,7 @@ id: task-389-02-doc-robot-effects
 description: "Doc: update the preload and enemies docs with the robot effects cleared between levels"
 parent: task-389-robot-particles-cleared-between-levels
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot particles removed between levels: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:13:40Z
 - waiting_for: none
 - result: open
 

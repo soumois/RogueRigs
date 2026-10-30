@@ -3,7 +3,7 @@ id: task-389-01-clear-robot-effects
 description: "Cpp: remove the robot death puffs and debris still playing when the next level is prepared"
 parent: task-389-robot-particles-cleared-between-levels
 kind: task
-status: in-progress
+status: done
 ---
 # Robot particles removed between levels: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build passes with the editor closed; a -game log shows robot death effects spawned within 1 s before the extraction and, at the level 2 preparation, removed (count > 0), none alive at level 2 start; death effects still spawned during level 2; uncommitted Config changes untouched; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 94, cache write 130501, cache read 4034641, output 34969
+- usage: turns 47, context start 12k peak 136k, resumes 0, 14 min, units 0.74 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T20:58:58Z
 - waiting_for: none
-- result: open
+- result: Cause confirmed by -game runs: robot death effects (pooled NS_RobotDeathPuff/NS_HeavyDeathPuff/debris via URRNiagaraPoolSubsystem, and NS_ShieldDebris spawned under world settings by shield chasers) froze at extraction and resumed in level 2; task-388 did not cover them. Added URRNiagaraPoolSubsystem::ClearForNextLevel called from ClearLevelActors, shield debris tracking, level start logs alive count. Log: removed 55 at ClearingLevel, level 2 start alive 0, death effects still spawn in level 2. Commits 54ea370e, 22d0e8e1. Look unverified (owner tests).
 
 ## Relations
 - [[task-389-robot-particles-cleared-between-levels]] — parent global task.
