@@ -3,7 +3,7 @@ id: task-379-02-menu-game-mode-loading-class
 description: "Bp: BP_MainMenuGameMode: set LoadingScreenWidgetClass to WBP_Loading"
 parent: task-379-new-run-loading-screen
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Main menu New Run: show the loading screen: bp
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-10-30T01:47:57Z
-- waiting_for: owner: start the Unreal editor on RogueRigs.uproject (MCP port 8000); permission denied to the Executor
+- started: 2026-10-30T03:09:42Z
+- waiting_for: none
 - result: open
 
 ## Relations
