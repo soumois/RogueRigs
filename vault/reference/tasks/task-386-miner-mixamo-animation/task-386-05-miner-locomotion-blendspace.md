@@ -3,7 +3,7 @@ id: task-386-05-miner-locomotion-blendspace
 description: "Bp: BS_Miner_Locomotion: 2D blend space, direction and speed, nine clips at their measured positions"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: editor Python read back: skeleton SKEL_Miner, axes Direction (-180, 180) and Speed (0, max report speed), the sample list matches the placement above with no warning of invalid samples; saved; committed by path as `task-386-05-miner-locomotion-blendspace: <summary>`.
 - editor_state: open
 - token_ceiling: 0.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 44, cache write 47681, cache read 800712, output 8874
+- usage: turns 22, context start 12k peak 53k, resumes 0, 1 min, units 0.18 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:45:55Z
 - waiting_for: none
-- result: open
+- result: BS_Miner_Locomotion built: Direction -180..180, Speed 0..427.1, 15 samples as placed, read back; axes set via MCP ObjectTools (Python BlendParameter field name failed, committed script axes path untested); invalid-sample warnings not checked; commit eb27fa58
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.

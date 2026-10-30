@@ -3,7 +3,7 @@ id: task-386-06-abp-miner
 description: "Bp: ABP_Miner: Animation Blueprint of URRMinerAnimInstance playing BS_Miner_Locomotion"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:47:35Z
 - waiting_for: none
 - result: open
 
