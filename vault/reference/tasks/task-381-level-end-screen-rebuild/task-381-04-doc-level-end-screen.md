@@ -3,7 +3,7 @@ id: task-381-04-doc-level-end-screen
 description: "Doc: update the wbp-intermission doc node with the rebuilt tree, anchors, brushes and verification."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen rebuild: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:48:12Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-381-03-level-end-screen-capture
 description: "Capture: -game check of the rebuilt stats screen at four resolutions and the level 4 variant against the mockup."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen rebuild: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: C1 the title is drawn between two riveted title bars, the right one mirrored, and the subtitle sits under it between two thin lines; C2 the riveted frame is drawn with undistorted teal corners at every resolution; C3 the top band of the frame shows the ore icon and two ore lines with numbers; C4 a bolted horizontal divider separates the band from the columns and a bolted vertical divider separates the two columns, ends not stretched; C5 each column shows its label with a thin line under it and at least one entry with the name left and the value right-aligned; C6 the button shows the cream Continue plate with NEXT LEVEL in upper case; C7 the dimmed arena is visible behind, and at 1920 x 1080, 1280 x 720, 1920 x 1200 and 2560 x 1080 nothing is cut, overlaps or leaves the screen; C8 the level 4 frame shows CLAIM EMPTIED and CASH OUT in the same layout. Each point seen, not seen or ambiguous with its frame path; ambiguous points go to the owner.
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 44630, cache read 356699, output 8039
+- usage: turns 14, context start 14k peak 45k, resumes 2 (message x2), 8 min, units 0.13 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-30T04:40:19Z
 - waiting_for: none
-- result: open
+- result: Capture C1-C8 seen after fix 892ae8c1 (button text 36->28). Open defect for owner: level 4 subtitle (long text) crosses the two fixed-width thin lines (L4_1920x1080_v2.png). 1920x1200 and 2560x1080 only captured before the button fix (C2 seen there). Frames in Saved/LevelEndScreen/task-381/.
 
 ## Relations
 - [[task-381-level-end-screen-rebuild]] — parent global task.
