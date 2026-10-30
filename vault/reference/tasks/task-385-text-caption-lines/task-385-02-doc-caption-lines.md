@@ -3,7 +3,7 @@ id: task-385-02-doc-caption-lines
 description: "Doc: update the text-content-files lines row with the caption exception."
 parent: task-385-text-caption-lines
 kind: task
-status: todo
+status: in-progress
 ---
 # Text validator caption lines: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:18:55Z
 - waiting_for: none
 - result: open
 

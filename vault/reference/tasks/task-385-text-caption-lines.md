@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[text-content-files]] (kind doc, child of text-content-schema; screen_texts.json `lines`: "each 3 to 12 words", word limits "provisional (task-209-03, not owner-set)"; `labels` 1 to 4 words; log: highest-loop output equals the item title), `Tools/content/validate_text.js` (FILES.screen_texts.fields.lines {min 3, max 12, array}; checkText applies one limit per slot; --selftest runs Tools/content/tests/, which holds no screen_texts case). Current screen_texts.json lines: intermission_recap two "Ore secured ..." lines (removed by task-383-01) and loading_level three 3-word lines; none ends with ":", so nothing else changes. No kind: rule node is edited. Conflicts: none. Open values: none. Scope M2 tooling.
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-385-01-validator-caption-lines
+- next_step: task-385-02-doc-caption-lines
 - started: 2026-10-30T05:17:52Z
 - waiting_for: none
 - result: open
