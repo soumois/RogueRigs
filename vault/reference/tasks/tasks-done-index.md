@@ -389,3 +389,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-378-level-end-screen-prompt]] — ChatGPT image prompt of the end-of-level stats screen mockup, in the palette and look of the Spare Parts cards screen. Status done.
 - [[task-379-new-run-loading-screen]] — Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar. Status done.
 - [[task-380-level-end-frame-sprites]] — Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG. Status done.
+- [[task-381-level-end-screen-rebuild]] — Rebuild WBP_Intermission (stats screen at the extractor) to the ChatGPT mockup with the task-380 sprites. Status done.

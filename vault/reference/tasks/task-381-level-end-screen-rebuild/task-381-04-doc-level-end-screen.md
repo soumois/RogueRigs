@@ -3,7 +3,7 @@ id: task-381-04-doc-level-end-screen
 description: "Doc: update the wbp-intermission doc node with the rebuilt tree, anchors, brushes and verification."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen rebuild: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: wbp-intermission lists the new tree, the anchors per top-level widget, the textures and Box margins, the graph changes and the capture result with its unseen items; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 32281, cache read 111333, output 4641
+- usage: turns 6, context start 12k peak 32k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T04:48:12Z
 - waiting_for: none
-- result: open
+- result: wbp-intermission doc updated (commit f1d57f16): new tree, anchor_rule per widget, textures, graph changes, capture result; node over the 400-word cap; gdd intermission already records the look.
 
 ## Relations
 - [[task-381-level-end-screen-rebuild]] — parent global task.
