@@ -234,10 +234,6 @@ bool URRIntermissionShopSubsystem::PayOre(int32 Amount, const TCHAR* Reason)
 		UE_LOG(LogRogueRigs, Warning, TEXT("URRIntermissionShopSubsystem: %s payment of %d ore refused."), Reason, Amount);
 		return false;
 	}
-	if (URRRunSubsystem* Run = URRRunSubsystem::Get(RunFlow))
-	{
-		Run->RecordIntermissionOreSpent(Amount);
-	}
 	return true;
 }
 

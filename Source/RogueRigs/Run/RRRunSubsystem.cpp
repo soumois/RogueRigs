@@ -238,7 +238,7 @@ void URRRunSubsystem::BeginRun(const FString& Level1LayoutName)
 	LastSnapshot = FRRRunMinerSnapshot();
 	bSnapshotPending = false;
 	CaptureWorld.Reset();
-	SecuredOreAtRunStart = GetBankSecuredOre();
+	SecuredOreAtRunStart = GetBankSecuredSinceReset();
 	SecuredOreAtLevelStart = SecuredOreAtRunStart;
 	ClearLayoutRequest();
 	const FString Layout = GetCurrentLayoutName();
@@ -279,8 +279,8 @@ bool URRRunSubsystem::CaptureLevelEndSnapshot(ARRMiner* Miner)
 		Snapshot.MaxHealth = HealthSet->GetMaxHealth();
 	}
 	const int32 BankOre = GetBankSecuredOre();
-	Snapshot.OreSecuredThisLevel = BankOre - SecuredOreAtLevelStart;
-	Snapshot.RunSecuredOre = BankOre - SecuredOreAtRunStart;
+	Snapshot.OreSecuredThisLevel = GetLevelSecuredOre();
+	Snapshot.RunSecuredOre = GetRunSecuredOre();
 	if (const URRRunFlowSubsystem* RunFlow = Miner->GetWorld() ? Miner->GetWorld()->GetSubsystem<URRRunFlowSubsystem>() : nullptr)
 	{
 		Snapshot.CarriedOreAtCapture = RunFlow->GetCarriedOre();
@@ -321,16 +321,6 @@ bool URRRunSubsystem::AppendCardToPendingSnapshot(ARRMiner* Miner, const FRRUpgr
 	return true;
 }
 
-void URRRunSubsystem::RecordIntermissionOreSpent(int32 Amount)
-{
-	if (!bRunInProgress || Amount <= 0)
-	{
-		return;
-	}
-	SecuredOreAtLevelStart -= Amount;
-	SecuredOreAtRunStart -= Amount;
-}
-
 bool URRRunSubsystem::AdvanceToNextLevel()
 {
 	if (!bRunInProgress || IsLastLevel())
@@ -339,7 +329,7 @@ bool URRRunSubsystem::AdvanceToNextLevel()
 		return false;
 	}
 	++LevelIndex;
-	SecuredOreAtLevelStart = GetBankSecuredOre();
+	SecuredOreAtLevelStart = GetBankSecuredSinceReset();
 	const FString Layout = GetCurrentLayoutName();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: advanced to level %d/%d, layout %s, snapshot %s."),
 		LevelIndex, GetLevelCount(), *Layout, bSnapshotPending ? TEXT("pending") : TEXT("none"));
@@ -491,12 +481,20 @@ FString URRRunSubsystem::GetLayoutNameForLevel(int32 InLevelIndex) const
 
 int32 URRRunSubsystem::GetRunSecuredOre() const
 {
-	return bRunInProgress ? GetBankSecuredOre() - SecuredOreAtRunStart : 0;
+	// Secured-since-reset total, not the spendable balance: purchases and rerolls do not lower the run total (task-391-01).
+	return bRunInProgress ? GetBankSecuredSinceReset() - SecuredOreAtRunStart : 0;
 }
 
 int32 URRRunSubsystem::GetLevelSecuredOre() const
 {
-	return bRunInProgress ? GetBankSecuredOre() - SecuredOreAtLevelStart : 0;
+	return bRunInProgress ? GetBankSecuredSinceReset() - SecuredOreAtLevelStart : 0;
+}
+
+int32 URRRunSubsystem::GetBankSecuredSinceReset() const
+{
+	const UGameInstance* GameInstance = GetGameInstance();
+	const URROreBankSubsystem* Bank = GameInstance ? GameInstance->GetSubsystem<URROreBankSubsystem>() : nullptr;
+	return Bank ? Bank->GetSecuredSinceReset() : 0;
 }
 
 int32 URRRunSubsystem::GetBankSecuredOre() const

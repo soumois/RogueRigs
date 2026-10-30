@@ -151,12 +151,6 @@ public:
 	 */
 	bool AppendCardToPendingSnapshot(ARRMiner* Miner, const FRRUpgradeCard& Card);
 
-	/**
-	 * Ore spent from the secured ore between two levels (shop purchase or shop reroll): moves the level-start and run-start
-	 * baselines down by Amount so the next recap's OreSecuredThisLevel and RunSecuredOre still count ore secured, not spent.
-	 */
-	void RecordIntermissionOreSpent(int32 Amount);
-
 	/** True between BeginRun and ResetRun. */
 	UFUNCTION(BlueprintPure, Category = "Run")
 	bool IsRunInProgress() const { return bRunInProgress; }
@@ -189,11 +183,15 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Run")
 	bool HasPendingSnapshot() const { return bSnapshotPending; }
 
-	/** Ore secured since the run started (bank total minus the total at BeginRun). */
+	/**
+	 * Run "Total Ore" (intermission gdd): ore secured since the run started, the extraction just made included, spending (shop
+	 * purchases and rerolls, level-up rerolls) not subtracted; 0 without a run. Read by the stats screens (recap RunSecuredOre)
+	 * and by the run won end screen ore line (task-391-01), which stays valid until the end screen button resets the run.
+	 */
 	UFUNCTION(BlueprintPure, Category = "Run")
 	int32 GetRunSecuredOre() const;
 
-	/** Ore secured since the current level started (bank total minus the total at the level start); 0 without a run (task-317-01). */
+	/** Ore secured since the current level started, spending not subtracted; 0 without a run (task-317-01, task-391-01). */
 	UFUNCTION(BlueprintPure, Category = "Run")
 	int32 GetLevelSecuredOre() const;
 
@@ -228,8 +226,11 @@ protected:
 	/** Forgets the current request and its layout (an in-flight result is discarded). */
 	void ClearLayoutRequest();
 
-	/** Secured ore total of the session bank (0 without a bank). */
+	/** Spendable secured ore of the session bank (0 without a bank). */
 	int32 GetBankSecuredOre() const;
+
+	/** Ore secured since the bank's last reset, spending not subtracted (URROreBankSubsystem::GetSecuredSinceReset; 0 without a bank). */
+	int32 GetBankSecuredSinceReset() const;
 
 	/** True between BeginRun and ResetRun. */
 	bool bRunInProgress = false;
@@ -256,10 +257,10 @@ protected:
 	/** World the snapshot was captured in: a pending snapshot is applied only in another world (after the travel). */
 	TWeakObjectPtr<UWorld> CaptureWorld;
 
-	/** Bank total at BeginRun. */
+	/** Bank secured-since-reset total at BeginRun (0 since every run end resets the bank; kept for a run begun without a reset). */
 	int32 SecuredOreAtRunStart = 0;
 
-	/** Bank total at the start of the current level. */
+	/** Bank secured-since-reset total at the start of the current level. */
 	int32 SecuredOreAtLevelStart = 0;
 
 	/** Builds the requested layouts on a worker thread; FRRJsonLayoutProvider unless SetLayoutProvider replaced it. */

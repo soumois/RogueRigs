@@ -54,7 +54,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnShopSlotBoughtSignature, int
  * miner replays it, and empties the slot. Several buys are allowed.
  * Reroll: cost URRRerollCostLibrary::GetRerollCostForCount(RerollCount) (shared rule: 15, 20, 25...), its own count reset to 0
  * at each OpenShop; redraws every slot (sold ones included), no card sharing stat and target with the unsold cards replaced.
- * Ore spent here is reported to URRRunSubsystem::RecordIntermissionOreSpent so the recap figures keep counting secured ore.
+ * Ore spent here lowers only the spendable balance: the recap figures read the bank's secured-since-reset total (task-391-01).
  * OnShopChanged fires after each of these and on every OnOreChanged of the intermission world's run flow while open.
  * OnSlotBought fires once per successful buy, just before its OnShopChanged (purchase effects, task-342).
  */

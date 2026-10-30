@@ -827,7 +827,10 @@ bool URRRunFlowSubsystem::ShowRunWonEndScreen()
 	{
 		return false;
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, miner extracted, run won (after the stats screen)."));
+	// The end screen ore line reads URRRunSubsystem::GetRunSecuredOre (task-391-01); GetSecuredOre is the spendable balance.
+	const URRRunSubsystem* Run = URRRunSubsystem::Get(this);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, miner extracted, run won (after the stats screen): run secured ore %d, spendable secured %d, console marked rocks %d/%d."),
+		Run ? Run->GetRunSecuredOre() : -1, GetSecuredOre(), Console ? Console->GetMarkedRockCount() : -1, Console ? Console->GetInitialMarkedRockCount() : -1);
 	OnRunEnded.Broadcast(true);
 	return true;
 }
