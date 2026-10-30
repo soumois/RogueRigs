@@ -2,6 +2,8 @@
 
 #include "Objectives/RRShuttle.h"
 
+#include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
@@ -20,6 +22,20 @@ ARRShuttle::ARRShuttle()
 
 	ShuttleRoot = CreateDefaultSubobject<USceneComponent>(TEXT("ShuttleRoot"));
 	RootComponent = ShuttleRoot;
+
+	// task-377 Q2: 1608 x 1608 x 400 uu centred on the actor, bottom on the floor top (the actor origin); edited in the Blueprint.
+	BoardZone = CreateDefaultSubobject<UBoxComponent>(TEXT("BoardZone"));
+	BoardZone->SetupAttachment(ShuttleRoot);
+	BoardZone->InitBoxExtent(FVector(804.f, 804.f, 200.f));
+	BoardZone->SetRelativeLocation(FVector(0.f, 0.f, 200.f));
+	BoardZone->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BoardZone->SetCollisionObjectType(ECC_WorldDynamic);
+	BoardZone->SetCollisionResponseToAllChannels(ECR_Ignore);
+	BoardZone->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	BoardZone->SetGenerateOverlapEvents(true);
+	BoardZone->SetCanEverAffectNavigation(false);
+	BoardZone->CanCharacterStepUpOn = ECB_No;
+	BoardZone->SetHiddenInGame(true);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(ShuttleRoot);
@@ -48,22 +64,28 @@ TArray<UStaticMeshComponent*> ARRShuttle::GetRotors() const
 	return { RotorFL.Get(), RotorFR.Get(), RotorRL.Get(), RotorRR.Get() };
 }
 
-void ARRShuttle::InitializeShuttle(ARRArenaGrid* InGrid, ARRMiner* InMiner, FIntPoint InCell, float InCountdownSeconds, float InBoardRadius)
+void ARRShuttle::InitializeShuttle(ARRArenaGrid* InGrid, ARRMiner* InMiner, FIntPoint InCell, float InCountdownSeconds)
 {
 	Grid = InGrid;
 	Miner = InMiner;
 	Cell = InCell;
 	CountdownSeconds = FMath::Max(InCountdownSeconds, 0.f);
 	RemainingSeconds = CountdownSeconds;
-	BoardRadius = FMath::Max(InBoardRadius, 0.f);
-	bInitialized = true;
+	// Placed before bInitialized: an overlap raised by this move is ignored, the check below covers a miner already inside.
 	if (Grid)
 	{
 		SetActorLocation(RRLandingFootprint::GetCenter(Grid, Cell, FootprintCells));
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("%s: shuttle landed on (%d, %d), countdown %.1f s."), *GetName(), Cell.X, Cell.Y, CountdownSeconds);
+	bInitialized = true;
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: shuttle landed on (%d, %d), countdown %.1f s, board zone extent %s."), *GetName(), Cell.X, Cell.Y, CountdownSeconds,
+		BoardZone ? *BoardZone->GetScaledBoxExtent().ToCompactString() : TEXT("none"));
 	OnLanded();
 	BroadcastCountdown();
+	// A miner already inside the zone raises no begin-overlap event.
+	if (BoardZone && IsValid(Miner) && BoardZone->IsOverlappingComponent(Miner->GetCapsuleComponent()))
+	{
+		TryBoard();
+	}
 }
 
 void ARRShuttle::InitializeArrival(ARRArenaGrid* InGrid, FIntPoint InCell)
@@ -73,13 +95,49 @@ void ARRShuttle::InitializeArrival(ARRArenaGrid* InGrid, FIntPoint InCell)
 	Cell = InCell;
 	CountdownSeconds = 0.f;
 	RemainingSeconds = 0.f;
-	BoardRadius = 0.f;
-	// bInitialized stays false: Tick never runs the board check nor the countdown for the arrival.
+	// bInitialized stays false: no board and no countdown for the arrival; the zone is switched off too (task-377 Q5).
 	bArrival = true;
+	if (BoardZone)
+	{
+		BoardZone->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 	if (Grid)
 	{
 		SetActorLocation(RRLandingFootprint::GetCenter(Grid, Cell, FootprintCells));
 	}
+}
+
+void ARRShuttle::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (BoardZone)
+	{
+		BoardZone->OnComponentBeginOverlap.AddUniqueDynamic(this, &ARRShuttle::HandleBoardZoneBeginOverlap);
+	}
+}
+
+void ARRShuttle::HandleBoardZoneBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (IsValid(Miner) && OtherActor == Miner && OtherComp == Miner->GetCapsuleComponent())
+	{
+		TryBoard();
+	}
+}
+
+bool ARRShuttle::TryBoard()
+{
+	if (!bInitialized || bFinished || bTakingOff)
+	{
+		return false;
+	}
+	// A dead miner: the game over owns the end of the run.
+	if (!IsValid(Miner) || Miner->IsDead())
+	{
+		return false;
+	}
+	Finish(true);
+	return true;
 }
 
 void ARRShuttle::BeginPlay()
@@ -148,11 +206,6 @@ void ARRShuttle::Tick(float DeltaSeconds)
 	{
 		return;
 	}
-	if (FVector::DistSquared2D(Miner->GetActorLocation(), GetActorLocation()) <= FMath::Square(BoardRadius))
-	{
-		Finish(true);
-		return;
-	}
 	RemainingSeconds = FMath::Max(RemainingSeconds - DeltaSeconds, 0.f);
 	BroadcastCountdown();
 	if (RemainingSeconds <= 0.f)
@@ -169,6 +222,11 @@ void ARRShuttle::Finish(bool bInExtracted)
 	}
 	bFinished = true;
 	bExtracted = bInExtracted;
+	// Finished is final: the zone no longer boards, and its box stays out of the takeoff view bounds (GetActorBounds counts colliding components).
+	if (BoardZone)
+	{
+		BoardZone->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: %s (%.1f s left)."), *GetName(), bExtracted ? TEXT("miner extracted") : TEXT("countdown over, shuttle left"), RemainingSeconds);
 	if (bExtracted)
 	{
@@ -194,6 +252,10 @@ void ARRShuttle::StartTakeoff()
 		return;
 	}
 	bTakingOff = true;
+	if (BoardZone)
+	{
+		BoardZone->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 	TakeoffElapsed = 0.f;
 	ForwardSpeed = 0.f;
 	TakeoffStartLocation = GetActorLocation();

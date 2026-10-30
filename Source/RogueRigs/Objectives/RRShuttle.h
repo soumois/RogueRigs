@@ -8,9 +8,12 @@
 
 class ARRArenaGrid;
 class ARRMiner;
+class UBoxComponent;
+class UPrimitiveComponent;
 class USceneComponent;
 class UStaticMeshComponent;
 class ARRShuttle;
+struct FHitResult;
 
 /** Fired every ticked frame of the countdown with the seconds left (also once at landing). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleCountdownChangedSignature, ARRShuttle*, Shuttle, float, RemainingSeconds);
@@ -23,10 +26,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleFinishedSignature, ARRS
 
 /**
  * Extraction shuttle (extraction gdd). Spawned by URRRunFlowSubsystem on a reachable floor cell once extraction is ready, then
- * InitializeShuttle places it on the cell center and starts the countdown. Each tick (not while paused): when the miner is alive
- * and its 2D distance to the shuttle is at most BoardRadius, the miner boards (OnExtracted, OnShuttleFinished true); otherwise the
- * countdown drops by DeltaSeconds and at 0 the shuttle leaves without the miner (OnMissed, OnShuttleFinished false). A dead miner
- * freezes the countdown (the game over owns the end). Finished is final. The run flow turns OnShuttleFinished into the run end.
+ * InitializeShuttle places it on the cell center and starts the countdown. The miner boards (OnExtracted, OnShuttleFinished true)
+ * when its capsule overlaps the BoardZone box (begin-overlap event, plus one check at InitializeShuttle for a miner already inside;
+ * task-377), as long as it is alive. Each tick (not while paused) the countdown drops by DeltaSeconds and at 0 the shuttle leaves
+ * without the miner (OnMissed, OnShuttleFinished false). A dead miner freezes the countdown (the game over owns the end). Finished
+ * is final. The run flow turns OnShuttleFinished into the run end.
  * Not abstract, so headless tests run without the Blueprint; subclass in Blueprint for the mesh and the landing effects.
  */
 UCLASS(Blueprintable)
@@ -35,21 +39,21 @@ class ROGUERIGS_API ARRShuttle : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the root, the body mesh and the four rotor meshes (no collision) and enables ticking. */
+	/** Creates the root, the board zone box, the body mesh and the four rotor meshes (no collision) and enables ticking. */
 	ARRShuttle();
 
 	/**
-	 * Places the shuttle on Cell of Grid (centre of its FootprintCells around Cell, floor top), remembers Miner as the one who must board, starts a countdown
-	 * of CountdownSeconds and sets the boarding radius (cm). Fires OnLanded and the first countdown events. Call once, right after
-	 * spawning.
+	 * Places the shuttle on Cell of Grid (centre of its FootprintCells around Cell, floor top), remembers Miner as the one who must board and starts a
+	 * countdown of CountdownSeconds. Fires OnLanded and the first countdown events, then boards the miner at once when its capsule already overlaps
+	 * BoardZone. Call once, right after spawning.
 	 */
-	void InitializeShuttle(ARRArenaGrid* Grid, ARRMiner* Miner, FIntPoint Cell, float CountdownSeconds, float BoardRadius);
+	void InitializeShuttle(ARRArenaGrid* Grid, ARRMiner* Miner, FIntPoint Cell, float CountdownSeconds);
 
 	/**
 	 * Arrival mode (task-371-01): places the extractor that dropped the miner at the level start on Cell of Grid (centre of its
-	 * FootprintCells around Cell, floor top), already landed. No board, no countdown, no OnLanded and no countdown event: it only
-	 * waits for StartTakeoff (called by URRRunFlowSubsystem when the fade in ends, or at once without fade). Call once, right after
-	 * spawning, instead of InitializeShuttle.
+	 * FootprintCells around Cell, floor top), already landed. No board (BoardZone collision off, task-377 Q5), no countdown, no
+	 * OnLanded and no countdown event: it only waits for StartTakeoff (called by URRRunFlowSubsystem when the fade in ends, or at
+	 * once without fade). Call once, right after spawning, instead of InitializeShuttle.
 	 */
 	void InitializeArrival(ARRArenaGrid* Grid, FIntPoint Cell);
 
@@ -57,7 +61,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	bool IsArrival() const { return bArrival; }
 
-	/** Rotor spin, then the takeoff or the boarding check and countdown. */
+	/** Rotor spin, then the takeoff or the countdown (the boarding comes from the BoardZone overlap). */
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** Seconds left before the shuttle leaves. */
@@ -68,9 +72,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
 	float GetCountdownSeconds() const { return CountdownSeconds; }
 
-	/** Boarding radius in cm (2D distance between the miner and the shuttle). */
+	/** Box whose overlap by the miner capsule ends the level with a win (task-377); its size, position and rotation are set in the Blueprint subclass. */
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
-	float GetBoardRadius() const { return BoardRadius; }
+	UBoxComponent* GetBoardZone() const { return BoardZone; }
 
 	/** Grid cell the shuttle landed on (anchor of its footprint). */
 	UFUNCTION(BlueprintPure, Category = "Shuttle")
@@ -186,9 +190,30 @@ protected:
 	/** Fires OnCountdown and OnShuttleCountdownChanged with the current value. */
 	void BroadcastCountdown();
 
+	/** Binds the BoardZone begin-overlap event (component ready, before BeginPlay). */
+	virtual void PostInitializeComponents() override;
+
+	/** BoardZone begin overlap: boards the miner when OtherComp is the miner capsule (the drone and the robots do not count, task-377 Q3). */
+	UFUNCTION()
+	void HandleBoardZoneBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
+	/** Ends the level with a win (Finish(true)) when the shuttle is initialized, not finished, not taking off and the miner is valid and alive; returns true when it did. */
+	bool TryBoard();
+
 	/** Root of the actor (the landing point, floor top). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
 	TObjectPtr<USceneComponent> ShuttleRoot;
+
+	/**
+	 * Level-ending zone (task-377): the miner capsule overlapping it boards the miner. Attached to ShuttleRoot (not to Mesh, so the
+	 * mesh scale does not multiply it). Default 1608 x 1608 x 400 uu (extent 804, 804, 200), centred on the actor, bottom on the
+	 * floor (relative Z 200); owner 2026-10-30 (Q2), provisional, resized and moved in BP_ExtractionShuttle. Query only, overlaps the
+	 * Pawn channel only, overlap events on, hidden in game, no navigation impact. Collision off on the arrival extractor and from the
+	 * finish or the takeoff on.
+	 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
+	TObjectPtr<UBoxComponent> BoardZone;
 
 	/** Shuttle body mesh (the extractor hull), set in the Blueprint subclass; parent of the four rotors. No collision by default. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shuttle")
@@ -316,9 +341,6 @@ protected:
 
 	/** Seconds left. */
 	float RemainingSeconds = 0.f;
-
-	/** Boarding radius (cm). */
-	float BoardRadius = 0.f;
 
 	/** True once InitializeShuttle ran. */
 	bool bInitialized = false;

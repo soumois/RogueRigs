@@ -5,6 +5,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Drone/RRDrone.h"
@@ -83,8 +84,19 @@ bool FRRExtractionLandingTest::RunTest(const FString& Parameters)
 	const FRRRunFlowConfig Defaults;
 	TestEqual(TEXT("shuttle 37 cells min"), Defaults.ShuttleMinDistanceCells, 37.f);
 	TestEqual(TEXT("shuttle 50 cells max"), Defaults.ShuttleMaxDistanceCells, 50.f);
-	TestEqual(TEXT("board radius 12 cells (804 uu, task-375)"), Defaults.ShuttleBoardRadiusCells, 12.f);
 	TestEqual(TEXT("countdown 45 s"), Defaults.ShuttleCountdownSeconds, 45.f);
+	// task-377 Q2: board zone 1608 x 1608 x 400 uu on the native shuttle, bottom on the floor, query only, Pawn overlap only, hidden in game.
+	const UBoxComponent* DefaultZone = GetDefault<ARRShuttle>()->GetBoardZone();
+	if (TestNotNull(TEXT("board zone"), DefaultZone))
+	{
+		TestTrue(TEXT("board zone extent 804 x 804 x 200"), DefaultZone->GetUnscaledBoxExtent().Equals(FVector(804.f, 804.f, 200.f), 0.01f));
+		TestTrue(TEXT("board zone bottom on the floor"), DefaultZone->GetRelativeLocation().Equals(FVector(0.f, 0.f, 200.f), 0.01f));
+		TestTrue(TEXT("board zone query only"), DefaultZone->GetCollisionEnabled() == ECollisionEnabled::QueryOnly);
+		TestTrue(TEXT("board zone overlaps pawns"), DefaultZone->GetCollisionResponseToChannel(ECC_Pawn) == ECR_Overlap);
+		TestTrue(TEXT("board zone ignores the world"), DefaultZone->GetCollisionResponseToChannel(ECC_WorldStatic) == ECR_Ignore);
+		TestTrue(TEXT("board zone overlap events"), DefaultZone->GetGenerateOverlapEvents());
+		TestTrue(TEXT("board zone hidden in game"), DefaultZone->bHiddenInGame != 0);
+	}
 
 	// Several seeds: every landing respects the distance and reachability rules.
 	for (int32 Seed : { 1, 20261003, 777 })
@@ -201,7 +213,7 @@ bool FRRExtractionBoardWinTest::RunTest(const FString& Parameters)
 	TickFrames(TestWorld, 10);
 	TestFalse(TEXT("far from the shuttle: no win"), Setup.RunFlow->IsRunEnded());
 
-	// The miner reaches the shuttle cell.
+	// The miner capsule enters the board zone (begin overlap, task-377).
 	const float HalfHeight = Setup.Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	Setup.Miner->SetActorLocation(Shuttle->GetActorLocation() + FVector(50.f, 0.f, HalfHeight + 2.f), false, nullptr, ETeleportType::TeleportPhysics);
 	TestWorld.Tick();

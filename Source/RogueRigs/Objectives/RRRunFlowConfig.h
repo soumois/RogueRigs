@@ -80,10 +80,6 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0.1, Units = "s"))
 	float ShuttleCountdownSeconds = 45.f;
 
-	/** Boarding radius in cells: the miner boards when its 2D distance to the shuttle is at most this (12 cells of 67 uu = 804 uu: x4 of the former 3 cells with the extractor scaled x4, owner 2026-10-29, task-375; provisional). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction", meta = (ClampMin = 0))
-	float ShuttleBoardRadiusCells = 12.f;
-
 	/** Shuttle actor landed when extraction is ready (the shuttle Blueprint). None = the native ARRShuttle (no mesh). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow|Extraction")
 	TSubclassOf<ARRShuttle> ShuttleClass;

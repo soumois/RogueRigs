@@ -614,7 +614,7 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 	const float Countdown = CheatCountdown > 0.f ? CheatCountdown : Config.ShuttleCountdownSeconds;
 	// One countdown subtitle per countdown start (OnShuttleCountdown fires every frame): shown before the first countdown event.
 	PickAlertLine(FRRTextContentLibrary::AlertShuttleCountdown);
-	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown, Config.ShuttleBoardRadiusCells * Grid->GetCellSize());
+	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown);
 	OnShuttleLanded.Broadcast(NewShuttle);
 	UpdateLocatorTarget();
 	RefreshAlertBarEvents();

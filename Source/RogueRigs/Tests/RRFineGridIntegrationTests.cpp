@@ -7,6 +7,7 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Drone/RRDrone.h"
 #include "Enemies/RRChaser.h"
@@ -386,7 +387,6 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("console ring 60 cells"), Config.ConsoleMaxDistanceCells, 60.f);
 	TestEqual(TEXT("shuttle 37 cells min"), Config.ShuttleMinDistanceCells, 37.f);
 	TestEqual(TEXT("shuttle 50 cells max"), Config.ShuttleMaxDistanceCells, 50.f);
-	TestEqual(TEXT("board radius 12 cells (task-375)"), Config.ShuttleBoardRadiusCells, 12.f);
 
 	for (const int32 Seed : { 1, 20261003, 777, 4242, 90210 })
 	{
@@ -436,7 +436,7 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		TestEqual(*FString::Printf(TEXT("seed %d: no block under the console mesh"), Seed),
 			CountBlocksUnderActor(*this, Grid, Console, *FString::Printf(TEXT("seed %d: console"), Seed)), 0);
 
-		// Shuttle: Blueprint, floor cell, 37 to 50 cells = 2479 to 3350 uu, reachable, board radius 3 cells = 201 uu.
+		// Shuttle: Blueprint, floor cell, 37 to 50 cells = 2479 to 3350 uu, reachable, board zone box (task-377) over several reachable floor cells.
 		TestTrue(*FString::Printf(TEXT("seed %d: skip to extraction"), Seed), RunFlow->SkipToExtraction());
 		ARRShuttle* Shuttle = RunFlow->GetShuttle();
 		if (!TestNotNull(*FString::Printf(TEXT("seed %d: shuttle landed"), Seed), Shuttle))
@@ -445,19 +445,31 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		}
 		const FIntPoint ShuttleCell = Shuttle->GetCell();
 		const double ShuttleDistance = FVector::Dist2D(Shuttle->GetActorLocation(), MinerAt);
+		const UBoxComponent* BoardZone = Shuttle->GetBoardZone();
+		if (!TestNotNull(*FString::Printf(TEXT("seed %d: board zone"), Seed), BoardZone))
+		{
+			return false;
+		}
+		// Floor cells whose centre (raised to the box centre height) lies inside the box, in the box frame; the Blueprint may resize, move or turn it.
+		const FTransform ZoneTransform = BoardZone->GetComponentTransform();
+		const FVector ZoneExtent = BoardZone->GetUnscaledBoxExtent();
+		const FVector ZoneWorldExtent = BoardZone->GetScaledBoxExtent();
+		const int32 Span = FMath::CeilToInt32((FVector::Dist2D(BoardZone->GetComponentLocation(), Shuttle->GetActorLocation()) + ZoneWorldExtent.Size2D()) / CellSize);
 		int32 BoardCells = 0;
-		const int32 Span = FMath::CeilToInt32(Config.ShuttleBoardRadiusCells);
 		for (int32 DY = -Span; DY <= Span; ++DY)
 		{
 			for (int32 DX = -Span; DX <= Span; ++DX)
 			{
 				const FIntPoint Near(ShuttleCell.X + DX, ShuttleCell.Y + DY);
-				const bool bInside = FVector::Dist2D(Grid->GetCellCenter(Near.X, Near.Y), Shuttle->GetActorLocation()) <= Shuttle->GetBoardRadius();
+				FVector Point = Grid->GetCellCenter(Near.X, Near.Y);
+				Point.Z = BoardZone->GetComponentLocation().Z;
+				const FVector Local = ZoneTransform.InverseTransformPosition(Point);
+				const bool bInside = FMath::Abs(Local.X) <= ZoneExtent.X && FMath::Abs(Local.Y) <= ZoneExtent.Y && FMath::Abs(Local.Z) <= ZoneExtent.Z;
 				BoardCells += bInside && Grid->GetCellType(Near) == ERRCellType::Floor && FlowField->GetCellDistance(Near) >= 0 ? 1 : 0;
 			}
 		}
-		AddInfo(FString::Printf(TEXT("seed %d: shuttle on (%d, %d), %.0f uu (%.1f cells), board radius %.0f uu, %d reachable floor cells to board from"),
-			Seed, ShuttleCell.X, ShuttleCell.Y, ShuttleDistance, ShuttleDistance / CellSize, Shuttle->GetBoardRadius(), BoardCells));
+		AddInfo(FString::Printf(TEXT("seed %d: shuttle on (%d, %d), %.0f uu (%.1f cells), board zone extent %s uu, %d reachable floor cells to board from"),
+			Seed, ShuttleCell.X, ShuttleCell.Y, ShuttleDistance, ShuttleDistance / CellSize, *ZoneWorldExtent.ToCompactString(), BoardCells));
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle is BP_ExtractionShuttle"), Seed), Shuttle->IsA(ShuttleClass));
 		TestEqual(*FString::Printf(TEXT("seed %d: shuttle on floor"), Seed), Grid->GetCellType(ShuttleCell), ERRCellType::Floor);
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle at its 16 x 12 footprint centre (task-375)"), Seed), Shuttle->GetFootprintCells() == FIntPoint(16, 12)
@@ -465,7 +477,8 @@ bool FRRFineConsoleShuttlePlacementTest::RunTest(const FString& Parameters)
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle 37 to 50 cells away (one cell of slack)"), Seed),
 			ShuttleDistance >= 37.0 * CellSize - CellSize && ShuttleDistance <= 50.0 * CellSize + CellSize);
 		TestTrue(*FString::Printf(TEXT("seed %d: shuttle reachable"), Seed), FlowField->GetCellDistance(ShuttleCell) >= 0);
-		TestTrue(*FString::Printf(TEXT("seed %d: board radius 12 cells = 804 uu"), Seed), FMath::IsNearlyEqual(Shuttle->GetBoardRadius(), 12.f * CellSize, 0.5f));
+		TestTrue(*FString::Printf(TEXT("seed %d: board zone collision on, Pawn overlap"), Seed),
+			BoardZone->GetCollisionEnabled() == ECollisionEnabled::QueryOnly && BoardZone->GetCollisionResponseToChannel(ECC_Pawn) == ECR_Overlap);
 		TestTrue(*FString::Printf(TEXT("seed %d: several floor cells to board from"), Seed), BoardCells >= 2);
 		TestEqual(*FString::Printf(TEXT("seed %d: no block under the shuttle mesh"), Seed),
 			CountBlocksUnderActor(*this, Grid, Shuttle, *FString::Printf(TEXT("seed %d: shuttle"), Seed)), 0);
