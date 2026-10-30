@@ -3,7 +3,7 @@ id: task-393-miner-over-lit
 description: "Global task: The new Meshy miner looks burnt out (blown highlights) in the arena; reduce his brightness with the lever the owner picks."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner too bright in the arena
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-393-01-miner-material-scale
-- started: open
+- started: 2026-10-30T22:02:49Z
 - waiting_for: none
 - result: open
 

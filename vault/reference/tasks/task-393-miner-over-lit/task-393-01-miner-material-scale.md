@@ -3,7 +3,7 @@ id: task-393-01-miner-material-scale
 description: "Bp: read M_Miner, add MI_Miner with BaseColorScale 0.6 and assign it to the miner"
 parent: task-393-miner-over-lit
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner too bright in the arena: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:02:49Z
 - waiting_for: none
 - result: open
 
