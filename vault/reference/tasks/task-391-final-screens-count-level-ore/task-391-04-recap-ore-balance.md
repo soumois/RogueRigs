@@ -3,7 +3,7 @@ id: task-391-04-recap-ore-balance
 description: "Cpp: the stats screen Total Ore reads the ore balance the player holds; cd19ba03 secured-since-reset code reverted unless still used"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: in-progress
+status: done
 ---
 # Every on-screen ore number is the balance: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build passes with the editor closed; a -game run with rr.Cheat.GrantOre 3 on level 1, rr.Shop.Buy of one card (price P) on the level 1 shop, 5 on level 2, 7 on level 3, 11 on level 4 logs at each stats screen a recap total equal to the bank balance: 3, 8 - P, 15 - P, 26 - P, equal to the shop balance that follows (levels 1 to 3) and to the run-won end screen value (level 4); a level-up reroll paid in ore lowers the next figure by its price; no remaining reference to removed symbols (grep); uncommitted Config changes untouched; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 72, cache write 114118, cache read 2557629, output 27601
+- usage: turns 36, context start 12k peak 114k, resumes 0, 9 min, units 0.54 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:14:00Z
 - waiting_for: none
-- result: open
+- result: Recap RunSecuredOre = bank balance (L1-3 snapshot, L4 run flow); cd19ba03 baselines/SecuredSinceReset/GetRunSecuredOre/GetLevelSecuredOre removed; GetExtractionSecuredOre added; -game run figures equal shop balance and run-won line (level 1 granted 103 not 3: cheapest card costs 25); map-travel path not run; commit 3b5d5b88
 
 ## Relations
 - [[task-391-final-screens-count-level-ore]] — parent global task.

@@ -3,7 +3,7 @@ id: task-391-05-doc-ore-balance
 description: "Doc: update the run, transition, ore counter and stats screen docs: every on-screen ore number is the balance held"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Every on-screen ore number is the balance: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:23:29Z
 - waiting_for: none
 - result: open
 
