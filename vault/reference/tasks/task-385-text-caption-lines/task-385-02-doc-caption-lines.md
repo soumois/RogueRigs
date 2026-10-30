@@ -3,7 +3,7 @@ id: task-385-02-doc-caption-lines
 description: "Doc: update the text-content-files lines row with the caption exception."
 parent: task-385-text-caption-lines
 kind: task
-status: in-progress
+status: done
 ---
 # Text validator caption lines: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the lines row states the exception with its owner date; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 8, cache write 18247, cache read 42400, output 1140
+- usage: turns 4, context start 11k peak 18k, resumes 0, 0 min, units 0.03 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:18:55Z
 - waiting_for: none
-- result: open
+- result: text-content-files lines row states the caption exception (owner 2026-10-30, task-385); commit 10921d62
 
 ## Relations
 - [[task-385-text-caption-lines]] — parent global task.

@@ -862,17 +862,18 @@ kind: note
 | [[task-381-04-doc-level-end-screen]] | sonnet | 1 | 0k | 32k | 111k | 5k | 0.07 | 6 | 0 |
 | [[task-382-01-miner-meshy-files]] | sonnet | 1 | 0k | 39k | 287k | 8k | 0.12 | 11 | 0 |
 | [[task-385-01-validator-caption-lines]] | opus | 1 | 0k | 35k | 216k | 5k | 0.09 | 9 | 0 |
+| [[task-385-02-doc-caption-lines]] | sonnet | 1 | 0k | 18k | 42k | 1k | 0.03 | 4 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 348.26 | 0k | 81.34 M | 1730.82 M | 14713k |
+| All subtask rows above | 348.29 | 0k | 81.36 M | 1730.86 M | 14714k |
 | model mixed | 7.58 | 0k | 2.72 M | 22.59 M | 384k |
 | model opus | 191.95 | 0k | 42.71 M | 966.39 M | 8390k |
-| model sonnet | 148.73 | 0k | 35.91 M | 741.83 M | 5939k |
-| Executors and legacy orchestrators that ran a task (pilot) | 19.85 | 3k | 9.20 M | 52.17 M | 626k |
+| model sonnet | 148.76 | 0k | 35.93 M | 741.88 M | 5940k |
+| Executors and legacy orchestrators that ran a task (pilot) | 19.87 | 3k | 9.20 M | 52.27 M | 627k |
 | Planning runs (planners and legacy planning passes) | 22.97 | 2k | 7.24 M | 82.89 M | 1126k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 60.87 | 5k | 9.78 M | 411.33 M | 1501k |

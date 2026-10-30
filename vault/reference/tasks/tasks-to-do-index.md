@@ -13,4 +13,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-383-level-end-total-ore]] — Stats screen: one Total Ore line in a thinner band instead of the two ore lines, more room for the two columns. Status wait-answers.
 - [[task-384-level-end-subtitle-lines]] — Stats screen: the thin lines beside the subtitle no longer cross the long level 4 subtitle. Status todo.
-- [[task-385-text-caption-lines]] — Text validator: a screen_texts lines entry ending with a colon is a caption, 1 to 4 words (unblocks task-383-01). Status in-progress.

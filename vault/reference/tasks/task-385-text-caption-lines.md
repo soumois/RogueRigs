@@ -1,9 +1,9 @@
 ---
 id: task-385-text-caption-lines
 description: "Global task: screen_texts.json lines may hold a short caption ending with a colon (1 to 4 words); validator and schema node changed."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Text validator: caption lines in screen_texts
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[text-content-files]] (kind doc, child of text-content-schema; screen_texts.json `lines`: "each 3 to 12 words", word limits "provisional (task-209-03, not owner-set)"; `labels` 1 to 4 words; log: highest-loop output equals the item title), `Tools/content/validate_text.js` (FILES.screen_texts.fields.lines {min 3, max 12, array}; checkText applies one limit per slot; --selftest runs Tools/content/tests/, which holds no screen_texts case). Current screen_texts.json lines: intermission_recap two "Ore secured ..." lines (removed by task-383-01) and loading_level three 3-word lines; none ends with ":", so nothing else changes. No kind: rule node is edited. Conflicts: none. Open values: none. Scope M2 tooling.
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-385-02-doc-caption-lines
+- next_step: none
 - started: 2026-10-30T05:17:52Z
 - waiting_for: none
-- result: open
+- result: Done. text-content-files lines row states the caption exception (owner 2026-10-30, task-385); commit 10921d62
 
 ## Questions
 Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -27,7 +27,7 @@ Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; v
 2. task-385-02-doc-caption-lines (vault/reference/tasks/task-385-text-caption-lines/task-385-02-doc-caption-lines.md) — doc: text-content-files: lines rule with the caption exception
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-385-01-validator-caption-lines]] — step 1, cpp.
 - [[task-385-02-doc-caption-lines]] — step 2, doc.
 - [[text-content-files]] — the schema node whose lines rule changes.
