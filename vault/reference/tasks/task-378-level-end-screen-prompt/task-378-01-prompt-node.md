@@ -3,7 +3,7 @@ id: task-378-01-prompt-node
 description: "Art: write the ChatGPT prompt of the end-of-level stats screen mockup and its vault node art-prompts-level-end-screen; no generation"
 parent: task-378-level-end-screen-prompt
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen prompt for ChatGPT: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T00:59:57Z
 - waiting_for: none
 - result: open
 

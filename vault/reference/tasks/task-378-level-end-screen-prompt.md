@@ -3,7 +3,7 @@ id: task-378-level-end-screen-prompt
 description: "Global task: Write the ChatGPT image prompt of the end-of-level stats screen mockup, in the palette and look of the Spare Parts cards screen."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen prompt for ChatGPT
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "et ok pour le reste")
 - milestone: M2
 - next_step: task-378-01-prompt-node
-- started: open
+- started: 2026-10-30T00:59:57Z
 - waiting_for: none
 - result: open
 
