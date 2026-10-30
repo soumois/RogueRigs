@@ -3,7 +3,7 @@ id: task-391-02-run-won-ore-line
 description: "Bp: WBP_AlertObjectives: run-won ore line reads the run total getter"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Run-won end screen shows the run ore total: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:41:03Z
 - waiting_for: none
 - result: open
 
