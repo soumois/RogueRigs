@@ -3,7 +3,7 @@ id: task-383-level-end-total-ore
 description: "Global task: the stats screen shows one Total Ore line instead of two ore lines, in a thinner band giving the columns more room."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Level-end stats screen: one Total Ore line
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-383-01-total-ore-text
-- started: 2026-10-30T05:00:22Z
-- waiting_for: task-385-text-caption-lines done (owner confirmation of task-385, then the validator change)
+- started: 2026-10-30T05:19:29Z
+- waiting_for: none
 - result: open
 
 ## Questions
