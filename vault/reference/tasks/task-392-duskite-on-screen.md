@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[ore-blocks]] (approved; "The ore is called Duskite (provisional name)"; only ore for now): no conflict; the on-screen rule written there and in [[gdd-glossary]] on 2026-10-30 after the owner answer; Duskite stays provisional, so a later rename repeats this task. [[intermission]] (provisional, label "Total Ore"): changed to "Total Duskite:" (Q8, edit applied on confirmation). [[dialogue-tone]]: the text agent applies the T rules to the changed bark. Tech read: [[sys-text-content]] (runtime loader of the text files), [[wbp-alert-objectives]], [[wbp-intermission]]. Open values: the exact wording (Q8). Scope M2. Order: after task-390, which changes WBP_AlertObjectives first (task-391 no longer touches that widget since its re-plan of 2026-10-30). No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path).
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
-- next_step: task-392-04-intermission-duskite-label
+- next_step: task-392-05-doc-duskite-labels
 - started: 2026-10-30T21:58:25Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-392-04-intermission-duskite-label
 description: "Bp: WBP_Intermission: design-time "Total Ore:" text becomes "Total Duskite:""
 parent: task-392-duskite-on-screen
 kind: task
-status: in-progress
+status: done
 ---
 # On-screen ore word: Duskite: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Label text read back "Total Duskite:", no other property changed; compiled with warnings as errors, no error; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 21022, cache read 164588, output 2289
+- usage: turns 9, context start 12k peak 26k, resumes 0, 0 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:01:14Z
 - waiting_for: none
-- result: open
+- result: WBP_Intermission OreLabel Text Total Duskite:, read back, compiled, saved, commit ec1d48af
 
 ## Relations
 - [[task-392-duskite-on-screen]] — parent global task.

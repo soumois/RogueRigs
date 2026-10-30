@@ -3,7 +3,7 @@ id: task-392-05-doc-duskite-labels
 description: "Doc: update the end screen and stats screen widget docs with the Duskite labels"
 parent: task-392-duskite-on-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # On-screen ore word: Duskite: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:01:43Z
 - waiting_for: none
 - result: open
 
