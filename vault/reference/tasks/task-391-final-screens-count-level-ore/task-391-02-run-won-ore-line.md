@@ -3,7 +3,7 @@ id: task-391-02-run-won-ore-line
 description: "Bp: WBP_AlertObjectives: run-won ore line reads the run total getter"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: wait-answers
+status: cancelled
 ---
 # Run-won end screen shows the run ore total: bp
 
@@ -21,8 +21,8 @@ status: wait-answers
 - runs: open
 - milestone: M2
 - started: 2026-10-30T21:41:03Z
-- waiting_for: Unreal MCP (mcp__unreal) unreachable, editor closed: owner must open the editor, then resume task-391-02 (bp) then the doc subtask
-- result: open
+- waiting_for: none
+- result: Cancelled 2026-10-30 (owner: every on-screen ore number is the balance the player holds): the run-won end screen already reads GetSecuredOre(RunFlow), the balance; no widget change needed.
 
 ## Relations
 - [[task-391-final-screens-count-level-ore]] — parent global task.

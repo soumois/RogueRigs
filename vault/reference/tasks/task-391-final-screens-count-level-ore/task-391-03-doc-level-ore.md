@@ -3,7 +3,7 @@ id: task-391-03-doc-level-ore
 description: "Doc: update the run, transition, ore counter and end screen docs with the corrected ore count"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: todo
+status: cancelled
 ---
 # Run-won end screen shows the run ore total: doc
 
@@ -22,7 +22,7 @@ status: todo
 - milestone: M2
 - started: open
 - waiting_for: none
-- result: open
+- result: Cancelled 2026-10-30, replaced by task-391-05-doc-ore-balance after the owner spec change (balance everywhere).
 
 ## Relations
 - [[task-391-final-screens-count-level-ore]] — parent global task.
