@@ -3,7 +3,7 @@ id: task-385-text-caption-lines
 description: "Global task: screen_texts.json lines may hold a short caption ending with a colon (1 to 4 words); validator and schema node changed."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Text validator: caption lines in screen_texts
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-385-01-validator-caption-lines
-- started: open
+- started: 2026-10-30T05:17:52Z
 - waiting_for: none
 - result: open
 

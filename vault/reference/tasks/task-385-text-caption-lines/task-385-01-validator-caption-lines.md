@@ -3,7 +3,7 @@ id: task-385-01-validator-caption-lines
 description: "Cpp: validate_text.js checks a screen_texts lines entry ending with a colon against 1 to 4 words."
 parent: task-385-text-caption-lines
 kind: task
-status: todo
+status: in-progress
 ---
 # Text validator caption lines: validator
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:17:52Z
 - waiting_for: none
 - result: open
 
