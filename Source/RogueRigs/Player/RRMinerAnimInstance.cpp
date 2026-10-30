@@ -2,7 +2,24 @@
 
 #include "Player/RRMinerAnimInstance.h"
 
+#include "RogueRigs.h"
+#include "Engine/World.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
+#include "HAL/IConsoleManager.h"
+
+namespace RRMinerAnimDebug
+{
+	/** rr.Debug.MinerAnim: 1 logs MoveX, MoveY and GroundSpeed of every miner anim instance at about 2 Hz. */
+	static TAutoConsoleVariable<int32> CVarMinerAnim(
+		TEXT("rr.Debug.MinerAnim"), 0,
+		TEXT("1 logs the miner anim instance MoveX, MoveY and GroundSpeed to LogRogueRigs at about 2 Hz; 0 off."),
+		ECVF_Cheat);
+
+	/** Seconds between two debug log lines (about 2 Hz). Debug-only, not a gameplay tunable. */
+	static constexpr double LogIntervalSeconds = 0.5;
+}
 
 void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
@@ -27,8 +44,60 @@ void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	RunSpeedForDirection = ComputeRunSpeedForDirection(Direction);
-	LocomotionPlayRate = FMath::Clamp(GroundSpeed / RunSpeedForDirection, 1.f, FMath::Max(MaxPlayRate, 1.f));
+	// task-386-16: the simple blend space plays the clips at their authored rate, the Q4 clamp rule is off for now.
+	LocomotionPlayRate = 1.f;
 	BlendSpeed = GroundSpeed / LocomotionPlayRate;
+
+	// Move vector (task-386-16): ground velocity in the actor yaw frame (the aim) over MaxWalkSpeed, clamped to length 1.
+	const ACharacter* CharacterOwner = Cast<ACharacter>(PawnOwner);
+	const UCharacterMovementComponent* MovementComponent = CharacterOwner ? CharacterOwner->GetCharacterMovement() : nullptr;
+	const float MaxWalkSpeed = MovementComponent ? MovementComponent->MaxWalkSpeed : 0.f;
+	if (PawnOwner && MaxWalkSpeed > UE_KINDA_SMALL_NUMBER)
+	{
+		const FRotator YawRotation(0.0, PawnOwner->GetActorRotation().Yaw, 0.0);
+		const FVector Forward = YawRotation.Vector();
+		const FVector Right = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		FVector2D Move(
+			FVector::DotProduct(GroundVelocity, Forward) / MaxWalkSpeed,
+			FVector::DotProduct(GroundVelocity, Right) / MaxWalkSpeed);
+		if (Move.SizeSquared() > 1.0)
+		{
+			Move.Normalize();
+		}
+		MoveX = static_cast<float>(Move.X);
+		MoveY = static_cast<float>(Move.Y);
+	}
+	else
+	{
+		MoveX = 0.f;
+		MoveY = 0.f;
+	}
+
+	LogDebugValues();
+}
+
+void URRMinerAnimInstance::LogDebugValues()
+{
+	if (RRMinerAnimDebug::CVarMinerAnim.GetValueOnGameThread() == 0)
+	{
+		return;
+	}
+
+	const UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	const double Now = World->GetTimeSeconds();
+	if (LastDebugLogTime >= 0.0 && Now - LastDebugLogTime < RRMinerAnimDebug::LogIntervalSeconds)
+	{
+		return;
+	}
+	LastDebugLogTime = Now;
+
+	UE_LOG(LogRogueRigs, Log, TEXT("MinerAnim %s: MoveX=%.3f MoveY=%.3f GroundSpeed=%.1f"),
+		*GetNameSafe(TryGetPawnOwner()), MoveX, MoveY, GroundSpeed);
 }
 
 float URRMinerAnimInstance::ComputeRunSpeedForDirection(float InDirection) const
