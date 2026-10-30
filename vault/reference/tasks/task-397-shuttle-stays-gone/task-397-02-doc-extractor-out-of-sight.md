@@ -3,7 +3,7 @@ id: task-397-02-doc-extractor-out-of-sight
 description: "Doc: update the shuttle, run flow and preload docs with the out-of-sight rule"
 parent: task-397-shuttle-stays-gone
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor stays gone after its takeoff: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Cause, fix and log lines stated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 42146, cache read 146575, output 4341
+- usage: turns 6, context start 12k peak 42k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:37:53Z
 - waiting_for: none
-- result: open
+- result: Doc nodes updated (run-flow, preload, shuttle, cheats); commit e4aad0e8; lint ok
 
 ## Relations
 - [[task-397-shuttle-stays-gone]] — parent global task.

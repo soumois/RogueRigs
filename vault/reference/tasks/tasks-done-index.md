@@ -405,3 +405,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-394-burst-rifle-flat-faces]] — Save the owner Meshy burst rifle (Aqua Wasteland Carbine), scale and pivot it for the hand, flatten its bulged flat faces. Status done.
 - [[task-395-burst-rifle-rebake]] — Re-unwrap the flattened burst rifle and re-bake its four Meshy maps onto it, as for the extractor; runs after task-394. Status cancelled.
 - [[task-396-duskite-leftover-labels]] — The last player-visible "ore" texts left by task-392 become "Duskite": shop card "Short on ore" and the end screen designer default. Status done.
+- [[task-397-shuttle-stays-gone]] — After the end-of-level takeoff, the extractor never shows again at its start spot behind the stats, shop or upgrade screens. Status done.
