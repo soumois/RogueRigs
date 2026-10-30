@@ -385,3 +385,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-374-extractor-rotor-wash]] — A rotor-wash particle effect plays under each of the four extractor rotors, following the rotor speed. Status done.
 - [[task-375-extractor-scale-x4]] — Scale the extractor x4 (body and rotors), its level-ending board radius and its footprint in cells; chevrons follow. Status done.
 - [[task-376-extractor-rock-margin]] — At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band. Status done.
+- [[task-377-extractor-board-box]] — The level-ending zone of the extractor becomes a box component the owner resizes and moves in BP_ExtractionShuttle, replacing the 12-cell radius. Status done.

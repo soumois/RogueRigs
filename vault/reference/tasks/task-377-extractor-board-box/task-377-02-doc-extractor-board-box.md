@@ -3,7 +3,7 @@ id: task-377-02-doc-extractor-board-box
 description: "Doc: update sys-objectives-shuttle, sys-objectives-run-flow, bp-extraction-shuttle, sys-tests-console-extraction and sys-tests-dig-ore."
 parent: task-377-extractor-board-box
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: adjustable box collision for the end of the level: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: nodes written; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 36183, cache read 245505, output 6711
+- usage: turns 11, context start 12k peak 36k, resumes 0, 1 min, units 0.10 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T00:48:21Z
 - waiting_for: none
-- result: open
+- result: Five nodes updated (sys-objectives-shuttle, run-flow, bp-extraction-shuttle, console-extraction tests, dig-ore tests); gdd extraction already had box wording; commit 8e331c67
 
 ## Relations
 - [[task-377-extractor-board-box]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-377-extractor-board-box
 description: "Global task: The level-ending zone of the extractor becomes a box component the owner resizes and moves in BP_ExtractionShuttle, replacing the 12-cell radius."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: adjustable box collision for the end of the level
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read 2026-10-30: [[extraction]] (approved; extractor in game provisional: "walking within 12 cells (804 uu) of its centre validates the level, no button"; arrival extractor has no board check; footprint 16 x 12 cells = 1072 x 804 uu, hull about 786 x 804 x 344 uu). Tech: [[sys-objectives-shuttle]] and Source/RogueRigs/Objectives/RRShuttle.cpp (Tick: FVector::DistSquared2D(miner, actor) <= BoardRadius^2 -> Finish(true); root ShuttleRoot, Mesh scale 4 in the Blueprint, Mesh and rotors NoCollision; InitializeArrival sets BoardRadius 0 and never runs the check; actor origin on the floor at the footprint centre), [[sys-objectives-run-flow]] (RRRunFlowConfig ShuttleBoardRadiusCells 12, passed as cells x cell size by RRRunFlowSubsystem.cpp InitializeShuttle; only caller), [[bp-extraction-shuttle]] (no collision component; chevrons hidden within 600 uu of the shuttle centre, independent of the radius, unchanged), [[sys-tests-console-extraction]] (Extraction tests: radius default 12, OverlapWin teleports the miner 50 uu from the centre), Source/RogueRigs/Tests/RRFineGridIntegrationTests.cpp (counts board cells with GetBoardRadius). Miner: capsule, Pawn object type (RRMiner.cpp, projectiles set to overlap). Conflict: none; the gdd zone shape changes from a circle to a box (Q1, Q2, gdd edit). Open values needed: the box default size and height (Q2), what counts as touching (Q3), visibility (Q4). Scope: M2 like tasks 375 and 376. Minimap point and drone targeting unaffected. Overlap: none in progress (task-314 todo, unrelated).
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
-- next_step: task-377-02-doc-extractor-board-box
+- next_step: none
 - started: 2026-10-30T00:40:20Z
 - waiting_for: none
-- result: open
+- result: Done. Five nodes updated (sys-objectives-shuttle, run-flow, bp-extraction-shuttle, console-extraction tests, dig-ore tests); gdd extraction already had box wording; commit 8e331c67
 
 ## Questions
 Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -32,7 +32,7 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 2. task-377-02-doc-extractor-board-box (vault/reference/tasks/task-377-extractor-board-box/task-377-02-doc-extractor-board-box.md) — doc: update sys-objectives-shuttle, sys-objectives-run-flow, bp-extraction-shuttle, sys-tests-console-extraction and sys-tests-dig-ore.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-377-01-cpp-extractor-board-box]] — step 1, cpp.
 - [[task-377-02-doc-extractor-board-box]] — step 2, doc.
 - [[extraction]] — gdd rule whose level-ending zone this changes.
