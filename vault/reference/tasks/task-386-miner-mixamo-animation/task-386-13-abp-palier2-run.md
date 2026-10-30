@@ -3,7 +3,7 @@ id: task-386-13-abp-palier2-run
 description: "Bp: add Rifle Run to ABP_Miner with an idle to run state driven by ground speed from URRMinerAnimInstance"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: step 2 run forward
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: ABP_Miner state machine Idle and Run compiled without error, saved and committed by path as task-386-13-abp-palier2-run: <summary> with its .uasset; speed read back at runtime; editor commands hanging over 3 minutes are killed and retried
 - editor_state: open
 - token_ceiling: 0.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 178, cache write 179372, cache read 9276245, output 56711
+- usage: turns 88, context start 12k peak 185k, resumes 1 (turn-limit x1), 8 min, units 1.44 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-30T06:30:11Z
 - waiting_for: none
-- result: open
+- result: ABP_Miner state machine Locomotion Idle/Run(A_Miner_RunFwd), GroundSpeed >10 / <5, blend 0.15s, built by clipboard paste of exported text (MCP cannot create state internals); compiled clean, commit 8d5512c0; runtime unverified, left to capture; first run hit turn limit
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
