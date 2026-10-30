@@ -387,4 +387,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-376-extractor-rock-margin]] — At arrival and extraction landing, the rock of the enlarged footprint plus a margin around it is destroyed; landing stays in its band. Status done.
 - [[task-377-extractor-board-box]] — The level-ending zone of the extractor becomes a box component the owner resizes and moves in BP_ExtractionShuttle, replacing the 12-cell radius. Status done.
 - [[task-378-level-end-screen-prompt]] — ChatGPT image prompt of the end-of-level stats screen mockup, in the palette and look of the Spare Parts cards screen. Status done.
+- [[task-379-new-run-loading-screen]] — Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar. Status done.
 - [[task-380-level-end-frame-sprites]] — Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG. Status done.

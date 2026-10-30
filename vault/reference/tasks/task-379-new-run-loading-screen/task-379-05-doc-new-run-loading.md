@@ -3,7 +3,7 @@ id: task-379-05-doc-new-run-loading
 description: "Doc: Update the menu, run, transition, loading widget and menu game mode docs"
 parent: task-379-new-run-loading-screen
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu New Run: show the loading screen: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-main-menu describes StartNewRun through the transition loading and the new game mode property; sys-run-transition lists the New Run entry point; sys-run-transition-fade lists IsLoadingProgressMeasured; bp-main-menu-game-mode lists LoadingScreenWidgetClass = WBP_Loading_C; wbp-loading describes LoadingAnimImage, its animation and the measured branch, and that it is shown for New Run; sys-run gotcha updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 59385, cache read 344912, output 10874
+- usage: turns 10, context start 12k peak 59k, resumes 0, 1 min, units 0.16 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T04:30:34Z
 - waiting_for: none
-- result: open
+- result: Doc done (8bc43286): tick-driven spin, Q5 freeze, unverified first-spin delay line, async preload lead (not decided).
 
 ## Relations
 - [[task-379-new-run-loading-screen]] — parent global task.
