@@ -3,7 +3,7 @@ id: task-391-final-screens-count-level-ore
 description: "Global task: every on-screen ore number (stats Total Ore, shop balance, run-won line, HUD) shows the ore the player holds, the balance."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # On-screen ore numbers show the balance held
 
@@ -14,7 +14,7 @@ m=>m
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
 - next_step: task-391-04-recap-ore-balance
-- started: 2026-10-30T21:21:26Z
+- started: 2026-10-30T22:14:00Z
 - waiting_for: none
 - result: open
 

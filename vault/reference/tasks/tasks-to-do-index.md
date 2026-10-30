@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-391-final-screens-count-level-ore]] — Every on-screen ore number (stats Total Ore, shop balance, run-won line, HUD) shows the ore the player holds, the balance. Status todo.
+- [[task-391-final-screens-count-level-ore]] — Every on-screen ore number (stats Total Ore, shop balance, run-won line, HUD) shows the ore the player holds, the balance. Status in-progress.

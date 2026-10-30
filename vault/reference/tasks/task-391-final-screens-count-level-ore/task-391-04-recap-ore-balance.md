@@ -3,7 +3,7 @@ id: task-391-04-recap-ore-balance
 description: "Cpp: the stats screen Total Ore reads the ore balance the player holds; cd19ba03 secured-since-reset code reverted unless still used"
 parent: task-391-final-screens-count-level-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Every on-screen ore number is the balance: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:14:00Z
 - waiting_for: none
 - result: open
 
