@@ -3,7 +3,7 @@ id: task-392-burst-rifle-flat-faces
 description: "Global task: Save the owner Meshy burst rifle (Aqua Wasteland Carbine) files, then scale, orient and pivot it and flatten its bulged flat faces as for the turret and extractor."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle mesh: save the Meshy files, flatten the faces
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-392-01-burst-rifle-meshy-files
-- started: open
+- started: 2026-10-30T20:47:56Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-392-01-burst-rifle-meshy-files
 description: "3d: extract the owner zip safely, measure the Meshy rifle, store it per Q6 and create node burst-rifle-mesh."
 parent: task-392-burst-rifle-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle mesh: save the Meshy files, flatten the faces: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T20:47:56Z
 - waiting_for: none
 - result: open
 
