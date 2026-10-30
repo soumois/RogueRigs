@@ -1,9 +1,9 @@
 ---
 id: task-378-level-end-screen-prompt
 description: "Global task: Write the ChatGPT image prompt of the end-of-level stats screen mockup, in the palette and look of the Spare Parts cards screen."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen prompt for ChatGPT
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: intermission (spec provisional: two screens, stats screen over the paused finished level, then the cards screen on opaque black), level-flow, run-index, wbp-intermission (current stats screen tree: black backdrop alpha 0.85, Roboto Bold, teal subtitle, Next level button; level 4 variant "Cash out"), art-prompts (method and locked phrases), art-prompts-shop-screen (task-341 text prompt), art-prompts-shop-screen-mockup (ChatGPT mockup and the retained T_Shop sprites, gunmetal and teal look without white plates accepted on purpose, A6), agent-art, handover-2026-10-29-shop-screen. No conflict: a prompt only changes no rule (rules versus rendering). Not in the GDD: no "map screen between levels" exists (only the minimap in the HUD), hence Q1. Gap noted, not decided: the stats screen sits over the dimmed paused level while the cards screen is opaque black (Q4). Open values touching the screen, reported, not decided: robot type icons (GDD: "type names as text for now, no icons"), loading screen image (open, not this screen). In milestone scope (M2 UI art).
 - confirmed_by_owner: yes (2026-10-30, "et ok pour le reste")
 - milestone: M2
-- next_step: task-378-01-prompt-node
+- next_step: none
 - started: 2026-10-30T00:59:57Z
 - waiting_for: none
-- result: open
+- result: Done. Prompt file and node art-prompts-level-end-screen written and committed (ddb1f566); no generation. Wording of subtitle and ore labels are placeholders, not from screen_texts.json.
 
 ## Questions
 Decided 2026-10-30 (owner "et ok pour le reste"): the defaults of Q2, Q3, Q4, Q5, Q6 are accepted; values provisional, owner 2026-10-30.
@@ -31,7 +31,7 @@ Decided 2026-10-30 (owner "et ok pour le reste"): the defaults of Q2, Q3, Q4, Q5
 1. task-378-01-prompt-node (vault/reference/tasks/task-378-level-end-screen-prompt/task-378-01-prompt-node.md) — art: write the ChatGPT prompt of the end-of-level stats screen mockup and its vault node art-prompts-level-end-screen; no generation
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-378-01-prompt-node]] — step 1, art.
 - [[intermission]] — the spec of the stats screen the prompt depicts.
 - [[wbp-intermission]] — current widget of the stats screen.

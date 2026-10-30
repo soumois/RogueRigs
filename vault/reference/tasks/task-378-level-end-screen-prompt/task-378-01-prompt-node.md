@@ -3,7 +3,7 @@ id: task-378-01-prompt-node
 description: "Art: write the ChatGPT prompt of the end-of-level stats screen mockup and its vault node art-prompts-level-end-screen; no generation"
 parent: task-378-level-end-screen-prompt
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen prompt for ChatGPT: art
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Both files exist and are committed; the prompt follows Q1 to Q6 as decided, lists the attachments, names the Spare Parts palette and look, and holds only content from intermission and wbp-intermission; art-prompts links the new node; no kie_image.js run; node vault/scripts/lint.js --write clean.
 - editor_state: not needed
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 37386, cache read 140334, output 6074
+- usage: turns 7, context start 11k peak 37k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T00:59:57Z
 - waiting_for: none
-- result: open
+- result: Prompt file and node art-prompts-level-end-screen written and committed (ddb1f566); no generation. Wording of subtitle and ore labels are placeholders, not from screen_texts.json.
 
 ## Relations
 - [[task-378-level-end-screen-prompt]] — parent global task.

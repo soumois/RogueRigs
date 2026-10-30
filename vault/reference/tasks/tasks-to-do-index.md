@@ -11,4 +11,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-378-level-end-screen-prompt]] — ChatGPT image prompt of the end-of-level stats screen mockup, in the palette and look of the Spare Parts cards screen. Status in-progress.
