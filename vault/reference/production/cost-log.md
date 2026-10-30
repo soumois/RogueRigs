@@ -887,7 +887,7 @@ kind: note
 | [[task-386-22-capture-four-samples]] | sonnet | 3 | 0k | 42k | 509k | 10k | 0.15 | 17 | 2 |
 | [[task-386-23-run-clip-asset-check]] | sonnet | 1 | 0k | 27k | 144k | 6k | 0.08 | 8 | 0 |
 | [[task-387-01-prompt-and-refs]] | sonnet | 1 | 0k | 33k | 216k | 5k | 0.09 | 10 | 0 |
-| [[task-392-01-screen-texts-duskite]] | sonnet | 1 | 0k | 40k | 376k | 10k | 0.14 | 14 | 0 |
+| [[task-392-01-screen-texts-duskite]] | sonnet | 1 | 0k | 57k | 472k | 12k | 0.18 | 21 | 0 |
 | [[task-388-01-clear-chest-effects]] | opus | 1 | 0k | 133k | 2794k | 31k | 0.60 | 33 | 0 |
 | [[task-388-02-doc-chest-effects]] | sonnet | 1 | 0k | 41k | 142k | 4k | 0.08 | 6 | 0 |
 | [[task-394-02-burst-rifle-flatten]] | sonnet | 1 | 0k | 79k | 808k | 25k | 0.31 | 16 | 0 |
@@ -903,14 +903,14 @@ Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token 
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 357.85 | 0k | 83.69 M | 1773.69 M | 15190k |
+| All subtask rows above | 357.89 | 0k | 83.71 M | 1773.79 M | 15192k |
 | model mixed | 7.73 | 0k | 2.78 M | 22.87 M | 393k |
 | model opus | 194.75 | 0k | 43.38 M | 979.27 M | 8524k |
-| model sonnet | 155.37 | 0k | 37.52 M | 771.55 M | 6273k |
-| Executors and legacy orchestrators that ran a task (pilot) | 23.11 | 3k | 10.29 M | 65.13 M | 748k |
+| model sonnet | 155.41 | 0k | 37.54 M | 771.65 M | 6275k |
+| Executors and legacy orchestrators that ran a task (pilot) | 23.17 | 3k | 10.31 M | 65.29 M | 750k |
 | Planning runs (planners and legacy planning passes) | 26.90 | 3k | 8.32 M | 98.89 M | 1321k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
-| Main sessions (all of them, also chat outside tasks) | 63.50 | 5k | 10.19 M | 429.07 M | 1571k |
+| Main sessions (all of them, also chat outside tasks) | 63.56 | 5k | 10.19 M | 429.48 M | 1572k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.
