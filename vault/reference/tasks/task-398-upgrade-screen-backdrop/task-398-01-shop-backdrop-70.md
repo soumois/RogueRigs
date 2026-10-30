@@ -3,7 +3,7 @@ id: task-398-01-shop-backdrop-70
 description: "Bp: WBP_ShopScreen: find why no dark layer shows, black backdrop at 70 %; report the WBP_UpgradeChoice backdrop state without editing it"
 parent: task-398-upgrade-screen-backdrop
 kind: task
-status: in-progress
+status: done
 ---
 # Spare Parts screen: black backdrop at 70 %: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: WBP_ShopScreen Backdrop read back: black, alpha 0.70, render opacity 1, full screen, first (bottom) child of Root, not collapsed; cause reported; no other property or graph changed; WBP_UpgradeChoice state reported and the package unchanged (git status clean for it); compiled with warnings as errors, no error; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 62459, cache read 386100, output 6864
+- usage: turns 9, context start 12k peak 62k, resumes 0, 1 min, units 0.15 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:39:27Z
 - waiting_for: none
-- result: open
+- result: WBP_ShopScreen had no Backdrop widget (likely removed by owner hand edit d1c7766d); added Border Backdrop first child of Root, black 0.70, full screen, saved, commit 6ab098c9. WBP_UpgradeChoice read only: Backdrop black 0.7 visible by design, no static cause found.
 
 ## Relations
 - [[task-398-upgrade-screen-backdrop]] — parent global task.
