@@ -391,4 +391,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-380-level-end-frame-sprites]] — Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG. Status done.
 - [[task-381-level-end-screen-rebuild]] — Rebuild WBP_Intermission (stats screen at the extractor) to the ChatGPT mockup with the task-380 sprites. Status done.
 - [[task-382-miner-rigged-meshy-files]] — Save the owner rigged Meshy character FBX (the miner) in the repo, measure mesh, skeleton and textures in headless Blender, record it in art-prompts-miner. Status done.
+- [[task-383-level-end-total-ore]] — Stats screen: one Total Ore line in a thinner band instead of the two ore lines, more room for the two columns. Status done.
 - [[task-385-text-caption-lines]] — Text validator: a screen_texts lines entry ending with a colon is a caption, 1 to 4 words (unblocks task-383-01). Status done.

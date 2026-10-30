@@ -3,7 +3,7 @@ id: task-383-04-doc-total-ore
 description: "Doc: update the wbp-intermission doc node with the Total Ore line, the moved anchors and the capture result."
 parent: task-383-level-end-total-ore
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen Total Ore: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: wbp-intermission no longer mentions OreLevelText, OreRunText or Lines[0..1] as current; it lists the Total Ore texts with their anchors, the new anchors of the moved widgets, the graph change and the capture result; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 25931, cache read 94042, output 3784
+- usage: turns 6, context start 12k peak 26k, resumes 0, 1 min, units 0.06 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:27:58Z
 - waiting_for: none
-- result: open
+- result: wbp-intermission updated: Total Ore line, moved anchors, graph; verified section records owner visual validation, no capture; gdd intermission already said one Total Ore line; commit 8038d9b4
 
 ## Relations
 - [[task-383-level-end-total-ore]] — parent global task.
