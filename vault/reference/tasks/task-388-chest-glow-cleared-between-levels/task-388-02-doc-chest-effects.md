@@ -3,7 +3,7 @@ id: task-388-02-doc-chest-effects
 description: "Doc: update the preload and chest docs with the effects cleared between levels"
 parent: task-388-chest-glow-cleared-between-levels
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest glow removed between levels: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T20:57:48Z
 - waiting_for: none
 - result: open
 

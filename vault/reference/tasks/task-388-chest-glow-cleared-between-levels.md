@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[objective-bonus-chest]] (approved; opening: interior glow point light 3 s then fades, interior stays lit, rays and sparks, ground ring): nothing says the effects outlive the level; no conflict. [[intermission]] (provisional): next level prepared in the same world; no rule on leftover effects; no conflict. Tech read: [[sys-run-transition-preload]] (ClearingLevel destroys console, chest, shuttle and returns enemies, pickups, projectiles, ARRExplosionFX, turrets; world-spawned Niagara systems not listed), [[bp-bonus-chest]] (OnLidSlam and OnLidOpened use SpawnSystemAtLocation; InnerLight is a Mesh child). Open values: none. Scope M2. No capture subtask (owner Q1, 2026-10-30): the owner checks the result himself in the packaged build. Repo state 2026-10-30: RRPlayerController input fix committed by the owner (091bf23c); Config/DefaultGame.ini (DirectoriesToAlwaysCook) and Config/DefaultEditor.ini have uncommitted owner changes: leave them untouched and never commit them with this task (commit by path).
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
-- next_step: task-388-01-clear-chest-effects
+- next_step: task-388-02-doc-chest-effects
 - started: 2026-10-30T20:43:17Z
 - waiting_for: none
 - result: open

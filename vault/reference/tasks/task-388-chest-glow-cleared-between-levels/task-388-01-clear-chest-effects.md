@@ -3,7 +3,7 @@ id: task-388-01-clear-chest-effects
 description: "Cpp: find what of the opened chest survives the level change and remove it at the ClearingLevel step"
 parent: task-388-chest-glow-cleared-between-levels
 kind: task
-status: in-progress
+status: done
 ---
 # Bonus chest glow removed between levels: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build passes with the editor closed; a -game log shows the chest opened on level 1 and its opening effects spawned, then at the level 2 preparation the removal line with N > 0 and no chest effect or light alive at level 2 start; uncommitted Config changes untouched; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 66, cache write 133106, cache read 2794349, output 30741
+- usage: turns 33, context start 12k peak 133k, resumes 0, 14 min, units 0.60 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T20:43:17Z
 - waiting_for: none
-- result: open
+- result: Cause: opening effects (NS_BonusChestOpen) spawned world-owned, never finish, survive chest destroy. RRBonusChest tracks and ClearOpeningEffects at ResetForNextLevel (log: chest effects cleared for the next level: 1); level start logs live count on both paths. -game run: removed 1, 0 alive at level 2 start. Fallback path not forced after opening; OnLidSlam spawned 0 effects (not investigated). Commit 7ecb8a00.
 
 ## Relations
 - [[task-388-chest-glow-cleared-between-levels]] — parent global task.
