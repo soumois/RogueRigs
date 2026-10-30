@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-10-30T05:23:47Z
 - waiting_for: none
-- result: Not run: owner validation, no capture (owner 2026-10-30: Ok je valide l'écran de fin, plus besoin de test). C1 to C6 not checked in a render.
+- result: Validated visually by the owner, not by capture (owner 2026-10-30: Ok je valide l'écran de fin, plus besoin de test). Capture agent killed on his word, cost interrupted (ALERT resumed x1 comes from that). C1 to C6 not checked in a render.
 
 ## Relations
 - [[task-383-level-end-total-ore]] — parent global task.
