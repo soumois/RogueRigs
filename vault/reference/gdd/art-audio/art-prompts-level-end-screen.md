@@ -29,6 +29,7 @@ Written for the owner (task-378, 2026-10-30): the screen shown when the miner re
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[art-prompts-shop-screen-mockup]] — the reference mockup and retained sprites.
+- [[art-prompts-level-end-screen-mockup]] — ChatGPT's answer: the mockup and asset sheet, elements taken.
 - [[intermission]] — the stats screen spec.
 - [[wbp-intermission]] — the current widget.
 - [[color-code]] — colour rules the prompt follows.
