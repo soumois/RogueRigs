@@ -23,7 +23,7 @@ from mathutils import Vector  # noqa: E402
 
 CLIPS = [  # source file, export name
     ("Rifle Aiming Idle", "Idle"), ("Rifle Run", "RunFwd"), ("Walk With Rifle", "WalkFwd"),
-    ("Run Backwards", "RunBwd"), ("Backwards Rifle Walk", "WalkBwd"), ("Run Left", "RunLeft"),
+    ("Run Backwards", "RunBwd"), ("Run Left", "RunLeft"),
     ("Strafe Left", "StrafeLeft"), ("Run Right", "RunRight"), ("Strafe", "StrafeRight")]
 HIPS = "mixamorig:Hips"
 EXPORT_KW = dict(apply_scale_options="FBX_SCALE_UNITS", add_leaf_bones=False, use_selection=True,

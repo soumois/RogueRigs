@@ -8,7 +8,7 @@ import unreal
 SRC = "C:/Users/soumo/Documents/Unreal Projects/RogueRigs/Art/Meshes/Miner/Anims/"
 DEST = "/Game/RogueRigs/Characters/Miner/Anims"
 SKEL = "/Game/RogueRigs/Characters/Miner/SKEL_Miner"
-NAMES = ["Idle", "RunFwd", "WalkFwd", "RunBwd", "WalkBwd", "RunLeft", "StrafeLeft", "RunRight", "StrafeRight"]
+NAMES = ["Idle", "RunFwd", "WalkFwd", "RunBwd", "RunLeft", "StrafeLeft", "RunRight", "StrafeRight"]
 
 skel = unreal.EditorAssetLibrary.load_asset(SKEL)
 tasks = []
