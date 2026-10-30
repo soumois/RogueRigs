@@ -3,7 +3,7 @@ id: task-382-01-miner-meshy-files
 description: "3d: measure the rigged FBX in headless Blender, save it with its two textures in Art/Source/miner-meshy/, record it in art-prompts-miner"
 parent: task-382-miner-rigged-meshy-files
 kind: task
-status: in-progress
+status: done
 ---
 # Rigged miner Meshy FBX: identify, save, record
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the report gives triangles, vertices, bbox, bone count and names, root bone, weights, materials, UVs, image sizes and actions; the saved FBX has the same SHA-256 as the download; four files plus the script tracked in git (`git ls-files Art/Source/miner-meshy Tools/art/blender/miner_identify.py`); art-prompts-miner has the section with owner words, file list and counts; `node vault/scripts/lint.js --write` clean; committed by path as `task-382-01-miner-meshy-files: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 39118, cache read 286984, output 7839
+- usage: turns 11, context start 12k peak 39k, resumes 0, 1 min, units 0.12 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T04:55:17Z
 - waiting_for: none
-- result: open
+- result: Saved FBX (sha256 identical), textures and report in Art/Source/miner-meshy; 25744 tris, 40681 verts, 66 bones, no animation; art-prompts-miner section added; commit d65aff30
 
 ## Relations
 - [[task-382-miner-rigged-meshy-files]] — parent global task.

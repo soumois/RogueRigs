@@ -1,9 +1,9 @@
 ---
 id: task-382-miner-rigged-meshy-files
 description: "Global task: Save the owner rigged Meshy FBX of the miner in the repo, measure mesh, skeleton and textures in headless Blender, record in art-prompts-miner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Rigged miner Meshy FBX: save, measure and record
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: miner (spec approved; look white + teal + rust, amber visor; asset line: owner makes the 3D himself, rig and animation route open), art-prompts-miner (task-364 prompt, A-pose, Q4 animation task later), asset-pipeline (miner auto-rig deferred; rigid binding allowed for the plate armor; no miner triangle budget), art-3d-lessons, bp-miner (BP_Miner shows SKM_Quinn_Simple with ABP_Unarmed; weapon attached to the capsule, WeaponAttachSocketName None), handover-2026-10-14-chaser-meshy (the chaser has no skeleton: not this file). No conflict: the Meshy auto-rig answers the open "rig route" of miner.md (edit in the defaults). Open values reported, not decided by this task: miner triangle budget (none in asset-pipeline); animation route (the FBX has no clips: Quinn retarget, Mixamo or Meshy clips, or hand-made); Unreal import and replacing Quinn on BP_Miner; which weapon the miner holds and its hand socket. In milestone scope (M2 art). Untrusted download: inspected only by a repo script with the path as argument.
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
-- next_step: task-382-01-miner-meshy-files
+- next_step: none
 - started: 2026-10-30T04:55:16Z
 - waiting_for: none
-- result: open
+- result: Done. Saved FBX (sha256 identical), textures and report in Art/Source/miner-meshy; 25744 tris, 40681 verts, 66 bones, no animation; art-prompts-miner section added; commit d65aff30
 
 ## Questions
 Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -29,7 +29,7 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 1. task-382-01-miner-meshy-files (vault/reference/tasks/task-382-miner-rigged-meshy-files/task-382-01-miner-meshy-files.md) — 3d: measure the rigged FBX in headless Blender, save it with its two textures in Art/Source/miner-meshy/, record it in art-prompts-miner
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-382-01-miner-meshy-files]] — step 1, 3d.
 - [[miner]] — the character this mesh is for.
 - [[art-prompts-miner]] — the prompt node that records the rigged mesh.
