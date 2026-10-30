@@ -3,7 +3,7 @@ id: task-380-level-end-frame-sprites
 description: "Global task: Archive the owner ChatGPT level-end mockup and asset sheet, then make the missing frame sprites with Kie.ai as 9-slice (3x3) for UMG."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Level-end screen frame sprites in 3x3 (9-slice)
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-380-02-main-frame-sprite
 - started: 2026-10-30T01:34:40Z
-- waiting_for: none
+- waiting_for: owner pick of main frame candidate (task-380-02)
 - result: open
 
 ## Questions
