@@ -3,7 +3,7 @@ id: task-396-duskite-leftover-labels
 description: "Global task: The last player-visible "ore" texts left by task-392 become "Duskite": shop card "Short on ore" and the end screen designer default."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Duskite: leftover on-screen "ore" labels
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, scope approved by the owner, relayed by the main session: "change every occurrence of ore to Duskite" on screen)
 - milestone: M2
 - next_step: task-396-01-shop-short-label
-- started: open
+- started: 2026-10-30T22:05:28Z
 - waiting_for: none
 - result: open
 

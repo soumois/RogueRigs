@@ -3,7 +3,7 @@ id: task-396-01-shop-short-label
 description: "Bp: WBP_ShopScreen: ShopCard0..4 ShortLabel "Short on ore" becomes "Short on Duskite"; read WBP_ShopCard runtime texts"
 parent: task-396-duskite-leftover-labels
 kind: task
-status: todo
+status: in-progress
 ---
 # Duskite: leftover on-screen "ore" labels: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:05:28Z
 - waiting_for: none
 - result: open
 
