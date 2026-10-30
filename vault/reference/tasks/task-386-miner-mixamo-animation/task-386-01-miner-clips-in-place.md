@@ -3,7 +3,7 @@ id: task-386-01-miner-clips-in-place
 description: "3d: save the nine Mixamo FBX, measure them, export SK_Miner and nine in-place clips on one skeleton from headless Blender, record them in miner-mixamo-clips"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: 3d
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the nine saved files have the SHA-256 of the downloads; the report lists the nine clips with frames, fps, direction, speed and after-in-place Hips horizontal displacement under 1 cm, and the ten exports with identical bone lists and hierarchy; SK_Miner.fbx re-read gives 25,744 triangles and about 170 cm; all files and the script tracked (`git ls-files Art/Source/miner-mixamo Art/Meshes/Miner Tools/art/blender/miner_clips.py`); node miner-mixamo-clips exists and is linked; `node vault/scripts/lint.js --write` clean; committed by path as `task-386-01-miner-clips-in-place: <summary>`; `Get-Process blender` empty.
 - editor_state: any
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 61108, cache read 733731, output 24402
+- usage: turns 20, context start 12k peak 61k, resumes 0, 4 min, units 0.27 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:33:42Z
 - waiting_for: none
-- result: open
+- result: Nine clips saved (SHA-256 identical), measured, made in place (Hips horizontal 0.0 cm), SK_Miner 25,744 tris 170 cm, ten exports share 66-bone skeleton; commit c2d2f682; node miner-mixamo-clips
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
