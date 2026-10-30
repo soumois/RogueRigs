@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-387-burst-rifle-ref-prompt]] — Write the ChatGPT turnaround prompt of the burst rifle (default weapon held by the miner) and prepare its reference images, as the source for Meshy. Status wait-answers.
+- [[task-387-burst-rifle-ref-prompt]] — Write the ChatGPT turnaround prompt of the burst rifle (default weapon held by the miner) and prepare its reference images, as the source for Meshy. Status todo.
