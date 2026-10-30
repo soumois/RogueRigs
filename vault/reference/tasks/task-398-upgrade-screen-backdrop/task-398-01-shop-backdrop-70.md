@@ -3,7 +3,7 @@ id: task-398-01-shop-backdrop-70
 description: "Bp: WBP_ShopScreen: find why no dark layer shows, black backdrop at 70 %; report the WBP_UpgradeChoice backdrop state without editing it"
 parent: task-398-upgrade-screen-backdrop
 kind: task
-status: todo
+status: in-progress
 ---
 # Spare Parts screen: black backdrop at 70 %: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:39:27Z
 - waiting_for: none
 - result: open
 

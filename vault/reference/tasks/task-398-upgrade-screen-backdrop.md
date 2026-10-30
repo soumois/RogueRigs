@@ -3,7 +3,7 @@ id: task-398-upgrade-screen-backdrop
 description: "Global task: A full-screen black at 70 % opacity behind the Spare Parts shop screen (WBP_ShopScreen), as on the level-up cards; the finished level dimly visible."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Spare Parts screen: black backdrop at 70 %
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, Spare Parts screen (screenshot), then 70 % chosen by the owner)
 - milestone: M2
 - next_step: task-398-01-shop-backdrop-70
-- started: open
+- started: 2026-10-30T22:39:27Z
 - waiting_for: none
 - result: open
 
