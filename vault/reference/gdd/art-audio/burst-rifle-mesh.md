@@ -28,6 +28,15 @@ One object (`output_unwrapped`), 9,892 triangles, 4,928 vertices, one material s
 
 Budget (Q3, provisional, owner 2026-10-30): 9,892 triangles as delivered, no decimation.
 
+## Game mesh (task-394-02, 2026-10-30)
+`Art/Meshes/burst-rifle/SM_BurstRifle.fbx` (centimetres, `FBX_SCALE_UNITS`, one slot `M_BurstRifle`, UV0 kept bit for bit), maps copied byte for byte next to it as `T_BurstRifle_BaseColor|Metallic|Normal|Roughness.png`, report `burst_rifle_flat.report.json`, script `Tools/art/blender/burst_rifle_flatten.py` (previews: `burst_rifle_preview.py`, renders in `Saved/BurstRifleMesh/flat/`, not committed). Q3, Q4, Q5 values provisional, owner 2026-10-30.
+- Triangles 9,892 (as delivered, no decimation). Length 60.00 cm stock to muzzle (scale 0.315355), bounds 60.00 x 7.27 x 20.68 cm.
+- Orientation rule: the thin barrel end (muzzle brake, front sight) is at raw -X, the stock at raw +X, top already +Z; rotated 180 degrees about Z so the muzzle points to +X.
+- Pivot: pistol grip hand hold = bbox centre of the vertices under the trigger guard (raw z <= -16 cm) around the lowest vertex (59 vertices); origin there, so the mesh spans x -18.19 to 41.81, z -2.63 to 18.04 cm.
+- Flattening (Q5): planar regions found on the mesh itself (normal 10 degrees, plane distance 0.075 cm, area at least 0.05 percent): 420 regions kept (68.8 percent of the surface), 392 usable after the vertex loop; 2,231 faces (22.5 percent) flat-shaded, 7,661 stay smooth. 250 region faces were left out (82 move over 0.25 cm, 168 conflicting planes). Residual after reimport 0.0003 cm at most; largest vertex move 0.23 cm; silhouette difference to the scaled source 0.11 cm at most (limit 0.6 cm).
+- Cause of the bulge, measured: Meshy faces are 0.03 cm (mean) to 0.09 cm (p95) off their plane at source scale, face normals 2.2 degrees off the plane normal (mean), split normals 2.0 degrees off the face normal (mean), normal-map tilt 3.6 degrees on region faces (8.0 on the whole mesh). All 9,892 faces were smooth-shaded.
+- Textures are not edited here; [[task-395-burst-rifle-rebake]] re-bakes them.
+
 ## Reference sheet
 The ChatGPT four-view sheet given to Meshy is not provided (not in Downloads nor in the repo). If the owner gives its path it goes to `Art/Source/burst-rifle/reference/`.
 
@@ -37,3 +46,4 @@ The ChatGPT four-view sheet given to Meshy is not provided (not in Downloads nor
 - [[burst-rifle]] - the weapon this mesh is for.
 - [[art-prompts-extractor]] - format model and flatten recipe precedent.
 - [[task-394-burst-rifle-flat-faces]] - task that stores and flattens it.
+- [[task-395-burst-rifle-rebake]] - re-bakes the maps on the game mesh.
