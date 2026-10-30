@@ -3,7 +3,7 @@ id: task-380-03-divider-sprites
 description: "Art: horizontal and vertical divider sprites with bolted ends, 3-slice, keyed, retained by the owner"
 parent: task-380-level-end-frame-sprites
 kind: task
-status: wait-answers
+status: done
 ---
 # Level-end screen frame sprites in 3x3 (9-slice): art
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: Both PNGs exist, `ui_icon_prepare.js --check` clean, no baked text; details only at the ends, uniform middle; end margins written in px and fraction; at most 2 variants per sprite and 1 correction run; images sent to the owner and retained by him; node updated; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 56, cache write 83215, cache read 512927, output 20209
+- usage: turns 27, context start 11k peak 41k, resumes 1 (message x1), 8 min, units 0.26 M
+- runs: 3
 - milestone: M2
-- started: 2026-10-30T01:42:11Z
-- waiting_for: owner pick of divider H (1 or 2) and V (1 or 2)
-- result: open
+- started: 2026-10-30T01:48:54Z
+- waiting_for: none
+- result: Owner retained H1 + V1 as is (24 credits, runs 20261029-174247 and 174426); T_LevelEnd_DividerH 984x62 margins L 68 / R 65 px (0.069/0.066), T_LevelEnd_DividerV 58x984 margins T 56 / B 57 px (0.057/0.058); Sprites section updated; commit 20ddfe24. Style-guide A6 (cleaner than frame) accepted by owner. Runs 3 = generate, review, close-out.
 
 ## Relations
 - [[task-380-level-end-frame-sprites]] — parent global task.
