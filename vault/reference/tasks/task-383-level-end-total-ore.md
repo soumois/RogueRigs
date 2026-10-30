@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[intermission]] (provisional: stats screen "ore secured in this level and run total"; Look sentence from task-381 Q1 "top band holds both ore lines"): conflict with the owner words, changed by this task (edits applied on confirmation). [[wbp-intermission]] (task-381 tree: OreIcon (0.40,0.3385) 88 x 88, OreTexts VerticalBox of OreLevelText + OreRunText from Lines[0..1] with {ORE}; DividerH (0.2273,0.3866)-(0.7727,0.4466); labels 0.481; lines 0.5207; rows 0.545-0.765; DividerV 0.425-0.775). screen_texts.json intermission_recap: lines ["Ore secured this level: {ORE}", "Ore secured this run: {ORE}"], read only by WBP_Intermission (no C++ or test reads it); there is no "Total Ore" string yet. "Total Ore" in the code: FRRIntermissionRecap has OreSecuredThisLevel and RunSecuredOre; RunSecuredOre = bank minus the bank at run start, with the baseline lowered on each purchase so spending does not reduce it (RRRunSubsystem.h line 156): the ore secured since the run start; the bank balance (what the shop can spend) is not in the recap. Both are equal on level 1 and differ once the owner has bought cards: which one "Total Ore" means is not in the GDD, asked (Q1), default RunSecuredOre, the GDD "run total". Open values: none other. Repo state 2026-10-30: WBP_Intermission last committed by task-381 (892ae8c1), no uncommitted asset; task-379 done; task-382 (miner FBX, art, no editor asset in common) todo. Scope M2.
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-383-03-total-ore-capture
+- next_step: task-383-04-doc-total-ore
 - started: 2026-10-30T05:19:29Z
 - waiting_for: none
 - result: open

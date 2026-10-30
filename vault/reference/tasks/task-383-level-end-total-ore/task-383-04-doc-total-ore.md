@@ -3,7 +3,7 @@ id: task-383-04-doc-total-ore
 description: "Doc: update the wbp-intermission doc node with the Total Ore line, the moved anchors and the capture result."
 parent: task-383-level-end-total-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen Total Ore: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:27:58Z
 - waiting_for: none
 - result: open
 

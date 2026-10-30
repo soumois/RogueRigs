@@ -3,7 +3,7 @@ id: task-383-03-total-ore-capture
 description: "Capture: -game check of the Total Ore band and the taller columns at four resolutions and on level 4."
 parent: task-383-level-end-total-ore
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen Total Ore: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: C1 the ore band shows the ore icon, "Total Ore:" and one number, and no "Ore secured" text; C2 the number equals the run secured ore logged by `rr.Run.Status` or the stats screen log line ("run N"); C3 the band is visibly thinner than in the look before and the horizontal divider sits higher; C4 the column labels, their thin lines and the lists start higher than in the look before, list bottoms at the same place; C5 at 1920 x 1080, 1280 x 720, 1920 x 1200 and 2560 x 1080 nothing is cut, overlaps or leaves the screen, frame corners undistorted; C6 on level 4 the band shows Total Ore with the same layout and the button reads CASH OUT. Each point seen, not seen or ambiguous with its frame path; ambiguous points go to the owner.
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 25831, cache read 145852, output 2697
+- usage: turns 8, context start 14k peak 26k, resumes 1 (message x1), 4 min, units 0.06 M
+- runs: 0
 - milestone: M2
 - started: 2026-10-30T05:23:47Z
 - waiting_for: none
-- result: open
+- result: Not run: owner validation, no capture (owner 2026-10-30: Ok je valide l'écran de fin, plus besoin de test). C1 to C6 not checked in a render.
 
 ## Relations
 - [[task-383-level-end-total-ore]] — parent global task.
