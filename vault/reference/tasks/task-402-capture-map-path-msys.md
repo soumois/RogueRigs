@@ -1,9 +1,9 @@
 ---
 id: task-402-capture-map-path-msys
 description: "Global task: Fix the -game launch helpers so a /Game/... map path given from Git Bash reaches Unreal intact; capture.js, Run-StressTest.ps1, agent docs."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Game launches: /Game map path rewritten by Git Bash
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Tooling only, no gdd node touched; no conflict, no `open` value needed, inside M2. Findings (planner 2026-10-30): (1) the rewrite happens in the shell before node starts: capture.js default map (`/Game/RogueRigs/Maps/L_ArenaM1`, line 151) is passed by `child_process.spawn` and is never rewritten; only an explicit `--map /Game/...` typed in Git Bash is. Evidence: Saved/Captures/T399-1280x720, T399-1920x1080, T399-1920x1200, T399-2560x1080 run.log `LogInit: Command Line: "C:/Program Files/Git/Game/RogueRigs/Maps/L_ArenaM1"`; T399-all (no --map) has `/Game/RogueRigs/Maps/L_ArenaM1`. (2) Same defect outside capture.js: Saved/Logs/task388_explore-backup-2026.10.30-20.53.39.log, a raw UnrealEditor.exe launch from Bash, loaded `C:/Program Files/Git/Game/RogueRigs/Maps/L_MainMenu`. (3) Other launchers: Scripts/Run-StressTest.ps1 has `-Map` (default `/Game/RogueRigs/Maps/L_ArenaM1`), rewritten when given from Bash through `powershell -File`; Tools/capture/robot_shots.ps1 hard-codes `$Map` inside PowerShell, not affected. (4) agent-capture `visual_check` still documents a raw `UnrealEditor.exe <uproject> <map> -game` launch; orchestrator-script-quirks Shells has no MSYS entry. (5) `--exec` strings with `/Game/...` class paths after a space are not rewritten by MSYS (the argument does not start with `/`).
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-402-02-doc-map-path-msys
+- next_step: none
 - started: 2026-10-30T23:50:36Z
 - waiting_for: none
-- result: open
+- result: Done. Done, commit 7503e227: tool-capture, sys-stress, agent-capture, orchestrator-script-quirks, .claude/agents/capture.md state the MSYS repair and MSYS_NO_PATHCONV=1 rule; lint 0 problems.
 
 ## Questions
 Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -29,7 +29,7 @@ Decided 2026-10-30 (owner "Ok, par défaut"): every default below is accepted; v
 2. task-402-02-doc-map-path-msys (vault/reference/tasks/task-402-capture-map-path-msys/task-402-02-doc-map-path-msys.md) — doc: tool-capture, sys-stress, agent-capture, orchestrator-script-quirks and .claude/agents/capture.md state the repair and the MSYS_NO_PATHCONV=1 rule
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-402-01-map-path-repair]] — step 1, cpp.
 - [[task-402-02-doc-map-path-msys]] — step 2, doc.
 - [[task-399-total-duskite-number-overlap]] — the task whose capture lost 4 of 5 launches to the rewrite.

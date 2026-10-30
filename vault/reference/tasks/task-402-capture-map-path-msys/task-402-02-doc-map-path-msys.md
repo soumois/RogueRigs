@@ -3,7 +3,7 @@ id: task-402-02-doc-map-path-msys
 description: "Doc: tool-capture, sys-stress, agent-capture, orchestrator-script-quirks and .claude/agents/capture.md state the repair and the MSYS_NO_PATHCONV=1 rule"
 parent: task-402-capture-map-path-msys
 kind: task
-status: in-progress
+status: done
 ---
 # Game launches: /Game map path rewritten by Git Bash: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: tool-capture and sys-stress describe the repair and its printed line; agent-capture `visual_check` no longer shows a raw UnrealEditor.exe launch without `MSYS_NO_PATHCONV=1` and `capture_script` says every capture goes through capture.js; orchestrator-script-quirks `## Shells` has the MSYS bullet; .claude/agents/capture.md step 2 mentions it; `node vault/scripts/lint.js --write` reports 0 problems; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 27857, cache read 118931, output 4238
+- usage: turns 7, context start 11k peak 28k, resumes 0, 3 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T23:52:58Z
 - waiting_for: none
-- result: open
+- result: Done, commit 7503e227: tool-capture, sys-stress, agent-capture, orchestrator-script-quirks, .claude/agents/capture.md state the MSYS repair and MSYS_NO_PATHCONV=1 rule; lint 0 problems.
 
 ## Relations
 - [[task-402-capture-map-path-msys]] — parent global task.
