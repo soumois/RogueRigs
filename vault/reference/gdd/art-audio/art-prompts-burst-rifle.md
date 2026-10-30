@@ -26,7 +26,7 @@ Background and light: plain white background, even neutral lighting, no shadows,
 
 ## Open values
 - Final English name of the weapon: open.
-- Mesh size and triangle budget of the rifle: decided in [[burst-rifle]] (provisional, owner 2026-10-30, task-392).
+- Mesh size and triangle budget of the rifle: decided in [[burst-rifle]] (provisional, owner 2026-10-30, task-394).
 - Budget of Meshy credits: open.
 - Miner hand socket and which weapon is shown in hand: open.
 
