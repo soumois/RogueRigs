@@ -21,6 +21,12 @@ float URRLoadingScreenWidget::GetLoadingProgress() const
 	return Transition ? Transition->GetLoadingProgress() : 0.f;
 }
 
+bool URRLoadingScreenWidget::IsLoadingProgressMeasured() const
+{
+	const URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(this);
+	return Transition && Transition->IsLoadingProgressMeasured();
+}
+
 void URRLoadingScreenWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

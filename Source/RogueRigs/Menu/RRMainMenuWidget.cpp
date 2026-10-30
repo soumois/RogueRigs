@@ -9,6 +9,7 @@
 #include "RogueRigs.h"
 #include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
+#include "Run/RRRunTransitionSubsystem.h"
 
 void URRMainMenuWidget::NativeOnInitialized()
 {
@@ -44,11 +45,18 @@ bool URRMainMenuWidget::StartNewRunInWorld(UWorld* World)
 		UE_LOG(LogRogueRigs, Warning, TEXT("Main menu New Run: refused (URRRunSettings::NewRunMapName is empty)."));
 		return false;
 	}
+	// Loading screen path (task-379-01): run reset, loading phase for level 1, loading screen painted, then the travel.
+	if (URRRunTransitionSubsystem* Transition = URRRunTransitionSubsystem::Get(World))
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("Main menu New Run: run reset and loading of %s (level 1) through the run transition."), *MapName);
+		return Transition->StartNewRun(World, MapName);
+	}
+	// No game instance subsystem (should not happen in a game): direct travel as before.
 	if (URRRunSubsystem* Run = URRRunSubsystem::Get(World))
 	{
 		Run->ResetRun();
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("Main menu New Run: run reset, opening %s (level 1)."), *MapName);
+	UE_LOG(LogRogueRigs, Warning, TEXT("Main menu New Run: no run transition subsystem; run reset, opening %s (level 1) without a loading screen."), *MapName);
 	UGameplayStatics::OpenLevel(World, FName(*MapName));
 	return true;
 }

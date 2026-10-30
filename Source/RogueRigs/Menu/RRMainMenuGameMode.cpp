@@ -7,6 +7,8 @@
 #include "Menu/RRMainMenuPlayerController.h"
 #include "Menu/RRMainMenuWidget.h"
 #include "RogueRigs.h"
+#include "Run/RRRunSettings.h"
+#include "UI/RRLoadingScreenWidget.h"
 
 ARRMainMenuGameMode::ARRMainMenuGameMode()
 {
@@ -31,5 +33,27 @@ URRMainMenuWidget* ARRMainMenuGameMode::CreateMainMenuWidget(APlayerController* 
 		Widget->AddToViewport(MainMenuWidgetZOrder);
 		UE_LOG(LogRogueRigs, Log, TEXT("%s: main menu shown (%s)."), *GetName(), *GetNameSafe(MainMenuWidgetClass.Get()));
 	}
+	return Widget;
+}
+
+URRLoadingScreenWidget* ARRMainMenuGameMode::CreateLoadingScreenWidget(APlayerController* PlayerController)
+{
+	if (!PlayerController || !PlayerController->IsLocalPlayerController() || !PlayerController->GetLocalPlayer())
+	{
+		return nullptr;
+	}
+	if (!LoadingScreenWidgetClass)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: LoadingScreenWidgetClass is not set, New Run loads without a loading screen (the travel starts after %d frames without a paint)."),
+			*GetName(), GetDefault<URRRunSettings>()->LoadingPaintWaitMaxFrames);
+		return nullptr;
+	}
+	URRLoadingScreenWidget* Widget = CreateWidget<URRLoadingScreenWidget>(PlayerController, LoadingScreenWidgetClass);
+	if (!Widget)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the loading screen widget %s."), *GetName(), *GetNameSafe(LoadingScreenWidgetClass.Get()));
+		return nullptr;
+	}
+	Widget->AddToViewport(LoadingScreenWidgetZOrder);
 	return Widget;
 }

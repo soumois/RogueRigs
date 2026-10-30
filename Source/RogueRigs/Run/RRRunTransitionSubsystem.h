@@ -210,6 +210,8 @@ enum class ERRNextLevelPrepStep : uint8
  * PreparingLevel): run flow disabled (no alert, no console), spawner timed spawning held, player gameplay input ignored
  * (ARRPlayerController). The hold ends on the spawner's OnPoolPrewarmFinished (or at once without a spawner or prewarm, or after
  * LoadingHoldTimeoutSeconds): run flow and spawner released, phase None, OnLevelReady.
+ * Main menu New Run (task-379-01): StartNewRun resets the run and enters the same Loading phase for level 1 from the menu world
+ * (ARRMainMenuPlayerController shows the loading screen), then the same paint wait, travel, hold and fade in.
  *
  * Widgets: ARRPlayerController creates IntermissionWidgetClass (stats screen) on OnIntermissionStarted, ShopScreenWidgetClass on
  * OnShopScreenStarted and LoadingScreenWidgetClass on
@@ -254,6 +256,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Run|Transition")
 	bool Continue();
 
+	/**
+	 * Main menu New Run (task-379-01; URRMainMenuWidget::StartNewRunInWorld, button and rr.Menu.NewRun): URRRunSubsystem::ResetRun,
+	 * phase Loading for level 1 (its settings layout), OnLoadingStarted(1, layout) so the menu shows the loading screen, then the
+	 * paint wait and OpenLevel(MapName) from MenuWorld. The arena world is then held and released like a map-travel level change
+	 * (PostLoadMapWithWorld hold, OnLevelReady, fade in); the miner's BeginPlay begins the run at level 1. Progress is not
+	 * measured. False (warning logged, nothing reset) without a world, a map name or a run subsystem, or while a transition runs
+	 * (a second press is ignored).
+	 */
+	bool StartNewRun(UWorld* MenuWorld, const FString& MapName);
+
 	/** Current phase. */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	ERRRunTransitionPhase GetPhase() const { return Phase; }
@@ -285,6 +297,22 @@ public:
 	/** Level being loaded (the run's current level), 0 outside the loading phase. */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	int32 GetLoadingLevelIndex() const { return IsLevelLoading() ? LoadingLevelIndex : 0; }
+
+	/** Layout of the level being loaded (the next layout after Continue, level 1's layout after New Run); empty outside the loading phase. */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	FString GetLoadingLayoutName() const { return IsLevelLoading() ? LoadingLayoutName : FString(); }
+
+	/** True while the loading started from the main menu New Run (StartNewRun), until OnLevelReady. */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsNewRunLoading() const { return IsLevelLoading() && bNewRunLoading; }
+
+	/**
+	 * True when the loading progress is measured (task-379-01): only while loading on the in-world next level preparation path
+	 * (GetLoadingProgress follows the preparation steps). False on New Run and on the map-travel fallback (a map load, progress
+	 * 0: the loading screen shows its animation instead of the bar) and outside a loading.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsLoadingProgressMeasured() const { return IsLevelLoading() && PrepStep != ERRNextLevelPrepStep::None; }
 
 	/**
 	 * Called by URRLoadingScreenWidget on its first paint. While the travel waits (stage WaitingForLayout or OpeningMap, map not
@@ -397,7 +425,7 @@ protected:
 	/** True when the wait is over: painted in a frame before the current one, or the frame limit reached. */
 	bool IsTravelWaitOver() const;
 
-	/** Requests the travel (UGameplayStatics::OpenLevel) and logs the loading start, first paint and travel frames. */
+	/** Requests the travel (UGameplayStatics::OpenLevel to MapToOpen) and logs the loading start, first paint and travel frames. */
 	void RequestArenaMapTravel();
 
 	/** PostLoadMapWithWorld callback: holds the new world during the loading phase and waits for the prewarm. */
@@ -530,6 +558,12 @@ protected:
 	uint64 LoadingStartFrame = 0;
 	uint64 LoadingFirstPaintFrame = 0;
 	uint64 TravelWaitStartFrame = 0;
+
+	/** True when the current loading was started by StartNewRun (main menu New Run) rather than Continue. */
+	bool bNewRunLoading = false;
+
+	/** Name of what started the current loading, for the logs ("Continue" or "New Run"). */
+	const TCHAR* GetLoadingStartLabel() const { return bNewRunLoading ? TEXT("New Run") : TEXT("Continue"); }
 
 	/** True once OpenLevel was requested for the current loading (later paints belong to the new world). */
 	bool bTravelRequested = false;

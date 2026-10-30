@@ -11,8 +11,9 @@
  * Loading screen of a level transition (intermission gdd: covers the layout, the map load and the pool prewarm). A widget
  * does not survive OpenLevel, so ARRPlayerController (LoadingScreenWidgetClass) creates one instance on
  * URRRunTransitionSubsystem::OnLoadingStarted in the old world and another at its BeginPlay in the new world while
- * IsLevelLoading; each is removed on OnLevelReady. Layout lives in the Blueprint subclass: implement OnLoadingShown and
- * OnLoadingStageChanged. No gameplay logic here.
+ * IsLevelLoading; each is removed on OnLevelReady. Main menu New Run (task-379-01): ARRMainMenuPlayerController creates the
+ * old-world instance (ARRMainMenuGameMode::LoadingScreenWidgetClass). Layout lives in the Blueprint subclass: implement
+ * OnLoadingShown and OnLoadingStageChanged; read IsLoadingProgressMeasured to choose the bar or the animation. No gameplay logic here.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API URRLoadingScreenWidget : public UUserWidget
@@ -33,6 +34,14 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "Run|Transition")
 	float GetLoadingProgress() const;
+
+	/**
+	 * True when GetLoadingProgress is measured (task-379-01): only on the in-world next level preparation path between levels.
+	 * False on the main menu New Run and on the between-levels map-travel fallback (a map load: hide the bar, play the animation).
+	 * Valid when OnLoadingShown fires (URRRunTransitionSubsystem::IsLoadingProgressMeasured).
+	 */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsLoadingProgressMeasured() const;
 
 protected:
 	/** Binds URRRunTransitionSubsystem::OnLoadingStageChanged. */

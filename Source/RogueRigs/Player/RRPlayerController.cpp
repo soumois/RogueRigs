@@ -52,7 +52,8 @@ void ARRPlayerController::BeginPlay()
 			// (higher Z-order than the HUD created below).
 			if (Transition->IsLevelLoading())
 			{
-				ShowLoadingScreen(Transition->GetLoadingLevelIndex(), Transition->GetIntermissionRecap().NextLayoutName);
+				// GetLoadingLayoutName: the next layout after Continue, level 1's layout after the main menu New Run (task-379-01).
+				ShowLoadingScreen(Transition->GetLoadingLevelIndex(), Transition->GetLoadingLayoutName());
 			}
 		}
 	}
@@ -309,7 +310,8 @@ void ARRPlayerController::ShowLoadingScreen(int32 LevelIndex, const FString& Lay
 		LoadingScreenWidget->AddToViewport(TransitionWidgetZOrder + 1);
 	}
 	LoadingScreenWidget->ShowLoading(LevelIndex, LayoutName);
-	UE_LOG(LogRogueRigs, Log, TEXT("%s: loading screen shown for level %d."), *GetName(), LevelIndex);
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: loading screen shown for level %d (layout %s, progress %s)."), *GetName(), LevelIndex, *LayoutName,
+		LoadingScreenWidget->IsLoadingProgressMeasured() ? TEXT("measured") : TEXT("not measured"));
 }
 
 void ARRPlayerController::RemoveIntermissionWidget()

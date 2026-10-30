@@ -218,6 +218,7 @@ bool URRRunTransitionSubsystem::Continue()
 	LoadingStartFrame = GFrameCounter;
 	LoadingFirstPaintFrame = 0;
 	bTravelRequested = false;
+	bNewRunLoading = false;
 	if (PrepStep != ERRNextLevelPrepStep::None)
 	{
 		// In-place path (task-318-01): no map load. Ready: fade out, switch, fade in, no loading screen (task-318-02, intermission
@@ -232,15 +233,15 @@ bool URRRunTransitionSubsystem::Continue()
 		else
 		{
 			bStartWhenPrepared = true;
-			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d still being prepared (progress %.2f), frame %llu: loading path, loading screen until ready."),
-				LoadingLevelIndex, GetNextLevelProgress(), LoadingStartFrame);
+			UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: next level %d still being prepared (progress %.2f), frame %llu: loading path, loading screen until ready (progress %s)."),
+				LoadingLevelIndex, GetNextLevelProgress(), LoadingStartFrame, IsLoadingProgressMeasured() ? TEXT("measured") : TEXT("not measured"));
 			OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
 		}
 		return true;
 	}
 
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s), frame %llu."), LoadingLevelIndex,
-		*LoadingLayoutName, LoadingStartFrame);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: Continue: loading started for level %d (layout %s), frame %llu: map travel (progress %s)."), LoadingLevelIndex,
+		*LoadingLayoutName, LoadingStartFrame, IsLoadingProgressMeasured() ? TEXT("measured") : TEXT("not measured"));
 	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
 
 	if (Run->IsLayoutPending(LoadingLevelIndex))
@@ -267,11 +268,51 @@ void URRRunTransitionSubsystem::HandleLayoutReady(int32 LevelIndex, const FStrin
 	OpenArenaMap();
 }
 
+bool URRRunTransitionSubsystem::StartNewRun(UWorld* MenuWorld, const FString& MapName)
+{
+	URRRunSubsystem* Run = GetRun();
+	if (!MenuWorld || MapName.IsEmpty() || !Run)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: New Run refused (%s)."),
+			!MenuWorld ? TEXT("no world") : (MapName.IsEmpty() ? TEXT("no map name") : TEXT("no run subsystem")));
+		return false;
+	}
+	if (Phase != ERRRunTransitionPhase::None)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunTransitionSubsystem: New Run refused (transition phase %s already running)."),
+			*StaticEnum<ERRRunTransitionPhase>()->GetNameStringByValue(static_cast<int64>(Phase)));
+		return false;
+	}
+	// ResetRun drops any transition through HandleRunReset; the loading below starts from a clean state.
+	Run->ResetRun();
+
+	Recap = FRRIntermissionRecap();
+	IntermissionWorld = MenuWorld;
+	IntermissionMiner.Reset();
+	MapToOpen = MapName;
+	Phase = ERRRunTransitionPhase::Loading;
+	bNewRunLoading = true;
+	LoadingLevelIndex = 1;
+	// The arena grid of level 1 builds from its own LayoutName; the settings entry of level 1 names the same layout.
+	LoadingLayoutName = Run->GetLayoutNameForLevel(LoadingLevelIndex);
+	LoadingStartSeconds = FPlatformTime::Seconds();
+	LoadingStartFrame = GFrameCounter;
+	LoadingFirstPaintFrame = 0;
+	bTravelRequested = false;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: New Run: loading started for level %d (layout %s) in the menu world %s, frame %llu: map travel to %s (progress %s)."),
+		LoadingLevelIndex, *LoadingLayoutName, *GetNameSafe(MenuWorld), LoadingStartFrame, *MapToOpen,
+		IsLoadingProgressMeasured() ? TEXT("measured") : TEXT("not measured"));
+	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
+	OpenArenaMap();
+	return true;
+}
+
 void URRRunTransitionSubsystem::OpenArenaMap()
 {
 	UWorld* World = IntermissionWorld.Get();
 	URRRunSubsystem* Run = GetRun();
-	if (Run && !Run->IsLayoutReady(LoadingLevelIndex))
+	// Level 1 is never requested (its grid reads its own LayoutName): New Run has no prepared layout to check.
+	if (!bNewRunLoading && Run && !Run->IsLayoutReady(LoadingLevelIndex))
 	{
 		// Provisional decision (task-206-03): the travel goes on, the grid falls back to its own LayoutName with an error.
 		UE_LOG(LogRogueRigs, Error, TEXT("URRRunTransitionSubsystem: layout %s of level %d failed to load; the grid will fall back to its own layout."),
@@ -339,13 +380,15 @@ void URRRunTransitionSubsystem::RequestArenaMapTravel()
 	bTravelRequested = true;
 	if (LoadingFirstPaintFrame != 0)
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d in frame %llu (loading started frame %llu, first loading paint frame %llu; %.1f ms after Continue)."),
-			*MapToOpen, LoadingLevelIndex, GFrameCounter, LoadingStartFrame, LoadingFirstPaintFrame, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d in frame %llu (loading started frame %llu, first loading paint frame %llu; %.1f ms after %s)."),
+			*MapToOpen, LoadingLevelIndex, GFrameCounter, LoadingStartFrame, LoadingFirstPaintFrame, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0,
+			GetLoadingStartLabel());
 	}
 	else
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d in frame %llu (loading started frame %llu, no loading paint after %llu frames; %.1f ms after Continue)."),
-			*MapToOpen, LoadingLevelIndex, GFrameCounter, LoadingStartFrame, GFrameCounter - TravelWaitStartFrame, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: opening %s for level %d in frame %llu (loading started frame %llu, no loading paint after %llu frames; %.1f ms after %s)."),
+			*MapToOpen, LoadingLevelIndex, GFrameCounter, LoadingStartFrame, GFrameCounter - TravelWaitStartFrame, (FPlatformTime::Seconds() - LoadingStartSeconds) * 1000.0,
+			GetLoadingStartLabel());
 	}
 	// OpenLevel only requests the travel: the engine loads the map at the start of a later frame.
 	UGameplayStatics::OpenLevel(World, FName(*MapToOpen));
@@ -380,9 +423,9 @@ void URRRunTransitionSubsystem::HandlePostLoadMap(UWorld* LoadedWorld)
 	const FIntPoint GridSize = Grid ? Grid->GetGridSize() : FIntPoint::ZeroValue;
 	if (bLayoutUsed)
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: map loaded for level %d (%.1f ms after Continue): grid built %d x %d on layout %s, snapshot %s."),
-			LoadingLevelIndex, (MapLoadedSeconds - LoadingStartSeconds) * 1000.0, GridSize.X, GridSize.Y, *GridLayout,
-			Run && Run->HasPendingSnapshot() ? TEXT("still pending") : TEXT("applied"));
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: map loaded for level %d (%.1f ms after %s): grid built %d x %d on layout %s, snapshot %s."),
+			LoadingLevelIndex, (MapLoadedSeconds - LoadingStartSeconds) * 1000.0, GetLoadingStartLabel(), GridSize.X, GridSize.Y, *GridLayout,
+			bNewRunLoading ? TEXT("none (new run)") : (Run && Run->HasPendingSnapshot() ? TEXT("still pending") : TEXT("applied")));
 	}
 	else
 	{
@@ -412,7 +455,7 @@ void URRRunTransitionSubsystem::HandlePostLoadMap(UWorld* LoadedWorld)
 		return;
 	}
 	Spawner->OnPoolPrewarmFinished.AddUniqueDynamic(this, &URRRunTransitionSubsystem::HandlePoolPrewarmFinished);
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d held (run flow off, spawning held) until the pool prewarm is done."), LoadingLevelIndex);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d held (stage PreparingLevel: run flow off, spawning held) until the pool prewarm is done."), LoadingLevelIndex);
 
 	const float Timeout = GetDefault<URRRunSettings>()->LoadingHoldTimeoutSeconds;
 	if (Timeout > 0.f)
@@ -462,8 +505,9 @@ void URRRunTransitionSubsystem::FinishLoading(const TCHAR* Reason)
 	const int32 Level = LoadingLevelIndex;
 	const FString Layout = LoadingLayoutName;
 	const double Now = FPlatformTime::Seconds();
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d ready on layout %s (%s; %.1f ms after the map load, %.1f ms after Continue): run flow starts."),
-		Level, *Layout, Reason, (Now - MapLoadedSeconds) * 1000.0, (Now - LoadingStartSeconds) * 1000.0);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: level %d ready on layout %s (%s; %.1f ms after the map load, %.1f ms after %s): run flow starts."),
+		Level, *Layout, Reason, (Now - MapLoadedSeconds) * 1000.0, (Now - LoadingStartSeconds) * 1000.0, GetLoadingStartLabel());
+	bNewRunLoading = false;
 	HeldRunFlow.Reset();
 	HeldSpawner.Reset();
 	HeldWorld.Reset();
@@ -528,6 +572,7 @@ void URRRunTransitionSubsystem::ClearTransition()
 	StopNextLevelPreparation();
 	StopScreenFade();
 	bTravelRequested = false;
+	bNewRunLoading = false;
 	LoadingFirstPaintFrame = 0;
 	HeldRunFlow.Reset();
 	HeldSpawner.Reset();

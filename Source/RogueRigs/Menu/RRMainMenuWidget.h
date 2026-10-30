@@ -22,7 +22,7 @@ class ROGUERIGS_API URRMainMenuWidget : public UUserWidget
 
 public:
 	/**
-	 * New Run button: resets the run (URRRunSubsystem::ResetRun) and opens URRRunSettings::NewRunMapName (L_ArenaM1); the arena
+	 * New Run button: StartNewRunInWorld (run reset, loading screen, then URRRunSettings::NewRunMapName, L_ArenaM1); the arena
 	 * miner then begins level 1. A second call while the travel is pending is ignored. False when no travel was requested.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Menu")
@@ -37,8 +37,10 @@ public:
 	bool IsOptionsAvailable() const { return false; }
 
 	/**
-	 * Shared New Run action (widget button and rr.Menu.NewRun): ResetRun on the game instance run subsystem, then OpenLevel on
-	 * URRRunSettings::NewRunMapName. False (warning logged) without a world or with an empty map name.
+	 * Shared New Run action (widget button and rr.Menu.NewRun): URRRunTransitionSubsystem::StartNewRun on
+	 * URRRunSettings::NewRunMapName (ResetRun, loading phase for level 1 with the loading screen, paint wait, OpenLevel; the arena
+	 * is held until level 1 is ready, then fades in, task-379-01). False (warning logged) without a world, with an empty map
+	 * name, or while a transition already runs (second press).
 	 */
 	static bool StartNewRunInWorld(UWorld* World);
 
