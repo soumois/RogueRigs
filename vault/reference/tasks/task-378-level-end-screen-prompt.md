@@ -1,0 +1,39 @@
+---
+id: task-378-level-end-screen-prompt
+description: "Global task: Write the ChatGPT image prompt of the end-of-level stats screen mockup, in the palette and look of the Spare Parts cards screen."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Level-end screen prompt for ChatGPT
+
+- request: Owner, 2026-10-30, verbatim: "Il me faudrait un prompt pour l'écran de fin d'un niveau, sachant que je [veux] la palette de l'écran des cartes entre les niveaux et aussi l'écran de carte entre les niveaux." Meaning (Planner reading, to confirm in Q1): the end-of-level screen is the stats screen shown after each extraction (intermission screen 1, WBP_Intermission); "l'écran des cartes" and "l'écran de carte" both name the Spare Parts cards screen between levels (WBP_ShopScreen, redesigned in task-348): its palette and its look are the reference. Only a prompt is asked: no image generation, no widget change.
+- goal: A prompt node art-prompts-level-end-screen, child of art-prompts, points to a prompt file in the repo that the owner pastes into ChatGPT, with the images to attach, to get a 16:9 mockup of the end-of-level stats screen in the palette and look of the Spare Parts cards screen.
+- acceptance: Art/Source/level-end-screen/prompts/chatgpt-level-end-mockup.md exists with the prompt verbatim (language per Q3), the attachments to give ChatGPT (per Q2) and the content of the stats screen as in intermission and wbp-intermission (title LEVEL N CLEARED, subtitle, ore secured this level and run total, robots destroyed per type as text, damage per weapon, Next level button; background per Q4); the prompt names the Spare Parts palette and look explicitly (gunmetal and teal riveted panels, rust, cream Continue button, violet ore, title bar with side bars) and states that no new rule or stat is invented; node vault/reference/gdd/art-audio/art-prompts-level-end-screen.md lists the file, the attachments and the decisions; art-prompts lists it in its Relations; no image generated, no Kie.ai credit spent; lint clean; committed.
+- gdd_check: Read 2026-10-30: intermission (spec provisional: two screens, stats screen over the paused finished level, then the cards screen on opaque black), level-flow, run-index, wbp-intermission (current stats screen tree: black backdrop alpha 0.85, Roboto Bold, teal subtitle, Next level button; level 4 variant "Cash out"), art-prompts (method and locked phrases), art-prompts-shop-screen (task-341 text prompt), art-prompts-shop-screen-mockup (ChatGPT mockup and the retained T_Shop sprites, gunmetal and teal look without white plates accepted on purpose, A6), agent-art, handover-2026-10-29-shop-screen. No conflict: a prompt only changes no rule (rules versus rendering). Not in the GDD: no "map screen between levels" exists (only the minimap in the HUD), hence Q1. Gap noted, not decided: the stats screen sits over the dimmed paused level while the cards screen is opaque black (Q4). Open values touching the screen, reported, not decided: robot type icons (GDD: "type names as text for now, no icons"), loading screen image (open, not this screen). In milestone scope (M2 UI art).
+- confirmed_by_owner: no (plan and questions handed back 2026-10-30)
+- milestone: M2
+- next_step: task-378-01-prompt-node
+- started: open
+- waiting_for: owner confirmation of the plan
+- result: open
+
+## Questions
+Asked 2026-10-30, each with a default; open until the owner answers.
+- Q1 Which screens: "écran de fin d'un niveau" = the stats screen after an extraction on levels 1 to 3 (LEVEL N CLEARED, Next level), and "l'écran des cartes" / "l'écran de carte" = the same Spare Parts cards screen (its palette and its look). No map screen exists in the GDD; if you meant one, say so. Default: this reading.
+- Q2 Kind of prompt and attachments: a ChatGPT image prompt for a full 16:9 mockup of the screen (as the Spare Parts mockup was), with Art/Source/shop-screen/reference/chatgpt-shop-mockup-2026-10-28.webp attached as the palette and look reference; or a text prompt to discuss design and game feel (as task-341). Default: image prompt with that attachment.
+- Q3 Language of the prompt: English (the locked style phrases of art-prompts are English) or French. Default: English.
+- Q4 Background: the GDD rule stays, the stats screen is drawn over the dimmed paused level (the cards screen is opaque black). Default: dimmed paused arena behind, as the GDD says.
+- Q5 Variant: only the levels 1 to 3 screen (LEVEL N CLEARED, Next level), sample values in English; the level 4 run-won variant (CLAIM EMPTIED, Cash out) is not in the prompt. Default: levels 1 to 3 only.
+- Q6 Who and generation: the art agent writes the prompt file and its vault node; no Kie.ai generation, you paste it into ChatGPT yourself. Default: yes, no generation.
+
+## Subtasks
+1. task-378-01-prompt-node (vault/reference/tasks/task-378-level-end-screen-prompt/task-378-01-prompt-node.md) — art: write the ChatGPT prompt of the end-of-level stats screen mockup and its vault node art-prompts-level-end-screen; no generation
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-378-01-prompt-node]] — step 1, art.
+- [[intermission]] — the spec of the stats screen the prompt depicts.
+- [[wbp-intermission]] — current widget of the stats screen.
+- [[art-prompts-shop-screen-mockup]] — the Spare Parts screen mockup used as palette and look reference.
+- [[art-prompts]] — parent of the prompt node to create.
