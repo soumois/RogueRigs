@@ -3,7 +3,7 @@ id: task-390-run-won-back-to-main-menu
 description: "Global task: After the level 4 extraction, the run-won end screen button reads Main Menu and returns to the main menu instead of restarting a run."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Run won: back to the main menu
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-390-02-end-screen-menu-button
 - started: 2026-10-30T21:42:28Z
-- waiting_for: none
+- waiting_for: bp subtask 02 blocked: mcp__unreal tool not exposed to the bp agent; HTTP JSON-RPC route denied by permission classifier
 - result: open
 
 ## Questions

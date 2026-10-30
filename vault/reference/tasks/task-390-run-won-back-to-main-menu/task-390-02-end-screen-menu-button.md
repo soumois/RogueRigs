@@ -3,7 +3,7 @@ id: task-390-02-end-screen-menu-button
 description: "Bp: WBP_AlertObjectives: run-won end screen button "Main Menu" calls the return-to-menu entry"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Run won: back to the main menu: bp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-30T21:42:28Z
-- waiting_for: none
+- waiting_for: bp subtask 02 blocked: mcp__unreal tool not exposed to the bp agent; HTTP JSON-RPC route denied by permission classifier
 - result: open
 
 ## Relations
