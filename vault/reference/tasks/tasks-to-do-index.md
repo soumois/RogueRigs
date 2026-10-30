@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-382-miner-rigged-meshy-files]] — Save the owner rigged Meshy character FBX (the miner) in the repo, measure mesh, skeleton and textures in headless Blender, record it in art-prompts-miner. Status todo.
+- [[task-382-miner-rigged-meshy-files]] — Save the owner rigged Meshy character FBX (the miner) in the repo, measure mesh, skeleton and textures in headless Blender, record it in art-prompts-miner. Status in-progress.

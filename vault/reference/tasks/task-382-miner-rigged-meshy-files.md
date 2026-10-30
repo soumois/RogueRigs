@@ -3,7 +3,7 @@ id: task-382-miner-rigged-meshy-files
 description: "Global task: Save the owner rigged Meshy FBX of the miner in the repo, measure mesh, skeleton and textures in headless Blender, record in art-prompts-miner."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Rigged miner Meshy FBX: save, measure and record
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-382-01-miner-meshy-files
-- started: open
+- started: 2026-10-30T04:55:16Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-382-01-miner-meshy-files
 description: "3d: measure the rigged FBX in headless Blender, save it with its two textures in Art/Source/miner-meshy/, record it in art-prompts-miner"
 parent: task-382-miner-rigged-meshy-files
 kind: task
-status: todo
+status: in-progress
 ---
 # Rigged miner Meshy FBX: identify, save, record
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:55:17Z
 - waiting_for: none
 - result: open
 
