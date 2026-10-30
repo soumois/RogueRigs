@@ -3,7 +3,7 @@ id: task-381-03-level-end-screen-capture
 description: "Capture: -game check of the rebuilt stats screen at four resolutions and the level 4 variant against the mockup."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen rebuild: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:40:19Z
 - waiting_for: none
 - result: open
 

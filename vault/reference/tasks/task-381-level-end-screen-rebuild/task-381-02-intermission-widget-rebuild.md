@@ -3,7 +3,7 @@ id: task-381-02-intermission-widget-rebuild
 description: "Bp: rebuild WBP_Intermission to the ChatGPT level-end mockup with the LevelEnd and Spare Parts sprites, Root Canvas and anchors."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen rebuild: WBP_Intermission
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: CompileWidgetBlueprint true and compile_blueprint with warnings as errors gives no error; tree read back with the widgets of the acceptance and their brushes and margins; OnRecapShown fills OreLevelText, OreRunText, both columns (names and values), Title, Subtitle and ContinueText for both branches (graph pins read back); ContinueButton still calls NextLevel; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 154039, cache read 3113159, output 59663
+- usage: turns 32, context start 12k peak 159k, resumes 0, 7 min, units 0.80 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T04:33:01Z
 - waiting_for: none
-- result: open
+- result: WBP_Intermission rebuilt to the mockup (commit 2ef34402): Root Canvas with frame, ore band, dividers, two columns names/values, title bars, NEXT LEVEL; compiled, saved. Unverified visually, left to capture.
 
 ## Relations
 - [[task-381-level-end-screen-rebuild]] — parent global task.
