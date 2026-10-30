@@ -3,7 +3,7 @@ id: task-379-03-loading-animation-widget
 description: "Bp: WBP_Loading: looping image animation in place of the bar when progress is not measured"
 parent: task-379-new-run-loading-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu New Run: show the loading screen: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T03:10:28Z
 - waiting_for: none
 - result: open
 
