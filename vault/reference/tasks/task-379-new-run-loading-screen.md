@@ -3,7 +3,7 @@ id: task-379-new-run-loading-screen
 description: "Global task: Main menu New Run shows the loading screen until level 1 is ready; an animated image replaces the unmeasured progress bar."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Main menu New Run: show the loading screen
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-379-03-loading-animation-widget
 - started: 2026-10-30T03:09:42Z
-- waiting_for: none
+- waiting_for: owner: stop orphan UnrealEditor-Cmd PIDs 53632 and 49888 (lock WBP_Loading.uasset, save fails); edits are unsaved in the open editor
 - result: open
 
 ## Questions

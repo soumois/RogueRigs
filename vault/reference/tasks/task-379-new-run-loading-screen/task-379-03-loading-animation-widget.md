@@ -3,7 +3,7 @@ id: task-379-03-loading-animation-widget
 description: "Bp: WBP_Loading: looping image animation in place of the bar when progress is not measured"
 parent: task-379-new-run-loading-screen
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Main menu New Run: show the loading screen: bp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-30T03:10:28Z
-- waiting_for: none
+- waiting_for: owner: stop orphan UnrealEditor-Cmd PIDs 53632 and 49888 (lock WBP_Loading.uasset, save fails); edits are unsaved in the open editor
 - result: open
 
 ## Relations
