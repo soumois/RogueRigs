@@ -3,7 +3,7 @@ id: task-390-01-return-to-menu-code
 description: "Cpp: BlueprintCallable return to the main menu: run reset then L_MainMenu, menu map setting, debug command"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: in-progress
+status: done
 ---
 # Run won: back to the main menu: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build passes with the editor closed; a -game run reaching the level 4 run-won screen (rr.Run.NextLevel x4, rr.Run.Stats.Next) then the debug command logs the run reset (secured ore 0), LoadMap of L_MainMenu and `main menu shown`; rr.Menu.NewRun from there logs level 1/4; uncommitted Config changes untouched; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 69464, cache read 755917, output 11023
+- usage: turns 16, context start 12k peak 75k, resumes 0, 6 min, units 0.22 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T21:14:50Z
 - waiting_for: none
-- result: open
+- result: URRRunFlowSubsystem::ReturnToMainMenu (BlueprintCallable, bool) resets the run then OpenLevel of URRRunSettings::MainMenuMapName; rr.Run.MainMenu debug command; build ok, -game verified; commit 75dcf06b
 
 ## Relations
 - [[task-390-run-won-back-to-main-menu]] — parent global task.

@@ -3,7 +3,7 @@ id: task-390-02-end-screen-menu-button
 description: "Bp: WBP_AlertObjectives: run-won end screen button "Main Menu" calls the return-to-menu entry"
 parent: task-390-run-won-back-to-main-menu
 kind: task
-status: todo
+status: in-progress
 ---
 # Run won: back to the main menu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:20:45Z
 - waiting_for: none
 - result: open
 
