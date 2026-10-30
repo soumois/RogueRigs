@@ -3,7 +3,7 @@ id: task-386-24-capture-sample-test
 description: "Capture: real run with the blend space samples all set to one clip, side camera if available"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: cancelled
 ---
 # Miner animated with the owner Mixamo clips: capture of the sample test
 

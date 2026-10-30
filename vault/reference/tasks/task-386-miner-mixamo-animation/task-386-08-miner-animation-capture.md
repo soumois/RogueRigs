@@ -3,7 +3,7 @@ id: task-386-08-miner-animation-capture
 description: "Capture: -game capture of the animated miner against the checklist C1 to C7"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner animated with the owner Mixamo clips: capture
 

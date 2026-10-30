@@ -3,7 +3,7 @@ id: task-386-09-doc-miner-animation
 description: "Doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner animated with the owner Mixamo clips: doc
 

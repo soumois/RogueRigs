@@ -1,9 +1,9 @@
 ---
 id: task-386-miner-mixamo-animation
 description: "Global task: Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: cancelled
 ---
 # Miner animated with the owner Mixamo clips
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[miner]] (spec approved: moves freely, aims with mouse or right stick; asset line: Meshy auto-rig delivered, animation route, Unreal import and triangle budget open), [[sys-player]] (`bUseControllerRotationYaw` and `bOrientRotationToMovement` off: the pawn yaw follows only the aim, so moving away from or sideways to the aim needs backward and strafe clips: the nine clips fit the game; MaxWalkSpeed 600 uu/s = 6 m/s from MoveSpeed, changed by upgrades: faster than every clip, Q4), [[sys-player-input-aim]] (stick input is analog, so speeds under the maximum happen and use the walk clips), [[bp-miner]] (SKM_Quinn_Simple with ABP_Unarmed_C, location (0, 0, -95), yaw -90, capsule half height 88 radius 34; weapons attached to the capsule at WeaponAttachOffset (0, 20, -40), WeaponAttachSocketName None since task-008-03), [[bp-burst-rifle]] (placeholder cube, Muzzle at +40 X; on `hand_r` the muzzle pointed up and shots flew over rock: why the weapon stays on the capsule, Q6), [[art-prompts-miner]] (rigged mesh measures: 25,744 tris, 66 bones, root `mixamorig:Hips`, no clip, textures texture_0 and normal 2048), [[asset-pipeline]] (no miner triangle budget; stale line "miner auto-rig, Tripo, deferred": corrected in the edits; Blender FBX export with FBX_SCALE_UNITS), [[cpp-bp-split]] (logic in C++: speed, direction and play rate are computed in a C++ anim instance, ABP_Miner only wires its graph), [[unreal-mcp-quirks]] (MCP import of FBX gave a 100x scale; editor Python FbxImportUI + AssetImportTask worked; no skeletal or animation import done before in this project: first time, risk noted in steps 03 to 06). Conflicts: none. Open values the work needs: triangle budget (Q5), in-place method (Q2), clip mapping (Q3), speed mismatch (Q4), weapon hand socket (Q6, default: stays open). Decided by the owner words: animation route = Mixamo clips on the miner skeleton, in place, new ABP_Miner, movement from gameplay (edit in miner.md). Not in scope: weapon in the hands, death or hit clips, deleting the Quinn template assets, new tests. Untrusted downloads: copied and read only with the path as argument. Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
-- next_step: task-386-24-capture-sample-test
+- next_step: none
 - started: 2026-10-30T17:09:39Z
 - waiting_for: none
-- result: open
+- result: Closed by the owner 2026-10-30 (accumulated context judged to prevent a correct result; to be redone in a fresh task). State: Meshy SK_Miner, SKEL_Miner, nine in-place A_Miner clips, URRMinerAnimInstance (MoveX/MoveY, rr.Debug.MinerAnim, rr.Debug.MinerAnimForce), ABP_Miner (Idle/Run state machine, 4-sample BS_Miner_Locomotion) and BP_Miner on SK_Miner exist and are committed. Seen on screen: idle rifle pose, run forward. Open defect: with the 4-sample blend space the arms are in T-pose while the legs run (RunBwd, RunLeft), cause not found; FBX clips checked fine, forced values inconclusive. Doc step 09 not done. BS_Miner_Locomotion.uasset has an uncommitted change.
 
 ## Questions
 Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -53,7 +53,7 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 23. task-386-08-miner-animation-capture (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-08-miner-animation-capture.md) — capture: final -game capture of the animated miner against the checklist C1 to C7
 24. task-386-09-doc-miner-animation (vault/reference/tasks/task-386-miner-mixamo-animation/task-386-09-doc-miner-animation.md) — doc: update bp-miner and sys-player-classes, create bp-abp-miner for ABP_Miner, BS_Miner_Locomotion and the imported miner assets
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-386-01-miner-clips-in-place]] — step 1, 3d.
 - [[task-386-02-miner-anim-instance]] — step 2, cpp.
 - [[task-386-03-miner-skeletal-import]] — step 3, bp.

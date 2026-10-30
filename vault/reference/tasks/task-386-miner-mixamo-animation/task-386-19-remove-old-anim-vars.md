@@ -3,7 +3,7 @@ id: task-386-19-remove-old-anim-vars
 description: "Cpp: remove Direction, BlendSpeed and RunSpeed tunables of URRMinerAnimInstance that nothing uses"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner animated with the owner Mixamo clips: cleanup of Direction and BlendSpeed
 
