@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "run_id": "20261010-103303-barks",
+ "run_id": "20261030-221500-barks",
  "items": [
   {
    "line_id": "rook_level_up_01",
@@ -182,7 +182,7 @@
    "speaker_id": "rook",
    "trigger": "shuttle_landed",
    "tone": "cocky",
-   "text": "Taxi is here. Tip is the ore."
+   "text": "Taxi is here. Tip is the Duskite."
   },
   {
    "line_id": "vesna_shuttle_landed_01",
