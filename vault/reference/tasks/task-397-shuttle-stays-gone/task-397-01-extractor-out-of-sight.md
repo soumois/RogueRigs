@@ -3,7 +3,7 @@ id: task-397-01-extractor-out-of-sight
 description: "Cpp: find which extractor shows at its start spot during the intermission and keep it out of sight until the next level"
 parent: task-397-shuttle-stays-gone
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor stays gone after its takeoff: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build passes with the editor closed; the -game log of the sequence shows, after the fix, no visible extractor between the takeoff removal and the next level start (stats and cards screens), and the arrival extractor placed and taking off at the next level start; uncommitted Config changes untouched; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 82, cache write 111320, cache read 3117239, output 25116
+- usage: turns 41, context start 12k peak 117k, resumes 0, 13 min, units 0.58 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:24:41Z
 - waiting_for: none
-- result: open
+- result: Owner saw the next level arrival extractor (placed by PlacingMiner during the cards screen at the level 1 start cell), not the exit shuttle (removed after 3.6 s). Fix: SetArrivalShuttleHidden, hidden after placement, shown under black at StartPreparedLevel; log verified before/after; build ok; commit 6de46eec
 
 ## Relations
 - [[task-397-shuttle-stays-gone]] — parent global task.

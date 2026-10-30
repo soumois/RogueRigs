@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[extraction]] (provisional, task 369-377: the extractor takes off behind the end screen until it leaves the camera view): the owner rule "never comes back" written there 2026-10-30, no conflict. [[level-flow]] (arrival: the miner starts next to the extractor, which takes off when the fade in ends): kept. [[intermission]]: stats screen over the paused level, cards screen opaque black (but see task-398 Q12). Tech read: [[sys-objectives-shuttle]] (StartTakeoff, tick when paused, removal once out of view, TakeoffMaxSeconds 12), [[sys-objectives-run-flow]] (PlaceArrivalShuttle, ArrivalShuttle), [[sys-run-transition-preload]] (ClearingLevel destroys the shuttle; PlacingMiner), [[bp-extraction-shuttle]]. Open values: none. Scope M2. Repo state 2026-10-30: task-391-04 (cpp, editor closed) is running; this task runs after it. Config/DefaultGame.ini and Config/DefaultEditor.ini hold uncommitted owner changes: never commit them (commit by path). No packaged build (owner). No capture subtask (owner tests himself).
 - confirmed_by_owner: yes (2026-10-30, owner request relayed by the main session; no open value)
 - milestone: M2
-- next_step: task-397-01-extractor-out-of-sight
+- next_step: task-397-02-doc-extractor-out-of-sight
 - started: 2026-10-30T22:24:40Z
 - waiting_for: none
 - result: open

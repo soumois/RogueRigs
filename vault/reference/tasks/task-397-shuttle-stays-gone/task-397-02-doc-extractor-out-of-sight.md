@@ -3,7 +3,7 @@ id: task-397-02-doc-extractor-out-of-sight
 description: "Doc: update the shuttle, run flow and preload docs with the out-of-sight rule"
 parent: task-397-shuttle-stays-gone
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor stays gone after its takeoff: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:37:53Z
 - waiting_for: none
 - result: open
 
