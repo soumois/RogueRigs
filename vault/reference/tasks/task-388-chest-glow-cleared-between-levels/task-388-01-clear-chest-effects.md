@@ -3,7 +3,7 @@ id: task-388-01-clear-chest-effects
 description: "Cpp: find what of the opened chest survives the level change and remove it at the ClearingLevel step"
 parent: task-388-chest-glow-cleared-between-levels
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest glow removed between levels: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T20:43:17Z
 - waiting_for: none
 - result: open
 

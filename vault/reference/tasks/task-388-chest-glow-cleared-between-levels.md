@@ -3,7 +3,7 @@ id: task-388-chest-glow-cleared-between-levels
 description: "Global task: Nothing of an opened bonus chest (interior glow, opening rays and sparks, lid slam ring) stays visible in the next level of the run."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bonus chest glow removed between levels
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
 - next_step: task-388-01-clear-chest-effects
-- started: open
+- started: 2026-10-30T20:43:17Z
 - waiting_for: none
 - result: open
 
