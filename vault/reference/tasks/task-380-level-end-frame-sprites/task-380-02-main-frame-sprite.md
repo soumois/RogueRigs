@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-10-30T01:41:00Z
 - waiting_for: none
-- result: Owner retained candidate 2 as is (12 credits, run 20261029-173616); T_LevelEnd_Frame.png 942x458 cropped, margins L/R 90 px (0.0955), T/B 86 px (0.1878); Sprites section written; commit d4a62495. Rivets on edges accepted by owner; style-guide fails: 9-slice rivets (accepted), A6/A7 reminders. Runs 3 = generate, review, close-out.
+- result: Owner retained candidate 2 as is (12 credits, run 20261029-173616); T_LevelEnd_Frame.png 942x458 cropped, margins L/R 90 px (0.0955), T/B 86 px (0.1878); Sprites section written; commit d4a62495. Rivets on edges accepted by owner. ALERT causes: units 0.25 M over 0.15 M ceiling because the subtask ran as three agent calls (generate, style review, owner-pick close-out) with context re-read each time; 'resumed' counts the close-out after the owner wait.
 
 ## Relations
 - [[task-380-level-end-frame-sprites]] — parent global task.
