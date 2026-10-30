@@ -3,7 +3,7 @@ id: task-402-01-map-path-repair
 description: "Cpp: capture.js and Run-StressTest.ps1 repair a /Game map path rewritten by Git Bash (MSYS), one launch check"
 parent: task-402-capture-map-path-msys
 kind: task
-status: todo
+status: in-progress
 ---
 # Game launches: /Game map path rewritten by Git Bash: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T23:50:36Z
 - waiting_for: none
 - result: open
 

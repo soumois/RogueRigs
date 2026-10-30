@@ -3,7 +3,7 @@ id: task-402-capture-map-path-msys
 description: "Global task: Fix the -game launch helpers so a /Game/... map path given from Git Bash reaches Unreal intact; capture.js, Run-StressTest.ps1, agent docs."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Game launches: /Game map path rewritten by Git Bash
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-402-01-map-path-repair
-- started: open
+- started: 2026-10-30T23:50:36Z
 - waiting_for: none
 - result: open
 
