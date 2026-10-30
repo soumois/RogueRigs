@@ -3,7 +3,7 @@ id: task-399-03-doc-total-duskite-row
 description: "Doc: update the wbp-intermission doc: ore band layout after the fix"
 parent: task-399-total-duskite-number-overlap
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen: Total Duskite number overlaps its label: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T23:42:38Z
 - waiting_for: none
 - result: open
 

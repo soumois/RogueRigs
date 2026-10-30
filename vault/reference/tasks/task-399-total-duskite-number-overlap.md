@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[intermission]] (provisional): the top band holds the single Total Duskite line beside the ore icon, label and a larger number as the mockup (task-383 Q2, Q3): the request matches it, no conflict, no gdd edit. Rules versus rendering: layout fix only, no rule or text change. Tech read: [[wbp-intermission]] (OreIcon (0.40,0.31) 88 x 88, OreLabel (0.43,0.31) align (0,0.5) auto, OreValue (0.525,0.31) align (0,0.5) auto, task-383-02), [[umg-layout]] (rule: Canvas and anchors, no HorizontalBox to centre elements on a text line; the Q1 default is an exception the owner decides, the rule node is not edited). Open values: the fix method (Q1) and the capture (Q2). Scope M2. Repo state 2026-10-30: Config/DefaultGame.ini, Config/DefaultEditor.ini and vault/.obsidian/community-plugins.json have uncommitted owner changes: leave them untouched, commit by path.
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-399-02-total-duskite-capture
+- next_step: task-399-03-doc-total-duskite-row
 - started: 2026-10-30T23:32:52Z
 - waiting_for: none
 - result: open
