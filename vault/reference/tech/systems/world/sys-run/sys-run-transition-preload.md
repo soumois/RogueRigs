@@ -16,6 +16,7 @@ kind: doc
   4. PlacingMiner: miner (and drone) teleported to the game mode's player start, flow field recomputed.
   5. Ready: `OnNextLevelReady(LevelIndex, LayoutName)`; the controller replaces the HUD by a fresh one (collapsed until `OnLevelReady`).
   - `Continue`: shop closed, phase Loading, stage PreparingLevel; ready: fade out then `StartPreparedLevel`; else `OnLoadingStarted` and `StartPreparedLevel` when the preparation ends; fade in after it (task-318-02, [[sys-run-transition-fade]]). `StartPreparedLevel`: snapshot consumed in place (log line compares miner and snapshot values), run log level start, level-up choices allowed again, unpause, game input, phase None, `OnLevelReady`.
+  - Arrival extractor out of sight (task-397-01, 6de46eec): the arrival extractor placed by `PlaceMinerAtStart` (step 4) is hidden at once (`URRRunFlowSubsystem::SetArrivalShuttleHidden`), because the paused level is still drawn behind the cards and upgrade screens; `StartPreparedLevel` shows it under black right before `OnLevelReady` and the fade in, so its takeoff starts visible only when the fade in finishes. Cause, log lines and verification: [[sys-objectives-run-flow]]. Map-travel fallback untouched.
   - Pure (Blueprint): `IsNextLevelReady()`, `GetNextLevelProgress()` (0-1: completed work steps / 4), `GetNextLevelPrepStep()`.
 - data: none.
 - depends_on: [[sys-run-layout]], [[sys-grid]], [[sys-objectives-run-flow]], [[sys-spawner-pool-prewarm]], [[sys-hud-bindings]], [[sys-run-log]].
@@ -37,3 +38,4 @@ kind: doc
 - [[task-389-robot-particles-cleared-between-levels]] — the task that added the robot death effects clear.
 - [[sys-enemies]] — the death effects and the shield chaser tracking.
 - [[sys-run-transition-fade]] — what Continue shows depending on the readiness.
+- [[task-397-shuttle-stays-gone]] — the task that hid the arrival extractor during the preload.
