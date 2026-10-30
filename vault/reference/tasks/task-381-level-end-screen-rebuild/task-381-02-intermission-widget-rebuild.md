@@ -3,7 +3,7 @@ id: task-381-02-intermission-widget-rebuild
 description: "Bp: rebuild WBP_Intermission to the ChatGPT level-end mockup with the LevelEnd and Spare Parts sprites, Root Canvas and anchors."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-end screen rebuild: WBP_Intermission
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T04:33:01Z
 - waiting_for: none
 - result: open
 

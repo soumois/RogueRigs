@@ -3,7 +3,7 @@ id: task-381-01-level-end-sprites-import
 description: "Bp: import the three level-end sprites from Art/UI/LevelEnd as UI textures in /Game/RogueRigs/UI/LevelEnd."
 parent: task-381-level-end-screen-rebuild
 kind: task
-status: in-progress
+status: done
 ---
 # Level-end screen rebuild: import the sprites
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the three textures exist in /Game/RogueRigs/UI/LevelEnd/, settings read back on each, sizes 942 x 458, 984 x 62 and 58 x 984; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 25673, cache read 129269, output 5189
+- usage: turns 8, context start 12k peak 26k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T04:32:03Z
 - waiting_for: none
-- result: open
+- result: Three textures imported in /Game/RogueRigs/UI/LevelEnd (commit 3a46713a): UI group, NoMipmaps, sRGB, TC_EditorIcon, NeverStream; sizes 942x458, 984x62, 58x984 read back.
 
 ## Relations
 - [[task-381-level-end-screen-rebuild]] — parent global task.
