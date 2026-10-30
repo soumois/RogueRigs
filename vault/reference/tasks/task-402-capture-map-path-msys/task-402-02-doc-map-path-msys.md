@@ -3,7 +3,7 @@ id: task-402-02-doc-map-path-msys
 description: "Doc: tool-capture, sys-stress, agent-capture, orchestrator-script-quirks and .claude/agents/capture.md state the repair and the MSYS_NO_PATHCONV=1 rule"
 parent: task-402-capture-map-path-msys
 kind: task
-status: todo
+status: in-progress
 ---
 # Game launches: /Game map path rewritten by Git Bash: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T23:52:58Z
 - waiting_for: none
 - result: open
 

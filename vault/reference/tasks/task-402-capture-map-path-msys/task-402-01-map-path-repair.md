@@ -3,7 +3,7 @@ id: task-402-01-map-path-repair
 description: "Cpp: capture.js and Run-StressTest.ps1 repair a /Game map path rewritten by Git Bash (MSYS), one launch check"
 parent: task-402-capture-map-path-msys
 kind: task
-status: in-progress
+status: done
 ---
 # Game launches: /Game map path rewritten by Git Bash: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: From Git Bash, `node Tools/capture/capture.js --name T402-msys --map /Game/RogueRigs/Maps/L_ArenaM1 --exec "rr.Debug.Delayed 4 rr.Debug.Shots 1,rr.Debug.Delayed 8 Quit" --expect 1` exits 0, prints `map: repaired MSYS path -> /Game/RogueRigs/Maps/L_ArenaM1`, and `Saved/Captures/T402-msys/run.log` has a `LogInit: Command Line:` line starting with `/Game/RogueRigs/Maps/L_ArenaM1` and no "could not be found" line (one launch only); the same command with `--map none` and without `--map` still behaves as before (no launch needed: no repair line printed for the default); Run-StressTest.ps1 repair checked on the string `C:/Program Files/Git/Game/RogueRigs/Maps/L_ArenaM1` without launching the game; committed by path.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 24, cache write 38130, cache read 332760, output 9621
+- usage: turns 12, context start 12k peak 38k, resumes 0, 2 min, units 0.13 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T23:50:36Z
 - waiting_for: none
-- result: open
+- result: Done, commit 7fe5d356: capture.js (--map and --exec) and Run-StressTest.ps1 (-Map) repair MSYS-rewritten /Game paths; T402-msys launch Command Line starts with /Game/RogueRigs/Maps/L_ArenaM1, no could-not-be-found; PS repair checked on string without launch.
 
 ## Relations
 - [[task-402-capture-map-path-msys]] — parent global task.

@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Tooling only, no gdd node touched; no conflict, no `open` value needed, inside M2. Findings (planner 2026-10-30): (1) the rewrite happens in the shell before node starts: capture.js default map (`/Game/RogueRigs/Maps/L_ArenaM1`, line 151) is passed by `child_process.spawn` and is never rewritten; only an explicit `--map /Game/...` typed in Git Bash is. Evidence: Saved/Captures/T399-1280x720, T399-1920x1080, T399-1920x1200, T399-2560x1080 run.log `LogInit: Command Line: "C:/Program Files/Git/Game/RogueRigs/Maps/L_ArenaM1"`; T399-all (no --map) has `/Game/RogueRigs/Maps/L_ArenaM1`. (2) Same defect outside capture.js: Saved/Logs/task388_explore-backup-2026.10.30-20.53.39.log, a raw UnrealEditor.exe launch from Bash, loaded `C:/Program Files/Git/Game/RogueRigs/Maps/L_MainMenu`. (3) Other launchers: Scripts/Run-StressTest.ps1 has `-Map` (default `/Game/RogueRigs/Maps/L_ArenaM1`), rewritten when given from Bash through `powershell -File`; Tools/capture/robot_shots.ps1 hard-codes `$Map` inside PowerShell, not affected. (4) agent-capture `visual_check` still documents a raw `UnrealEditor.exe <uproject> <map> -game` launch; orchestrator-script-quirks Shells has no MSYS entry. (5) `--exec` strings with `/Game/...` class paths after a space are not rewritten by MSYS (the argument does not start with `/`).
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-402-01-map-path-repair
+- next_step: task-402-02-doc-map-path-msys
 - started: 2026-10-30T23:50:36Z
 - waiting_for: none
 - result: open
