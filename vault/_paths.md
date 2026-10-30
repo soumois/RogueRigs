@@ -147,6 +147,7 @@ bp-turret  reference/tech/blueprints/player/bp-turret.md
 bp-turret-materials  reference/tech/blueprints/player/bp-turret-materials.md
 build-toolchain  reference/tech/pipelines/build-toolchain.md
 burst-rifle  reference/gdd/weapons/burst-rifle.md
+burst-rifle-mesh  reference/gdd/art-audio/burst-rifle-mesh.md
 chaser-meshy-pipeline  reference/tech/pipelines/chaser-meshy-pipeline.md
 chaser-model-pipeline  reference/tech/pipelines/chaser-model-pipeline.md
 cloud-session-git  reference/agents/cloud-session-git.md

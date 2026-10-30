@@ -55,6 +55,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-console]] — console C2 uplink mast: turnaround prompt, owner words, mesh decisions, Meshy files.
 - [[art-prompts-turret]] — turret Meshy meshes: optimised and unoptimised zips, counts, files.
 - [[art-prompts-extractor]] — extractor (shuttle) Meshy mesh: owner words, files, measures, 50,000 triangle budget.
+- [[burst-rifle-mesh]] — burst rifle Meshy mesh (Aqua Wasteland Carbine): owner words, files, measures, budget.
 - [[art-prompts-heal-pickup]] — heal pickup crystal variants: Kie.ai prompt, 3-up sheet, self-review.
 - [[art-prompts-main-menu-background]] — main menu background: Kie.ai prompt, 3 variants, self-review.
 - [[art-prompts-shop-screen]] — ChatGPT text prompt for design and game-feel proposals of the shop screen, with screenshot.

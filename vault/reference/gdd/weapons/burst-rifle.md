@@ -29,3 +29,4 @@ Final English name: open (one name for tag, asset and this node; "burst rifle" i
 ## Relations
 - [[weapons-index]] — parent index.
 - [[sys-weapons]] — how it is built.
+- [[burst-rifle-mesh]] — the Meshy mesh of this weapon: files, measures.

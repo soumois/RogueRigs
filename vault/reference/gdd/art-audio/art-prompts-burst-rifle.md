@@ -36,4 +36,5 @@ Background and light: plain white background, even neutral lighting, no shadows,
 - [[art-prompts-rigs]] — source prompt of rigs-lineup.jpg, where the rifle first appears.
 - [[art-prompts-console]] — four-view turnaround model.
 - [[burst-rifle]] — the weapon spec.
+- [[burst-rifle-mesh]] — the owner Meshy mesh: source files, measures, budget.
 - [[art-3d-lessons]] — Meshy multi-view rule behind the four views.
