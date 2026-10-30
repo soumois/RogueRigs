@@ -3,7 +3,7 @@ id: task-392-03-end-screen-duskite-label
 description: "Bp: WBP_AlertObjectives: run-won ore label "Duskite secured: "; check the other UI assets for a visible "Ore""
 parent: task-392-duskite-on-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # On-screen ore word: Duskite: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:59:57Z
 - waiting_for: none
 - result: open
 

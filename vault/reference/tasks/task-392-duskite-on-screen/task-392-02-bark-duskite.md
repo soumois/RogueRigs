@@ -3,7 +3,7 @@ id: task-392-02-bark-duskite
 description: "Text: barks.json: "Tip is the ore." becomes "Tip is the Duskite.""
 parent: task-392-duskite-on-screen
 kind: task
-status: in-progress
+status: done
 ---
 # On-screen ore word: Duskite: text
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The bark reads "Taxi is here. Tip is the Duskite.", nothing else changed, validator passes; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 21706, cache read 180106, output 4210
+- usage: turns 10, context start 11k peak 26k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T21:59:06Z
 - waiting_for: none
-- result: open
+- result: barks.json rook_shuttle_landed_01 now Tip is the Duskite., validator passes, commit 874624a0
 
 ## Relations
 - [[task-392-duskite-on-screen]] — parent global task.
