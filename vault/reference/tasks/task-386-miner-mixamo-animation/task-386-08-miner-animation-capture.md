@@ -3,7 +3,7 @@ id: task-386-08-miner-animation-capture
 description: "Capture: -game capture of the animated miner against the checklist C1 to C7"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:54:55Z
 - waiting_for: none
 - result: open
 

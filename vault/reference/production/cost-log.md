@@ -873,17 +873,18 @@ kind: note
 | [[task-386-04-miner-clips-import]] | sonnet | 1 | 0k | 41k | 396k | 5k | 0.12 | 13 | 0 |
 | [[task-386-05-miner-locomotion-blendspace]] | sonnet | 1 | 0k | 48k | 801k | 9k | 0.18 | 22 | 0 |
 | [[task-386-06-abp-miner]] | sonnet | 1 | 0k | 70k | 1654k | 16k | 0.33 | 35 | 0 |
+| [[task-386-07-bp-miner-mesh-swap]] | sonnet | 1 | 0k | 65k | 909k | 10k | 0.22 | 21 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 350.32 | 0k | 81.92 M | 1738.75 M | 14826k |
+| All subtask rows above | 350.54 | 0k | 81.98 M | 1739.66 M | 14836k |
 | model mixed | 7.73 | 0k | 2.78 M | 22.87 M | 393k |
 | model opus | 192.08 | 0k | 42.76 M | 966.70 M | 8398k |
-| model sonnet | 150.51 | 0k | 36.38 M | 749.17 M | 6035k |
-| Executors and legacy orchestrators that ran a task (pilot) | 20.34 | 3k | 9.35 M | 54.27 M | 645k |
+| model sonnet | 150.73 | 0k | 36.44 M | 750.08 M | 6045k |
+| Executors and legacy orchestrators that ran a task (pilot) | 20.37 | 3k | 9.35 M | 54.40 M | 646k |
 | Planning runs (planners and legacy planning passes) | 23.46 | 2k | 7.34 M | 84.55 M | 1166k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 61.12 | 5k | 9.79 M | 413.32 M | 1508k |
