@@ -3,7 +3,7 @@ id: task-387-01-prompt-and-refs
 description: "Art: crop the rifle from rigs-lineup.jpg, write the burst rifle turnaround prompt and the node art-prompts-burst-rifle; no generation"
 parent: task-387-burst-rifle-ref-prompt
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle turnaround prompt and reference images: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T18:43:23Z
 - waiting_for: none
 - result: open
 

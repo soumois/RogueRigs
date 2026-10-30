@@ -3,7 +3,7 @@ id: task-387-burst-rifle-ref-prompt
 description: "Global task: Write the ChatGPT turnaround prompt of the burst rifle (default weapon held by the miner) and prepare its reference images, as the source for Meshy."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle turnaround prompt and reference images for Meshy
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-387-01-prompt-and-refs
-- started: open
+- started: 2026-10-30T18:43:23Z
 - waiting_for: none
 - result: open
 
