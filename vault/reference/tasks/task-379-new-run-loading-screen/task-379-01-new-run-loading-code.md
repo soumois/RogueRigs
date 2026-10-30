@@ -3,7 +3,7 @@ id: task-379-01-new-run-loading-code
 description: "Cpp: New Run goes through the transition Loading phase (loading screen in the menu world, hold in the arena, fade in); loading widget tells Blueprint whether progress is measured"
 parent: task-379-new-run-loading-screen
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu New Run: show the loading screen: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build succeeds; a -game -nullrhi run with no map argument and -ExecCmds=rr.Menu.NewRun logs, in this order: main menu shown, run reset, loading started for level 1 in the menu world (progress not measured), the travel waiting for the paint or the no-paint fallback, opening L_ArenaM1, run started level 1/4 on arena_m1_fine, the arena hold (PreparingLevel, spawning held), level ready, HUD restored; a -game -nullrhi run directly on L_ArenaM1 starts level 1 with no loading phase; rr.Run.NextLevel from level 1 still gives the existing transition and logs whether its progress is measured; RogueRigs.* automation tests that cover the run, transition and menu pass.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 64, cache write 139240, cache read 2938811, output 35525
+- usage: turns 32, context start 12k peak 139k, resumes 0, 13 min, units 0.65 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T01:34:27Z
 - waiting_for: none
-- result: open
+- result: Commit e8d430c2. StartNewRun entry point on URRRunTransitionSubsystem, IsLoadingProgressMeasured (subsystem and widget), menu game mode LoadingScreenWidgetClass, menu controller shows it, arena re-show. Build ok; done_when runs logged as expected (menu-world paint not exercised: class unset until 02). Tests 36/38; 2 failures (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop) unrelated, not checked on prior commit.
 
 ## Relations
 - [[task-379-new-run-loading-screen]] — parent global task.
