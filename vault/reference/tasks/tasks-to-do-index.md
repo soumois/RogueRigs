@@ -12,4 +12,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-384-level-end-subtitle-lines]] — Stats screen: the thin lines beside the subtitle no longer cross the long level 4 subtitle. Status todo.
-- [[task-386-miner-mixamo-animation]] — Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner. Status wait-answers.
+- [[task-386-miner-mixamo-animation]] — Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner. Status in-progress.
