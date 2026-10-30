@@ -34,7 +34,7 @@ Owner words (2026-10-30, French): "Le personnage riggé".
 - Skeleton: armature `SmartRigArmature`, 66 bones, single root `mixamorig:Hips` (Mixamo names, five fingers per hand with four bones each, legs to `Toe_End`, plus a `headfront` bone). Skin: 52 vertex groups, 0 vertices without weight, 4 influences at most, one Armature modifier.
 - Animation: no action in the file (rig only, no clip).
 - Turnaround sheet: not in the repo (owner Q3 default, 2026-10-30), to save when the owner sends it.
-- Open: triangle budget of the miner (none in [[asset-pipeline]], decided with the import task); animation route (no clips: Quinn retarget, Mixamo or Meshy clips, or hand-made); Unreal import and replacing the Quinn mannequin on BP_Miner; weapon held and its hand socket.
+- Decided 2026-10-30 (owner, task-386): triangle budget 25,744 as delivered (provisional); animation route Mixamo clips in place with a new ABP_Miner; Unreal import and replacement of the Quinn mannequin on BP_Miner in task-386. Open: weapon held and its hand socket.
 
 ## Relations
 - [[art-prompts]] — parent: method and locked phrases.
