@@ -37,8 +37,11 @@ const FILES = {
   alerts: { keys: ['line_id', 'event', 'register', 'text'], idKey: 'line_id', textKey: 'text', min: 3, max: 12 },
   // Screen texts (end, intermission, loading screens): one item per screen, several text slots. textKey is the slot the log
   // output traces; min/max bound a review suggestion (any slot); fields hold the per-slot limits.
+  // lines.caption: a lines entry whose trimmed text ends with ":" is a caption (label followed by a value shown beside it)
+  // and takes the labels limit, 1 to 4 words (owner 2026-10-30, task-385); every other line keeps 3 to 12.
   screen_texts: { keys: ['id', 'title'], optional: ['subtitle', 'lines', 'labels'], idKey: 'id', textKey: 'title', min: 1, max: 12,
-    fields: { title: { min: 1, max: 4 }, subtitle: { min: 3, max: 12 }, lines: { min: 3, max: 12, array: true }, labels: { min: 1, max: 4, array: true } } },
+    fields: { title: { min: 1, max: 4 }, subtitle: { min: 3, max: 12 }, lines: { min: 3, max: 12, array: true, caption: { min: 1, max: 4 } },
+      labels: { min: 1, max: 4, array: true } } },
 };
 const SCREEN_ID_RE = /^[a-z][a-z0-9]*(_[a-z0-9]+)+$/;
 const SPEAKERS = new Set(['rook', 'vesna']);
@@ -189,7 +192,8 @@ function main() {
         if (!(k in it)) continue;
         if (!lim.array) { itemTexts.push([k, it[k], lim]); continue; }
         if (!Array.isArray(it[k]) || it[k].length === 0) { err(id, 'type', `${k} must be a non-empty array of strings, got ${typeOf(it[k])}`); continue; }
-        it[k].forEach((v, j) => itemTexts.push([`${k}[${j}]`, v, lim]));
+        // A caption entry (trimmed text ending with ":") takes the slot's caption limit when it has one.
+        it[k].forEach((v, j) => itemTexts.push([`${k}[${j}]`, v, lim.caption && typeof v === 'string' && v.trim().endsWith(':') ? lim.caption : lim]));
       }
     } else itemTexts.push([spec.textKey, it[spec.textKey], spec]);
     for (const [field, value, lim] of itemTexts) {
