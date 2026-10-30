@@ -18,7 +18,7 @@ status: approved
 - Healing: only from heal pickups dropped by heal ore ([[heal-ore]]).
 - Death ends the run ([[run-structure]]). M1 (single arena): controls cut, "Game Over" text, the level restarts after 3 s (owner 2026-10-02).
 - Look: plate armor, white + teal + rust, patched salvage ([[color-code]]).
-- Asset: the owner makes the 3D mesh himself from a new turnaround sheet generated in ChatGPT (owner 2026-10-29, task-364; prompt in art-prompts-miner); rig and animation route open (earlier plan: Tripo auto-rig); reference `vault/assets/rigs-lineup.jpg`.
+- Asset: the owner makes the 3D mesh himself from a new turnaround sheet generated in ChatGPT (owner 2026-10-29, task-364; prompt in art-prompts-miner); rig: Meshy auto-rig made by the owner, Mixamo-named humanoid skeleton (`mixamorig:*`, fingers included), delivered 2026-10-30 as `Meshy_AI_Character_output.fbx` (task-382, files in art-prompts-miner); animation route, Unreal import and triangle budget open; reference `vault/assets/rigs-lineup.jpg`.
 - Milestone: M1.
 
 ## Relations
