@@ -3,7 +3,7 @@ id: task-393-02-doc-miner-material
 description: "Doc: refresh bp-miner (SK_Miner, ABP_Miner, M_Miner, MI_Miner, BaseColorScale, how to tune)"
 parent: task-393-miner-over-lit
 kind: task
-status: in-progress
+status: done
 ---
 # Miner too bright in the arena: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: bp-miner states the current mesh, material, MI_Miner, BaseColorScale value, tune and revert steps; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 32101, cache read 143363, output 3674
+- usage: turns 6, context start 11k peak 37k, resumes 0, 0 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T22:04:25Z
 - waiting_for: none
-- result: open
+- result: bp-miner refreshed (SK_Miner, MI_Miner, BaseColorScale, tune/revert), line in lights-dark-ambient; commit 57d5aa37
 
 ## Relations
 - [[task-393-miner-over-lit]] — parent global task.
