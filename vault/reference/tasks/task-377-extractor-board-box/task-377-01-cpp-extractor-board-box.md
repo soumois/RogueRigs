@@ -3,7 +3,7 @@ id: task-377-01-cpp-extractor-board-box
 description: "Cpp: BoardZone box component on ARRShuttle, miner overlap ends the level, radius removed, broken test expectations updated."
 parent: task-377-extractor-board-box
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor: adjustable box collision for the end of the level: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build succeeds; RogueRigs.Extraction, RogueRigs.RunFlow and Integration.FineConsoleShuttlePlacement pass; no reference to ShuttleBoardRadiusCells or GetBoardRadius left in Source/ (if Q1 = replace); committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 68, cache write 103908, cache read 2504074, output 27517
+- usage: turns 34, context start 12k peak 104k, resumes 0, 8 min, units 0.52 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T00:40:20Z
 - waiting_for: none
-- result: open
+- result: BoardZone UBoxComponent on ARRShuttle (1608x1608x400 uu, query-only, Pawn overlap), miner capsule overlap ends level, radius removed; build ok, Extraction/RunFlow/FineConsoleShuttlePlacement pass; commit ee1a7db8
 
 ## Relations
 - [[task-377-extractor-board-box]] — parent global task.

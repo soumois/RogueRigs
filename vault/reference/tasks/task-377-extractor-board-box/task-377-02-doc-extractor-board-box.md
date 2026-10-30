@@ -3,7 +3,7 @@ id: task-377-02-doc-extractor-board-box
 description: "Doc: update sys-objectives-shuttle, sys-objectives-run-flow, bp-extraction-shuttle, sys-tests-console-extraction and sys-tests-dig-ore."
 parent: task-377-extractor-board-box
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor: adjustable box collision for the end of the level: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T00:48:21Z
 - waiting_for: none
 - result: open
 
