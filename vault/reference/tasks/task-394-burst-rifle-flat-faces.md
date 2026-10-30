@@ -14,7 +14,7 @@ status: in-progress
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - renumbered: was task-392-burst-rifle-flat-faces, point 2 was task-393-burst-rifle-rebake (id clash with task-392-duskite-on-screen and task-393-miner-over-lit, owner-approved, 2026-10-30); commits 49ab8c99, 85dc033a and 257aa367 carry the old ids.
 - milestone: M2
-- next_step: task-394-01-burst-rifle-meshy-files
+- next_step: task-394-02-burst-rifle-flatten
 - started: 2026-10-30T20:47:56Z
 - waiting_for: none
 - result: open

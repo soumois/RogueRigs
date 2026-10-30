@@ -3,7 +3,7 @@ id: task-394-02-burst-rifle-flatten
 description: "3d: scale, orient and pivot the Meshy rifle per Q4, project its planar regions flat per Q5, export SM_BurstRifle.fbx, render before and after."
 parent: task-394-burst-rifle-flat-faces
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle mesh: save the Meshy files, flatten the faces: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T21:03:41Z
 - waiting_for: none
 - result: open
 
