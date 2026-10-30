@@ -3,7 +3,7 @@ id: task-386-03-miner-skeletal-import
 description: "Bp: import SK_Miner with SKEL_Miner, its physics asset and a material from the two Meshy textures"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: editor Python read back: SK_Miner skeleton is SKEL_Miner, bone count 66 (or 67 with an added root, stated), bounds height 170 cm +/- 2 (not 100x), LOD 0 triangles 25,744, every slot uses M_Miner; assets saved; committed by path as `task-386-03-miner-skeletal-import: <summary>`.
 - editor_state: open
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 72, cache write 80940, cache read 1834155, output 15720
+- usage: turns 36, context start 12k peak 81k, resumes 0, 2 min, units 0.36 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:41:13Z
 - waiting_for: none
-- result: open
+- result: SK_Miner, SKEL_Miner, PHYS_Miner, M_Miner and two textures imported via editor Python (MCP import gave 100x); 170 cm, 67 bones (root SmartRigArmature added, mixamorig prefix stripped), commit b35afcb7; triangles 25,744 NOT read back (no getter; 40,481 vertices); physics asset made with PhysicsAssetToolset
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.

@@ -3,7 +3,7 @@ id: task-386-04-miner-clips-import
 description: "Bp: import the nine in-place clips as AnimSequences on SKEL_Miner"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:44:51Z
 - waiting_for: none
 - result: open
 
