@@ -3,7 +3,7 @@ id: task-386-15-abp-palier3-directions
 description: "Bp: add the other clips and directions to ABP_Miner, by steps, reusing or rebuilding BS_Miner_Locomotion"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: step 3 other directions
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: ABP_Miner plays the walk and the four directions through the blend space or states, compiled without error, saved and committed by path as task-386-15-abp-palier3-directions: <summary> with its .uasset; runtime log of Direction and Speed; hanging editor commands killed and retried
 - editor_state: open
 - token_ceiling: 0.8 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 94, cache write 106326, cache read 2963333, output 23483
+- usage: turns 47, context start 12k peak 106k, resumes 0, 3 min, units 0.55 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T06:45:26Z
 - waiting_for: none
-- result: open
+- result: Run state now plays BS_Miner_Locomotion (15 samples read back valid) via Blendspace Player fed Direction, BlendSpeed, LocomotionPlayRate; state machine rebuilt by clipboard paste; compiled clean, commit 79c0c2ce; runtime unverified, left to final capture
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
