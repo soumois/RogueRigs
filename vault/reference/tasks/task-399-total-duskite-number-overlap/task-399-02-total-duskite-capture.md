@@ -3,7 +3,7 @@ id: task-399-02-total-duskite-capture
 description: "Capture: level 1 stats screen at four resolutions: number beside the label, nothing else moved"
 parent: task-399-total-duskite-number-overlap
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen: Total Duskite number overlaps its label: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T23:34:29Z
 - waiting_for: none
 - result: open
 
