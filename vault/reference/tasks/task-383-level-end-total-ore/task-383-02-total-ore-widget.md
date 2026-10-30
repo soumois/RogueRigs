@@ -3,7 +3,7 @@ id: task-383-02-total-ore-widget
 description: "Bp: WBP_Intermission shows one Total Ore line in a thinner band and moves the columns up."
 parent: task-383-level-end-total-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Stats screen Total Ore: WBP_Intermission
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:20:48Z
 - waiting_for: none
 - result: open
 

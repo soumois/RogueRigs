@@ -3,7 +3,7 @@ id: task-383-01-total-ore-text
 description: "Text: replace the two ore lines of intermission_recap in screen_texts.json by the single Total Ore label."
 parent: task-383-level-end-total-ore
 kind: task
-status: in-progress
+status: done
 ---
 # Stats screen Total Ore: text
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: the validator passes; `intermission_recap` lines hold only the Q2 label, labels unchanged (index map in `result`); committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 36, cache write 64521, cache read 283623, output 9007
+- usage: turns 18, context start 11k peak 25k, resumes 0, 1 min, units 0.15 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:19:29Z
 - waiting_for: none
-- result: open
+- result: screen_texts.json intermission_recap lines = [Total Ore:]; labels unchanged (0 Salvage Stall..14 LEGENDARY); validator passes; style-guide 5 pass 0 fail (note: Total Ore title case vs sentence case neighbours); commit a498cee2
 
 ## Relations
 - [[task-383-level-end-total-ore]] — parent global task.
