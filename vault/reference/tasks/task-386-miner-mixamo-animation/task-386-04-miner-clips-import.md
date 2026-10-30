@@ -3,7 +3,7 @@ id: task-386-04-miner-clips-import
 description: "Bp: import the nine in-place clips as AnimSequences on SKEL_Miner"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: editor Python read back: nine AnimSequences on SKEL_Miner, play length within 0.05 s of the report, root motion disabled; no extra skeleton or mesh created by the import; committed by path as `task-386-04-miner-clips-import: <summary>`.
 - editor_state: open
 - token_ceiling: 0.5 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 26, cache write 41282, cache read 395826, output 5457
+- usage: turns 13, context start 12k peak 46k, resumes 0, 1 min, units 0.12 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T05:44:51Z
 - waiting_for: none
-- result: open
+- result: Nine A_Miner_* AnimSequences on SKEL_Miner via editor Python; lengths match report exactly; root motion off, loop on; no extra assets; commit 31bfbde6; not previewed visually, track counts not read
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.

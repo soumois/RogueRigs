@@ -3,7 +3,7 @@ id: task-386-05-miner-locomotion-blendspace
 description: "Bp: BS_Miner_Locomotion: 2D blend space, direction and speed, nine clips at their measured positions"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:45:55Z
 - waiting_for: none
 - result: open
 
