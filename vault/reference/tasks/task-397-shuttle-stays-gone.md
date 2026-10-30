@@ -3,7 +3,7 @@ id: task-397-shuttle-stays-gone
 description: "Global task: After the end-of-level takeoff, the extractor never shows again at its start spot behind the stats, shop or upgrade screens."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor stays gone after its takeoff
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, owner request relayed by the main session; no open value)
 - milestone: M2
 - next_step: task-397-01-extractor-out-of-sight
-- started: open
+- started: 2026-10-30T22:24:40Z
 - waiting_for: none
 - result: open
 

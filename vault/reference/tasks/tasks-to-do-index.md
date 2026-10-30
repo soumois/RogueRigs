@@ -11,5 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-397-shuttle-stays-gone]] — After the end-of-level takeoff, the extractor never shows again at its start spot behind the stats, shop or upgrade screens. Status todo.
+- [[task-397-shuttle-stays-gone]] — After the end-of-level takeoff, the extractor never shows again at its start spot behind the stats, shop or upgrade screens. Status in-progress.
 - [[task-398-upgrade-screen-backdrop]] — A full-screen black at 25 % opacity behind the upgrade screen; which screen is asked (default: the level-up "Choose an upgrade" cards). Status wait-answers.

@@ -3,7 +3,7 @@ id: task-397-01-extractor-out-of-sight
 description: "Cpp: find which extractor shows at its start spot during the intermission and keep it out of sight until the next level"
 parent: task-397-shuttle-stays-gone
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor stays gone after its takeoff: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T22:24:41Z
 - waiting_for: none
 - result: open
 
