@@ -55,6 +55,8 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 ## task-275-01
 - task-275-01 (owner 2026-10-21): external packages of DirectionalLight_0 and SkyLight_0 restored from commit 75610b21 (Monday 2026-10-19). DirectionalLight_0: `intensity` 4.0 -> 6, `lightColor` (0.75, 0.62, 1.0) -> (1, 1, 1), `castShadows` false -> true. SkyLight_0: `intensity` 0.08 -> 0.3, `lightColor` (0.35, 0.25, 0.6) -> (1, 1, 1), `castShadows` false -> true. Editor read-back (task-275-04): DirectionalLight_0 intensity 6, lightColor (1, 1, 1), castShadows true; SkyLight_0 intensity 0.3, lightColor (1, 1, 1), castShadows true. Revert = task-272-18 state: sun 4.0 (0.75, 0.62, 1.0) no shadows, sky 0.08 (0.35, 0.25, 0.6) no shadows (git: checkout 1958a46f for the two packages).
 
+- Miner brightness (task-393-01): the Meshy miner is darkened by the material instance MI_Miner (`BaseColorScale` 0.6), not by these lights; see [[bp-miner]].
+
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
 - The sky light captures the scene (SLS_CapturedScene, real-time capture off): it uses the capture baked in the editor, and its colour multiplies it. It contributes only what that capture holds; it was not recaptured here. If the ambient stays too black, recapture the sky light in the editor (Recapture) or give it a cubemap/specified colour. Not verified by eye.
