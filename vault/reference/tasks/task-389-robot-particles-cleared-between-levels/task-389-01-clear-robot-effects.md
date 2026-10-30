@@ -3,7 +3,7 @@ id: task-389-01-clear-robot-effects
 description: "Cpp: remove the robot death puffs and debris still playing when the next level is prepared"
 parent: task-389-robot-particles-cleared-between-levels
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot particles removed between levels: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T20:58:58Z
 - waiting_for: none
 - result: open
 

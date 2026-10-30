@@ -3,7 +3,7 @@ id: task-389-robot-particles-cleared-between-levels
 description: "Global task: Death puffs and debris of robots killed on the previous level no longer show when the next level starts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot particles removed between levels
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, owner answers relayed by the main session: Q1 no capture, Q2 to Q6 defaults, Q7 changed into task-392)
 - milestone: M2
 - next_step: task-389-01-clear-robot-effects
-- started: open
+- started: 2026-10-30T20:58:58Z
 - waiting_for: none
 - result: open
 
