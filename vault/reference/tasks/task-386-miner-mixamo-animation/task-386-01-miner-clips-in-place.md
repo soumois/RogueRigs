@@ -3,7 +3,7 @@ id: task-386-01-miner-clips-in-place
 description: "3d: save the nine Mixamo FBX, measure them, export SK_Miner and nine in-place clips on one skeleton from headless Blender, record them in miner-mixamo-clips"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T05:33:42Z
 - waiting_for: none
 - result: open
 

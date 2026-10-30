@@ -3,7 +3,7 @@ id: task-386-miner-mixamo-animation
 description: "Global task: Save the nine owner Mixamo clips, make them in place, import the miner and clips, build ABP_Miner and put them on BP_Miner."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - next_step: task-386-01-miner-clips-in-place
-- started: open
+- started: 2026-10-30T05:33:42Z
 - waiting_for: none
 - result: open
 
