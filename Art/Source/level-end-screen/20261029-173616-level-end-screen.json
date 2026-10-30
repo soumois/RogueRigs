@@ -1,0 +1,38 @@
+{
+  "run_id": "20261029-173616-level-end-screen",
+  "asset": "level-end-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/level-end-screen/prompts/01-main-frame.txt",
+  "prompt": "Image 1 is a UI asset sheet and Image 2 is a full level-end screen mockup, both only visual references. Redraw, as a clean own version at high resolution, the main stats panel frame of Image 2 (the large riveted teal and gunmetal frame around the Total Ore band and the two columns; see the main panel and the modular panel corners of Image 1), drawn as a 9-slice frame: a landscape rectangular frame, ratio about 2 to 1, with a thick riveted dark gunmetal and weathered rust bar on all four sides. The four corners are identical: each carries a large bevelled teal corner bracket with faceted bolts, rust chips and wear. ALL detail lives inside the four corner squares. Between the corners, each of the four edges is a plain uniform strip of the same width along its whole length: the same dark riveted gunmetal and rust bar, with at most a tiny regular rivet row, and NO bolt, NO tab, NO plate, NO notch, NO logo and NO unique ornament anywhere in the middle of any edge (the top edge looks the same at its centre as near its corner, same for the bottom, left and right). The inside is EMPTY: a perfectly flat solid very dark gunmetal fill (#101216), no gradient, no vignette, no pattern, with only a thin recessed inner border line right along the bars, nothing else inside: no cards, no text, no icons, no dividers. Flat-shaded low-poly look, visible facets, no textures, strong directional light with lifted shadows so everything stays readable. The frame fills about 92 percent of the image width, centred, perfectly straight and axis-aligned, flat front view with no perspective, with a margin of flat magenta FF00FF all around; the background outside the frame is flat magenta FF00FF, no shadow, no glow, and nothing sticks out of the frame outline. No text, no letters, no numbers, no icons, no characters, no UI.",
+  "refs": [
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-asset-sheet-2026-10-30.webp",
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "46a58be1f9278801164eeb3e5980b9fa",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000008cb88230aeb8bee08a9d00ad.png"
+      ]
+    },
+    {
+      "task_id": "cac1817363c2db45b2ace8f1a144546f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000069881fdb10239486788b4e8.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/level-end-screen/20261029-173616-level-end-screen-1.png",
+    "Art/Source/level-end-screen/20261029-173616-level-end-screen-2.png"
+  ]
+}

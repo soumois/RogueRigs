@@ -31,6 +31,15 @@ Answer of ChatGPT to the prompt of [[art-prompts-level-end-screen]], brought by 
 ## Budget (Q5)
 Kie.ai GPT Image 2 image-to-image, refs the sheet (Image 1) and the mockup (Image 2), 1K, magenta key, 2 variants per sprite, 6 credits each: 36 credits planned (3 sprites), 72 at most with one correction run per art subtask. The ChatGPT images count as the owner's own design reproduced closely. Every candidate goes to the owner. Gunmetal and teal without white plates accepted as for Spare Parts. Sprites only, no widget change (Q1). Subtask 01 (this archive) spends no credit.
 
+## Sprites
+### T_LevelEnd_Frame (task-380-02)
+- File: `Art/UI/LevelEnd/T_LevelEnd_Frame.png`, 942 x 458 RGBA: candidate 2 keyed (1024 x 540) with the 41 px transparent pad cropped to the alpha bounding box.
+- Prompt: `Art/Source/level-end-screen/prompts/01-main-frame.txt`. Run `20261029-173616-level-end-screen` (log `Art/Source/level-end-screen/20261029-173616-level-end-screen.json`), 2 variants, 12 credits, no correction run.
+- Review: `Art/Source/level-end-screen/20261029-173616.review.json`. Candidate 2 chosen by the owner as is (raw `20261029-173616-level-end-screen-2.png`, keyed `-2-keyed.png`).
+- Margins measured by pixels on the cropped file (column and row profile against the middle strip, where the edge becomes uniform): left 90 (87 to 90 by corner), right 90, top 86 (84 to 86), bottom 86.
+- Draw As Box margins (margin / texture size): L and R 90 / 942 = 0.0955; T and B 86 / 458 = 0.1878. The earlier eye guess was about 92 px L/R and 81 px T/B: L/R confirmed, T/B 5 px larger.
+- Gaps accepted by the owner: rivets along the four edges stretch into ovals when the frame is scaled (the brief asked for none); A6 and A7 reminders accepted.
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[art-prompts-level-end-screen]] — the ChatGPT prompt these images answer.

@@ -1,0 +1,54 @@
+{
+  "run_id": "20261029-173616",
+  "items": [
+    {
+      "file": "20261029-173616-level-end-screen-1-keyed.png",
+      "verdict": "fail",
+      "rule": "A1",
+      "reason": "The gunmetal edge bars and teal corner caps have a blotchy, painted camo mottle of teal-grey patches and large orange rust splashes that hides the flat facets instead of showing them.",
+      "correction": "Ask for flat gunmetal facets with thin lighter edge bands and only small rust chips, no mottled or camo patches."
+    },
+    {
+      "file": "20261029-173616-level-end-screen-1-keyed.png",
+      "verdict": "fail",
+      "rule": null,
+      "reason": "9-slice fitness (brief criterion, not a vault rule id): the edges are not uniform, with rust blotches at irregular spots along the top, bottom and left edges, a one-off notch on the right edge near mid-height, and rivets along every edge that will stretch into ovals when the edge is scaled.",
+      "correction": "Ask for edge bars with the same cross-section along their whole length, no rivets, rust or marks on the edges, and all bolts and rust only on the four corner caps."
+    },
+    {
+      "file": "20261029-173616-level-end-screen-1-keyed.png",
+      "verdict": "fail",
+      "rule": "A6",
+      "reason": "Reminder of an accepted deviation (task-348, task-380 Q5): the frame is gunmetal, teal and rust with no white plates, while A6 calls for white and teal plates on the Rigs side.",
+      "correction": "None needed if the owner keeps the accepted UI deviation. Otherwise, ask for white plate inserts on the corner caps."
+    },
+    {
+      "file": "20261029-173616-level-end-screen-1-keyed.png",
+      "verdict": "fail",
+      "rule": "A7",
+      "reason": "Low-weight reminder: the main colour of the frame is dark gunmetal, which color-code gives as the kamikaze's main colour. This is UI and not arena art, so the owner decides.",
+      "correction": "None needed if gunmetal is accepted for UI. Otherwise, ask for teal-dominant edge bars."
+    },
+    {
+      "file": "20261029-173616-level-end-screen-2-keyed.png",
+      "verdict": "fail",
+      "rule": null,
+      "reason": "9-slice fitness (brief criterion, not a vault rule id): the edges are otherwise uniform, with even rivet spacing and a thin, even rust line, but the rivets sit along every edge and will stretch into ovals in a stretched 9-slice margin; the corners are self-contained, the centre is flat near-black and there is no text.",
+      "correction": "Ask for the same frame with no rivets on the edge bars, keeping bolts only on the corner caps. Or keep it as is if the frame is drawn at close to native size or the edges are tiled."
+    },
+    {
+      "file": "20261029-173616-level-end-screen-2-keyed.png",
+      "verdict": "fail",
+      "rule": "A6",
+      "reason": "Reminder of an accepted deviation (task-348, task-380 Q5): the frame is gunmetal, teal and rust with no white plates, while A6 calls for white and teal plates on the Rigs side.",
+      "correction": "None needed if the owner keeps the accepted UI deviation. Otherwise, ask for white plate inserts on the corner caps."
+    },
+    {
+      "file": "20261029-173616-level-end-screen-2-keyed.png",
+      "verdict": "fail",
+      "rule": "A7",
+      "reason": "Low-weight reminder: the main colour of the frame is dark gunmetal, which color-code gives as the kamikaze's main colour. This is UI and not arena art, so the owner decides.",
+      "correction": "None needed if gunmetal is accepted for UI. Otherwise, ask for teal-dominant edge bars."
+    }
+  ]
+}
