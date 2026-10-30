@@ -1,0 +1,7 @@
+{"run_id": "20261030-060000-screen_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "end_run_won", "verdict": "pass", "rule": null, "reason": "Unchanged; Rigs voice joking at company paperwork, no rule broken.", "suggestion": null},
+  {"item_id": "intermission_recap", "verdict": "pass", "rule": null, "reason": "The new caption 'Total Ore:' is a neutral English UI label that reads at a glance beside the number, mocks no one, puts no human on site, has no film reference and no company voice, so L1, L2, L4 and T1 to T9 are all met.", "suggestion": null},
+  {"item_id": "intermission_run_won", "verdict": "pass", "rule": null, "reason": "Unchanged; no rule broken.", "suggestion": null},
+  {"item_id": "shop_screen", "verdict": "pass", "rule": null, "reason": "Unchanged; no rule broken.", "suggestion": null},
+  {"item_id": "loading_level", "verdict": "pass", "rule": null, "reason": "Unchanged; no rule broken.", "suggestion": null}
+]}]}
