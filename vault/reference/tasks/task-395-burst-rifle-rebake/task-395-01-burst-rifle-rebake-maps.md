@@ -3,7 +3,7 @@ id: task-395-01-burst-rifle-rebake-maps
 description: "3d: re-unwrap SM_BurstRifle (geometry kept), bake the four Meshy maps onto it, report stretch and fidelity, render source, old and new."
 parent: task-395-burst-rifle-rebake
 kind: task
-status: todo
+status: cancelled
 ---
 # Burst rifle mesh: re-bake the Meshy textures on clean UVs: 3d
 

@@ -1,9 +1,9 @@
 ---
 id: task-395-burst-rifle-rebake
 description: "Global task: Re-unwrap the flattened burst rifle and bake the Meshy look (colour, normal, roughness, metallic) onto it, as for the extractor, so the textures fit the flat faces."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: todo
+status: cancelled
 ---
 # Burst rifle mesh: re-bake the Meshy textures on clean UVs
 
@@ -14,10 +14,10 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "ok")
 - milestone: M2
 - renumbered: was task-393-burst-rifle-rebake (id clash with task-393-miner-over-lit, owner-approved, 2026-10-30); commit 49ab8c99 carries the old id.
-- next_step: task-395-01-burst-rifle-rebake-maps
+- next_step: none
 - started: open
 - waiting_for: none
-- result: open
+- result: Owner declined the rebake after viewing the 394 renders (2026-10-30): flattened mesh with original Meshy maps is accepted.
 
 ## Questions
 Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-30.
@@ -28,7 +28,7 @@ Decided 2026-10-30 (owner "ok"): every default below is accepted; values provisi
 1. task-395-01-burst-rifle-rebake-maps (vault/reference/tasks/task-395-burst-rifle-rebake/task-395-01-burst-rifle-rebake-maps.md) — 3d: re-unwrap SM_BurstRifle (geometry kept), bake the four Meshy maps onto it, report stretch and fidelity, render source, old and new.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-395-01-burst-rifle-rebake-maps]] — step 1, 3d.
 - [[burst-rifle]] — the weapon this mesh is for.
 - [[task-394-burst-rifle-flat-faces]] — made the mesh and holds Q1 to Q6.
