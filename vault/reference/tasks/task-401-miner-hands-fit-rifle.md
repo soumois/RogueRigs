@@ -15,7 +15,7 @@ status: wait-answers
 - milestone: M2
 - next_step: task-401-01-left-hand-ik-target
 - started: open
-- waiting_for: owner confirmation of the plan (Q1 to Q7)
+- waiting_for: owner confirmation of the plan (Q1, Q3 to Q7)
 - result: open
 
 ## Questions
@@ -36,4 +36,4 @@ Asked 2026-10-30, each with a default; open until the owner answers.
 - [[task-401-03-abp-left-hand-ik]] — step 3, bp.
 - [[task-401-04-hands-fit-capture]] — step 4, capture.
 - [[task-401-05-doc-hands-fit-rifle]] — step 5, doc.
-- [[task-400-burst-rifle-in-hand]] — point 1, puts the rifle in the right hand; holds Q1 to Q7.
+- [[task-400-burst-rifle-in-hand]] — point 1, puts the rifle in the right hand; holds Q1 to Q7 (Q2 answered 2026-10-30).

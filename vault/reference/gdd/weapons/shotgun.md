@@ -16,6 +16,7 @@ status: approved
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 - effect pool: none (4-direction fire does not apply); piercing is a stat (base 3) and can be upgraded.
 - vfx_sfx: white-gold pellets and muzzle flash ([[color-code]]); sound open.
+- look: no visible weapon mesh; the grey placeholder cube is removed and the pellets leave from the same point as every weapon shot (owner 2026-10-30, task-400 Q2: "Tu retires le cube, les autres tirs partiront du même endroit").
 - milestone: M1
 
 ## Relations
