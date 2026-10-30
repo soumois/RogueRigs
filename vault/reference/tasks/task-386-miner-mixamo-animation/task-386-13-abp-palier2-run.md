@@ -3,7 +3,7 @@ id: task-386-13-abp-palier2-run
 description: "Bp: add Rifle Run to ABP_Miner with an idle to run state driven by ground speed from URRMinerAnimInstance"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner animated with the owner Mixamo clips: step 2 run forward
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-30T06:30:11Z
 - waiting_for: none
 - result: open
 

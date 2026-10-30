@@ -3,7 +3,7 @@ id: task-386-12-capture-palier1
 description: "Capture: -game frames of the miner standing still, the T-pose must be gone"
 parent: task-386-miner-mixamo-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner animated with the owner Mixamo clips: capture of step 1
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: C1 the miner is not in T-pose or A-pose (arms and hands hold a rifle-aiming pose, idle breathing visible across at least two frames some seconds apart); C2 feet touch the floor; C3 the Meshy mesh is shown, not Quinn. If a point is not seen, say so; the Executor then diagnoses this step only
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 22859, cache read 111630, output 2620
+- usage: turns 7, context start 14k peak 23k, resumes 0, 1 min, units 0.05 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T06:28:10Z
 - waiting_for: none
-- result: open
+- result: SEEN: no T-pose, miner in a bent-arm rifle-aiming stance, Meshy mesh (frames Saved/Captures/MinerAnim3/crops.png); breathing and floor contact ambiguous top-down
 
 ## Relations
 - [[task-386-miner-mixamo-animation]] — parent global task.
