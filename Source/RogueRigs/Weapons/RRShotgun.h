@@ -14,8 +14,8 @@
  * around the aim (no random), speed ProjectileSpeed, lifetime Range / ProjectileSpeed. All pellets of a shot carry one damage
  * spec (MakeDamageSpec; each application rolls its own critical in URRDamageExecution), MaxHits = GetPierceCount() and
  * KnockbackSpeed = KnockbackForce (each robot hit is pushed along the pellet's flight; ARREnemy::ApplyKnockback scales it by
- * 1 - KnockbackResistance). Pellets stop on rock and damage barrels like every projectile. Then OnShotFired for the muzzle
- * flash. Usable natively (StatsRowName Shotgun, ProjectileClass ARRShotgunPellet, no mesh): ARRMiner spawns it when no
+ * 1 - KnockbackResistance). Pellets stop on rock and damage barrels like every projectile. Then one native muzzle flash per
+ * volley, not per pellet (ARRWeapon::SpawnMuzzleFlash along the aim, task-414), and OnShotFired for any extra Blueprint effect. Usable natively (StatsRowName Shotgun, ProjectileClass ARRShotgunPellet, no mesh): ARRMiner spawns it when no
  * StartingWeapons entry is a shotgun. Subclass in Blueprint for the mesh, the pellet Blueprint and the muzzle flash.
  */
 UCLASS(Blueprintable)
@@ -48,7 +48,7 @@ public:
 	int32 GetLastPelletsSpawned() const { return LastPelletsSpawned; }
 
 protected:
-	/** One shot: PelletCount pellets around the aim (see the class comment), then OnShotFired. Skipped (logged) without ProjectileClass or with ProjectileSpeed or Range <= 0. */
+	/** One shot: PelletCount pellets around the aim (see the class comment), one muzzle flash when a pellet spawned, then OnShotFired. Skipped (logged) without ProjectileClass or with ProjectileSpeed or Range <= 0. */
 	virtual void FireOnce() override;
 
 	/** Copies the base columns, then PelletCount and KnockbackForce. */

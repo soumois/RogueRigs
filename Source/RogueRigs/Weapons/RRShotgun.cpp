@@ -79,5 +79,11 @@ void ARRShotgun::FireOnce()
 	}
 	++ShotCount;
 
+	// task-414 Q3: one flash per volley (not per pellet), along the aim.
+	if (LastPelletsSpawned > 0)
+	{
+		SpawnMuzzleFlash(FRotator(0.f, AimYaw, 0.f));
+	}
+
 	OnShotFired(Placement.Origin, Direction, SpreadDeg);
 }

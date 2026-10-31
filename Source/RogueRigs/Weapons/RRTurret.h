@@ -25,6 +25,7 @@ class ARRTurretLauncher;
  * spec's instigator and causer are the turret). Invincible and untargetable: no actor collision (inherited), no health set, so
  * robots, projectiles and the miner pass through it. Destroyed after the launcher's TurretLifetime (actor life span).
  * Blueprintable for the meshes (base under Root, head under HeadPivot), the Muzzle position and the muzzle flash (OnTurretFired).
+ * No native muzzle flash (task-414 Q3): the constructor clears MuzzleFlashSystem, and SpawnMuzzleFlash needs a hand weapon anyway.
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRTurret : public ARRWeapon
@@ -32,7 +33,7 @@ class ROGUERIGS_API ARRTurret : public ARRWeapon
 	GENERATED_BODY()
 
 public:
-	/** Ticks (targeting); creates HeadPivot under Root and moves the inherited Muzzle under it. The auto-fire does not start before InitFromLauncher. */
+	/** Ticks (targeting); creates HeadPivot under Root and moves the inherited Muzzle under it; clears MuzzleFlashSystem. The auto-fire does not start before InitFromLauncher. */
 	ARRTurret(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/**

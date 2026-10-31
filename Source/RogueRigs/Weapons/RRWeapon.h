@@ -12,6 +12,8 @@ class ARRMiner;
 class ARRProjectile;
 class UAbilitySystemComponent;
 class UGameplayEffect;
+class UNiagaraComponent;
+class UNiagaraSystem;
 class URRAbilitySystemComponent;
 class URRAutoFireComponent;
 class URRWeaponAttributeSet;
@@ -58,6 +60,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnWeaponAmmoChangedSignature, 
  * attach): InitAbilityActorInfo(weapon, weapon), base values from row StatsRowName of WeaponStats.csv, magazine
  * filled, auto-fire configured and started; the miner's global upgrades are replayed after the base values
  * (URRUpgradeComponent::ReplayGlobalUpgrades). The player registry is not implemented yet.
+ * Muzzle flash (task-414): each shot of a miner weapon (each rifle bullet, one per shotgun volley) plays MuzzleFlashSystem
+ * (default NS_MuzzleFlash, loaded by path) attached to the hand weapon's Muzzle, +X along the shot (SpawnMuzzleFlash); turrets and
+ * weapons without a hand weapon play none.
  * Aim comes from the owning miner's GetAimDirection. Subclass in Blueprint for the mesh, the muzzle position,
  * the projectile class and the stats row.
  */
@@ -70,7 +75,7 @@ public:
 	/** Path of the weapon stats CSV, relative to FPaths::ProjectContentDir(). */
 	static const TCHAR* WeaponStatsPath;
 
-	/** Creates the root, the ASC, the weapon attribute set and the auto-fire component. */
+	/** Creates the root, the ASC, the weapon attribute set, the auto-fire component and the Muzzle; loads the default MuzzleFlashSystem by path. */
 	ARRWeapon(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	//~ IAbilitySystemInterface
@@ -239,9 +244,19 @@ protected:
 	 * on the weapon's ASC, spawns one ProjectileClass placed by GetShotPlacement (SpawnShot), flat, toward GetAimDirection rotated
 	 * by a random yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
 	 * weapon, Instigator: the miner). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
+	 * When the projectile spawned, one muzzle flash along ShotRotation (SpawnMuzzleFlash; none for a turret).
 	 * Weapons that fire differently (shotgun) override it.
 	 */
 	virtual void FireOnce();
+
+	/**
+	 * Muzzle flash of one shot (task-414): plays MuzzleFlashSystem once, attached to the hand weapon's Muzzle (FindHandWeapon, the
+	 * same Muzzle as GetShotPlacement) at its location, +X along ShotRotation, so it follows the hand; auto-destroyed when the
+	 * one-shot system ends (no pool: the project pool holds unattached components). Skipped when MuzzleFlashSystem is unset, when
+	 * there is no hand weapon (no owning miner: turrets; no shown weapon) and when Niagara cannot render (-nullrhi, commandlets).
+	 * Callers: FireOnce once per bullet, ARRShotgun::FireOnce once per volley. Returns the component, null when skipped.
+	 */
+	UNiagaraComponent* SpawnMuzzleFlash(const FRotator& ShotRotation) const;
 
 	/**
 	 * Spawns one ProjectileClass for Placement with ShotRotation (ARRProjectile::SpawnProjectile with Placement's capsule half
@@ -297,6 +312,13 @@ protected:
 	/** Damage effect carried by each projectile. Defaults to URRGE_Damage. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
+
+	/**
+	 * One-shot Niagara flash played at the hand weapon's Muzzle on each shot of this weapon (SpawnMuzzleFlash, task-414). Defaults in
+	 * C++ to /Game/RogueRigs/FX/NS_MuzzleFlash (so no Blueprint edit); None = no flash (ARRTurret clears it). The system must be one-shot.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|FX")
+	TObjectPtr<UNiagaraSystem> MuzzleFlashSystem;
 
 	/** Row of WeaponStats.csv applied at acquisition (e.g. BurstRifle). Must be set by the Blueprint subclass. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")

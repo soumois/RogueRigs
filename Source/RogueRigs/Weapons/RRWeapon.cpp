@@ -12,6 +12,10 @@
 #include "GAS/RRBaseStatsLoader.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Grid/RRArenaGrid.h"
+#include "Misc/App.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "Player/RRMiner.h"
 #include "Projectiles/RRProjectile.h"
 #include "Upgrades/RRUpgradeComponent.h"
@@ -20,6 +24,7 @@
 #include "Weapons/RRWeaponAttributeSet.h"
 #include "Weapons/RRWeaponStatsRow.h"
 #include "World/RRShadows.h"
+#include "UObject/ConstructorHelpers.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRWeapon)
 
@@ -46,6 +51,13 @@ ARRWeapon::ARRWeapon(const FObjectInitializer& ObjectInitializer)
 	Muzzle->SetupAttachment(Root);
 
 	DamageEffectClass = URRGE_Damage::StaticClass();
+
+	// task-414 Q5: constructor reference (RRDrone pattern), so BP_BurstRifle needs no edit; a Blueprint may override or clear it.
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> MuzzleFlashFinder(TEXT("/Game/RogueRigs/FX/NS_MuzzleFlash.NS_MuzzleFlash"));
+	if (MuzzleFlashFinder.Succeeded())
+	{
+		MuzzleFlashSystem = MuzzleFlashFinder.Object;
+	}
 }
 
 UAbilitySystemComponent* ARRWeapon::GetAbilitySystemComponent() const
@@ -330,7 +342,29 @@ void ARRWeapon::FireOnce()
 	// Flat shot: aim yaw plus a uniform spread in [-SpreadDeg, SpreadDeg].
 	const float SpreadYaw = SpreadDeg > 0.f ? FMath::FRandRange(-SpreadDeg, SpreadDeg) : 0.f;
 	const FRotator ShotRotation(0.f, GetAimDirection().Rotation().Yaw + SpreadYaw, 0.f);
-	SpawnShot(GetShotPlacement(), ShotRotation, Spec, GetPierceCount(), 0.f);
+	if (SpawnShot(GetShotPlacement(), ShotRotation, Spec, GetPierceCount(), 0.f))
+	{
+		// task-414 Q3: one flash per bullet (3 per rifle burst); none for a turret (no hand weapon).
+		SpawnMuzzleFlash(ShotRotation);
+	}
+}
+
+UNiagaraComponent* ARRWeapon::SpawnMuzzleFlash(const FRotator& ShotRotation) const
+{
+	// Niagara never runs without rendering (-nullrhi, commandlets): no component there.
+	if (MuzzleFlashSystem == nullptr || !FApp::CanEverRender())
+	{
+		return nullptr;
+	}
+	const ARRWeapon* HandWeapon = FindHandWeapon();
+	USceneComponent* HandMuzzle = HandWeapon ? HandWeapon->GetMuzzle() : nullptr;
+	if (HandMuzzle == nullptr)
+	{
+		return nullptr;
+	}
+	// Attached so it follows the hand; placed at the Muzzle in world space with +X along the shot (the system is local space).
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFlashSystem, HandMuzzle, NAME_None, HandMuzzle->GetComponentLocation(),
+		ShotRotation, EAttachLocation::KeepWorldPosition, /*bAutoDestroy*/ true, /*bAutoActivate*/ true, ENCPoolMethod::None);
 }
 
 int32 ARRWeapon::GetPierceCount() const
