@@ -3,7 +3,7 @@ id: task-414-02-spawn-muzzle-flash
 description: "Cpp: ARRWeapon spawns NS_MuzzleFlash attached to the shown hand weapon Muzzle on every miner shot (rifle bullet, shotgun volley)"
 parent: task-414-muzzle-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash on every miner shot: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T22:20:31Z
 - waiting_for: none
 - result: open
 

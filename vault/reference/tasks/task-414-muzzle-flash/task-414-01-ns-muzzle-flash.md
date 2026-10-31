@@ -3,7 +3,7 @@ id: task-414-01-ns-muzzle-flash
 description: "Bp: create NS_MuzzleFlash (one-shot white-gold core and forward sparks, and its sprite material if needed) in Content/RogueRigs/FX/"
 parent: task-414-muzzle-flash
 kind: task
-status: in-progress
+status: done
 ---
 # Muzzle flash on every miner shot: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: NS_MuzzleFlash compiles without error and is saved in Content/RogueRigs/FX/; read-back shows one-shot (no loop), white-gold colour, core about 25 uu and about 0.06 s, forward sparks along +X, no light renderer; only the new assets staged; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 65833, cache read 1020905, output 17684
+- usage: turns 25, context start 11k peak 69k, resumes 0, 3 min, units 0.27 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T22:17:02Z
 - waiting_for: none
-- result: open
+- result: NS_MuzzleFlash created, compiled, saved (2dcc85fe); core 25uu 0.06s, 4 forward sparks, no light; look unverified
 
 ## Relations
 - [[task-414-muzzle-flash]] — parent global task.
