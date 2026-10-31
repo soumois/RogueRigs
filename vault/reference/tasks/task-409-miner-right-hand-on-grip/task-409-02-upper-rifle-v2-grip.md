@@ -3,7 +3,7 @@ id: task-409-02-upper-rifle-v2-grip
 description: "3d: headless Blender: A_Miner_UpperRifle_V2Grip from V2, right hand moved onto the grip, hand rotation kept"
 parent: task-409-miner-right-hand-on-grip
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T19:39:14Z
 - waiting_for: none
 - result: open
 

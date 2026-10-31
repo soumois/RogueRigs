@@ -3,7 +3,7 @@ id: task-409-miner-right-hand-on-grip
 description: "Global task: new upper body animation from V2 with the right hand on the rifle grip; RifleMesh offset reset so the rifle stays in place."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "il garde sa hauteur de V2 autant que le bras le permet. Je vérifie moi même. ok pour pour le q4"; Q1 default)
 - milestone: M2
 - next_step: task-409-02-upper-rifle-v2-grip
-- started: open
+- started: 2026-10-31T19:39:14Z
 - waiting_for: none
 - result: open
 
