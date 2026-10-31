@@ -29,6 +29,11 @@ class UAnimSequenceBase;
  * searched per frame (the weapon is rigid on its socket, so the value does not depend on the pose).
  * task-406-01: UpperBodySequence is the one swappable source of the upper body layer of ABP_Miner (asset set in the ABP
  * class defaults); no C++ logic reads it.
+ * task-407-01: right arm correction on the upper body pose. RightElbowOffset and RightHandOffset (cm, component axes:
+ * +Y forward, +Z up, +X left) are the tuned values; AppliedRightElbowOffset and AppliedRightHandOffset are what ABP_Miner
+ * reads: the tuned values, or (0, 0, elbowUp) and (0, handForward, 0) while the cheat cvar rr.Debug.MinerArmFix
+ * "<elbowUp> <handForward>" is set. The cheat cvar rr.Debug.MinerAnimFreeze 1 sets the mesh GlobalAnimRateScale to 0 (anim
+ * time stops, the graph keeps evaluating, so a new offset shows on the same frame); 0 restores the previous scale.
  */
 UCLASS()
 class ROGUERIGS_API URRMinerAnimInstance : public UAnimInstance
@@ -61,6 +66,12 @@ protected:
 
 	/** Prints MoveX, MoveY and GroundSpeed to LogRogueRigs at about 2 Hz while the console variable rr.Debug.MinerAnim is 1. */
 	void LogDebugValues();
+
+	/** Refreshes AppliedRightElbowOffset and AppliedRightHandOffset from the tuned offsets or the rr.Debug.MinerArmFix override. */
+	void RefreshRightArmOffsets();
+
+	/** Applies rr.Debug.MinerAnimFreeze to the owning mesh: 1 sets GlobalAnimRateScale to 0, 0 restores the scale saved when freezing. */
+	void ApplyDebugAnimFreeze();
 
 	/** Horizontal (XY) speed of the pawn owner in cm/s; 0 without a pawn. */
 	UPROPERTY(BlueprintReadOnly, Category = "RogueRigs|Anim")
@@ -137,4 +148,34 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|UpperBody")
 	TObjectPtr<UAnimSequenceBase> UpperBodySequence = nullptr;
+
+	/**
+	 * Right elbow correction on the upper body pose (task-407), cm in component axes (+Y forward, +Z up, +X left; outward =
+	 * negative X): added to the idle pose elbow to give the right arm IK pole. Default up 5 cm (provisional, owner
+	 * 2026-10-31). Tune in the ABP_Miner class defaults; the ABP reads AppliedRightElbowOffset.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation|RightArm", meta = (Units = "Centimeters"))
+	FVector RightElbowOffset = FVector(0.0, 0.0, 5.0);
+
+	/**
+	 * Right hand correction on the upper body pose (task-407), cm in component axes (+Y forward, +Z up, +X left): added to
+	 * the idle pose hand to give the right arm IK target; the rifle and the left hand follow. Default forward 3 cm
+	 * (provisional, owner 2026-10-31). Tune in the ABP_Miner class defaults; the ABP reads AppliedRightHandOffset.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation|RightArm", meta = (Units = "Centimeters"))
+	FVector RightHandOffset = FVector(0.0, 3.0, 0.0);
+
+	/** Elbow offset the ABP applies, cm: RightElbowOffset, or (0, 0, elbowUp) while rr.Debug.MinerArmFix is set. Refreshed each update. */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Animation|RightArm")
+	FVector AppliedRightElbowOffset = FVector(0.0, 0.0, 5.0);
+
+	/** Hand offset the ABP applies, cm: RightHandOffset, or (0, handForward, 0) while rr.Debug.MinerArmFix is set. Refreshed each update. */
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Animation|RightArm")
+	FVector AppliedRightHandOffset = FVector(0.0, 3.0, 0.0);
+
+	/** True while rr.Debug.MinerAnimFreeze holds the owning mesh GlobalAnimRateScale at 0. */
+	bool bDebugAnimFrozen = false;
+
+	/** Mesh GlobalAnimRateScale saved when the debug freeze started; restored when it ends. */
+	float SavedGlobalAnimRateScale = 1.f;
 };

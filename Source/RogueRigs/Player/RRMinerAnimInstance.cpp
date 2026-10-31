@@ -50,6 +50,27 @@ namespace RRMinerAnimDebug
 		}
 		return true;
 	}
+
+	/** rr.Debug.MinerArmFix "<elbowUp> <handForward>": overrides the right arm offsets with (0, 0, elbowUp) and (0, handForward, 0) cm; empty = off. */
+	static TAutoConsoleVariable<FString> CVarMinerArmFix(
+		TEXT("rr.Debug.MinerArmFix"), TEXT(""),
+		TEXT("\"<elbowUp> <handForward>\" (two floats, cm) overrides the miner right arm offsets: RightElbowOffset = (0, 0, elbowUp), RightHandOffset = (0, handForward, 0) (component axes, +Y forward, +Z up); empty = off (the ABP_Miner class default offsets apply)."),
+		ECVF_Cheat);
+
+	/** rr.Debug.MinerAnimFreeze: 1 stops the miner animation time (mesh GlobalAnimRateScale 0) while the graph keeps evaluating; 0 restores. */
+	static TAutoConsoleVariable<int32> CVarMinerAnimFreeze(
+		TEXT("rr.Debug.MinerAnimFreeze"), 0,
+		TEXT("1 freezes the miner animation time (mesh GlobalAnimRateScale 0; the anim graph keeps evaluating, so a new rr.Debug.MinerArmFix value shows on the same frame); 0 restores the previous rate scale."),
+		ECVF_Cheat);
+
+	/** Parses the arm fix cvar; true with the elbow up and hand forward amounts (cm) when it holds two floats. */
+	static bool TryGetArmFix(float& OutElbowUp, float& OutHandForward)
+	{
+		const FString Value = CVarMinerArmFix.GetValueOnGameThread();
+		TArray<FString> Tokens;
+		Value.ParseIntoArrayWS(Tokens);
+		return Tokens.Num() == 2 && LexTryParseString(OutElbowUp, *Tokens[0]) && LexTryParseString(OutHandForward, *Tokens[1]);
+	}
 }
 
 void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -113,7 +134,51 @@ void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		GroundSpeed = static_cast<float>(ForcedMove.Size()) * MaxWalkSpeed;
 	}
 
+	RefreshRightArmOffsets();
+	ApplyDebugAnimFreeze();
+
 	LogDebugValues();
+}
+
+void URRMinerAnimInstance::RefreshRightArmOffsets()
+{
+	// task-407-01: the debug override replaces the tuned values while set, so offset series can be captured on one frame.
+	float ElbowUp = 0.f;
+	float HandForward = 0.f;
+	if (RRMinerAnimDebug::TryGetArmFix(ElbowUp, HandForward))
+	{
+		AppliedRightElbowOffset = FVector(0.0, 0.0, ElbowUp);
+		AppliedRightHandOffset = FVector(0.0, HandForward, 0.0);
+	}
+	else
+	{
+		AppliedRightElbowOffset = RightElbowOffset;
+		AppliedRightHandOffset = RightHandOffset;
+	}
+}
+
+void URRMinerAnimInstance::ApplyDebugAnimFreeze()
+{
+	USkeletalMeshComponent* MinerMesh = GetSkelMeshComponent();
+	if (!MinerMesh)
+	{
+		return;
+	}
+
+	// The scale applies from the next tick (this update already received its delta time); update and evaluation keep
+	// running with a zero delta, so pose changes from offsets still show.
+	const bool bWantFrozen = RRMinerAnimDebug::CVarMinerAnimFreeze.GetValueOnGameThread() != 0;
+	if (bWantFrozen && !bDebugAnimFrozen)
+	{
+		SavedGlobalAnimRateScale = MinerMesh->GlobalAnimRateScale;
+		MinerMesh->GlobalAnimRateScale = 0.f;
+		bDebugAnimFrozen = true;
+	}
+	else if (!bWantFrozen && bDebugAnimFrozen)
+	{
+		MinerMesh->GlobalAnimRateScale = SavedGlobalAnimRateScale;
+		bDebugAnimFrozen = false;
+	}
 }
 
 const FName URRMinerAnimInstance::LeftHandGripSocketName(TEXT("LeftHandGrip"));
