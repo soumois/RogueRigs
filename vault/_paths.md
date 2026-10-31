@@ -120,6 +120,7 @@ bp-kamikaze  reference/tech/blueprints/enemies/bp-kamikaze.md
 bp-main-menu-game-mode  reference/tech/blueprints/player/bp-main-menu-game-mode.md
 bp-mcp-lessons  reference/agents/bp-mcp-lessons.md
 bp-miner  reference/tech/blueprints/player/bp-miner.md
+bp-muzzle-flash  reference/tech/blueprints/fx/bp-muzzle-flash.md
 bp-objective-console  reference/tech/blueprints/world/bp-objective-console.md
 bp-pickup-heal  reference/tech/blueprints/fx/bp-pickup-heal.md
 bp-pickup-ore  reference/tech/blueprints/fx/bp-pickup-ore.md

@@ -27,6 +27,8 @@ kind: doc
 
 - task-411 (cpp 3b80bb41, no Blueprint change): at runtime the miner anim instance overrides the relative transform of RifleMesh and Muzzle while the right hand offset is non-zero (counter-move by the inverse offset, so the rifle stays in place); the asset values stay RifleMesh (0, 0, 0) and Muzzle (52.25, 0, 0), saved as the base and restored at offset 0 or on uninitialize ([[sys-player-classes]]). Unverified: no PIE run by the crew.
 
+- task-414 (cpp 743a05e2, no Blueprint change): its Muzzle now also hosts the muzzle flash `NS_MuzzleFlash`, attached once per bullet; `MuzzleFlashSystem` defaults in the C++ constructor, the asset is unchanged ([[bp-muzzle-flash]], [[sys-weapons]]).
+
 ## Relations
 - [[task-411-right-hand-offset-rifle-stays]] — task that added the runtime counter-move.
 - [[blueprints-index]] — parent index.
@@ -37,5 +39,6 @@ kind: doc
 - [[task-400-burst-rifle-in-hand]] — task that put the mesh in the hand.
 - [[task-403-burst-rifle-material-fix]] — task that found the MI_GB_Shot override and cleared it.
 - [[task-404-rifle-mesh-owner-offset]] — task that set the owner RifleMesh transform and moved Muzzle.
+- [[bp-muzzle-flash]] — the flash spawned at its Muzzle.
 - [[unreal-mcp-quirks]] — MCP quirks met reading this BP's components.
 - [[sys-automation-tests]] — RogueRigs.Weapons.* tests using it, incl. MinerStartingWeapon (shot placement at the Muzzle since task-412-01).
