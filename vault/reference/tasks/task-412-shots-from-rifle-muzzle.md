@@ -3,7 +3,7 @@ id: task-412-shots-from-rifle-muzzle
 description: "Global task: miner shots start at the real burst rifle Muzzle with a vertical capsule collision reaching down to rocks, above the floor."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shots leave from the rifle muzzle
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "Q4 le fusil à pompe tire depuis le muzzle de la mitrailette. [...] Q5- Pas de capture. Q6 - Laisse le muzzle, j'aime bien avoir la main dessus. ok pour le reste")
 - milestone: M2
 - next_step: task-412-01-shot-origin-muzzle-capsule
-- started: open
+- started: 2026-10-31T21:19:20Z
 - waiting_for: none
 - result: open
 

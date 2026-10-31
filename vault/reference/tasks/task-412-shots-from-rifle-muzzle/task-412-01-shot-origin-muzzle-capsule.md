@@ -3,7 +3,7 @@ id: task-412-01-shot-origin-muzzle-capsule
 description: "Cpp: ARRProjectile capsule collision root; rifle and pellet origin at the Muzzle, capsule sized per shot from floor + 20; miner-to-Muzzle sweep; tests"
 parent: task-412-shots-from-rifle-muzzle
 kind: task
-status: todo
+status: in-progress
 ---
 # Shots leave from the rifle muzzle: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T21:19:20Z
 - waiting_for: none
 - result: open
 
