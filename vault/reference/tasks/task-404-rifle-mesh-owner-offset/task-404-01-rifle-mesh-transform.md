@@ -3,7 +3,7 @@ id: task-404-01-rifle-mesh-transform
 description: "Bp: BP_BurstRifle: RifleMesh at the owner location and scale 1.25, Muzzle at the scaled tip"
 parent: task-404-rifle-mesh-owner-offset
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle mesh at the owner position and scale 1.25: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T06:21:45Z
 - waiting_for: none
 - result: open
 

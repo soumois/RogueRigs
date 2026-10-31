@@ -3,7 +3,7 @@ id: task-404-rifle-mesh-owner-offset
 description: "Global task: BP_BurstRifle RifleMesh at the owner relative location and scale 1.25, Muzzle moved to the scaled barrel tip."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle mesh at the owner position and scale 1.25
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "Laisse tomber le coude et execue le reste")
 - milestone: M2
 - next_step: task-404-01-rifle-mesh-transform
-- started: open
+- started: 2026-10-31T06:21:45Z
 - waiting_for: none
 - result: open
 
