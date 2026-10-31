@@ -3,7 +3,12 @@
 #include "Player/RRMinerAnimInstance.h"
 
 #include "RogueRigs.h"
+#include "Components/MeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Engine/World.h"
+#include "Player/RRMiner.h"
+#include "Weapons/RRWeapon.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
@@ -109,6 +114,82 @@ void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	LogDebugValues();
+}
+
+const FName URRMinerAnimInstance::LeftHandGripSocketName(TEXT("LeftHandGrip"));
+
+void URRMinerAnimInstance::NativeBeginPlay()
+{
+	Super::NativeBeginPlay();
+
+	ARRMiner* Miner = Cast<ARRMiner>(TryGetPawnOwner());
+	if (!Miner)
+	{
+		return;
+	}
+	BoundMiner = Miner;
+	Miner->OnWeaponAdded.AddUniqueDynamic(this, &URRMinerAnimInstance::HandleWeaponAdded);
+
+	// Weapons acquired before this anim instance started (the delegate would not fire for them).
+	for (const ARRWeapon* Weapon : Miner->GetWeapons())
+	{
+		RefreshLeftHandIK(Weapon);
+	}
+}
+
+void URRMinerAnimInstance::NativeUninitializeAnimation()
+{
+	if (ARRMiner* Miner = BoundMiner.Get())
+	{
+		Miner->OnWeaponAdded.RemoveDynamic(this, &URRMinerAnimInstance::HandleWeaponAdded);
+	}
+	BoundMiner.Reset();
+	Super::NativeUninitializeAnimation();
+}
+
+void URRMinerAnimInstance::HandleWeaponAdded(ARRWeapon* Weapon)
+{
+	RefreshLeftHandIK(Weapon);
+}
+
+void URRMinerAnimInstance::RefreshLeftHandIK(const ARRWeapon* Weapon)
+{
+	// Only a hand-held weapon (attached to its hand socket on the miner mesh) drives the left hand.
+	const USkeletalMeshComponent* MinerMesh = GetSkelMeshComponent();
+	const FName HandSocketName = Weapon ? Weapon->GetHandSocketName() : NAME_None;
+	if (!Weapon || !MinerMesh || HandSocketName.IsNone()
+		|| Weapon->GetAttachParentActor() != MinerMesh->GetOwner()
+		|| Weapon->GetAttachParentSocketName() != HandSocketName)
+	{
+		return;
+	}
+
+	// Result for this hand-held weapon: off until a mesh with LeftHandGrip is found.
+	LeftHandIKAlpha = 0.f;
+	LeftHandIKTarget = FVector::ZeroVector;
+
+	const USkeletalMeshSocket* HandSocket = MinerMesh->GetSocketByName(HandSocketName);
+	if (!HandSocket)
+	{
+		return;
+	}
+
+	TArray<UMeshComponent*> MeshComponents;
+	Weapon->GetComponents<UMeshComponent>(MeshComponents);
+	for (const UMeshComponent* WeaponMesh : MeshComponents)
+	{
+		if (!WeaponMesh->DoesSocketExist(LeftHandGripSocketName))
+		{
+			continue;
+		}
+		// The weapon is rigid on WeaponSocket_R, so the grip in the weapon actor space moved by the socket local transform
+		// (bone -> socket) gives the grip in the bone space of the right hand, whatever the current pose.
+		const FTransform GripWorld = WeaponMesh->GetSocketTransform(LeftHandGripSocketName, RTS_World);
+		const FVector GripInActor = GripWorld.GetRelativeTransform(Weapon->GetActorTransform()).GetLocation();
+		LeftHandIKTarget = HandSocket->GetSocketLocalTransform().TransformPosition(GripInActor);
+		LeftHandIKAlpha = 1.f;
+		return;
+	}
 }
 
 void URRMinerAnimInstance::LogDebugValues()

@@ -6,6 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "RRMinerAnimInstance.generated.h"
 
+class ARRWeapon;
+
 /**
  * Native parent of ABP_Miner. Each update it reads the owning pawn velocity and actor yaw (the miner yaw follows the
  * aim only) and exposes the values the locomotion blend space needs. No gameplay logic, no input.
@@ -19,6 +21,11 @@
  * frame over MaxWalkSpeed, length clamped to 1, for the simple 2D blend space.
  * task-386-21: the cheat cvar rr.Debug.MinerAnimForce "x y" overrides MoveX, MoveY (clamped to length 1) and
  * GroundSpeed (length * MaxWalkSpeed) for captures; empty = off.
+ * task-401-01: left hand IK. LeftHandIKTarget is the location of the socket LeftHandGrip of the held weapon mesh, expressed
+ * in the space of the bone that carries WeaponSocket_R (the right hand), i.e. the space the ABP Two Bone IK uses
+ * (Joint Target / Effector Location Space = Bone Space of the right hand bone). LeftHandIKAlpha is 1 only when the held
+ * weapon has a mesh with LeftHandGrip, else 0. Event driven: recomputed when the miner broadcasts OnWeaponAdded, never
+ * searched per frame (the weapon is rigid on its socket, so the value does not depend on the pose).
  */
 UCLASS()
 class ROGUERIGS_API URRMinerAnimInstance : public UAnimInstance
@@ -29,7 +36,23 @@ public:
 	/** Reads the pawn owner velocity and yaw and refreshes every exposed value. */
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+	/** Binds the miner OnWeaponAdded and computes the left hand IK target for the weapons already held. */
+	virtual void NativeBeginPlay() override;
+
+	/** Unbinds the miner OnWeaponAdded. */
+	virtual void NativeUninitializeAnimation() override;
+
+	/** Name of the socket of the held weapon mesh the left hand grips (the handguard). */
+	static const FName LeftHandGripSocketName;
+
 protected:
+	/** OnWeaponAdded callback: recomputes the left hand IK target when the weapon is the hand-held one. */
+	UFUNCTION()
+	void HandleWeaponAdded(ARRWeapon* Weapon);
+
+	/** Recomputes LeftHandIKTarget and LeftHandIKAlpha from Weapon (alpha 0 when it is not hand-held or has no LeftHandGrip). */
+	void RefreshLeftHandIK(const ARRWeapon* Weapon);
+
 	/** Run clip speed for a direction (degrees, -180 to 180): linear interpolation between the four run speeds. */
 	float ComputeRunSpeedForDirection(float InDirection) const;
 
@@ -70,6 +93,17 @@ protected:
 	 */
 	UPROPERTY(BlueprintReadOnly, Category = "RogueRigs|Anim")
 	float MoveY = 0.f;
+
+	/** Location of the held weapon socket LeftHandGrip in the bone space of the right hand (the bone of WeaponSocket_R), cm. Zero when LeftHandIKAlpha is 0. Feeds the left arm Two Bone IK of ABP_Miner. */
+	UPROPERTY(BlueprintReadOnly, Category = "RogueRigs|Anim")
+	FVector LeftHandIKTarget = FVector::ZeroVector;
+
+	/** 1 when the hand-held weapon mesh has the socket LeftHandGrip (IK on), else 0. */
+	UPROPERTY(BlueprintReadOnly, Category = "RogueRigs|Anim")
+	float LeftHandIKAlpha = 0.f;
+
+	/** Miner whose OnWeaponAdded is bound. */
+	TWeakObjectPtr<class ARRMiner> BoundMiner;
 
 	/** World time (seconds) of the last debug log line; throttles the rr.Debug.MinerAnim log to about 2 Hz. */
 	double LastDebugLogTime = -1.0;
