@@ -3,7 +3,7 @@ id: task-400-06-rifle-in-hand-capture
 description: "Capture: game capture: the 3D rifle in the right hand, idle and running"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand: capture
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-10-31T00:16:47Z
-- waiting_for: Capture 2026-10-31 failed C2/C3: rifle floats above/behind the head, not in the hand (Saved/Captures/RifleInHand/crops.png); socket WeaponSocket_R needs retuning, decision needed
+- started: 2026-10-31T02:25:43Z
+- waiting_for: none
 - result: open
 
 ## Relations

@@ -3,7 +3,7 @@ id: task-400-burst-rifle-in-hand
 description: "Global task: import SM_BurstRifle, put it on BP_BurstRifle in a miner right hand socket, remove the weapon grey cubes."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-400-06-rifle-in-hand-capture
-- started: 2026-10-30T23:54:46Z
-- waiting_for: Capture 2026-10-31 failed C2/C3: rifle floats above/behind the head, not in the hand (Saved/Captures/RifleInHand/crops.png); socket WeaponSocket_R needs retuning, decision needed
+- started: 2026-10-31T02:25:43Z
+- waiting_for: none
 - result: open
 
 ## Questions
