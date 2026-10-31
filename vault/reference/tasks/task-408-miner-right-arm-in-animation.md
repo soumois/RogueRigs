@@ -1,9 +1,9 @@
 ---
 id: task-408-miner-right-arm-in-animation
 description: "Global task: three new upper body animations from idle with the right elbow raised, compared on one frame, the chosen one drives the upper body."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right arm corrected in new upper body animations from the idle
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[miner]] (approved; animation = Mixamo clips played by ABP_Miner; since task-406 the upper body from Spine plays UpperBodySequence over the locomotion legs; the line on the right arm correction says "owner-tunable offsets", corrected by the edit on confirmation), [[bp-miner]] (AnimGraph after task-406: Locomotion -> Layered blend per bone (BasePose Locomotion, BlendPoses_0 looping Sequence Player fed by UpperBodySequence, branch filter Spine, depth 0, mesh space rotation blend on) -> LocalToComponent -> left hand Two Bone IK -> ComponentToLocal; so the blend space already reaches only Hips and legs; LeftHandIKTarget in RightHand bone space, so the rifle and the left hand follow the right hand), [[sys-player-classes]] (UpperBodySequence; the 407-01 offsets and cvars are not documented), [[miner-mixamo-clips]] (the nine in-place clip FBX in Art/Meshes/Miner/Anims, A_Miner_Idle.fbx = Rifle Aiming Idle), [[task-386-04-miner-clips-import]] (import settings of the A_Miner sequences on SKEL_Miner), [[task-401-04-hands-fit-capture]] (top-down camera hides the right hand; rr.Debug.Camera gives close views). Editing A_Miner_Idle directly would be visually safe (its arms only show through the upper layer) but a reimport of its FBX would erase the edit and one asset cannot hold several proposals; the owner chose a new animation based on the idle. Conflicts: none, rendering only; shot origin and game rules unchanged. Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-31, "En gros, ce qu'il faut faire, créer une nouvelle animation qui se base sur le idle. ..." then "et considére que je ne suis pas là, execute la tâche jusqu'au bout")
 - milestone: M2
-- next_step: task-408-05-doc-upper-rifle-variants
+- next_step: none
 - started: 2026-10-31T07:47:36Z
 - waiting_for: none
-- result: open
+- result: Done. Doc 1055abab + 391a731f (bp-miner, sys-player-classes, miner-mixamo-clips, miner gdd line). Owner chose V2 (Je prends le v2 applique ça): UpperBodySequence = A_Miner_UpperRifle_V2, correction in the animation itself, no offset; V1, V3, A_Miner_Idle kept. Doc agent resumed once (second pass for the owner choice).
 
 ## Questions
 Decided 2026-10-31: Q1 to Q6 by the owner answer quoted in `request`; Q7 by its default, owner "et considére que je ne suis pas là, execute la tâche jusqu'au bout" (no further question); values provisional, owner 2026-10-31.
@@ -30,7 +30,7 @@ Decided 2026-10-31: Q1 to Q6 by the owner answer quoted in `request`; Q7 by its 
 5. task-408-05-doc-upper-rifle-variants (vault/reference/tasks/task-408-miner-right-arm-in-animation/task-408-05-doc-upper-rifle-variants.md) — doc: bp-miner (proposals, upper body source, how to pick) and sys-player-classes (MinerAnimFreeze, MinerUpperPose)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-408-01-remove-arm-offsets-upper-pose-cvar]] — step 1, cpp.
 - [[task-408-02-upper-rifle-variants]] — step 2, 3d.
 - [[task-408-03-import-upper-rifle-variants]] — step 3, bp.
