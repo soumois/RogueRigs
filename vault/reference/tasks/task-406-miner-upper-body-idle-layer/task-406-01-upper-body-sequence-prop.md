@@ -3,7 +3,7 @@ id: task-406-01-upper-body-sequence-prop
 description: "Cpp: URRMinerAnimInstance: UpperBodySequence property, the one swappable source of the upper body"
 parent: task-406-miner-upper-body-idle-layer
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Miner upper body from the idle rifle pose over the locomotion legs: cpp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-31T06:51:46Z
-- waiting_for: none
+- waiting_for: owner closes the Unreal Editor and Live Coding so the cpp build can run
 - result: open
 
 ## Relations
