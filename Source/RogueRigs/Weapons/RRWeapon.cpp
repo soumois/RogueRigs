@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
 #include "Damage/RRGE_Damage.h"
+#include "Debug/RRShotFirstFrameDebug.h"
 #include "Engine/DataTable.h"
 #include "Engine/World.h"
 #include "GAS/RRAbilitySystemComponent.h"
@@ -274,7 +275,20 @@ ARRProjectile* ARRWeapon::SpawnShot(const FRRShotPlacement& Placement, const FRo
 	// robots on the way are hit as in flight; this also keeps a shot from being born inside a rock the miner hugs.
 	if (Projectile && Placement.bSweepFromMiner)
 	{
-		Projectile->SweepTo(Placement.Origin);
+		const bool bFlying = Projectile->SweepTo(Placement.Origin);
+		// task-413: spawned during the tick, the shot would fly one frame before its first draw (27 uu at 110 fps, 50 at 60 fps,
+		// measured in -game); held at the Muzzle for that frame, it is first drawn at the barrel tip. Range kept (life span extended).
+		if (bFlying)
+		{
+			Projectile->HoldFirstMove();
+		}
+		if (RRShotFirstFrameDebug::IsEnabled() && bFlying)
+		{
+			// task-413 measure (rr.Debug.ShotFirstFrame): the hand weapon Muzzle, read again on each logged frame.
+			const ARRWeapon* HandWeapon = FindHandWeapon();
+			const USceneComponent* HandMuzzle = HandWeapon ? HandWeapon->GetMuzzle() : nullptr;
+			RRShotFirstFrameDebug::TrackShot(Projectile, HandMuzzle, HandMuzzle ? HandMuzzle->GetComponentLocation() : Placement.Origin, SpawnLocation, Projectile->GetActorLocation());
+		}
 	}
 	return Projectile;
 }

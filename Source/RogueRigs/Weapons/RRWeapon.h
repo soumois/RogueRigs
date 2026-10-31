@@ -246,7 +246,9 @@ protected:
 	/**
 	 * Spawns one ProjectileClass for Placement with ShotRotation (ARRProjectile::SpawnProjectile with Placement's capsule half
 	 * height): at Placement.SweepStart then swept to Placement.Origin when bSweepFromMiner (a rock on the way stops it there, robots
-	 * on the way are hit), else at Placement.Origin. Owner: this weapon, Instigator: the miner (or this weapon's instigator).
+	 * on the way are hit), else at Placement.Origin. A swept shot still flying is then held at the Muzzle for the rest of the frame
+	 * (ARRProjectile::HoldFirstMove, task-413) so its first drawn frame is at the barrel tip; rr.Debug.ShotFirstFrame 1 logs where it
+	 * is drawn (RRShotFirstFrameDebug). Owner: this weapon, Instigator: the miner (or this weapon's instigator).
 	 * Returns the spawned projectile (possibly already destroyed by the sweep), null when the spawn failed.
 	 */
 	ARRProjectile* SpawnShot(const FRRShotPlacement& Placement, const FRotator& ShotRotation, const FGameplayEffectSpecHandle& Spec, int32 MaxHits, float KnockbackSpeed);

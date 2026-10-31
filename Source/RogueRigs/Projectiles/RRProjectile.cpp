@@ -20,7 +20,11 @@
 ARRProjectile::ARRProjectile(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = false;
+	// The movement component moves the projectile; the actor tick only runs once, at the end of the frame HoldFirstMove holds
+	// (task-413): TG_PostUpdateWork comes after the movement tick of that frame.
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+	PrimaryActorTick.TickGroup = TG_PostUpdateWork;
 
 	// task-412: a capsule (was the sphere CollisionSphere); half height = radius makes it the same sphere until a shot sets a taller one.
 	CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionCapsule"));
@@ -165,6 +169,42 @@ bool ARRProjectile::SweepTo(const FVector& TargetLocation)
 		return false;
 	}
 	return true;
+}
+
+void ARRProjectile::HoldFirstMove()
+{
+	UWorld* World = GetWorld();
+	// Outside the world tick (tests firing between ticks) the movement first runs on the next tick: nothing to hold.
+	if (World == nullptr || !World->bInTick || bSpent || IsActorBeingDestroyed() || IsHoldingFirstMove() || !ProjectileMovement->bSimulationEnabled)
+	{
+		return;
+	}
+	// Spawned during the tick, the movement tick is queued as newly spawned and runs this same frame: one full frame of flight
+	// before the first draw. With the simulation off that tick does not move the projectile. Tick (TG_PostUpdateWork, after the
+	// movement) turns it back on at the end of this frame, so the flight starts with the next frame's step.
+	ProjectileMovement->bSimulationEnabled = false;
+	HeldFrameTime = World->GetTimeSeconds();
+	// The held frame is flight time lost: extend the life span by it so the range flown stays Range.
+	const float LifeSpanLeft = GetLifeSpan();
+	if (LifeSpanLeft > 0.f)
+	{
+		SetLifeSpan(LifeSpanLeft + World->GetDeltaSeconds());
+	}
+	SetActorTickEnabled(true);
+}
+
+void ARRProjectile::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (!IsHoldingFirstMove())
+	{
+		SetActorTickEnabled(false);
+		return;
+	}
+	// End of the held frame (this tick runs in TG_PostUpdateWork, after this frame's movement tick): the next movement tick flies.
+	HeldFrameTime = -1.0;
+	ProjectileMovement->bSimulationEnabled = true;
+	SetActorTickEnabled(false);
 }
 
 bool ARRProjectile::CanHit(const AActor* OtherActor) const

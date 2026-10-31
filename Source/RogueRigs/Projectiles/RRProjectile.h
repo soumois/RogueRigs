@@ -28,7 +28,8 @@ struct FHitResult;
  * radius (the capsule is a sphere: turret bullets, robot shots, shots without a hand weapon). Miner shots leaving from the hand
  * weapon Muzzle get a taller capsule per shot (SpawnProjectile CapsuleHalfHeight, task-412): centred on the Muzzle, its bottom
  * just above the floor, so it reaches down to rock blocks and robots while the shot mesh flies at the Muzzle height; the flat,
- * yaw-only flight keeps it vertical. SweepTo moves a just-spawned shot with a sweep (miner axis to Muzzle, task-412 Q3). Robot
+ * yaw-only flight keeps it vertical. SweepTo moves a just-spawned shot with a sweep (miner axis to Muzzle, task-412 Q3) and
+ * HoldFirstMove keeps it at the Muzzle for its first drawn frame (task-413). Robot
  * shots: HitActorClass = the miner class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint for the mesh
  * (its collision is turned off at spawn: only the capsule collides) and the capsule radius.
  */
@@ -76,6 +77,18 @@ public:
 	bool SweepTo(const FVector& TargetLocation);
 
 	/**
+	 * Holds this projectile where it stands for the rest of the frame it was spawned in, so its first drawn frame shows it there
+	 * (task-413: at the Muzzle), and starts its flight on the next frame. Without it, a projectile spawned during the world tick
+	 * moves one full frame (speed x frame time: 27 uu at 110 fps, 50 uu at 60 fps) before it is first drawn. The life span is
+	 * extended by the held frame time so the range flown is unchanged. Does nothing outside the world tick (the flight then starts
+	 * on the next tick anyway), on a spent projectile or once the flight started. Called by ARRWeapon::SpawnShot for Muzzle shots.
+	 */
+	void HoldFirstMove();
+
+	/** True while HoldFirstMove keeps the projectile in place (its movement starts on the next frame). */
+	bool IsHoldingFirstMove() const { return HeldFrameTime >= 0.0; }
+
+	/**
 	 * True when this projectile may hit OtherActor (checked on overlap after the ignored actors, before the ASC lookup).
 	 * Default: OtherActor is an instance of HitActorClass, or any actor when HitActorClass is unset. Override for other filters.
 	 */
@@ -105,6 +118,13 @@ public:
 protected:
 	/** Turns off the collision of the visual components (DisableVisualCollision), binds the overlap and stop events and ignores the owner weapon and the instigator while moving. */
 	virtual void PostInitializeComponents() override;
+
+	/**
+	 * Only enabled by HoldFirstMove; runs once in TG_PostUpdateWork of the held frame, after that frame's movement tick (which did
+	 * not move the projectile): turns the movement simulation back on, so the next frame moves it, and turns this tick off again.
+	 * Projectiles otherwise never tick (the movement component moves them).
+	 */
+	virtual void Tick(float DeltaSeconds) override;
 
 	/**
 	 * Sets every primitive component other than CollisionCapsule (the Blueprint shot mesh) to NoCollision without overlap
@@ -175,4 +195,7 @@ protected:
 
 	/** True once the projectile is spent (MaxHits reached or stopped); guards against any application before destruction. */
 	bool bSpent = false;
+
+	/** World time (s) of the frame HoldFirstMove holds (movement simulation off until Tick at its end); -1 when not holding. */
+	double HeldFrameTime = -1.0;
 };
