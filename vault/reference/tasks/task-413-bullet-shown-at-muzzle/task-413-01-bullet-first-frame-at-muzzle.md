@@ -3,7 +3,7 @@ id: task-413-01-bullet-first-frame-at-muzzle
 description: "Cpp: measure in a -game run where the rifle bullet is first drawn versus the Muzzle, then fix it to draw at the Muzzle."
 parent: task-413-bullet-shown-at-muzzle
 kind: task
-status: todo
+status: in-progress
 ---
 # Bullet shown at the muzzle on its first frame: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T21:58:10Z
 - waiting_for: none
 - result: open
 

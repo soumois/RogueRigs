@@ -3,7 +3,7 @@ id: task-413-bullet-shown-at-muzzle
 description: "Global task: the rifle bullet visually starts ahead of the Muzzle; measure the cause in game, then draw its first frame at the Muzzle."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bullet shown at the muzzle on its first frame
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "ok, tout par défaut")
 - milestone: M2
 - next_step: task-413-01-bullet-first-frame-at-muzzle
-- started: open
+- started: 2026-10-31T21:58:10Z
 - waiting_for: none
 - result: open
 
