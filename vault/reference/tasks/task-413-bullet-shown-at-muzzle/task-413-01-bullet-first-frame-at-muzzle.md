@@ -1,6 +1,6 @@
 ---
 id: task-413-01-bullet-first-frame-at-muzzle
-description: "Cpp: measure in a -game run where the rifle bullet is first drawn versus the Muzzle, find the cause, fix it so the first drawn frame is at the Muzzle"
+description: "Cpp: measure in a -game run where the rifle bullet is first drawn versus the Muzzle, then fix it to draw at the Muzzle."
 parent: task-413-bullet-shown-at-muzzle
 kind: task
 status: todo
