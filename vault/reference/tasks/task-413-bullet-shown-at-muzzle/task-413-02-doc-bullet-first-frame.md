@@ -3,7 +3,7 @@ id: task-413-02-doc-bullet-first-frame
 description: "Doc: sys-projectiles, sys-weapons (first drawn frame at the Muzzle, cause and fix, debug log or cvar)"
 parent: task-413-bullet-shown-at-muzzle
 kind: task
-status: todo
+status: in-progress
 ---
 # Bullet shown at the muzzle on its first frame: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T22:15:58Z
 - waiting_for: none
 - result: open
 

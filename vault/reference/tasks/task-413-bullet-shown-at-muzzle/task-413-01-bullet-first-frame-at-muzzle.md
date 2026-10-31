@@ -3,7 +3,7 @@ id: task-413-01-bullet-first-frame-at-muzzle
 description: "Cpp: measure in a -game run where the rifle bullet is first drawn versus the Muzzle, then fix it to draw at the Muzzle."
 parent: task-413-bullet-shown-at-muzzle
 kind: task
-status: in-progress
+status: done
 ---
 # Bullet shown at the muzzle on its first frame: cpp
 
@@ -18,11 +18,11 @@ status: in-progress
 - model: open
 - tokens: open
 - usage: open
-- runs: open
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T21:58:10Z
 - waiting_for: none
-- result: open
+- result: Commit 148676a4. Cause: bullet spawned in the world tick moves one frame (3000 x dt) before first draw. Fix: ARRProjectile::HoldFirstMove (sim off for the spawn frame, TG_PostUpdateWork tick re-enables, life span +1 frame) called from ARRWeapon::SpawnShot for swept Muzzle shots. Measured -game ~100 fps running miner: before 26-34 uu from Muzzle per bullet (first burst 56/172/34 on hitches), after 0.0-0.8 uu for shots 1-40. Build clean, RogueRigs.Weapons+Shotgun 19/19 pass, no test changed. Cvar rr.Debug.ShotFirstFrame left (off). Cost counted under the resumed cpp agent first description (runs=1; ALERT likely: turn limit 60 reached then resumed). Unverified: shotgun in game, 60 fps, visual, motion blur.
 
 ## Relations
 - [[task-413-bullet-shown-at-muzzle]] — parent global task.
