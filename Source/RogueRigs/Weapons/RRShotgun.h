@@ -9,7 +9,8 @@
 /**
  * Shotgun (shotgun gdd, sys-weapons). Same weapon ASC, attributes, magazine and auto-fire as every ARRWeapon (CSV row
  * Shotgun: BurstCount 1). Each FireOnce fires PelletCount projectiles of ProjectileClass (native default ARRShotgunPellet)
- * from GetShotOrigin through ARRProjectile::SpawnProjectile, flat, at yaw offsets spread evenly from -SpreadDeg to +SpreadDeg
+ * placed by GetShotPlacement (task-412 Q4: held by a miner with a shown hand weapon, from that weapon's Muzzle with the same
+ * vertical capsule and miner-to-Muzzle sweep as the burst rifle) through SpawnShot, flat, at yaw offsets spread evenly from -SpreadDeg to +SpreadDeg
  * around the aim (no random), speed ProjectileSpeed, lifetime Range / ProjectileSpeed. All pellets of a shot carry one damage
  * spec (MakeDamageSpec; each application rolls its own critical in URRDamageExecution), MaxHits = GetPierceCount() and
  * KnockbackSpeed = KnockbackForce (each robot hit is pushed along the pellet's flight; ARREnemy::ApplyKnockback scales it by

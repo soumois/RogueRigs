@@ -1,4 +1,4 @@
-// Rogue Rigs - base projectile: flies straight, carries a damage spec, hurts up to MaxHits distinct hittable actors with an ASC (pierce), optional knockback per hit, stops on rock.
+// Rogue Rigs - base projectile: vertical capsule collision, flies straight, carries a damage spec, hurts up to MaxHits distinct hittable actors with an ASC (pierce), optional knockback per hit, stops on rock.
 
 #pragma once
 
@@ -9,13 +9,13 @@
 
 class APawn;
 class UPrimitiveComponent;
+class UCapsuleComponent;
 class UProjectileMovementComponent;
-class USphereComponent;
 struct FHitResult;
 
 /**
  * Base projectile (sys-projectiles). No ASC: it carries the damage spec made by the weapon's ASC at fire time and
- * applies it on impact. Collision: a sphere on the Projectile object channel (RRCollisionChannels::Projectile)
+ * applies it on impact. Collision: a vertical capsule (CollisionCapsule, root) on the Projectile object channel (RRCollisionChannels::Projectile)
  * that overlaps pawns and blocks world static and dynamic. On overlap with an actor that has an ASC, is not ignored
  * (owner, owner's owner, instigator), passes CanHit (default: an instance of HitActorClass, any actor when unset) and was
  * not hit yet by this projectile, it applies the spec once to it; after MaxHits distinct actors (pierce, set by
@@ -23,10 +23,14 @@ struct FHitResult;
  * hit is also pushed along the flight direction (ARREnemy::ApplyKnockback, after the damage: a robot killed by the hit is not pushed). On a blocking hit (rock blocks, walls) it is
  * destroyed, after damaging the cell when bDamagesTerrain and it is a barrel of the arena grid (carried Damage, no GAS on
  * barrels). Straight flight, no gravity, no sub-stepping; speed and lifetime set by InitProjectile. Spawn with
- * SpawnProjectile (deferred spawn + InitProjectile + FinishSpawning; Owner = the firing actor, Instigator = its pawn).
- * Sphere radius 14 uu (miner shots: rifle, pellet, turret bullet); robot shots 10 uu. Robot shots: HitActorClass = the miner
- * class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint
- * for the mesh (its collision is turned off at spawn: only the sphere collides) and the sphere radius.
+ * SpawnProjectile (deferred spawn + InitProjectile + capsule half height + FinishSpawning; Owner = the firing actor, Instigator = its pawn).
+ * Capsule radius 14 uu (miner shots: rifle, pellet, turret bullet); robot shots 10 uu. By default the half height equals the
+ * radius (the capsule is a sphere: turret bullets, robot shots, shots without a hand weapon). Miner shots leaving from the hand
+ * weapon Muzzle get a taller capsule per shot (SpawnProjectile CapsuleHalfHeight, task-412): centred on the Muzzle, its bottom
+ * just above the floor, so it reaches down to rock blocks and robots while the shot mesh flies at the Muzzle height; the flat,
+ * yaw-only flight keeps it vertical. SweepTo moves a just-spawned shot with a sweep (miner axis to Muzzle, task-412 Q3). Robot
+ * shots: HitActorClass = the miner class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint for the mesh
+ * (its collision is turned off at spawn: only the capsule collides) and the capsule radius.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRProjectile : public AActor
@@ -34,7 +38,7 @@ class ROGUERIGS_API ARRProjectile : public AActor
 	GENERATED_BODY()
 
 public:
-	/** Creates the collision sphere (root) and the projectile movement. */
+	/** Creates the collision capsule (root, half height = radius) and the projectile movement. */
 	ARRProjectile(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	/**
@@ -47,11 +51,29 @@ public:
 
 	/**
 	 * Spawns one projectile of Class at SpawnTransform (deferred, always spawned), sets its damage spec, speed (uu/s) and
-	 * lifetime (s, 0 = unlimited), MaxHits (distinct actors damaged, >= 1) and KnockbackSpeed (uu/s per robot hit, 0 = none) with InitProjectile, then finishes the spawn. InOwner and InInstigator are ignored by its
-	 * collision. Returns null (logged) when World or Class is missing or the spawn failed.
+	 * lifetime (s, 0 = unlimited), MaxHits (distinct actors damaged, >= 1) and KnockbackSpeed (uu/s per robot hit, 0 = none) with InitProjectile,
+	 * the capsule half height (CapsuleHalfHeight in uu, see SetCapsuleHalfHeight; 0 = keep half height = radius), then finishes the spawn.
+	 * The capsule is centred on SpawnTransform. InOwner and InInstigator are ignored by its collision. Returns null (logged) when World
+	 * or Class is missing or the spawn failed.
 	 */
 	static ARRProjectile* SpawnProjectile(UWorld* World, TSubclassOf<ARRProjectile> Class, const FTransform& SpawnTransform,
-		AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 MaxHits = 1, float KnockbackSpeed = 0.f);
+		AActor* InOwner, APawn* InInstigator, const FGameplayEffectSpecHandle& InDamageSpec, float Speed, float Lifetime, int32 MaxHits = 1, float KnockbackSpeed = 0.f,
+		float CapsuleHalfHeight = 0.f);
+
+	/**
+	 * Sets the half height of the collision capsule in uu, clamped to at least its radius (half height = radius is a sphere); <= 0
+	 * restores half height = radius. The capsule stays centred on the actor (the shot mesh). Call between SpawnActorDeferred and
+	 * FinishSpawning (SpawnProjectile does), or before the first move.
+	 */
+	void SetCapsuleHalfHeight(float HalfHeight);
+
+	/**
+	 * Moves this projectile to TargetLocation (actor location) with a sweep of its capsule, right after its spawn (task-412 Q3:
+	 * from the miner axis to the Muzzle). Hittable actors overlapped along the way are hit through the normal overlap path (pierce
+	 * counted, knockback); a blocking hit (rock, barrel, wall) stops it there as a blocking hit in flight does (OnProjectileStop:
+	 * barrel damage, then destroyed). Returns true when the projectile is still flying at TargetLocation, false when spent or stopped.
+	 */
+	bool SweepTo(const FVector& TargetLocation);
 
 	/**
 	 * True when this projectile may hit OtherActor (checked on overlap after the ignored actors, before the ASC lookup).
@@ -71,8 +93,11 @@ public:
 	/** Distinct actors damaged so far. */
 	int32 GetHitCount() const { return HitCount; }
 
-	/** The collision sphere (root component). */
-	USphereComponent* GetCollisionSphere() const { return CollisionSphere; }
+	/** The collision capsule (root component; half height = radius unless set per shot). */
+	UCapsuleComponent* GetCollisionCapsule() const { return CollisionCapsule; }
+
+	/** Radius in uu of the collision capsule of Class's default object (its Blueprint value); 0 when Class is unset. */
+	static float GetDefaultCollisionRadius(TSubclassOf<ARRProjectile> Class);
 
 	/** The movement component. */
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
@@ -82,8 +107,8 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 	/**
-	 * Sets every primitive component other than CollisionSphere (the Blueprint shot mesh) to NoCollision without overlap
-	 * events: only the sphere collides. A shot mesh left with a blocking collision moved with the bullet into robot capsules,
+	 * Sets every primitive component other than CollisionCapsule (the Blueprint shot mesh) to NoCollision without overlap
+	 * events: only the capsule collides. A shot mesh left with a blocking collision moved with the bullet into robot capsules,
 	 * whose next move resolved the penetration by pushing the robot (task-180-01), and stopped other bullets.
 	 */
 	void DisableVisualCollision();
@@ -93,7 +118,7 @@ protected:
 	 * excluded), then the knockback to a robot when KnockbackSpeed > 0; destroys this projectile once MaxHits distinct actors were hit.
 	 */
 	UFUNCTION()
-	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	/** Blocking hit (rock, wall): when bDamagesTerrain, applies the carried damage once to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage); then destroys this projectile. */
 	UFUNCTION()
@@ -108,9 +133,12 @@ protected:
 	/** True for actors this projectile never hits: itself, its owner weapon, the instigator, and the owner's owner. */
 	bool IsIgnoredActor(const AActor* OtherActor) const;
 
-	/** Collision sphere on the Projectile channel; root component. Radius editable in the Blueprint subclass. */
+	/**
+	 * Collision capsule on the Projectile channel; root component (the sphere CollisionSphere before task-412). Radius editable in
+	 * the Blueprint subclass; half height = radius by default, set per shot by SpawnProjectile (miner shots from the Muzzle).
+	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<USphereComponent> CollisionSphere;
+	TObjectPtr<UCapsuleComponent> CollisionCapsule;
 
 	/** Straight flight without gravity, bounce or sub-stepping; stops on the first blocking hit. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

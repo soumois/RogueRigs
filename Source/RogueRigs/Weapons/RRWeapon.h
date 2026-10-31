@@ -19,6 +19,27 @@ class USceneComponent;
 struct FRRWeaponStatsRow;
 struct FOnAttributeChangeData;
 
+/**
+ * Where and how one shot of a weapon is spawned (ARRWeapon::GetShotPlacement, task-412). Origin: the projectile location (its shot
+ * mesh and capsule centre). CapsuleHalfHeight: the projectile capsule half height in uu, 0 = keep half height = radius (a sphere).
+ * bSweepFromMiner: the projectile is spawned at SweepStart (the miner axis, at the Origin height) and swept to Origin
+ * (ARRProjectile::SweepTo) so a rock between the miner and the Muzzle stops it and a robot there is hit.
+ */
+struct FRRShotPlacement
+{
+	/** Projectile spawn location (shot mesh and capsule centre). */
+	FVector Origin = FVector::ZeroVector;
+
+	/** Projectile capsule half height in uu; 0 = half height = radius (sphere). */
+	float CapsuleHalfHeight = 0.f;
+
+	/** True = spawn at SweepStart and sweep to Origin before the flight. */
+	bool bSweepFromMiner = false;
+
+	/** Sweep start: the owning miner's axis at the Origin height (used when bSweepFromMiner). */
+	FVector SweepStart = FVector::ZeroVector;
+};
+
 /** Fired when the weapon magazine shown on the HUD changed: Ammo or MagazineSize rounded down (shot, refill, upgrade). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnWeaponAmmoChangedSignature, ARRWeapon*, Weapon, int32, Rounds, int32, MagazineSize);
 
@@ -26,9 +47,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRROnWeaponAmmoChangedSignature, 
  * Base class of the miner's weapons (sys-weapons). Owns its URRAbilitySystemComponent (owner and avatar: the
  * weapon) with URRWeaponAttributeSet, and a URRAutoFireComponent that decides when to fire; FireOnce decides
  * what is fired (default: one ProjectileClass from GetShotOrigin carrying a DamageEffectClass spec, with yaw
- * spread; overridden by weapons that fire differently). Shots start ShotHeight above the floor under the owning
- * miner, ShotForwardOffset ahead of its capsule, so they hit floor-standing targets and stop on blocks; the Muzzle is
- * only a visual reference (and the spawn point when there is no owning miner). The weapon actor has no collision
+ * spread; overridden by weapons that fire differently). Shot origin (GetShotPlacement, task-412): when the owning miner holds a
+ * weapon on its hand socket (the shown weapon, the burst rifle), every weapon of that miner (the hand weapon and every weapon
+ * without a hand socket, the shotgun) shoots from the hand weapon's Muzzle read at fire time, with a vertical projectile capsule
+ * centred on the Muzzle whose bottom is ShotFloorClearance above the floor (so it reaches rocks and robots and never touches the
+ * floor), swept from the miner axis to the Muzzle first; a Muzzle too low for that capsule falls back to a sphere ShotHeight above
+ * the floor under the Muzzle (warning). Without a hand weapon: ShotHeight above the floor, ShotForwardOffset ahead of the miner
+ * capsule, a sphere. Without a miner: the own Muzzle (turrets override GetShotOrigin). The weapon actor has no collision
  * (bActorEnableCollision off): it is a visual carried inside the miner capsule. Acquisition (Acquire, called by the miner after spawn and
  * attach): InitAbilityActorInfo(weapon, weapon), base values from row StatsRowName of WeaponStats.csv, magazine
  * filled, auto-fire configured and started; the miner's global upgrades are replayed after the base values
@@ -75,13 +100,36 @@ public:
 	virtual FVector GetAimDirection() const;
 
 	/**
-	 * World location where FireOnce spawns its projectile. With an owning miner: the floor under the miner (capsule bottom
-	 * minus the CharacterMovement floor distance when standing on a walkable floor) + ShotHeight, moved horizontally along
-	 * GetAimDirection by the capsule radius + ShotForwardOffset. Without a miner: the Muzzle location. Virtual so a weapon not
-	 * held by a miner (turret) supplies its own origin.
+	 * World location where FireOnce spawns its projectile (its shot mesh). With an owning miner: GetShotPlacement().Origin (the
+	 * hand weapon Muzzle, its low-Muzzle fallback, or the floor + ShotHeight point without a hand weapon). Without a miner: the
+	 * Muzzle location. Virtual so a weapon not held by a miner (turret) supplies its own origin.
 	 */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	virtual FVector GetShotOrigin() const;
+
+	/**
+	 * Placement of a shot fired now (task-412), read at fire time. With an owning miner holding a hand weapon (FindHandWeapon):
+	 * Origin = that weapon's Muzzle world location; capsule half height = Muzzle height - (floor + ShotFloorClearance), so the
+	 * capsule centred on the Muzzle has its bottom ShotFloorClearance above the floor and its top as far above the Muzzle; sweep from
+	 * the miner axis. When the Muzzle is lower than floor + ShotFloorClearance + the projectile radius: Origin under the Muzzle at
+	 * floor + ShotHeight, a sphere, still swept from the miner axis, with a warning (logged once per weapon). With an owning miner
+	 * and no hand weapon: the floor + ShotHeight point ShotForwardOffset ahead of the miner capsule, a sphere, no sweep. Without a
+	 * miner: GetShotOrigin (own Muzzle; turret override), a sphere, no sweep. Floor: the miner capsule bottom minus the
+	 * CharacterMovement floor distance on a walkable floor.
+	 */
+	FRRShotPlacement GetShotPlacement() const;
+
+	/** True when this weapon has a hand socket (HandSocketName) and is attached to its owning miner's mesh at that socket: the shown weapon. */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Attach")
+	bool IsHeldOnHandSocket() const;
+
+	/** First valid weapon of the owning miner held on its hand socket (IsHeldOnHandSocket), this weapon included; null without one or without a miner. */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Attach")
+	ARRWeapon* FindHandWeapon() const;
+
+	/** Clearance in uu between the floor and the bottom of the projectile capsule of shots fired from the hand weapon Muzzle. */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Projectile")
+	float GetShotFloorClearance() const { return ShotFloorClearance; }
 
 	/** Height of the shots above the floor under the owning miner, in uu. */
 	UFUNCTION(BlueprintPure, Category = "Weapon|Projectile")
@@ -98,7 +146,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Attach")
 	FName GetHandSocketName() const { return HandSocketName; }
 
-	/** Barrel tip component (visual reference only, see Muzzle). Read by URRMinerAnimInstance to counter-move it with the rifle mesh (task-411-01). */
+	/** Barrel tip component (see Muzzle): shot origin of the miner's weapons when this weapon is held on the hand socket. Read by URRMinerAnimInstance to counter-move it with the rifle mesh (task-411-01). */
 	USceneComponent* GetMuzzle() const { return Muzzle; }
 
 	/** The component that decides when this weapon fires. */
@@ -188,12 +236,23 @@ protected:
 
 	/**
 	 * Fires one shot, called by the auto-fire for each bullet. Default (burst rifle): makes a DamageEffectClass spec
-	 * on the weapon's ASC, spawns one ProjectileClass at GetShotOrigin, flat, toward GetAimDirection rotated by a random
-	 * yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
-	 * weapon, Instigator: the miner; ARRProjectile::SpawnProjectile). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
+	 * on the weapon's ASC, spawns one ProjectileClass placed by GetShotPlacement (SpawnShot), flat, toward GetAimDirection rotated
+	 * by a random yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
+	 * weapon, Instigator: the miner). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
 	 * Weapons that fire differently (shotgun) override it.
 	 */
 	virtual void FireOnce();
+
+	/**
+	 * Spawns one ProjectileClass for Placement with ShotRotation (ARRProjectile::SpawnProjectile with Placement's capsule half
+	 * height): at Placement.SweepStart then swept to Placement.Origin when bSweepFromMiner (a rock on the way stops it there, robots
+	 * on the way are hit), else at Placement.Origin. Owner: this weapon, Instigator: the miner (or this weapon's instigator).
+	 * Returns the spawned projectile (possibly already destroyed by the sweep), null when the spawn failed.
+	 */
+	ARRProjectile* SpawnShot(const FRRShotPlacement& Placement, const FRotator& ShotRotation, const FGameplayEffectSpecHandle& Spec, int32 MaxHits, float KnockbackSpeed);
+
+	/** Floor height under the owning miner: capsule bottom, lowered by the CharacterMovement floor distance on a walkable floor. False without a miner capsule. */
+	bool GetFloorZUnderMiner(double& OutFloorZ) const;
 
 	/** Makes the outgoing DamageEffectClass spec on the weapon's ASC (context instigator and causer: this weapon). */
 	FGameplayEffectSpecHandle MakeDamageSpec() const;
@@ -221,8 +280,10 @@ protected:
 	TObjectPtr<URRAutoFireComponent> AutoFire;
 
 	/**
-	 * Barrel tip, under Root (ARRTurret: under its HeadPivot); its relative location is set in the Blueprint subclass. Visual reference only (muzzle effects):
-	 * shots of a weapon held by a miner start at GetShotOrigin. Spawn point of the shots only when there is no owning miner (a turret uses its horizontal position).
+	 * Barrel tip, under Root (ARRTurret: under its HeadPivot); its relative location is set in the Blueprint subclass (BP_BurstRifle:
+	 * placed by hand by the owner). Not visual only since task-412: when this weapon is held on the miner hand socket, its world
+	 * location at fire time is the shot origin of every weapon of that miner (GetShotPlacement). Also the spawn point of the shots
+	 * when there is no owning miner (a turret uses its horizontal position).
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> Muzzle;
@@ -239,9 +300,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")
 	FName StatsRowName;
 
-	/** Height of the shots above the floor under the owning miner, in uu. Must stay below the grid's BlockHeight (100 by default) so shots stop on blocks; checked at acquisition. */
+	/**
+	 * Height of the shots above the floor under the owning miner, in uu, for shots without a hand weapon and for the low-Muzzle
+	 * fallback. Must stay below the grid's BlockHeight (100 by default) so shots stop on blocks; checked at acquisition.
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
 	float ShotHeight = 50.f;
+
+	/**
+	 * Gap in uu between the floor under the miner and the bottom of the projectile capsule of shots fired from the hand weapon Muzzle
+	 * (task-412 Q1, owner 2026-10-31, provisional: 20). Above 0 so shots never stop on the floor, below the grid BlockHeight so they
+	 * never pass over a rock; checked at acquisition.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
+	float ShotFloorClearance = 20.f;
+
+	/** True once the low-Muzzle fallback warning was logged for this weapon (logged once, not per shot). */
+	mutable bool bLowMuzzleWarned = false;
 
 	/** Distance of the shot origin ahead of the owning miner's capsule surface, along the aim, in uu (origin = capsule radius + this value from the miner axis). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
@@ -250,7 +325,8 @@ protected:
 	/**
 	 * Per-weapon socket of the miner mesh (task-400): when set and present on the miner mesh, ARRMiner::AddWeapon snaps the
 	 * weapon to it (the burst rifle: WeaponSocket_R in the right hand). None (default) = the miner's shared attachment
-	 * (WeaponAttachSocketName, or the capsule at WeaponAttachOffset). Visual only: the shot origin (GetShotOrigin) ignores it.
+	 * (WeaponAttachSocketName, or the capsule at WeaponAttachOffset). A weapon held on it is the shown weapon: its Muzzle is the shot
+	 * origin of every weapon of the miner (GetShotPlacement, task-412).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Attach")
 	FName HandSocketName;

@@ -61,23 +61,23 @@ void ARRShotgun::FireOnce()
 		UE_LOG(LogRogueRigs, Warning, TEXT("%s: no damage spec (DamageEffectClass unset); the pellets will deal no damage."), *GetName());
 	}
 
-	const FVector Origin = GetShotOrigin();
+	// task-412 Q4: the shotgun has no hand socket, so its pellets leave from the shown weapon's Muzzle (burst rifle) with the same
+	// capsule and miner-to-Muzzle sweep as the rifle bullets (ARRWeapon::GetShotPlacement); one placement for the 7 pellets.
+	const FRRShotPlacement Placement = GetShotPlacement();
 	const FVector Direction = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
 	const float AimYaw = Direction.Rotation().Yaw;
 	const int32 MaxHits = GetPierceCount();
-	const float Lifetime = Range / ProjectileSpeed;
-	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
 
 	LastPelletsSpawned = 0;
 	for (int32 Index = 0; Index < PelletCount; ++Index)
 	{
-		const FTransform SpawnTransform(FRotator(0.f, AimYaw + GetPelletYawOffset(Index), 0.f), Origin);
-		if (ARRProjectile::SpawnProjectile(World, ProjectileClass, SpawnTransform, this, InstigatorPawn, Spec, ProjectileSpeed, Lifetime, MaxHits, KnockbackForce))
+		const FRotator PelletRotation(0.f, AimYaw + GetPelletYawOffset(Index), 0.f);
+		if (SpawnShot(Placement, PelletRotation, Spec, MaxHits, KnockbackForce))
 		{
 			++LastPelletsSpawned;
 		}
 	}
 	++ShotCount;
 
-	OnShotFired(Origin, Direction, SpreadDeg);
+	OnShotFired(Placement.Origin, Direction, SpreadDeg);
 }

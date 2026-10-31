@@ -6,7 +6,9 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
+#include "Engine/World.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Enemies/RRChaser.h"
@@ -600,39 +602,82 @@ bool FRRWeaponMinerStartingWeaponTest::RunTest(const FString& Parameters)
 	const float FloorZ = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y).Z;
 	const FVector MinerLocation = Miner->GetActorLocation();
 	TestTrue(TEXT("miner aims east"), Miner->GetAimDirection().Equals(FVector::ForwardVector, 1e-3f));
-	ARRProjectile* Projectile = FireSingleShot(*this, Weapon);
-	if (!Projectile)
+	TestTrue(TEXT("ShotHeight is below the block height"), Weapon->GetShotHeight() > 0.f && Weapon->GetShotHeight() < Grid->GetBlockHeight());
+
+	// Shot placement read at fire time (task-412): from the hand weapon Muzzle with a vertical capsule when the rifle is held on its
+	// hand socket, else the pre-task-412 point ShotHeight above the floor and a sphere.
+	const FVector MuzzleLocation = FWeaponAccess::MuzzleOf(Weapon)->GetComponentLocation();
+	const FRRShotPlacement Placement = Weapon->GetShotPlacement();
+	const float Radius = ARRProjectile::GetDefaultCollisionRadius(Weapon->GetProjectileClass());
+	const float Clearance = Weapon->GetShotFloorClearance();
+	AddInfo(FString::Printf(TEXT("miner at %s (capsule bottom %.2f uu above the floor), weapon at %s (held on hand socket: %s), muzzle at %s %.1f uu above the floor; placement origin %s %.2f uu above the floor, capsule half height %.2f (radius %.1f, clearance %.1f), sweep %s from %s"),
+		*MinerLocation.ToCompactString(), MinerLocation.Z - Capsule->GetScaledCapsuleHalfHeight() - FloorZ, *Weapon->GetActorLocation().ToCompactString(),
+		Weapon->IsHeldOnHandSocket() ? TEXT("yes") : TEXT("no"), *MuzzleLocation.ToCompactString(), MuzzleLocation.Z - FloorZ, *Placement.Origin.ToCompactString(),
+		Placement.Origin.Z - FloorZ, Placement.CapsuleHalfHeight, Radius, Clearance, Placement.bSweepFromMiner ? TEXT("on") : TEXT("off"), *Placement.SweepStart.ToCompactString()));
+	TestEqual(TEXT("miner shot radius 14 uu"), Radius, 14.f, 0.01f);
+	if (Weapon->IsHeldOnHandSocket())
+	{
+		TestEqual(TEXT("the hand weapon is the rifle"), Weapon->FindHandWeapon(), Weapon);
+		TestTrue(TEXT("swept from the miner axis at the shot height"), Placement.bSweepFromMiner
+			&& FVector::Dist2D(Placement.SweepStart, MinerLocation) < 0.5f && FMath::IsNearlyEqual(Placement.SweepStart.Z, Placement.Origin.Z, 0.01));
+		if (MuzzleLocation.Z - FloorZ >= Clearance + Radius)
+		{
+			const double Bottom = Placement.Origin.Z - Placement.CapsuleHalfHeight;
+			const double Top = Placement.Origin.Z + Placement.CapsuleHalfHeight;
+			TestTrue(TEXT("shot origin at the Muzzle (1 uu)"), Placement.Origin.Equals(MuzzleLocation, 1.f));
+			TestTrue(TEXT("capsule bottom = floor + ShotFloorClearance"), FMath::IsNearlyEqual(Bottom - FloorZ, static_cast<double>(Clearance), 0.5));
+			TestTrue(TEXT("capsule bottom above the floor and below the block top"), Bottom > FloorZ && Bottom - FloorZ < Grid->GetBlockHeight());
+			TestTrue(TEXT("capsule reaches the Muzzle height"), Top >= MuzzleLocation.Z);
+		}
+		else
+		{
+			TestTrue(TEXT("low Muzzle: sphere ShotHeight above the floor under the Muzzle"), Placement.CapsuleHalfHeight == 0.f
+				&& FVector::Dist2D(Placement.Origin, MuzzleLocation) < 0.5f && FMath::IsNearlyEqual(Placement.Origin.Z - FloorZ, static_cast<double>(Weapon->GetShotHeight()), 0.5));
+		}
+	}
+	else
+	{
+		const FVector ToShot = Placement.Origin - MinerLocation;
+		const float ExpectedForward = Capsule->GetScaledCapsuleRadius() + Weapon->GetShotForwardOffset();
+		TestTrue(TEXT("shot spawned ShotHeight above the floor"), FMath::IsNearlyEqual(Placement.Origin.Z - FloorZ, static_cast<double>(Weapon->GetShotHeight()), 0.5));
+		TestTrue(TEXT("shot spawned capsule radius + ShotForwardOffset ahead along the aim"),
+			FMath::IsNearlyEqual(ToShot.X, ExpectedForward, 0.5f) && FMath::Abs(ToShot.Y) < 0.5f);
+		TestTrue(TEXT("no hand weapon: sphere, no sweep"), Placement.CapsuleHalfHeight == 0.f && !Placement.bSweepFromMiner);
+	}
+
+	// One shot: against the rock the miner-to-Muzzle sweep may already stop it, so the projectile is caught at spawn.
+	ARRProjectile* Projectile = nullptr;
+	const FDelegateHandle SpawnHandle = TestWorld.Get()->AddOnActorSpawnedHandler(FOnActorSpawned::FDelegate::CreateLambda([&Projectile](AActor* Actor)
+	{
+		if (ARRProjectile* Shot = Cast<ARRProjectile>(Actor))
+		{
+			Projectile = Shot;
+		}
+	}));
+	URRAutoFireComponent* AutoFire = Weapon->GetAutoFireComponent();
+	AutoFire->Configure(Weapon->GetAbilitySystemComponent(), Weapon->GetBurstCount(), Weapon->GetBurstDuty(), Weapon->GetReloadTime());
+	AutoFire->StartFiring();
+	AutoFire->AdvanceTime(SingleShotStep);
+	AutoFire->StopFiring();
+	TestWorld.Get()->RemoveOnActorSpawnedHandler(SpawnHandle);
+	if (!TestNotNull(TEXT("the shot spawned a projectile"), Projectile))
 	{
 		return false;
 	}
-	const FVector ShotLocation = Projectile->GetActorLocation();
-	const float ShotHeight = ShotLocation.Z - FloorZ;
-	const FVector ToShot = ShotLocation - MinerLocation;
-	const float ExpectedForward = Capsule->GetScaledCapsuleRadius() + Weapon->GetShotForwardOffset();
-	const FVector MuzzleLocation = FWeaponAccess::MuzzleOf(Weapon)->GetComponentLocation();
-	AddInfo(FString::Printf(TEXT("miner at %s (capsule bottom %.2f uu above the floor), weapon at %s, muzzle (visual) at %s %.1f uu above the floor; shot spawned at %s: %.2f uu above the floor (ShotHeight %.1f, block height %.1f), %.2f uu ahead of the miner axis (expected %.1f)"),
-		*MinerLocation.ToCompactString(), MinerLocation.Z - Capsule->GetScaledCapsuleHalfHeight() - FloorZ, *Weapon->GetActorLocation().ToCompactString(),
-		*MuzzleLocation.ToCompactString(), MuzzleLocation.Z - FloorZ, *ShotLocation.ToCompactString(), ShotHeight, Weapon->GetShotHeight(),
-		Grid->GetBlockHeight(), ToShot.X, ExpectedForward));
-	TestTrue(TEXT("ShotHeight is below the block height"), Weapon->GetShotHeight() > 0.f && Weapon->GetShotHeight() < Grid->GetBlockHeight());
-	TestTrue(TEXT("shot spawned ShotHeight above the floor"), FMath::IsNearlyEqual(ShotHeight, Weapon->GetShotHeight(), 0.5f));
-	TestTrue(TEXT("shot spawned below the block top (shots hit rocks)"), ShotHeight > 0.f && ShotHeight < Grid->GetBlockHeight());
-	TestTrue(TEXT("shot spawned capsule radius + ShotForwardOffset ahead along the aim"),
-		FMath::IsNearlyEqual(ToShot.X, ExpectedForward, 0.5f) && FMath::Abs(ToShot.Y) < 0.5f);
+	const float ExpectedHalfHeight = Placement.CapsuleHalfHeight > 0.f ? Placement.CapsuleHalfHeight : Radius;
+	TestEqual(TEXT("projectile capsule half height as placed"), Projectile->GetCollisionCapsule()->GetUnscaledCapsuleHalfHeight(), ExpectedHalfHeight, 0.01f);
+	TestEqual(TEXT("projectile capsule radius"), Projectile->GetCollisionCapsule()->GetUnscaledCapsuleRadius(), Radius, 0.01f);
 
-	// The shot stops on the rock in front of the miner.
-	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
-	Projectile->GetProjectileMovement()->OnProjectileStop.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleProjectileStop);
-	FVector LastLocation;
-	const int32 DestroyFrame = TickUntilDestroyed(TestWorld, Projectile, 30, LastLocation);
-	AddInfo(FString::Printf(TEXT("miner shot destroyed at frame %d, last location %s"), DestroyFrame, *LastLocation.ToCompactString()));
-	TestTrue(TEXT("miner shot destroyed within 3 frames"), DestroyFrame != INDEX_NONE && DestroyFrame <= 3);
-	if (TestEqual(TEXT("miner shot: one blocking stop"), Recorder->GetProjectileStops().Num(), 1))
+	// The shot stops on the rock in front of the miner: in the sweep, or in flight within 3 frames; never beyond the miner's cell.
+	FVector LastLocation = Projectile->GetActorLocation();
+	int32 DestroyFrame = 0;
+	if (IsValid(Projectile) && !Projectile->IsActorBeingDestroyed())
 	{
-		const FHitResult& Hit = Recorder->GetProjectileStops()[0];
-		TestEqual(TEXT("miner shot stopped by the grid"), Hit.GetActor(), static_cast<AActor*>(Grid));
-		TestEqual(TEXT("miner shot stopped on the rock cell"), Grid->GetCellAtWorld(Hit.ImpactPoint + FVector(1.f, 0.f, 0.f)), RockCell);
+		DestroyFrame = TickUntilDestroyed(TestWorld, Projectile, 30, LastLocation);
 	}
+	AddInfo(FString::Printf(TEXT("miner shot destroyed at frame %d (0 = in the miner-to-Muzzle sweep), last location %s"), DestroyFrame, *LastLocation.ToCompactString()));
+	TestTrue(TEXT("miner shot destroyed within 3 frames"), DestroyFrame != INDEX_NONE && DestroyFrame <= 3);
+	TestEqual(TEXT("miner shot stopped before the rock cell"), Grid->GetCellAtWorld(LastLocation), RockWestFloorCell);
 	TestTrue(TEXT("rock still stands"), Grid->IsBlockCell(RockCell));
 	return true;
 }

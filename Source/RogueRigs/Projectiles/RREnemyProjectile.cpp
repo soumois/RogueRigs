@@ -2,7 +2,7 @@
 
 #include "Projectiles/RREnemyProjectile.h"
 
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Player/RRMiner.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RREnemyProjectile)
@@ -12,6 +12,6 @@ ARREnemyProjectile::ARREnemyProjectile(const FObjectInitializer& ObjectInitializ
 {
 	HitActorClass = ARRMiner::StaticClass();
 	bDamagesTerrain = false;
-	// Robot shots keep the 10 uu sphere; the miner shots of the base class use 14 uu.
-	CollisionSphere->InitSphereRadius(10.f);
+	// Robot shots keep the 10 uu sphere (capsule half height = radius); the miner shots of the base class use 14 uu.
+	CollisionCapsule->InitCapsuleSize(10.f, 10.f);
 }

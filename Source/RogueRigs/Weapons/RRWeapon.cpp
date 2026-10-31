@@ -97,6 +97,10 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 		{
 			UE_LOG(LogRogueRigs, Warning, TEXT("%s: ShotHeight %.1f is not below the grid BlockHeight %.1f; shots will fly over blocks."), *GetName(), ShotHeight, Grid->GetBlockHeight());
 		}
+		if (Grid && ShotFloorClearance >= Grid->GetBlockHeight())
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: ShotFloorClearance %.1f is not below the grid BlockHeight %.1f; Muzzle shots will fly over blocks."), *GetName(), ShotFloorClearance, Grid->GetBlockHeight());
+		}
 	}
 
 	if (bStartFiringOnAcquire)
@@ -163,23 +167,116 @@ FVector ARRWeapon::GetAimDirection() const
 
 FVector ARRWeapon::GetShotOrigin() const
 {
-	const UCapsuleComponent* Capsule = OwnerMiner ? OwnerMiner->GetCapsuleComponent() : nullptr;
-	if (Capsule == nullptr)
+	if (OwnerMiner == nullptr || OwnerMiner->GetCapsuleComponent() == nullptr)
 	{
 		return Muzzle->GetComponentLocation();
 	}
+	return GetShotPlacement().Origin;
+}
 
+bool ARRWeapon::GetFloorZUnderMiner(double& OutFloorZ) const
+{
+	const UCapsuleComponent* Capsule = OwnerMiner ? OwnerMiner->GetCapsuleComponent() : nullptr;
+	if (Capsule == nullptr)
+	{
+		return false;
+	}
 	// Floor under the miner: capsule bottom, lowered by the gap CharacterMovement keeps above a walkable floor.
-	double FloorZ = Capsule->GetComponentLocation().Z - Capsule->GetScaledCapsuleHalfHeight();
+	OutFloorZ = Capsule->GetComponentLocation().Z - Capsule->GetScaledCapsuleHalfHeight();
 	const UCharacterMovementComponent* Movement = OwnerMiner->GetCharacterMovement();
 	if (Movement && Movement->IsMovingOnGround() && Movement->CurrentFloor.IsWalkableFloor())
 	{
-		FloorZ -= Movement->CurrentFloor.FloorDist;
+		OutFloorZ -= Movement->CurrentFloor.FloorDist;
+	}
+	return true;
+}
+
+bool ARRWeapon::IsHeldOnHandSocket() const
+{
+	return OwnerMiner && !HandSocketName.IsNone() && GetAttachParentActor() == OwnerMiner && GetAttachParentSocketName() == HandSocketName;
+}
+
+ARRWeapon* ARRWeapon::FindHandWeapon() const
+{
+	if (OwnerMiner == nullptr)
+	{
+		return nullptr;
+	}
+	for (ARRWeapon* Weapon : OwnerMiner->GetWeapons())
+	{
+		if (IsValid(Weapon) && Weapon->IsHeldOnHandSocket())
+		{
+			return Weapon;
+		}
+	}
+	return nullptr;
+}
+
+FRRShotPlacement ARRWeapon::GetShotPlacement() const
+{
+	FRRShotPlacement Placement;
+	double FloorZ = 0.0;
+	if (!GetFloorZUnderMiner(FloorZ))
+	{
+		// No miner: the own Muzzle, or the override of a weapon not held by a miner (turret).
+		Placement.Origin = GetShotOrigin();
+		return Placement;
+	}
+	const UCapsuleComponent* Capsule = OwnerMiner->GetCapsuleComponent();
+	const FVector MinerAxis = Capsule->GetComponentLocation();
+
+	const ARRWeapon* HandWeapon = FindHandWeapon();
+	const USceneComponent* HandMuzzle = HandWeapon ? HandWeapon->GetMuzzle() : nullptr;
+	if (HandMuzzle == nullptr)
+	{
+		// No shown weapon (fallback, not polished: the demo always starts with the burst rifle): pre-task-412 point and sphere.
+		const FVector Forward = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
+		const FVector Base(MinerAxis.X, MinerAxis.Y, FloorZ + ShotHeight);
+		Placement.Origin = Base + Forward * (Capsule->GetScaledCapsuleRadius() + ShotForwardOffset);
+		return Placement;
 	}
 
-	const FVector Forward = GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
-	const FVector Base(Capsule->GetComponentLocation().X, Capsule->GetComponentLocation().Y, FloorZ + ShotHeight);
-	return Base + Forward * (Capsule->GetScaledCapsuleRadius() + ShotForwardOffset);
+	// task-412: every weapon of the miner shoots from the shown weapon's Muzzle, read now (it follows the hand animation).
+	const FVector MuzzleLocation = HandMuzzle->GetComponentLocation();
+	const float Radius = ARRProjectile::GetDefaultCollisionRadius(ProjectileClass);
+	const double CapsuleBottom = FloorZ + ShotFloorClearance;
+	// Capsule centred on the Muzzle (simplest: no offset between the shot mesh and its collision): bottom at floor + clearance,
+	// top as far above the Muzzle. It needs a half height of at least the radius, i.e. a Muzzle at least clearance + radius above the floor.
+	const double HalfHeight = MuzzleLocation.Z - CapsuleBottom;
+	Placement.bSweepFromMiner = true;
+	if (HalfHeight >= Radius)
+	{
+		Placement.Origin = MuzzleLocation;
+		Placement.CapsuleHalfHeight = static_cast<float>(HalfHeight);
+	}
+	else
+	{
+		if (!bLowMuzzleWarned)
+		{
+			bLowMuzzleWarned = true;
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: Muzzle of %s is %.1f uu above the floor, below ShotFloorClearance %.1f + projectile radius %.1f; shots fall back to a sphere %.1f uu above the floor under the Muzzle."),
+				*GetName(), *HandWeapon->GetName(), MuzzleLocation.Z - FloorZ, ShotFloorClearance, Radius, ShotHeight);
+		}
+		Placement.Origin = FVector(MuzzleLocation.X, MuzzleLocation.Y, FloorZ + ShotHeight);
+	}
+	Placement.SweepStart = FVector(MinerAxis.X, MinerAxis.Y, Placement.Origin.Z);
+	return Placement;
+}
+
+ARRProjectile* ARRWeapon::SpawnShot(const FRRShotPlacement& Placement, const FRotator& ShotRotation, const FGameplayEffectSpecHandle& Spec, int32 MaxHits, float KnockbackSpeed)
+{
+	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
+	const float Lifetime = ProjectileSpeed > 0.f ? Range / ProjectileSpeed : 0.f;
+	const FVector SpawnLocation = Placement.bSweepFromMiner ? Placement.SweepStart : Placement.Origin;
+	ARRProjectile* Projectile = ARRProjectile::SpawnProjectile(GetWorld(), ProjectileClass, FTransform(ShotRotation, SpawnLocation), this, InstigatorPawn,
+		Spec, ProjectileSpeed, Lifetime, MaxHits, KnockbackSpeed, Placement.CapsuleHalfHeight);
+	// task-412 Q3: the capsule is swept from the miner axis to the Muzzle (one sweep): a rock on the way stops the shot there,
+	// robots on the way are hit as in flight; this also keeps a shot from being born inside a rock the miner hugs.
+	if (Projectile && Placement.bSweepFromMiner)
+	{
+		Projectile->SweepTo(Placement.Origin);
+	}
+	return Projectile;
 }
 
 FGameplayEffectSpecHandle ARRWeapon::MakeDamageSpec() const
@@ -219,10 +316,7 @@ void ARRWeapon::FireOnce()
 	// Flat shot: aim yaw plus a uniform spread in [-SpreadDeg, SpreadDeg].
 	const float SpreadYaw = SpreadDeg > 0.f ? FMath::FRandRange(-SpreadDeg, SpreadDeg) : 0.f;
 	const FRotator ShotRotation(0.f, GetAimDirection().Rotation().Yaw + SpreadYaw, 0.f);
-	const FTransform SpawnTransform(ShotRotation, GetShotOrigin());
-
-	APawn* InstigatorPawn = OwnerMiner ? static_cast<APawn*>(OwnerMiner) : GetInstigator();
-	ARRProjectile::SpawnProjectile(World, ProjectileClass, SpawnTransform, this, InstigatorPawn, Spec, ProjectileSpeed, Range / ProjectileSpeed, GetPierceCount());
+	SpawnShot(GetShotPlacement(), ShotRotation, Spec, GetPierceCount(), 0.f);
 }
 
 int32 ARRWeapon::GetPierceCount() const
