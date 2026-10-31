@@ -3,7 +3,7 @@ id: task-413-02-doc-bullet-first-frame
 description: "Doc: sys-projectiles, sys-weapons (first drawn frame at the Muzzle, cause and fix, debug log or cvar)"
 parent: task-413-bullet-shown-at-muzzle
 kind: task
-status: in-progress
+status: done
 ---
 # Bullet shown at the muzzle on its first frame: doc
 
@@ -18,11 +18,11 @@ status: in-progress
 - model: open
 - tokens: open
 - usage: open
-- runs: open
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T22:15:58Z
 - waiting_for: none
-- result: open
+- result: Commit b023819a: sys-projectiles (First drawn frame rule), sys-weapons, sys-weapons-shotgun updated; lint OK.
 
 ## Relations
 - [[task-413-bullet-shown-at-muzzle]] — parent global task.

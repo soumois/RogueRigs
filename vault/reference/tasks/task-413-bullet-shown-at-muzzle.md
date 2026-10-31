@@ -3,7 +3,7 @@ id: task-413-bullet-shown-at-muzzle
 description: "Global task: the rifle bullet visually starts ahead of the Muzzle; measure the cause in game, then draw its first frame at the Muzzle."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: done
 ---
 # Bullet shown at the muzzle on its first frame
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[burst-rifle]] (approved; shots leave from the rifle Muzzle, flat, parallel to the aim, projectile speed 3000 uu/s provisional; Muzzle placed by the owner, task-412 Q6), [[weapons-index]] (shown-weapon principle). No conflict: the request restores what task-412 meant (bullets visibly leave the barrel tip). Open values needed: none. Milestone M2. Video read 2026-10-31 (00:03 to 00:04, frames at 10 fps cropped on the miner): every rifle bullet (short white-gold streak) first appears about one to two bullet lengths ahead of the rifle tip, then flies flat toward the cursor; no flash at the barrel. Tech read: [[sys-projectiles]] (spawned on the miner axis at Muzzle height, `SweepTo(Muzzle)`, then UProjectileMovementComponent at 3000 uu/s, no sub-stepping), [[sys-weapons]], [[bp-projectile]] (ShotMesh sphere at relative (0, 0, 0) of the capsule), [[bp-burst-rifle]] (Muzzle (52.25, 0, 0), runtime counter-move of task-411); code read: RRWeapon.cpp `SpawnShot`. Likely cause (not verified, must be measured in a real run first per the owner lessons): the bullet moves one frame before it is first drawn (3000 uu/s = 50 uu per frame at 60 fps, 100 uu at 30 fps in PIE), plus motion blur stretching the streak; other candidates the measure must rule out: Muzzle read one frame late against the hand animation, ShotMesh offset. Owner working tree: BP_BurstRifle.uasset and ABP_Miner.uasset modified, not committed; no step stages them.
 - confirmed_by_owner: yes (2026-10-31, "ok, tout par défaut")
 - milestone: M2
-- next_step: task-413-01-bullet-first-frame-at-muzzle
+- next_step: none
 - started: 2026-10-31T21:58:10Z
 - waiting_for: none
-- result: open
+- result: Rifle bullets and shotgun pellets are first drawn at the Muzzle (0.0-0.8 uu, was 26-34 uu), fix 148676a4, docs b023819a. Unverified: shotgun in game, 60 fps, visual, motion blur. gdd burst-rifle line not edited (owner confirmation needed).
 
 ## Questions
 Decided 2026-10-31 (owner "ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-31.
