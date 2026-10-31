@@ -9,7 +9,7 @@ kind: doc
 - asset_path: /Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle
 - parent_class: ARRWeapon (/Script/RogueRigs.RRWeapon)
 - purpose: the burst rifle weapon actor; visuals and references only
-- components: inherited Root, Muzzle (relative location (62.148091, -1.129037, -13.0) since task-404, was (41.8, 0, 0), before that 40; set on the CDO Default__BP_BurstRifle_C:Muzzle, under the root not under RifleMesh, visual only: shot origin unchanged, floor under capsule + ShotHeight 50, read from RRWeapon.cpp), auto-fire, ASC; added RifleMesh under the root: StaticMesh SM_BurstRifle ([[burst-rifle-mesh]]), relative location (9.898091, -1.129037, -13.0), rotation (0, 0, 0), scale (1.25, 1.25, 1.25) (owner 2026-10-31, task-404; was location 0, scale 1; Muzzle x = 9.898091 + 1.25 x 41.8), collision profile NoCollision (was BlockAllDynamic; CastShadow unchanged, true), OverrideMaterials empty (task-403; was [MI_GB_Shot]), so slot 0 uses M_BurstRifle from the mesh. Mesh 60 x 7.3 x 20.7 cm, pivot at the grip, muzzle +X
+- components: inherited Root, Muzzle (relative location (52.25, 0, 0) since task-409-04, was (62.148091, -1.129037, -13.0) from task-404, (41.8, 0, 0) before, 40 first; set on the CDO Default__BP_BurstRifle_C:Muzzle, under the root not under RifleMesh, visual only: shot origin unchanged, floor under capsule + ShotHeight 50, read from RRWeapon.cpp), auto-fire, ASC; added RifleMesh under the root: StaticMesh SM_BurstRifle ([[burst-rifle-mesh]]), relative location (0, 0, 0) since task-409-04, rotation (0, 0, 0), scale (1.25, 1.25, 1.25) kept (owner 2026-10-31, task-404 had location (9.898091, -1.129037, -13.0); Muzzle x = 1.25 x 41.8 = 52.25), collision profile NoCollision (was BlockAllDynamic; CastShadow unchanged, true), OverrideMaterials empty (task-403; was [MI_GB_Shot]), so slot 0 uses M_BurstRifle from the mesh. Mesh 60 x 7.3 x 20.7 cm, pivot at the grip, muzzle +X
 - exposed_defaults: StatsRowName = BurstRifle; ProjectileClass = BP_Projectile_C; HandSocketName = WeaponSocket_R (task-400, socket on the miner mesh, [[bp-miner]]); other C++ defaults kept
 - events: none
 - logic_in_bp: none
@@ -23,10 +23,13 @@ kind: doc
 
 - task-404 (commit 0717cbcc): RifleMesh and Muzzle set as above, BP compiled, saved, read back. Mesh asset stays 60 cm, 75 cm in game. Unverified: projectile z measured in PIE after the change, left hand within 3 uu of LeftHandGrip (MCP cannot read bone or socket positions), visual render (owner validates in the editor, Q3).
 
+- task-409-04 (commit 84c03a7d): RifleMesh location reset to (0, 0, 0), scale 1.25 kept, rotation 0; Muzzle (52.25, 0, 0); BP compiled with no error, saved. The rifle keeps its task-404 place because the miner animation A_Miner_UpperRifle_V2Grip moves the right hand onto the grip instead ([[bp-miner]], [[task-409-miner-right-hand-on-grip]]). Unverified: no PIE or capture (owner checks, Q3); compile logs not read; projectile spawn height and left-hand IK not checked.
+
 ## Relations
 - [[blueprints-index]] — parent index.
 - [[sys-weapons]] — the C++ class it derives from.
-- [[bp-miner]] — owns WeaponSocket_R.
+- [[bp-miner]] — owns WeaponSocket_R and the V2Grip animation.
+- [[task-409-miner-right-hand-on-grip]] — task that reset RifleMesh and Muzzle.
 - [[burst-rifle-mesh]] — source and game mesh of SM_BurstRifle.
 - [[task-400-burst-rifle-in-hand]] — task that put the mesh in the hand.
 - [[task-403-burst-rifle-material-fix]] — task that found the MI_GB_Shot override and cleared it.
