@@ -5,9 +5,9 @@ parent: task-410-right-hand-offset-live
 kind: task
 status: todo
 ---
-# Live control of the right hand offset on the rifle grip: bp
+# Live control of the right hand offset: bp
 
-- goal: In ABP_Miner AnimGraph, between LocalToComponent and the left hand Two Bone IK: add a Two Bone IK on IK bone RightHand (chain RightHand, RightForeArm, RightArm), effector location = `RightHandIKEffector` in Bone Space of bone RightHand, joint target location (0, 0, 0) in Bone Space of RightForeArm (elbow keeps its direction), stretching off, alpha = `RightHandOffsetAlpha`; then a Transform (Modify) Bone on RightHand, translation ignored, rotation mode Add in Bone Space = `RightHandRotationDelta`, alpha = `RightHandOffsetAlpha`; left hand Two Bone IK and everything else unchanged; compile and save. Names as given in the task-410-01 change summary.
+- goal: In ABP_Miner AnimGraph, between LocalToComponent and the left hand Two Bone IK: add a Two Bone IK on IK bone RightHand (chain RightHand, RightForeArm, RightArm), effector location = `RightHandIKEffector` in Bone Space of bone RightHand, joint target location (0, 0, 0) in Bone Space of RightForeArm (elbow keeps its direction), stretching off, alpha = `RightHandOffsetAlpha`; then a Transform (Modify) Bone on RightHand, translation ignored, rotation mode Add in Bone Space = `RightHandRotationDelta`, alpha = `RightHandOffsetAlpha`; left hand Two Bone IK and everything else unchanged (BP_BurstRifle untouched: the rifle and the left hand follow the right hand, owner Q1); compile and save. Names as given in the task-410-01 change summary.
 - agent: bp
 - depends_on: task-410-01-right-hand-offset-code
 - inputs: task-410-right-hand-offset-live (vault/reference/tasks/task-410-right-hand-offset-live.md), bp-miner (vault/reference/tech/blueprints/player/bp-miner.md), sys-player-classes (vault/reference/tech/systems/core/sys-player/sys-player-classes.md), agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md)
