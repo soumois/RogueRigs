@@ -3,7 +3,7 @@ id: task-400-07-doc-burst-rifle-in-hand
 description: "Doc: update bp-burst-rifle, bp-shotgun, bp-miner, sys-weapons, sys-player-classes"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T02:40:55Z
 - waiting_for: none
 - result: open
 
