@@ -11,5 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-406-miner-upper-body-idle-layer]] — ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later. Status wait-answers.
-- [[task-407-miner-right-arm-fix-compare]] — right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images. Status wait-answers.
+- [[task-406-miner-upper-body-idle-layer]] — ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later. Status todo.
+- [[task-407-miner-right-arm-fix-compare]] — right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images. Status todo.
