@@ -1,18 +1,18 @@
 ---
 id: task-416-02-doc-turret-fire-rate
-description: "Doc: update sys-turret (TurretLauncher row FireRate 2.75, Q3)"
+description: "Doc: update sys-turret (TurretLauncher row FireRate 2.5)"
 parent: task-416-turret-fire-rate-minus-20
 kind: task
 status: todo
 ---
 # Turret fire rate lowered by 20 %: doc
 
-- goal: Update the turret data values in the tech doc from the change summary of task-416-01: `TurretLauncher` row `FireRate` 2.75 (was 3.3, +20 % time between shots; the Q3 value of the global).
+- goal: Update the turret data values in the tech doc from the change summary of task-416-01: `TurretLauncher` row `FireRate` 2.5 (was 3.3; 0.4 s between shots, owner 2026-10-31).
 - agent: doc
 - depends_on: task-416-01-turret-fire-rate-csv
 - inputs: sys-turret (vault/reference/tech/systems/combat/sys-turret.md), task-416-turret-fire-rate-minus-20 (vault/reference/tasks/task-416-turret-fire-rate-minus-20.md) (global: request, gdd_check), agent-doc (vault/reference/agents/agent-doc.md)
 - expected_output: sys-turret updated, lint clean, one commit `task-416-02-doc-turret-fire-rate: <summary>`.
-- done_when: sys-turret `data:` line gives `FireRate` at the Q3 value with the task reference; no other node changed; lint clean; committed by path.
+- done_when: sys-turret `data:` line gives `FireRate` 2.5 with the task reference; no other node changed; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
 - model: open

@@ -22,7 +22,7 @@ status: approved
 - projectile: projectile; blocked_by_rock: yes.
 
 ## Values
-- stats (provisional, owner 2026-10-05), ratios from DRGS LMG Gun Platform: damage 6 per bullet, 3.3 shots/s, pierce 4, crit chance 5 %, charges 2, recharge 6 s, lifetime 10 s, target range 1500 uu; crit damage ×1.5 base.
+- stats (provisional, owner 2026-10-05), ratios from DRGS LMG Gun Platform: damage 6 per bullet, 2.5 shots/s (0.4 s between shots; was 3.3; provisional, owner 2026-10-31, task-416), pierce 4, crit chance 5 %, charges 2, recharge 6 s, lifetime 10 s, target range 1500 uu; crit damage ×1.5 base.
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 - Name and texts: "Lance-tourelles" and the current short French weapon descriptions in the level-up cards are kept as working texts (confirmed by the owner after handover-2026-10-06); final wording open.
 - effect pool: none; piercing is a stat (base 4) upgraded like any weapon stat ([[upgrades]]).
