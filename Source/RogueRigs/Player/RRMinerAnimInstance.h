@@ -36,11 +36,17 @@ class UAnimSequenceBase;
  * a missing asset logs a warning and keeps the current sequence.
  * task-410-01: right hand offset. RightHandOffsetLocation (cm) and RightHandOffsetRotation (deg), set in the ABP_Miner class
  * defaults, move and turn the right hand on top of the upper body pose, in the frame of the hand socket WeaponSocket_R
- * (X toward the rifle muzzle, Y side, Z rifle top; rotation pivot = the socket point, the grip). The rifle hangs on that
- * socket, so it follows the hand. The cheat cvar rr.Debug.RightHandOffset "X Y Z [Pitch Yaw Roll]" overrides them live for
- * the player miner (empty = class defaults). From the offset the class computes, at anim begin and on each cvar change
- * only, the ABP inputs RightHandIKEffector (right arm Two Bone IK effector, RightHand bone space), RightHandRotationDelta
- * (Transform (Modify) Bone, additive, RightHand bone space) and RightHandOffsetAlpha (1 when the offset is non-zero).
+ * (X toward the rifle muzzle, Y side, Z rifle top; rotation pivot = the socket point, the grip). The cheat cvar
+ * rr.Debug.RightHandOffset "X Y Z [Pitch Yaw Roll]" overrides them live for the player miner (empty = class defaults).
+ * From the offset the class computes, at anim begin and on each cvar change only, the ABP inputs RightHandIKEffector (right
+ * arm Two Bone IK effector, RightHand bone space), RightHandRotationDelta (Transform (Modify) Bone, additive, RightHand bone
+ * space) and RightHandOffsetAlpha (1 when the offset is non-zero).
+ * task-411-01: the offset moves the hand on the rifle, the rifle stays in place. The rifle hangs on the hand socket, so the
+ * hand delta would carry it; to cancel that, the hand-held weapon mesh carrying LeftHandGrip (RifleMesh) and its Muzzle get
+ * the relative transform R' = R * O^-1 (R = Blueprint relative transform, O = the offset; exactly R * C * O^-1 * C^-1 with C
+ * the weapon root transform relative to the socket, identity for the snapped rifle). Applied on every offset apply and at
+ * weapon add, always from the Blueprint values (no accumulation); offset 0 restores them; then the left hand IK target is
+ * recomputed. The counter-move is fixed relative to the hand, so an animation that moves the hand still moves the rifle.
  */
 UCLASS()
 class ROGUERIGS_API URRMinerAnimInstance : public UAnimInstance
@@ -54,7 +60,7 @@ public:
 	/** Binds the miner OnWeaponAdded and computes the left hand IK target for the weapons already held. */
 	virtual void NativeBeginPlay() override;
 
-	/** Unbinds the miner OnWeaponAdded. */
+	/** Unbinds the miner OnWeaponAdded and restores the Blueprint relative transforms of the counter-moved weapon components. */
 	virtual void NativeUninitializeAnimation() override;
 
 	/** Name of the socket of the held weapon mesh the left hand grips (the handguard). */
@@ -64,9 +70,33 @@ public:
 	static const FName DefaultRightHandSocketName;
 
 protected:
-	/** OnWeaponAdded callback: recomputes the left hand IK target when the weapon is the hand-held one. */
+	/** OnWeaponAdded callback: counter-moves the weapon and recomputes the left hand IK target when the weapon is the hand-held one. */
 	UFUNCTION()
 	void HandleWeaponAdded(ARRWeapon* Weapon);
+
+	/** True when Weapon is attached to the miner mesh on its own hand socket (the hand-held weapon). */
+	bool IsHeldOnHandSocket(const ARRWeapon* Weapon) const;
+
+	/**
+	 * Counter-move of the right hand offset, then left hand IK, for Weapon (no effect when it is not hand-held). Order matters:
+	 * the left hand target is read from the grip after the counter-move. OutSummary (optional) receives the applied
+	 * RifleMesh and Muzzle relative transforms for the apply log line.
+	 */
+	void RefreshHeldWeapon(const ARRWeapon* Weapon, FString* OutSummary = nullptr);
+
+	/**
+	 * Sets the relative transform of the hand-held Weapon mesh carrying LeftHandGrip and of its Muzzle to
+	 * Blueprint relative transform * C * AppliedHandOffset^-1 * C^-1 (C = weapon root relative to its socket), so their world
+	 * transform stays where it is at offset 0 while the hand moves by the offset. Returns false (nothing moved) when Weapon is
+	 * not hand-held.
+	 */
+	bool ApplyRifleCounterMove(const ARRWeapon* Weapon, FString* OutSummary);
+
+	/** Blueprint relative transform of Component: saved the first time this anim instance counter-moves it, then reused. */
+	FTransform GetBlueprintRelativeTransform(USceneComponent* Component);
+
+	/** Restores the saved Blueprint relative transform of every counter-moved component still alive and forgets them. */
+	void RestoreCounterMovedComponents();
 
 	/** Recomputes LeftHandIKTarget and LeftHandIKAlpha from Weapon (alpha 0 when it is not hand-held or has no LeftHandGrip). */
 	void RefreshLeftHandIK(const ARRWeapon* Weapon);
@@ -91,8 +121,10 @@ protected:
 	void ApplyDebugRightHandOffset();
 
 	/**
-	 * Recomputes RightHandIKEffector, RightHandRotationDelta and RightHandOffsetAlpha from RightHandOffsetLocation and
-	 * RightHandOffsetRotation, and logs one LogRogueRigs line with the values to type into the ABP_Miner class defaults.
+	 * Recomputes RightHandIKEffector, RightHandRotationDelta, RightHandOffsetAlpha and AppliedHandOffset from
+	 * RightHandOffsetLocation and RightHandOffsetRotation, then counter-moves the hand-held weapon and refreshes the left hand
+	 * IK (RefreshHeldWeapon), and logs one LogRogueRigs line with the values to type into the ABP_Miner class defaults and the
+	 * RifleMesh and Muzzle relative transforms applied.
 	 */
 	void RefreshRightHandOffset();
 
@@ -176,7 +208,8 @@ protected:
 	/**
 	 * Right hand location offset in cm, in the frame of the hand socket (WeaponSocket_R, or the held weapon hand socket):
 	 * X toward the rifle muzzle, Y side, Z rifle top. The socket point (the grip) moves by this amount and the hand follows
-	 * rigidly (the rifle too). Default 0 = the upper body pose unchanged. Overridden live by rr.Debug.RightHandOffset.
+	 * rigidly; the rifle stays in place (counter-moved, task-411-01). Default 0 = the upper body pose unchanged. Overridden
+	 * live by rr.Debug.RightHandOffset.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|RightHand", meta = (Units = "Centimeters"))
 	FVector RightHandOffsetLocation = FVector::ZeroVector;
@@ -203,6 +236,16 @@ protected:
 	/** 1 when RightHandOffsetLocation or RightHandOffsetRotation is non-zero (right arm IK and hand rotation on), else 0. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animation|RightHand")
 	float RightHandOffsetAlpha = 0.f;
+
+	/**
+	 * Offset O the hand currently moves by, in the hand socket frame: FTransform(RightHandOffsetRotation,
+	 * RightHandOffsetLocation) while RightHandOffsetAlpha is 1, identity otherwise. Set by RefreshRightHandOffset; the
+	 * counter-move of the hand-held weapon uses its inverse.
+	 */
+	FTransform AppliedHandOffset = FTransform::Identity;
+
+	/** Blueprint relative transforms of the weapon components this anim instance counter-moved (RifleMesh, Muzzle), saved before the first move. */
+	TMap<TWeakObjectPtr<USceneComponent>, FTransform> BlueprintRelativeTransforms;
 
 	/** Last rr.Debug.RightHandOffset value seen (trimmed); empty = class defaults. The offset is reapplied only when the cvar differs. */
 	FString AppliedDebugRightHandOffset;

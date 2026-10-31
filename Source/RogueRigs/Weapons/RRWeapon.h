@@ -98,6 +98,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Attach")
 	FName GetHandSocketName() const { return HandSocketName; }
 
+	/** Barrel tip component (visual reference only, see Muzzle). Read by URRMinerAnimInstance to counter-move it with the rifle mesh (task-411-01). */
+	USceneComponent* GetMuzzle() const { return Muzzle; }
+
 	/** The component that decides when this weapon fires. */
 	UFUNCTION(BlueprintPure, Category = "Weapon")
 	URRAutoFireComponent* GetAutoFireComponent() const { return AutoFire; }
