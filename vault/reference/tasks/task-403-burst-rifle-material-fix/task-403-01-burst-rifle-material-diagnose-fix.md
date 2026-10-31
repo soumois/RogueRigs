@@ -3,7 +3,7 @@ id: task-403-01-burst-rifle-material-diagnose-fix
 description: "Bp: diagnose in the editor why SM_BurstRifle renders flat cream-white and fix M_BurstRifle or its textures"
 parent: task-403-burst-rifle-material-fix
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle material fix: colours readable in game: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T04:33:01Z
 - waiting_for: none
 - result: open
 
