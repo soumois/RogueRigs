@@ -3,7 +3,7 @@ id: task-412-02-bp-projectiles-recompile
 description: "Bp: recompile, check and save BP_Projectile, BP_ShotgunPellet, BP_TurretBullet, BP_ShooterProjectile after the capsule root change"
 parent: task-412-shots-from-rifle-muzzle
 kind: task
-status: todo
+status: in-progress
 ---
 # Shots leave from the rifle muzzle: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T21:34:45Z
 - waiting_for: none
 - result: open
 

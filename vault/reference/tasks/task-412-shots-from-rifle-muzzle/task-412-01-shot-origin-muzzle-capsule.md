@@ -3,7 +3,7 @@ id: task-412-01-shot-origin-muzzle-capsule
 description: "Cpp: ARRProjectile capsule collision root; rifle and pellet origin at the Muzzle, capsule sized per shot from floor + 20; miner-to-Muzzle sweep; tests"
 parent: task-412-shots-from-rifle-muzzle
 kind: task
-status: in-progress
+status: done
 ---
 # Shots leave from the rifle muzzle: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Development Editor build succeeds with no new warning in the edited files; RogueRigs.Weapons, RogueRigs.Shotgun and the turret and shooter projectile tests pass headless with only broken expectations updated; code review shows: capsule root with half height = radius by default, rifle and pellet origin = hand-socket weapon Muzzle at fire time, capsule bottom floor + clearance and top at least the Muzzle height, fallback sphere with warning, Q3 sweep stops on rock and hits robots, turret bullets and robot shots unchanged; no .uasset staged; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 104, cache write 193702, cache read 6213901, output 64351
+- usage: turns 52, context start 12k peak 194k, resumes 0, 15 min, units 1.19 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T21:19:20Z
 - waiting_for: none
-- result: open
+- result: Done, commit e1e65788: ARRProjectile root now UCapsuleComponent CollisionCapsule (renamed from CollisionSphere), symmetric capsule centred on Muzzle sized per shot from floor+20, GetShotPlacement in ARRWeapon, miner-to-Muzzle SweepTo, shotgun from hand weapon Muzzle, fallbacks; build ok, 33/33 tests (Weapons, Shotgun, Turret, Shooter); wider regression 2 unrelated-looking fails (Integration.JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop) not confirmed pre-existing
 
 ## Relations
 - [[task-412-shots-from-rifle-muzzle]] — parent global task.
