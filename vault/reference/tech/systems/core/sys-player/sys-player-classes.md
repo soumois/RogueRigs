@@ -10,6 +10,8 @@ kind: doc
   - `ARRPlayerController` (`RRPlayerController.h`): editable `DefaultMappingContext`, `MappingContextPriority`, `MoveAction`, `StickAimAction`, `MouseAimAction`, `PlaceTurretAction` (Boolean, bound on Started → `ARRMiner::PlaceTurret`), `PlaceTurretKeys` (E, right mouse button, gamepad face button bottom), `bHideCursorWhileStickAiming`. While `PlaceTurretAction` is unset, a transient action mapped to `PlaceTurretKeys` lives in a transient mapping context added at `MappingContextPriority` + 1, so the button works without assets; once the asset is set its keys come from `DefaultMappingContext`. Cursor shown by default. HUD: editable `HUDWidgetClass` (none; set to the HUD widget Blueprint); `BeginPlay` creates it for a local player only and binds it, `OnPossess` rebinds it to the new miner; `GetHUDWidget()` ([[sys-hud]]).
   - `ARRGameMode : AGameModeBase` (`RRGameMode.h`): default pawn and controller classes set in Blueprint. Game over: `RegisterMiner(ARRMiner*)` (called by the miner `BeginPlay` when the auth game mode is an `ARRGameMode`) binds the miner `OnDeath`; the first death disables the input of every player controller (`DisableInput`), broadcasts `OnGameOver` (BlueprintAssignable) once and arms a timer that reopens the current level (`UGameplayStatics::OpenLevel` on `GetCurrentLevelName`) after editable `RestartDelay` (3 s, miner gdd M1). `IsGameOver()`, `GetRestartDelay()`, `GetRestartTimeRemaining()` (−1 when not armed). `EndPlay` clears the timer.
 
+  - `URRMinerAnimInstance` (`RRMinerAnimInstance.h`, task-401-01, provisional): left hand IK inputs for the ABP_Miner Two Bone IK ([[bp-miner]]). `LeftHandIKTarget` (`FVector`, BlueprintReadOnly, category `RogueRigs|Anim`) = location in cm of the held weapon mesh socket `LeftHandGrip` (public static `LeftHandGripSocketName`) in the bone space of the bone carrying `WeaponSocket_R` (the right hand; socket name read from `ARRWeapon::GetHandSocketName()`), zero when alpha is 0. `LeftHandIKAlpha` (float, BlueprintReadOnly) = 1 only when the hand-held weapon has a mesh with `LeftHandGrip`, else 0. Event driven, never per frame: `NativeBeginPlay` binds `ARRMiner::OnWeaponAdded` and handles weapons already held; `HandleWeaponAdded` calls `RefreshLeftHandIK` (ignores weapons not attached to the miner on their hand socket); `NativeUpdateAnimation` untouched; `NativeUninitializeAnimation` unbinds. Limitation: no weapon-removed event, so removing a hand-held weapon does not reset the alpha. `WeaponSocket_R` is not rotated and `ARRMiner::AddWeapon` is unchanged.
+
 ## Relations
 - [[sys-player]] — parent hub: summary and verdict.
 - [[sys-progression]] — referenced above.
@@ -18,4 +20,6 @@ kind: doc
 - [[sys-hud]] — referenced above.
 - [[sys-weapons]] — `HandSocketName` on the weapon.
 - [[bp-miner]] — mesh socket `WeaponSocket_R`.
+- [[burst-rifle-mesh]] — the LeftHandGrip socket the target comes from.
+- [[task-401-miner-hands-fit-rifle]] — added the left hand IK variables.
 - [[sys-blob-shadow]] — the miner blob shadow.
