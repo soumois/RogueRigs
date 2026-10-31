@@ -3,7 +3,7 @@ id: task-406-02-abp-upper-body-layer
 description: "Bp: ABP_Miner: Layered blend per bone, legs from locomotion, upper body from UpperBodySequence (A_Miner_Idle)"
 parent: task-406-miner-upper-body-idle-layer
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Miner upper body from the idle rifle pose over the locomotion legs: bp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-10-31T07:08:04Z
-- waiting_for: none
+- waiting_for: owner launches the Unreal Editor (editor open needed for bp subtask 02)
 - result: open
 
 ## Relations
