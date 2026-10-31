@@ -3,7 +3,7 @@ id: task-410-03-doc-right-hand-offset
 description: "Doc: sys-player-classes and bp-miner: right hand offset properties, cvar, ABP right arm nodes, how to keep values"
 parent: task-410-right-hand-offset-live
 kind: task
-status: todo
+status: in-progress
 ---
 # Live control of the right hand offset: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T20:21:24Z
 - waiting_for: none
 - result: open
 

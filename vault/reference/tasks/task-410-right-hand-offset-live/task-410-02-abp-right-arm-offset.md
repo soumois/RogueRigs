@@ -3,7 +3,7 @@ id: task-410-02-abp-right-arm-offset
 description: "Bp: ABP_Miner: right arm Two Bone IK and RightHand rotation from the new inputs, before the left hand IK"
 parent: task-410-right-hand-offset-live
 kind: task
-status: in-progress
+status: done
 ---
 # Live control of the right hand offset: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Graph read back: LocalToComponent -> right Two Bone IK (RightHand, effector RightHandIKEffector Bone Space RightHand, joint target 0 Bone Space RightForeArm, stretching off, alpha RightHandOffsetAlpha) -> Transform (Modify) Bone RightHand (rotation Add, Bone Space, RightHandRotationDelta) -> left Two Bone IK (unchanged) -> ComponentToLocal -> Output Pose; compile with no error; saved; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 62541, cache read 565789, output 11829
+- usage: turns 16, context start 12k peak 63k, resumes 0, 1 min, units 0.19 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T20:17:55Z
 - waiting_for: none
-- result: open
+- result: ABP_Miner right arm Two Bone IK + ModifyBone wired before left IK, compiled, saved, commit 1e969c39; not run in PIE
 
 ## Relations
 - [[task-410-right-hand-offset-live]] — parent global task.
