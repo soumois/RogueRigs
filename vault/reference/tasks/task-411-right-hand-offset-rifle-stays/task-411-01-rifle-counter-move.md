@@ -3,7 +3,7 @@ id: task-411-01-rifle-counter-move
 description: "Cpp: URRMinerAnimInstance: RifleMesh and Muzzle counter-moved by the inverse right hand offset, left hand IK refreshed"
 parent: task-411-right-hand-offset-rifle-stays
 kind: task
-status: in-progress
+status: done
 ---
 # Right hand offset moves the hand on the rifle, the rifle stays in place: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Development Editor build succeeds with no new warning in the edited files; code review shows: counter-move applied on every offset apply and at weapon add, only for the weapon on its hand socket, from the Blueprint values (no accumulation over repeated applies), Muzzle moved the same way, RefreshLeftHandIK called after the counter-move, offset 0 restores the Blueprint values, log line extended, help text fixed; existing automation tests still compile (no test added); committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 76762, cache read 767065, output 24332
+- usage: turns 15, context start 12k peak 77k, resumes 0, 6 min, units 0.29 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T20:41:21Z
 - waiting_for: none
-- result: open
+- result: Counter-move R' = R * O^-1 for RifleMesh and Muzzle, left IK refreshed after; build OK; commit 3b80bb41; no PIE run (Q2)
 
 ## Relations
 - [[task-411-right-hand-offset-rifle-stays]] — parent global task.

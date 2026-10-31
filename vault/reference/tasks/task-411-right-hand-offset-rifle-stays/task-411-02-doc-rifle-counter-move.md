@@ -3,7 +3,7 @@ id: task-411-02-doc-rifle-counter-move
 description: "Doc: sys-player-classes, bp-miner, bp-burst-rifle: the offset moves the hand on a still rifle (counter-move), left hand refresh"
 parent: task-411-right-hand-offset-rifle-stays
 kind: task
-status: todo
+status: in-progress
 ---
 # Right hand offset moves the hand on the rifle, the rifle stays in place: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T20:47:35Z
 - waiting_for: none
 - result: open
 
