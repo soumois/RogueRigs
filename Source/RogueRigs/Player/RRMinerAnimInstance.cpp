@@ -12,6 +12,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
+#include "Animation/AnimSequenceBase.h"
 #include "HAL/IConsoleManager.h"
 
 namespace RRMinerAnimDebug
@@ -51,26 +52,20 @@ namespace RRMinerAnimDebug
 		return true;
 	}
 
-	/** rr.Debug.MinerArmFix "<elbowUp> <handForward>": overrides the right arm offsets with (0, 0, elbowUp) and (0, handForward, 0) cm; empty = off. */
-	static TAutoConsoleVariable<FString> CVarMinerArmFix(
-		TEXT("rr.Debug.MinerArmFix"), TEXT(""),
-		TEXT("\"<elbowUp> <handForward>\" (two floats, cm) overrides the miner right arm offsets: RightElbowOffset = (0, 0, elbowUp), RightHandOffset = (0, handForward, 0) (component axes, +Y forward, +Z up); empty = off (the ABP_Miner class default offsets apply)."),
-		ECVF_Cheat);
-
 	/** rr.Debug.MinerAnimFreeze: 1 stops the miner animation time (mesh GlobalAnimRateScale 0) while the graph keeps evaluating; 0 restores. */
 	static TAutoConsoleVariable<int32> CVarMinerAnimFreeze(
 		TEXT("rr.Debug.MinerAnimFreeze"), 0,
-		TEXT("1 freezes the miner animation time (mesh GlobalAnimRateScale 0; the anim graph keeps evaluating, so a new rr.Debug.MinerArmFix value shows on the same frame); 0 restores the previous rate scale."),
+		TEXT("1 freezes the miner animation time (mesh GlobalAnimRateScale 0; the anim graph keeps evaluating, so a new rr.Debug.MinerUpperPose sequence shows on the same frame); 0 restores the previous rate scale."),
 		ECVF_Cheat);
 
-	/** Parses the arm fix cvar; true with the elbow up and hand forward amounts (cm) when it holds two floats. */
-	static bool TryGetArmFix(float& OutElbowUp, float& OutHandForward)
-	{
-		const FString Value = CVarMinerArmFix.GetValueOnGameThread();
-		TArray<FString> Tokens;
-		Value.ParseIntoArrayWS(Tokens);
-		return Tokens.Num() == 2 && LexTryParseString(OutElbowUp, *Tokens[0]) && LexTryParseString(OutHandForward, *Tokens[1]);
-	}
+	/** rr.Debug.MinerUpperPose "<name>": the player miner upper body plays /Game/RogueRigs/Characters/Miner/Anims/<name>; empty = class default. */
+	static TAutoConsoleVariable<FString> CVarMinerUpperPose(
+		TEXT("rr.Debug.MinerUpperPose"), TEXT(""),
+		TEXT("\"<name>\" sets the player miner UpperBodySequence (upper body layer of ABP_Miner) to the anim sequence /Game/RogueRigs/Characters/Miner/Anims/<name> (e.g. A_Miner_UpperRifle_V1); empty restores the ABP_Miner class default; a missing asset logs a warning and keeps the current sequence."),
+		ECVF_Cheat);
+
+	/** Content folder searched by rr.Debug.MinerUpperPose. Debug-only, not a gameplay tunable. */
+	static const TCHAR* const UpperPoseFolder = TEXT("/Game/RogueRigs/Characters/Miner/Anims/");
 }
 
 void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -134,27 +129,46 @@ void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		GroundSpeed = static_cast<float>(ForcedMove.Size()) * MaxWalkSpeed;
 	}
 
-	RefreshRightArmOffsets();
+	ApplyDebugUpperPose();
 	ApplyDebugAnimFreeze();
 
 	LogDebugValues();
 }
 
-void URRMinerAnimInstance::RefreshRightArmOffsets()
+void URRMinerAnimInstance::ApplyDebugUpperPose()
 {
-	// task-407-01: the debug override replaces the tuned values while set, so offset series can be captured on one frame.
-	float ElbowUp = 0.f;
-	float HandForward = 0.f;
-	if (RRMinerAnimDebug::TryGetArmFix(ElbowUp, HandForward))
+	// task-408-01: only the player miner follows the cvar; the asset is resolved once per new value, not every frame.
+	const APawn* PawnOwner = TryGetPawnOwner();
+	if (!PawnOwner || !PawnOwner->IsPlayerControlled())
 	{
-		AppliedRightElbowOffset = FVector(0.0, 0.0, ElbowUp);
-		AppliedRightHandOffset = FVector(0.0, HandForward, 0.0);
+		return;
 	}
-	else
+
+	const FString PoseName = RRMinerAnimDebug::CVarMinerUpperPose.GetValueOnGameThread().TrimStartAndEnd();
+	if (PoseName == AppliedDebugUpperPoseName)
 	{
-		AppliedRightElbowOffset = RightElbowOffset;
-		AppliedRightHandOffset = RightHandOffset;
+		return;
 	}
+	AppliedDebugUpperPoseName = PoseName;
+
+	if (PoseName.IsEmpty())
+	{
+		// The class default of the ABP generated class holds the UpperBodySequence set in the ABP_Miner class defaults.
+		UpperBodySequence = GetClass()->GetDefaultObject<URRMinerAnimInstance>()->UpperBodySequence;
+		UE_LOG(LogRogueRigs, Log, TEXT("MinerUpperPose %s: class default %s"), *GetNameSafe(PawnOwner), *GetNameSafe(UpperBodySequence));
+		return;
+	}
+
+	const FString AssetPath = FString::Printf(TEXT("%s%s.%s"), RRMinerAnimDebug::UpperPoseFolder, *PoseName, *PoseName);
+	UAnimSequenceBase* Sequence = LoadObject<UAnimSequenceBase>(nullptr, *AssetPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	if (!Sequence)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.MinerUpperPose: no anim sequence at %s; UpperBodySequence kept (%s)"),
+			*AssetPath, *GetNameSafe(UpperBodySequence));
+		return;
+	}
+	UpperBodySequence = Sequence;
+	UE_LOG(LogRogueRigs, Log, TEXT("MinerUpperPose %s: %s"), *GetNameSafe(PawnOwner), *AssetPath);
 }
 
 void URRMinerAnimInstance::ApplyDebugAnimFreeze()
@@ -166,7 +180,7 @@ void URRMinerAnimInstance::ApplyDebugAnimFreeze()
 	}
 
 	// The scale applies from the next tick (this update already received its delta time); update and evaluation keep
-	// running with a zero delta, so pose changes from offsets still show.
+	// running with a zero delta, so a pose source change (rr.Debug.MinerUpperPose) still shows.
 	const bool bWantFrozen = RRMinerAnimDebug::CVarMinerAnimFreeze.GetValueOnGameThread() != 0;
 	if (bWantFrozen && !bDebugAnimFrozen)
 	{
