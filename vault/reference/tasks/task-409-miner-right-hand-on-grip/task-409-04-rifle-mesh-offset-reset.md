@@ -3,7 +3,7 @@ id: task-409-04-rifle-mesh-offset-reset
 description: "Bp: BP_BurstRifle: RifleMesh location (0, 0, 0), scale 1.25 kept, Muzzle (52.25, 0, 0)"
 parent: task-409-miner-right-hand-on-grip
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: RifleMesh reads back location (0, 0, 0), rotation (0, 0, 0), scale (1.25, 1.25, 1.25); Muzzle reads back (52.25, 0, 0); BP compiled without error and saved; committed by path `task-409-04-rifle-mesh-offset-reset: ...`.
 - editor_state: open
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 19902, cache read 217997, output 4884
+- usage: turns 12, context start 12k peak 25k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T19:44:52Z
 - waiting_for: none
-- result: open
+- result: RifleMesh (0,0,0) rot 0 scale 1.25, Muzzle (52.25,0,0), compile null no error, saved; commit 84c03a7d
 
 ## Relations
 - [[task-409-miner-right-hand-on-grip]] — parent global task.

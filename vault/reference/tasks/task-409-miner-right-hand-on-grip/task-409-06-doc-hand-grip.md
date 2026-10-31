@@ -3,7 +3,7 @@ id: task-409-06-doc-hand-grip
 description: "Doc: doc: bp-miner (V2Grip, upper body source) and bp-burst-rifle (RifleMesh and Muzzle)"
 parent: task-409-miner-right-hand-on-grip
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T19:45:44Z
 - waiting_for: none
 - result: open
 
