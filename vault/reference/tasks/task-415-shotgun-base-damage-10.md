@@ -3,7 +3,7 @@ id: task-415-shotgun-base-damage-10
 description: "Global task: raise the shotgun base damage from 6 to 10 per pellet in WeaponStats.csv, tests and docs."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shotgun base damage 10
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "1. par plomb")
 - milestone: M2
 - next_step: task-415-01-shotgun-damage-csv
-- started: open
+- started: 2026-10-31T22:33:50Z
 - waiting_for: none
 - result: open
 

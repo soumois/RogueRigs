@@ -3,7 +3,7 @@ id: task-415-01-shotgun-damage-csv
 description: "Cpp: set the `Shotgun` row Damage 6 -> 10 in WeaponStats.csv and update the shotgun test expectations"
 parent: task-415-shotgun-base-damage-10
 kind: task
-status: todo
+status: in-progress
 ---
 # Shotgun base damage 10: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T22:33:50Z
 - waiting_for: none
 - result: open
 

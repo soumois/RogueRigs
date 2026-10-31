@@ -12,5 +12,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-413-bullet-shown-at-muzzle]] — the burst rifle bullet visually starts ahead of the Muzzle; measure the cause in game and make its first shown frame sit at the Muzzle. Status in-progress.
-- [[task-415-shotgun-base-damage-10]] — raise the shotgun base damage from 6 to 10 per pellet in WeaponStats.csv, tests and docs. Status todo.
+- [[task-415-shotgun-base-damage-10]] — raise the shotgun base damage from 6 to 10 per pellet in WeaponStats.csv, tests and docs. Status in-progress.
 - [[task-416-turret-fire-rate-minus-20]] — 20 % more time between turret shots, 0.30 to 0.36 s (2.75 shots/s), in WeaponStats.csv, tests and docs. Status wait-answers.
