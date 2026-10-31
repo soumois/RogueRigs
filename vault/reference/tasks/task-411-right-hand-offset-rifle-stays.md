@@ -3,7 +3,7 @@ id: task-411-right-hand-offset-rifle-stays
 description: "Global task: fix of task-410: the right hand offset counter-moves RifleMesh and Muzzle so the hand slides on a still rifle; left hand IK refreshed."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Right hand offset moves the hand on the rifle, the rifle stays in place
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "Confirme, fermé")
 - milestone: M2
 - next_step: task-411-01-rifle-counter-move
-- started: open
+- started: 2026-10-31T20:41:21Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-411-01-rifle-counter-move
 description: "Cpp: URRMinerAnimInstance: RifleMesh and Muzzle counter-moved by the inverse right hand offset, left hand IK refreshed"
 parent: task-411-right-hand-offset-rifle-stays
 kind: task
-status: todo
+status: in-progress
 ---
 # Right hand offset moves the hand on the rifle, the rifle stays in place: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T20:41:21Z
 - waiting_for: none
 - result: open
 
