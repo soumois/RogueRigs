@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-407-miner-right-arm-fix-compare]] — right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images. Status todo.
+- [[task-407-miner-right-arm-fix-compare]] — right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images. Status in-progress.

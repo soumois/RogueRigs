@@ -3,7 +3,7 @@ id: task-407-01-right-arm-offsets-cvars
 description: "Cpp: URRMinerAnimInstance: RightElbowOffset, RightHandOffset, debug cvars MinerArmFix and MinerAnimFreeze"
 parent: task-407-miner-right-arm-fix-compare
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right arm correction on the idle pose, compared on one frame: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T07:17:00Z
 - waiting_for: none
 - result: open
 
