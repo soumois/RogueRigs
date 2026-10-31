@@ -3,7 +3,7 @@ id: task-400-05-shotgun-cube-removal
 description: "Bp: remove the grey ShotgunMesh cube from BP_Shotgun; pellets keep the shared shot origin."
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand: bp shotgun cube
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T00:13:03Z
 - waiting_for: none
 - result: open
 
