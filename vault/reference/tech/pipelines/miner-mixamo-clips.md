@@ -45,18 +45,6 @@ Owner 2026-10-31: new animations based on the idle with the right elbow raised, 
 | V2 | 6.00 | about 25.2 to 25.7 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
 | V3 | 9.00 | about 35.9 to 36.4 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
 
-## Upper rifle variants (task-408-02)
-Owner 2026-10-31: new animations based on the idle with the right elbow raised, three proposals, the idle untouched ([[task-408-miner-right-arm-in-animation]]). Elbow only, right hand unchanged (Q7 default).
-- Files: `Art/Meshes/Miner/Anims/A_Miner_UpperRifle_V1.fbx`, `_V2.fbx`, `_V3.fbx`: 66 bones, 94 frames, 30 fps, same export settings as above. Script `Tools/art/blender/miner_upper_rifle.py` (`build`, `verify`, `render`); report `Art/Source/miner-mixamo/upper_rifle_variants.report.json`.
-- Method: from A_Miner_Idle.fbx, on every frame RightArm and RightForeArm are rotated rigidly about the shoulder to hand axis (the hand head does not move) by the smallest angle that raises the RightForeArm head by E in world Z; RightHand is restored to its idle world orientation (fingers follow); keys baked on every frame.
-- Measured against the idle on all 94 frames (re-read from the FBX):
-
-| Variant | Elbow raise cm | Arm rotation about the axis deg | Hand head deviation cm | Hand orientation deviation deg | Other bones deviation | Hips horizontal cm |
-|---|---|---|---|---|---|---|
-| V1 | 3.00 | about 13.6 to 13.9 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
-| V2 | 6.00 | about 25.2 to 25.7 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
-| V3 | 9.00 | about 35.9 to 36.4 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
-
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[task-386-miner-mixamo-animation]] — the global task that made them.
