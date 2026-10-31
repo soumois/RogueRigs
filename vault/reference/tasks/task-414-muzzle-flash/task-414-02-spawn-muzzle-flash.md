@@ -3,7 +3,7 @@ id: task-414-02-spawn-muzzle-flash
 description: "Cpp: ARRWeapon spawns NS_MuzzleFlash attached to the shown hand weapon Muzzle on every miner shot (rifle bullet, shotgun volley)"
 parent: task-414-muzzle-flash
 kind: task
-status: in-progress
+status: done
 ---
 # Muzzle flash on every miner shot: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Development Editor build succeeds with no new warning in the edited files; RogueRigs.Weapons, RogueRigs.Shotgun and turret tests pass headless; code review shows one flash per rifle bullet and per shotgun volley attached to the hand weapon Muzzle, none for turret and robot shots, nullrhi guard, default loaded by path; no .uasset staged; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 46, cache write 82867, cache read 1288535, output 14960
+- usage: turns 23, context start 13k peak 83k, resumes 0, 5 min, units 0.31 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T22:20:31Z
 - waiting_for: none
-- result: open
+- result: ARRWeapon::MuzzleFlashSystem default by path, SpawnMuzzleFlash attached to hand Muzzle, 1 per rifle bullet and per shotgun volley, none for turret, nullrhi guard, no pool; build ok, 26 tests pass (743a05e2); look unverified
 
 ## Relations
 - [[task-414-muzzle-flash]] — parent global task.

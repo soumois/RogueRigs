@@ -956,17 +956,18 @@ kind: note
 | [[task-412-02-bp-projectiles-recompile]] | sonnet | 1 | 0k | 43k | 367k | 8k | 0.13 | 13 | 0 |
 | [[task-412-03-doc-shot-origin-muzzle]] | sonnet | 1 | 0k | 71k | 723k | 21k | 0.27 | 17 | 0 |
 | [[task-414-01-ns-muzzle-flash]] | sonnet | 1 | 0k | 66k | 1021k | 18k | 0.27 | 25 | 0 |
+| [[task-414-02-spawn-muzzle-flash]] | opus | 1 | 0k | 83k | 1289k | 15k | 0.31 | 23 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 369.67 | 0k | 86.89 M | 1819.56 M | 15834k |
+| All subtask rows above | 369.98 | 0k | 86.97 M | 1820.85 M | 15849k |
 | model mixed | 7.92 | 0k | 2.85 M | 23.35 M | 403k |
-| model opus | 198.41 | 0k | 44.22 M | 994.70 M | 8736k |
+| model opus | 198.72 | 0k | 44.30 M | 995.98 M | 8751k |
 | model sonnet | 163.34 | 0k | 39.82 M | 801.51 M | 6695k |
-| Executors and legacy orchestrators that ran a task (pilot) | 27.13 | 4k | 11.92 M | 76.66 M | 912k |
+| Executors and legacy orchestrators that ran a task (pilot) | 27.15 | 4k | 11.92 M | 76.78 M | 913k |
 | Planning runs (planners and legacy planning passes) | 33.99 | 3k | 10.59 M | 123.11 M | 1687k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 68.23 | 6k | 10.74 M | 462.53 M | 1709k |

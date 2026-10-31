@@ -3,7 +3,7 @@ id: task-414-03-doc-muzzle-flash
 description: "Doc: create bp-muzzle-flash (fx index); update sys-weapons, sys-weapons-shotgun, bp-burst-rifle"
 parent: task-414-muzzle-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash on every miner shot: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T22:25:58Z
 - waiting_for: none
 - result: open
 

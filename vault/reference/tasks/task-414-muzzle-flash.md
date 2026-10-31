@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[art-style-guide]] A8 ("Player fire: white-gold bolts, bright muzzle flash, small impact sparks on the hit target"), [[color-code]] (player shots white-gold), [[burst-rifle]] (vfx_sfx: "muzzle, impact and sound open": the flash look is an open value, proposed in Q4 and written on confirmation), [[shotgun]] (vfx_sfx: "white-gold pellets and muzzle flash"), [[weapons-index]] (every other player weapon shoots from the shown rifle Muzzle, task-412). No conflict; open value: burst-rifle muzzle look (Q4). Impact sparks (A8) not requested: not planned. Milestone M2. Video 2026-10-31: no flash or particle at the barrel on any shot. Tech read: Content/RogueRigs/FX/ holds no muzzle flash; the Niagara module is already a dependency; existing pattern: RRDrone.cpp loads NS_DroneThruster and NS_DigImpact by `ConstructorHelpers::FObjectFinder` path, skips Niagara without rendering; [[bp-shooter-charge]] is a similar effect at a cannon tip. Owner working tree: BP_BurstRifle.uasset and ABP_Miner.uasset modified, not committed (Q5 keeps them untouched).
 - confirmed_by_owner: yes (2026-10-31, "ok, tout par défaut")
 - milestone: M2
-- next_step: task-414-02-spawn-muzzle-flash
+- next_step: task-414-03-doc-muzzle-flash
 - started: 2026-10-31T22:17:02Z
 - waiting_for: none
 - result: open
