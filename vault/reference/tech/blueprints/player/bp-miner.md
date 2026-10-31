@@ -52,13 +52,19 @@ Owner request: right hand on the rifle pistol grip, rifle kept where the owner p
 - Unverified: no PIE or capture (the owner checks himself, Q3); compile logs not read; projectile spawn height and left-hand IK (LeftHandGrip) not checked after the change.
 
 ## Right hand offset in ABP_Miner (task-410, provisional)
-Owner request: move the right hand live, rifle and left hand follow ([[task-410-right-hand-offset-live]], owner Q1). Commits: cpp 5ca2bac7, bp 1e969c39. Unverified: no PIE run by the crew (the owner checks); compile and reach not read.
+Owner request: move the right hand live ([[task-410-right-hand-offset-live]]); task-411 then made the rifle stay in place (section below). Commits: cpp 5ca2bac7, bp 1e969c39. Unverified: no PIE run by the crew (the owner checks); compile and reach not read.
 - AnimGraph order: Locomotion -> Layered blend per bone -> LocalToComponent -> right Two Bone IK -> Transform (Modify) Bone RightHand -> left Two Bone IK (unchanged) -> ComponentToLocal -> Output Pose.
 - Right Two Bone IK: IK bone RightHand; effector Bone Space of RightHand = `RightHandIKEffector`; joint target (0, 0, 0) Bone Space of RightForeArm; stretching off; alpha `RightHandOffsetAlpha`.
 - Transform (Modify) Bone: bone RightHand; translation Ignore, scale Ignore, rotation Add to Existing, Bone Space = `RightHandRotationDelta`; alpha `RightHandOffsetAlpha`.
-- Inputs come from `RightHandOffsetLocation` and `RightHandOffsetRotation` ([[sys-player-classes]]: frame, pivot, math). Offset 0 = the V2Grip pose unchanged (alpha 0). The rifle hangs on `WeaponSocket_R`, so it and the left hand follow the hand.
+- Inputs come from `RightHandOffsetLocation` and `RightHandOffsetRotation` ([[sys-player-classes]]: frame, pivot, math). Offset 0 = the V2Grip pose unchanged (alpha 0). The ABP moves the hand only; the rifle is counter-moved in C++ so it stays in place (below).
 - Tuning recipe: in PIE type `rr.Debug.RightHandOffset X Y Z [Pitch Yaw Roll]` (cm, deg, socket frame: X muzzle, Y side, Z rifle top); read the LogRogueRigs line `RightHandOffset ...`; type its `RightHandOffsetLocation` and `RightHandOffsetRotation` into the ABP_Miner Class Defaults (category Animation|RightHand) to keep them; `rr.Debug.RightHandOffset ""` restores the class defaults.
 - Reach risk: the arm has a fixed length and stretching is off, so keep offsets to a few cm; beyond reach the hand stops short of the target.
+
+## Right hand offset, rifle stays (task-411, provisional)
+Decided in [[task-411-right-hand-offset-rifle-stays]] (cpp 3b80bb41; no Blueprint change). The offset now slides the hand on a rifle that stays in place: C++ counter-moves `RifleMesh` and `Muzzle` by the inverse offset, the left hand IK target is refreshed after ([[sys-player-classes]]). Animations that move the hand still move the rifle; the offset alone does not. The ABP graph is unchanged.
+- Tuning recipe (replaces the task-410 wording): type `rr.Debug.RightHandOffset X Y Z [Pitch Yaw Roll]`, the hand slides on the still rifle; the log line now also ends with the counter-moved `relative=(...)` of RifleMesh and Muzzle; keep the offset in the ABP_Miner Class Defaults as before.
+- Reach risk (Q1, no clamp): past arm reach the hand stops short and the rifle shifts by the missing part.
+- Unverified: no capture, no PIE run by the crew (build OK); rifle stays put, left hand on the handguard and restore on uninitialize not checked.
 
 ## Miner material and brightness (task-393-01, provisional)
 Owner request 2026-10-30: the Meshy miner looked burnt out in the arena. Lever chosen: the miner material only (Q9 A), value Q10 0.6 provisional, the owner tunes by eye ([[task-393-miner-over-lit]]). Not verified by render or PIE.
@@ -74,6 +80,7 @@ Removed on 2026-10-21 by owner direction ("repars d une lumiere flat"): the cent
 
 ## Relations
 - [[task-410-right-hand-offset-live]] — added the right arm IK and hand rotation nodes.
+- [[task-411-right-hand-offset-rifle-stays]] — made the rifle stay in place under the offset.
 - [[task-400-burst-rifle-in-hand]] — added WeaponSocket_R.
 - [[blueprints-index]] — parent index.
 - [[sys-player]] — the C++ class it derives from.

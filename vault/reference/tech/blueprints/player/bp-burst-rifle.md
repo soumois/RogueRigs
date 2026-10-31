@@ -25,7 +25,10 @@ kind: doc
 
 - task-409-04 (commit 84c03a7d): RifleMesh location reset to (0, 0, 0), scale 1.25 kept, rotation 0; Muzzle (52.25, 0, 0); BP compiled with no error, saved. The rifle keeps its task-404 place because the miner animation A_Miner_UpperRifle_V2Grip moves the right hand onto the grip instead ([[bp-miner]], [[task-409-miner-right-hand-on-grip]]). Unverified: no PIE or capture (owner checks, Q3); compile logs not read; projectile spawn height and left-hand IK not checked.
 
+- task-411 (cpp 3b80bb41, no Blueprint change): at runtime the miner anim instance overrides the relative transform of RifleMesh and Muzzle while the right hand offset is non-zero (counter-move by the inverse offset, so the rifle stays in place); the asset values stay RifleMesh (0, 0, 0) and Muzzle (52.25, 0, 0), saved as the base and restored at offset 0 or on uninitialize ([[sys-player-classes]]). Unverified: no PIE run by the crew.
+
 ## Relations
+- [[task-411-right-hand-offset-rifle-stays]] — task that added the runtime counter-move.
 - [[blueprints-index]] — parent index.
 - [[sys-weapons]] — the C++ class it derives from.
 - [[bp-miner]] — owns WeaponSocket_R and the V2Grip animation.
