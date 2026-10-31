@@ -66,6 +66,37 @@ namespace RRMinerAnimDebug
 
 	/** Content folder searched by rr.Debug.MinerUpperPose. Debug-only, not a gameplay tunable. */
 	static const TCHAR* const UpperPoseFolder = TEXT("/Game/RogueRigs/Characters/Miner/Anims/");
+
+	/** rr.Debug.RightHandOffset "X Y Z [Pitch Yaw Roll]": live right hand offset of the player miner in the WeaponSocket_R frame; empty = class defaults. */
+	static TAutoConsoleVariable<FString> CVarRightHandOffset(
+		TEXT("rr.Debug.RightHandOffset"), TEXT(""),
+		TEXT("\"X Y Z\" or \"X Y Z Pitch Yaw Roll\" moves and turns the player miner right hand on top of the upper body pose (the rifle follows the hand). ")
+		TEXT("Location in cm, rotation in degrees, in the WeaponSocket_R frame: X toward the rifle muzzle, Y side, Z rifle top; rotation pivot = the socket point (the grip). ")
+		TEXT("Overrides RightHandOffsetLocation / RightHandOffsetRotation of ABP_Miner; empty (\"\") restores the ABP_Miner class defaults; a bad value logs a warning and changes nothing. ")
+		TEXT("Each apply logs the values to type into the ABP_Miner class defaults."),
+		ECVF_Cheat);
+
+	/** Parses "X Y Z" or "X Y Z Pitch Yaw Roll"; false (outputs untouched) on any other token count or a non-float token. */
+	static bool TryParseRightHandOffset(const FString& Value, FVector& OutLocation, FRotator& OutRotation)
+	{
+		TArray<FString> Tokens;
+		Value.ParseIntoArrayWS(Tokens);
+		if (Tokens.Num() != 3 && Tokens.Num() != 6)
+		{
+			return false;
+		}
+		double Numbers[6] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+		for (int32 Index = 0; Index < Tokens.Num(); ++Index)
+		{
+			if (!LexTryParseString(Numbers[Index], *Tokens[Index]))
+			{
+				return false;
+			}
+		}
+		OutLocation = FVector(Numbers[0], Numbers[1], Numbers[2]);
+		OutRotation = FRotator(Numbers[3], Numbers[4], Numbers[5]);
+		return true;
+	}
 }
 
 void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -131,6 +162,7 @@ void URRMinerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	ApplyDebugUpperPose();
 	ApplyDebugAnimFreeze();
+	ApplyDebugRightHandOffset();
 
 	LogDebugValues();
 }
@@ -195,11 +227,128 @@ void URRMinerAnimInstance::ApplyDebugAnimFreeze()
 	}
 }
 
+void URRMinerAnimInstance::ApplyDebugRightHandOffset()
+{
+	// task-410-01: same pattern as rr.Debug.MinerUpperPose: player miner only, work only when the cvar value changes.
+	const APawn* PawnOwner = TryGetPawnOwner();
+	if (!PawnOwner || !PawnOwner->IsPlayerControlled())
+	{
+		return;
+	}
+
+	const FString Value = RRMinerAnimDebug::CVarRightHandOffset.GetValueOnGameThread().TrimStartAndEnd();
+	if (Value == AppliedDebugRightHandOffset)
+	{
+		return;
+	}
+	AppliedDebugRightHandOffset = Value;
+
+	if (Value.IsEmpty())
+	{
+		// The class default of the ABP generated class holds the values set in the ABP_Miner class defaults.
+		const URRMinerAnimInstance* ClassDefaults = GetClass()->GetDefaultObject<URRMinerAnimInstance>();
+		RightHandOffsetLocation = ClassDefaults->RightHandOffsetLocation;
+		RightHandOffsetRotation = ClassDefaults->RightHandOffsetRotation;
+		RefreshRightHandOffset();
+		return;
+	}
+
+	FVector Location;
+	FRotator Rotation;
+	if (!RRMinerAnimDebug::TryParseRightHandOffset(Value, Location, Rotation))
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.RightHandOffset: bad value \"%s\" (expected \"X Y Z\" or \"X Y Z Pitch Yaw Roll\", floats); offset kept"), *Value);
+		return;
+	}
+	RightHandOffsetLocation = Location;
+	RightHandOffsetRotation = Rotation;
+	RefreshRightHandOffset();
+}
+
+void URRMinerAnimInstance::RefreshRightHandOffset()
+{
+	const USkeletalMeshComponent* MinerMesh = GetSkelMeshComponent();
+	if (!MinerMesh)
+	{
+		return;
+	}
+
+	// Socket the offset is expressed in: the hand socket of the held weapon, else WeaponSocket_R.
+	FName SocketName = DefaultRightHandSocketName;
+	if (const ARRMiner* Miner = Cast<ARRMiner>(TryGetPawnOwner()))
+	{
+		for (const ARRWeapon* Weapon : Miner->GetWeapons())
+		{
+			if (Weapon && !Weapon->GetHandSocketName().IsNone())
+			{
+				SocketName = Weapon->GetHandSocketName();
+				break;
+			}
+		}
+	}
+
+	const USkeletalMeshSocket* HandSocket = MinerMesh->GetSocketByName(SocketName);
+	if (!HandSocket)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("RightHandOffset %s: no socket %s on the miner mesh; right hand offset off"),
+			*GetNameSafe(TryGetPawnOwner()), *SocketName.ToString());
+		RightHandIKEffector = FVector::ZeroVector;
+		RightHandRotationDelta = FRotator::ZeroRotator;
+		RightHandOffsetAlpha = 0.f;
+		return;
+	}
+
+	const bool bHasOffset = !RightHandOffsetLocation.IsNearlyZero() || !RightHandOffsetRotation.IsNearlyZero();
+	if (bHasOffset)
+	{
+		// Socket frame -> RightHand bone space, with the pivot at the socket point. UE order: A * B applies A, then B.
+		// S = socket local transform (socket relative to its bone, RightHand); its scale (about 0.01) cancels the RightHand
+		// bone scale (about 100), so the socket frame is in cm. O = offset in the socket frame (p -> R * p + L: turn around
+		// the socket origin, the grip, then move by L cm). H = RightHand in component space; socket = S * H.
+		// The socket must end at O * S * H while the hand stays rigid on it, so the new hand is H' = D * H with
+		// D = S^-1 * O * S, a transform in RightHand bone space. Conjugating O by S is the pivot correction: D turns the
+		// hand around the socket point (D maps the socket point S(0) to S(L)), not around the hand bone origin.
+		// Translation of D = where the RightHand bone must go, in its own bone space (bone units, scaled by the bone scale,
+		// like LeftHandIKTarget): the Two Bone IK effector; the IK keeps the hand component-space rotation, giving
+		// FTransform(t) * H. Rotation of D = the bone-space rotation added after the IK by Transform (Modify) Bone
+		// (Add to Existing, Bone Space): FTransform(Q) * FTransform(t) * H = D * H. The scales of S and S^-1 cancel in D.
+		const FTransform SocketLocal = HandSocket->GetSocketLocalTransform();
+		const FTransform Offset(RightHandOffsetRotation, RightHandOffsetLocation);
+		const FTransform HandDelta = SocketLocal.Inverse() * Offset * SocketLocal;
+		RightHandIKEffector = HandDelta.GetLocation();
+		RightHandRotationDelta = HandDelta.Rotator();
+		RightHandOffsetAlpha = 1.f;
+	}
+	else
+	{
+		// Offset 0 = the upper body pose unchanged: right arm IK and hand rotation off.
+		RightHandIKEffector = FVector::ZeroVector;
+		RightHandRotationDelta = FRotator::ZeroRotator;
+		RightHandOffsetAlpha = 0.f;
+	}
+
+	// One line per apply; the two first values paste into the ABP_Miner class defaults (Animation|RightHand).
+	UE_LOG(LogRogueRigs, Log,
+		TEXT("RightHandOffset %s: RightHandOffsetLocation=(X=%.3f,Y=%.3f,Z=%.3f) RightHandOffsetRotation=(Pitch=%.3f,Yaw=%.3f,Roll=%.3f) | socket %s on bone %s -> RightHandIKEffector=(X=%.5f,Y=%.5f,Z=%.5f) RightHandRotationDelta=(Pitch=%.3f,Yaw=%.3f,Roll=%.3f) RightHandOffsetAlpha=%.0f"),
+		*GetNameSafe(TryGetPawnOwner()),
+		RightHandOffsetLocation.X, RightHandOffsetLocation.Y, RightHandOffsetLocation.Z,
+		RightHandOffsetRotation.Pitch, RightHandOffsetRotation.Yaw, RightHandOffsetRotation.Roll,
+		*SocketName.ToString(), *HandSocket->BoneName.ToString(),
+		RightHandIKEffector.X, RightHandIKEffector.Y, RightHandIKEffector.Z,
+		RightHandRotationDelta.Pitch, RightHandRotationDelta.Yaw, RightHandRotationDelta.Roll,
+		RightHandOffsetAlpha);
+}
+
 const FName URRMinerAnimInstance::LeftHandGripSocketName(TEXT("LeftHandGrip"));
+
+const FName URRMinerAnimInstance::DefaultRightHandSocketName(TEXT("WeaponSocket_R"));
 
 void URRMinerAnimInstance::NativeBeginPlay()
 {
 	Super::NativeBeginPlay();
+
+	// task-410-01: right hand offset from the class defaults (the cvar, if set, is applied on the first update).
+	RefreshRightHandOffset();
 
 	ARRMiner* Miner = Cast<ARRMiner>(TryGetPawnOwner());
 	if (!Miner)

@@ -34,6 +34,13 @@ class UAnimSequenceBase;
  * task-408-01: the cheat cvar rr.Debug.MinerUpperPose "<name>" sets UpperBodySequence of the player miner to the anim
  * sequence /Game/RogueRigs/Characters/Miner/Anims/<name> (loaded once per new value); empty restores the class default;
  * a missing asset logs a warning and keeps the current sequence.
+ * task-410-01: right hand offset. RightHandOffsetLocation (cm) and RightHandOffsetRotation (deg), set in the ABP_Miner class
+ * defaults, move and turn the right hand on top of the upper body pose, in the frame of the hand socket WeaponSocket_R
+ * (X toward the rifle muzzle, Y side, Z rifle top; rotation pivot = the socket point, the grip). The rifle hangs on that
+ * socket, so it follows the hand. The cheat cvar rr.Debug.RightHandOffset "X Y Z [Pitch Yaw Roll]" overrides them live for
+ * the player miner (empty = class defaults). From the offset the class computes, at anim begin and on each cvar change
+ * only, the ABP inputs RightHandIKEffector (right arm Two Bone IK effector, RightHand bone space), RightHandRotationDelta
+ * (Transform (Modify) Bone, additive, RightHand bone space) and RightHandOffsetAlpha (1 when the offset is non-zero).
  */
 UCLASS()
 class ROGUERIGS_API URRMinerAnimInstance : public UAnimInstance
@@ -52,6 +59,9 @@ public:
 
 	/** Name of the socket of the held weapon mesh the left hand grips (the handguard). */
 	static const FName LeftHandGripSocketName;
+
+	/** Miner mesh socket the right hand offset is expressed in when no held weapon names its own hand socket. */
+	static const FName DefaultRightHandSocketName;
 
 protected:
 	/** OnWeaponAdded callback: recomputes the left hand IK target when the weapon is the hand-held one. */
@@ -72,6 +82,19 @@ protected:
 
 	/** Applies rr.Debug.MinerAnimFreeze to the owning mesh: 1 sets GlobalAnimRateScale to 0, 0 restores the scale saved when freezing. */
 	void ApplyDebugAnimFreeze();
+
+	/**
+	 * Applies rr.Debug.RightHandOffset to RightHandOffsetLocation / RightHandOffsetRotation when the owner is player
+	 * controlled and the cvar value changed (empty = class defaults; bad value = warning, nothing changes), then refreshes
+	 * the right hand ABP inputs.
+	 */
+	void ApplyDebugRightHandOffset();
+
+	/**
+	 * Recomputes RightHandIKEffector, RightHandRotationDelta and RightHandOffsetAlpha from RightHandOffsetLocation and
+	 * RightHandOffsetRotation, and logs one LogRogueRigs line with the values to type into the ABP_Miner class defaults.
+	 */
+	void RefreshRightHandOffset();
 
 	/** Horizontal (XY) speed of the pawn owner in cm/s; 0 without a pawn. */
 	UPROPERTY(BlueprintReadOnly, Category = "RogueRigs|Anim")
@@ -149,6 +172,40 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|UpperBody")
 	TObjectPtr<UAnimSequenceBase> UpperBodySequence = nullptr;
+
+	/**
+	 * Right hand location offset in cm, in the frame of the hand socket (WeaponSocket_R, or the held weapon hand socket):
+	 * X toward the rifle muzzle, Y side, Z rifle top. The socket point (the grip) moves by this amount and the hand follows
+	 * rigidly (the rifle too). Default 0 = the upper body pose unchanged. Overridden live by rr.Debug.RightHandOffset.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|RightHand", meta = (Units = "Centimeters"))
+	FVector RightHandOffsetLocation = FVector::ZeroVector;
+
+	/**
+	 * Right hand rotation offset in degrees (Pitch, Yaw, Roll) in the same socket frame, pivot at the socket point (the
+	 * grip), applied before the location offset. Default 0. Overridden live by rr.Debug.RightHandOffset.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|RightHand", meta = (Units = "Degrees"))
+	FRotator RightHandOffsetRotation = FRotator::ZeroRotator;
+
+	/**
+	 * Right arm Two Bone IK effector for ABP_Miner: location where the RightHand bone must go, in the bone space of RightHand
+	 * (the bone that carries the hand socket; bone units, i.e. scaled by that bone scale, the same space as LeftHandIKTarget).
+	 * Zero when RightHandOffsetAlpha is 0.
+	 */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|RightHand")
+	FVector RightHandIKEffector = FVector::ZeroVector;
+
+	/** Rotation to add on RightHand in its bone space (Transform (Modify) Bone, Rotation Mode Add to Existing, Bone Space), degrees. Zero when RightHandOffsetAlpha is 0. */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|RightHand")
+	FRotator RightHandRotationDelta = FRotator::ZeroRotator;
+
+	/** 1 when RightHandOffsetLocation or RightHandOffsetRotation is non-zero (right arm IK and hand rotation on), else 0. */
+	UPROPERTY(BlueprintReadOnly, Category = "Animation|RightHand")
+	float RightHandOffsetAlpha = 0.f;
+
+	/** Last rr.Debug.RightHandOffset value seen (trimmed); empty = class defaults. The offset is reapplied only when the cvar differs. */
+	FString AppliedDebugRightHandOffset;
 
 	/** Last rr.Debug.MinerUpperPose value applied (trimmed); empty = class default. The sequence is reloaded only when the cvar differs. */
 	FString AppliedDebugUpperPoseName;
