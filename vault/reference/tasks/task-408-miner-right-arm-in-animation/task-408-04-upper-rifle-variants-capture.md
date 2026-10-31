@@ -3,7 +3,7 @@ id: task-408-04-upper-rifle-variants-capture
 description: "Capture: one frozen frame, idle and the three elbow proposals V1..V3 from two close views, labelled sheets for the owner"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T07:49:48Z
 - waiting_for: none
 - result: open
 

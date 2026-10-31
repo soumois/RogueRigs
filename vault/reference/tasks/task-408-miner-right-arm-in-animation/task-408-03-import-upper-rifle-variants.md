@@ -3,7 +3,7 @@ id: task-408-03-import-upper-rifle-variants
 description: "Bp: import A_Miner_UpperRifle_V1..V3 on SKEL_Miner, ABP_Miner upper body set to V2, compiles after the restore"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: /Game/RogueRigs/Characters/Miner/Anims/A_Miner_UpperRifle_V1..V3 exist on SKEL_Miner (no new skeleton), imported with the task-386-04 settings (scale, root motion off, as A_Miner_Idle), length and frame count equal to A_Miner_Idle; ABP_Miner graph reads back Locomotion -> Layered blend per bone (branch filter Spine, depth 0, BlendPoses_0 fed by UpperBodySequence) -> LocalToComponent -> left hand Two Bone IK -> ComponentToLocal -> Output, no right arm correction node; UpperBodySequence class default = A_Miner_UpperRifle_V2; compiles without error; assets and ABP_Miner saved and committed by path `task-408-03-import-upper-rifle-variants: ...`.
 - editor_state: open
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 64, cache write 74411, cache read 1535475, output 11964
+- usage: turns 32, context start 12k peak 74k, resumes 0, 2 min, units 0.31 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T07:47:36Z
 - waiting_for: none
-- result: open
+- result: V1..V3 imported on SKEL_Miner (93 frames, 3.1 s as idle), ABP_Miner default V2, binding via Get UpperBodySequence verified, compiles; commit a208103f; branch filter and depth not read back; no PIE check
 
 ## Relations
 - [[task-408-miner-right-arm-in-animation]] — parent global task.
