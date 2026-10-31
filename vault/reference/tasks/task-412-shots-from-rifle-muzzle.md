@@ -1,6 +1,6 @@
 ---
 id: task-412-shots-from-rifle-muzzle
-description: "Global task: player shots start at the burst rifle Muzzle (horizontal position) instead of the point in front of the miner; height, rock and robot rules kept."
+description: "Global task: player shots start at the burst rifle Muzzle (horizontal position) instead of in front of the miner; height and rock rules kept."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
