@@ -1,9 +1,9 @@
 ---
 id: task-400-burst-rifle-in-hand
 description: "Global task: import SM_BurstRifle, put it on BP_BurstRifle in a miner right hand socket, remove the weapon grey cubes."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle 3D mesh in the miner right hand
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-30: [[miner]] (spec approved; asset line: Meshy SK_Miner, Mixamo rifle clips, ABP_Miner; "weapon hand socket open"), [[burst-rifle]] (approved; game mesh SM_BurstRifle 60 cm, muzzle +X, top +Z, pivot at the pistol grip hand hold, 9,892 tris; "miner hand socket open"), [[burst-rifle-mesh]] (`Art/Meshes/burst-rifle/SM_BurstRifle.fbx` and four `T_BurstRifle_*.png` 2048 maps exist, not yet imported into Unreal; task-395 rebake cancelled, Meshy maps accepted), [[bp-burst-rifle]] (placeholder cube RifleMesh 60x10x10, Muzzle at +40 X, visual only), [[bp-miner]] (SK_Miner + ABP_Miner_C; weapons on the capsule at WeaponAttachOffset (0, 20, -40), WeaponAttachSocketName None, shared by every weapon), [[sys-weapons]] (shot origin = floor + ShotHeight 50 uu along the aim, independent of the mesh pose: moving the mesh to the hand changes no game rule), [[sys-player]] (ARRMiner attaches every weapon to the same socket or offset), [[task-386-miner-mixamo-animation]] (cancelled by the owner; clips are Mixamo rifle clips "avec les mains déjà bien posées, plus ou moins"; T-pose blend space defect, owner commit 5e8a0735 "Fix bug animation" on BS_Miner_Locomotion afterwards). Conflicts: none. Open values the work needs: hand socket (Q4), which weapons go to the hand (Q2, answered: cubes removed, same shot origin), asset paths (Q3), hand fit method (Q5), capture (Q6), shot height versus visible muzzle (Q7). Unreal already holds UE5 mannequin rifle clips (`Content/Characters/Mannequins/Anims/Rifle/`), not used: the owner Mixamo clips stay the base. Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
-- next_step: task-400-07-doc-burst-rifle-in-hand
+- next_step: none
 - started: 2026-10-31T02:25:43Z
 - waiting_for: none
-- result: open
+- result: Done. 7 doc nodes updated (bp-burst-rifle, bp-shotgun, bp-miner, sys-weapons, sys-player-classes, burst-rifle-mesh, unreal-mcp-quirks). Commit db07da46. Doc agent wrote from summaries, no git show; colour/C4/C5 recorded as open observations
 
 ## Questions
 Decided 2026-10-30 (owner "Ok, par défaut"): the defaults of Q1, Q3, Q4, Q5, Q6, Q7 are accepted; values provisional, owner 2026-10-30.
@@ -38,7 +38,7 @@ Decided 2026-10-30 (owner "Ok, par défaut"): the defaults of Q1, Q3, Q4, Q5, Q6
 7. task-400-07-doc-burst-rifle-in-hand (vault/reference/tasks/task-400-burst-rifle-in-hand/task-400-07-doc-burst-rifle-in-hand.md) — doc: update bp-burst-rifle, bp-shotgun, bp-miner, sys-weapons, sys-player-classes
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-400-01-weapon-hand-socket]] — step 1, cpp.
 - [[task-400-02-burst-rifle-import]] — step 2, bp.
 - [[task-400-03-miner-hand-socket]] — step 3, bp.

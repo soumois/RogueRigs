@@ -3,7 +3,7 @@ id: task-400-07-doc-burst-rifle-in-hand
 description: "Doc: update bp-burst-rifle, bp-shotgun, bp-miner, sys-weapons, sys-player-classes"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle 3D mesh in the miner right hand: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: bp-burst-rifle names SM_BurstRifle, Muzzle position and socket; bp-shotgun no longer lists ShotgunMesh; bp-miner names WeaponSocket_R; sys-weapons and sys-player-classes describe the per-weapon socket; burst-rifle-mesh lists the Unreal asset paths; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 36821, cache read 177409, output 9726
+- usage: turns 7, context start 13k peak 40k, resumes 0, 1 min, units 0.11 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T02:40:55Z
 - waiting_for: none
-- result: open
+- result: 7 doc nodes updated (bp-burst-rifle, bp-shotgun, bp-miner, sys-weapons, sys-player-classes, burst-rifle-mesh, unreal-mcp-quirks). Commit db07da46. Doc agent wrote from summaries, no git show; colour/C4/C5 recorded as open observations
 
 ## Relations
 - [[task-400-burst-rifle-in-hand]] — parent global task.
