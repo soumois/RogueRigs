@@ -38,7 +38,7 @@ Budget (Q3, provisional, owner 2026-10-30): 9,892 triangles as delivered, no dec
 - Textures are not edited here; [[task-395-burst-rifle-rebake]] re-bakes them.
 
 ## Unreal assets (task-400-02)
-Imported in `/Game/RogueRigs/Weapons/BurstRifle/`: `SM_BurstRifle` (9,892 triangles, 19,411 vertices, bounds min (-18.19, -3.64, -2.63) max (41.81, 3.63, 18.04) cm = 60 x 7.27 x 20.68, pivot at the grip, muzzle +X, no collision, Nanite off), `M_BurstRifle` (4 texture samples to BaseColor, Normal, Metallic, Roughness), `T_BurstRifle_BaseColor` (sRGB, default group), `T_BurstRifle_Normal` (normal map), `T_BurstRifle_Metallic` and `T_BurstRifle_Roughness` (sRGB off, masks; bp choice). Used by [[bp-burst-rifle]]. Material compile and collision read-back unverified.
+Imported in `/Game/RogueRigs/Weapons/BurstRifle/`: `SM_BurstRifle` (9,892 triangles, 19,411 vertices, bounds min (-18.19, -3.64, -2.63) max (41.81, 3.63, 18.04) cm = 60 x 7.27 x 20.68, pivot at the grip, muzzle +X, no collision, Nanite off), `M_BurstRifle` (4 texture samples to BaseColor, Normal, Metallic, Roughness), `T_BurstRifle_BaseColor` (sRGB, default group), `T_BurstRifle_Normal` (normal map), `T_BurstRifle_Metallic` and `T_BurstRifle_Roughness` (sRGB off, masks; bp choice). Used by [[bp-burst-rifle]]. Collision read-back unverified. Task-403: the flat cream-white in game was not the material but the BP override MI_GB_Shot, now cleared ([[bp-burst-rifle]]); M_BurstRifle wiring confirmed in editor (4 samples right, DefaultLit, Opaque) and recompiled without error (compile log unreadable); masks stay sRGB off (Q2); capture C1 and C3 show teal, dark grey, rust, C2 ambiguous.
 
 ## Reference sheet
 The ChatGPT four-view sheet given to Meshy is not provided (not in Downloads nor in the repo). If the owner gives its path it goes to `Art/Source/burst-rifle/reference/`.
@@ -50,4 +50,5 @@ The ChatGPT four-view sheet given to Meshy is not provided (not in Downloads nor
 - [[art-prompts-extractor]] - format model and flatten recipe precedent.
 - [[task-394-burst-rifle-flat-faces]] - task that stores and flattens it.
 - [[bp-burst-rifle]] - the Blueprint using the imported mesh.
+- [[task-403-burst-rifle-material-fix]] - task that fixed the in-game colours.
 - [[task-395-burst-rifle-rebake]] - re-bakes the maps on the game mesh.

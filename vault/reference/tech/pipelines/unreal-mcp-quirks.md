@@ -56,6 +56,13 @@ kind: doc
 - Static mesh FBX import (task-350-02): `StaticMeshTools.import_file` gave a mesh 100x too small; editor Python (`py "<script>"` typed in the status-bar Cmd box through SlateInspectorToolset) with `FbxImportUI` + `AssetImportTask` imported at the right scale. A mesh first imported through MCP must be deleted before reimport; Python `static_materials` edits did not stick, `StaticMeshTools.set_material` per slot did.
 - Static mesh FBX import, root cause and fix (task-400-02): `StaticMeshTools.import_file` gave a mesh 100x too small with only 1,130 of 9,892 triangles (degenerate removal). Fix: ObjectTools set `bConvertSceneUnit` true on `/Script/UnrealEd.Default__FbxStaticMeshImportData`, delete the asset, re-import, then reset it to false (`importUniformScale` 100 also works).
 
+## Materials and BP components (task-403, 2026-10-31)
+- `get_property_input` needs MP_ names (`MP_BaseColor`).
+- `get_properties` refuses Coordinates, Source and CompressionNone.
+- A BP component path needs the `_C` form: `BP_X_C:Comp_GEN_VARIABLE`.
+- `LogsToolset.GetLogEntries` with a category filter errored; the compile log was not readable.
+- A BP static mesh component can carry OverrideMaterials that hide the mesh material: read them first when a colour is wrong.
+
 ## Relations
 - [[unreal-mcp]] — parent: the MCP setup and its general limits.
 - [[tool-unreal-reimport]] — headless in-place reimport that MCP lacks.
