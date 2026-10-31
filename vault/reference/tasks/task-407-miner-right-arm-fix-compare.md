@@ -3,7 +3,7 @@ id: task-407-miner-right-arm-fix-compare
 description: "Global task: right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Miner right arm correction on the idle pose, compared on one frame
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-10-31, "ok")
 - milestone: M2
 - next_step: task-407-01-right-arm-offsets-cvars
-- started: 2026-10-31T07:17:00Z
-- waiting_for: owner closes the editor so the cpp build of task-407-01 can run
+- started: 2026-10-31T07:27:49Z
+- waiting_for: none
 - result: open
 
 ## Questions
