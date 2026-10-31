@@ -3,7 +3,7 @@ id: task-407-02-abp-right-arm-fix
 description: "Bp: ABP_Miner: right arm correction from the two offsets, after the upper body layer, before the left hand IK"
 parent: task-407-miner-right-arm-fix-compare
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Miner right arm correction on the idle pose, compared on one frame: bp
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
-- waiting_for: owner launches the editor (ABP_Miner must bind AppliedRightElbowOffset and AppliedRightHandOffset)
+- started: 2026-10-31T07:30:08Z
+- waiting_for: none
 - result: open
 
 ## Relations
