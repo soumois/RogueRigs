@@ -6,7 +6,7 @@ kind: note
 ---
 # Weapons and upgrades
 
-All weapons fire automatically toward the aim. No shot passes over a rock block.
+All weapons fire automatically toward the aim. No shot passes over a rock block. Only the player's first weapon (the burst rifle; the demo always starts with it) is shown in the hand; the shots of every other player weapon leave from its Muzzle (owner 2026-10-31, task-412: "on affiche que la première arme du joueur, les autres armes partent de ce muzzle").
 
 ## Children
 - [[burst-rifle]] — default weapon, fires projectile bursts.
