@@ -3,7 +3,7 @@ id: task-406-miner-upper-body-idle-layer
 description: "Global task: ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner upper body from the idle rifle pose over the locomotion legs
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "ok")
 - milestone: M2
 - next_step: task-406-01-upper-body-sequence-prop
-- started: open
+- started: 2026-10-31T06:51:46Z
 - waiting_for: none
 - result: open
 
