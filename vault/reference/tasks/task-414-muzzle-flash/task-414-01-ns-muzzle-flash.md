@@ -3,7 +3,7 @@ id: task-414-01-ns-muzzle-flash
 description: "Bp: create NS_MuzzleFlash (one-shot white-gold core and forward sparks, and its sprite material if needed) in Content/RogueRigs/FX/"
 parent: task-414-muzzle-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash on every miner shot: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T22:17:02Z
 - waiting_for: none
 - result: open
 

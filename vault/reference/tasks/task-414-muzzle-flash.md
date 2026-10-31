@@ -3,7 +3,7 @@ id: task-414-muzzle-flash
 description: "Global task: a short white-gold Niagara muzzle flash at the shown rifle Muzzle on every miner shot; today shots have no particle."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash on every miner shot
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-31, "ok, tout par défaut")
 - milestone: M2
 - next_step: task-414-01-ns-muzzle-flash
-- started: open
+- started: 2026-10-31T22:17:02Z
 - waiting_for: none
 - result: open
 
