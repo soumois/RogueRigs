@@ -3,7 +3,7 @@ id: task-410-right-hand-offset-live
 description: "Global task: right hand offset on the V2Grip pose, live by cvar and in ABP_Miner Class Defaults; arm by IK, rifle follows the hand."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Live control of the right hand offset
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-410-01-right-hand-offset-code
 - started: 2026-10-31T20:09:04Z
-- waiting_for: none
+- waiting_for: owner closes the Unreal editor (PID 56208) for task-410-01 cpp build
 - result: open
 
 ## Questions
