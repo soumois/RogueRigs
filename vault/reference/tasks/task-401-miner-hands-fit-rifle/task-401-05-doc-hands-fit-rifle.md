@@ -3,7 +3,7 @@ id: task-401-05-doc-hands-fit-rifle
 description: "Doc: update bp-miner and sys-player-classes, record LeftHandGrip in burst-rifle-mesh"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner hands fitted to the burst rifle: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T05:55:59Z
 - waiting_for: none
 - result: open
 
