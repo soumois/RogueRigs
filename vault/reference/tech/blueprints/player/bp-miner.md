@@ -29,10 +29,19 @@ Owner "Ok, par défaut" 2026-10-30 ([[task-401-miner-hands-fit-rifle]]). AnimGra
 Decided in [[task-406-miner-upper-body-idle-layer]] (Q1, Q2). Commits: cpp 49a881c3, bp b03e520d.
 - AnimGraph: State machine `Locomotion` -> Layered blend per bone -> LocalToComponent -> TwoBoneIK (LeftHand, effector `LeftHandIKTarget`, alpha `LeftHandIKAlpha`) -> ComponentToLocal -> Output Pose.
 - Layered blend per bone: BasePose = Locomotion; BlendPoses_0 = looping Sequence Player whose Sequence pin is fed by Get `UpperBodySequence`; branch filter bone `Spine`, blend depth 0; mesh space rotation blend on; weight 1. Legs from locomotion, spine and above from the sequence.
-- Class default: ABP_Miner `UpperBodySequence` = /Game/RogueRigs/Characters/Miner/Anims/A_Miner_Idle ([[sys-player-classes]]).
+- Class default: ABP_Miner `UpperBodySequence` = /Game/RogueRigs/Characters/Miner/Anims/A_Miner_UpperRifle_V2 since task-408-03 (was A_Miner_Idle), provisional ([[sys-player-classes]]).
 - Swap the upper source (another weapon pose): change `UpperBodySequence` in the ABP_Miner class defaults; later it can be set from the starting weapon.
-- Leftover: an unconnected `TwoBoneIK_0` from the owner remains in the graph.
+- The unconnected `TwoBoneIK_0` leftover was dropped in task-408-03. The graph holds no right arm correction node (the task-407 offsets were removed in task-408-01).
 - Unverified: no PIE reading (RightHand and LeftHand relative to Spine while moving; LeftHand vs `LeftHandGrip`); compiler log not checked for a Spine bone warning; bone name `Spine` not read back from SKEL_Miner.
+
+## Upper rifle variants in ABP_Miner (task-408, provisional)
+Owner 2026-10-31 ([[task-408-miner-right-arm-in-animation]]). Commits: cpp 4e0cce39, art d7549f09, bp a208103f.
+- Assets: /Game/RogueRigs/Characters/Miner/Anims/A_Miner_UpperRifle_V1, _V2, _V3 on SKEL_Miner, imported by `Tools/unreal/import_miner_upper_rifle.py` (editor Python). Right elbow raised 3, 6, 9 cm over A_Miner_Idle, right hand unchanged; construction and measures in [[miner-mixamo-clips]]. A_Miner_Idle is untouched.
+- Active: `UpperBodySequence` class default = A_Miner_UpperRifle_V2, provisional until the owner picks.
+- Pick another: set `UpperBodySequence` in the ABP_Miner Class Defaults. For a test without editing the asset: console `rr.Debug.MinerUpperPose <name>` (e.g. A_Miner_UpperRifle_V1; empty restores the class default), optionally with `rr.Debug.MinerAnimFreeze 1` ([[sys-player-classes]]).
+- Capture (local, gitignored): `Saved/Captures/UpperRifle408/` with `sheet_side.png`, `sheet_front.png`, `side_*_00.png`, `front_*_00.png` for idle, V1, V2, V3.
+- Capture verdicts: C1 ambiguous (the miner drone floats at a different place per frame); C2 ambiguous, leaning seen (elbow rises from idle to V3 in the side view; 3, 6, 9 cm not confirmable; front view dark); C3 ambiguous (rifle in place, near hand moves slightly); C4 seen; C5 seen (no pose problem visible).
+- Unverified: elbow heights in the editor or PIE; the FBX import logged "invalid bind poses" warnings (no visible effect in the captures). The owner compares the sheets or uses `rr.Debug.MinerUpperPose`, then picks.
 
 ## Miner material and brightness (task-393-01, provisional)
 Owner request 2026-10-30: the Meshy miner looked burnt out in the arena. Lever chosen: the miner material only (Q9 A), value Q10 0.6 provisional, the owner tunes by eye ([[task-393-miner-over-lit]]). Not verified by render or PIE.
@@ -67,3 +76,5 @@ Removed on 2026-10-21 by owner direction ("repars d une lumiere flat"): the cent
 - [[task-404-rifle-mesh-owner-offset]] — left hand vs elbow pole note and refresh limit.
 - [[task-393-miner-over-lit]] — added MI_Miner and BaseColorScale.
 - [[task-406-miner-upper-body-idle-layer]] — added the upper body layer and UpperBodySequence.
+- [[task-408-miner-right-arm-in-animation]] — added the upper rifle variants and removed the arm offsets.
+- [[miner-mixamo-clips]] — how the three variant clips were built.

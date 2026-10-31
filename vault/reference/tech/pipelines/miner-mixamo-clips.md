@@ -1,6 +1,6 @@
 ---
 id: miner-mixamo-clips
-description: "The nine owner Mixamo clips of the miner: saved files, speed and direction per clip, in-place method, FBX export settings. Open before importing them."
+description: "Owner Mixamo clips of the miner (speed, direction, in-place method, FBX export) and the three upper rifle variants. Open before importing them."
 parent: pipelines-index
 kind: doc
 ---
@@ -50,3 +50,4 @@ Owner 2026-10-31: new animations based on the idle with the right elbow raised, 
 - [[task-386-miner-mixamo-animation]] — the global task that made them.
 - [[art-prompts-miner]] — the rigged miner mesh these clips fit.
 - [[miner]] — the entity they animate.
+- [[bp-miner]] — imports the variants and picks the active one (UpperBodySequence).
