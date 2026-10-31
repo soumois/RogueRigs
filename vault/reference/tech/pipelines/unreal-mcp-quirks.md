@@ -54,6 +54,7 @@ kind: doc
 - `TextureTools.import_file` refuses to overwrite: delete, import, then set the UI texture group again.
 - Material graphs: `editor_toolset.toolsets.material.MaterialTools`, short tool names. A new Custom node input needs one `set_properties` call with all existing entries plus an empty `{}`, then a second call to name it; `get_expression_inputs` may misreport an input.
 - Static mesh FBX import (task-350-02): `StaticMeshTools.import_file` gave a mesh 100x too small; editor Python (`py "<script>"` typed in the status-bar Cmd box through SlateInspectorToolset) with `FbxImportUI` + `AssetImportTask` imported at the right scale. A mesh first imported through MCP must be deleted before reimport; Python `static_materials` edits did not stick, `StaticMeshTools.set_material` per slot did.
+- Static mesh FBX import, root cause and fix (task-400-02): `StaticMeshTools.import_file` gave a mesh 100x too small with only 1,130 of 9,892 triangles (degenerate removal). Fix: ObjectTools set `bConvertSceneUnit` true on `/Script/UnrealEd.Default__FbxStaticMeshImportData`, delete the asset, re-import, then reset it to false (`importUniformScale` 100 also works).
 
 ## Relations
 - [[unreal-mcp]] — parent: the MCP setup and its general limits.

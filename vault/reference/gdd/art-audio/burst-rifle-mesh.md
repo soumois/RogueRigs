@@ -37,6 +37,9 @@ Budget (Q3, provisional, owner 2026-10-30): 9,892 triangles as delivered, no dec
 - Cause of the bulge, measured: Meshy faces are 0.03 cm (mean) to 0.09 cm (p95) off their plane at source scale, face normals 2.2 degrees off the plane normal (mean), split normals 2.0 degrees off the face normal (mean), normal-map tilt 3.6 degrees on region faces (8.0 on the whole mesh). All 9,892 faces were smooth-shaded.
 - Textures are not edited here; [[task-395-burst-rifle-rebake]] re-bakes them.
 
+## Unreal assets (task-400-02)
+Imported in `/Game/RogueRigs/Weapons/BurstRifle/`: `SM_BurstRifle` (9,892 triangles, 19,411 vertices, bounds min (-18.19, -3.64, -2.63) max (41.81, 3.63, 18.04) cm = 60 x 7.27 x 20.68, pivot at the grip, muzzle +X, no collision, Nanite off), `M_BurstRifle` (4 texture samples to BaseColor, Normal, Metallic, Roughness), `T_BurstRifle_BaseColor` (sRGB, default group), `T_BurstRifle_Normal` (normal map), `T_BurstRifle_Metallic` and `T_BurstRifle_Roughness` (sRGB off, masks; bp choice). Used by [[bp-burst-rifle]]. Material compile and collision read-back unverified.
+
 ## Reference sheet
 The ChatGPT four-view sheet given to Meshy is not provided (not in Downloads nor in the repo). If the owner gives its path it goes to `Art/Source/burst-rifle/reference/`.
 
@@ -46,4 +49,5 @@ The ChatGPT four-view sheet given to Meshy is not provided (not in Downloads nor
 - [[burst-rifle]] - the weapon this mesh is for.
 - [[art-prompts-extractor]] - format model and flatten recipe precedent.
 - [[task-394-burst-rifle-flat-faces]] - task that stores and flattens it.
+- [[bp-burst-rifle]] - the Blueprint using the imported mesh.
 - [[task-395-burst-rifle-rebake]] - re-bakes the maps on the game mesh.
