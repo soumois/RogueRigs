@@ -421,3 +421,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-410-right-hand-offset-live]] — right hand offset on the V2Grip pose, live by cvar and in ABP_Miner Class Defaults; arm by IK, rifle follows the hand. Status done.
 - [[task-411-right-hand-offset-rifle-stays]] — fix of task-410: the right hand offset counter-moves RifleMesh and Muzzle so the hand slides on a still rifle; left hand IK refreshed. Status done.
 - [[task-412-shots-from-rifle-muzzle]] — Miner shots start at the real burst rifle Muzzle (every other weapon too), vertical capsule from 20 uu above the floor. Status done.
+- [[task-414-muzzle-flash]] — a short white-gold Niagara muzzle flash at the shown rifle Muzzle on every miner shot; today shots have no particle. Status done.

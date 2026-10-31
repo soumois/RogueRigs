@@ -3,7 +3,7 @@ id: task-414-03-doc-muzzle-flash
 description: "Doc: create bp-muzzle-flash (fx index); update sys-weapons, sys-weapons-shotgun, bp-burst-rifle"
 parent: task-414-muzzle-flash
 kind: task
-status: in-progress
+status: done
 ---
 # Muzzle flash on every miner shot: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: bp-muzzle-flash exists with parent blueprints-fx-index and a Children line there; sys-weapons, sys-weapons-shotgun and bp-burst-rifle state the flash rule and commit hashes; `node vault/scripts/lint.js --write` clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 41893, cache read 248266, output 6914
+- usage: turns 9, context start 12k peak 42k, resumes 0, 3 min, units 0.11 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T22:25:58Z
 - waiting_for: none
-- result: open
+- result: bp-muzzle-flash created; sys-weapons, sys-weapons-shotgun, bp-burst-rifle updated; lint clean (8a21d3d2)
 
 ## Relations
 - [[task-414-muzzle-flash]] — parent global task.

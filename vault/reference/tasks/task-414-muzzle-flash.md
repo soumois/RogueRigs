@@ -1,9 +1,9 @@
 ---
 id: task-414-muzzle-flash
 description: "Global task: a short white-gold Niagara muzzle flash at the shown rifle Muzzle on every miner shot; today shots have no particle."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Muzzle flash on every miner shot
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[art-style-guide]] A8 ("Player fire: white-gold bolts, bright muzzle flash, small impact sparks on the hit target"), [[color-code]] (player shots white-gold), [[burst-rifle]] (vfx_sfx: "muzzle, impact and sound open": the flash look is an open value, proposed in Q4 and written on confirmation), [[shotgun]] (vfx_sfx: "white-gold pellets and muzzle flash"), [[weapons-index]] (every other player weapon shoots from the shown rifle Muzzle, task-412). No conflict; open value: burst-rifle muzzle look (Q4). Impact sparks (A8) not requested: not planned. Milestone M2. Video 2026-10-31: no flash or particle at the barrel on any shot. Tech read: Content/RogueRigs/FX/ holds no muzzle flash; the Niagara module is already a dependency; existing pattern: RRDrone.cpp loads NS_DroneThruster and NS_DigImpact by `ConstructorHelpers::FObjectFinder` path, skips Niagara without rendering; [[bp-shooter-charge]] is a similar effect at a cannon tip. Owner working tree: BP_BurstRifle.uasset and ABP_Miner.uasset modified, not committed (Q5 keeps them untouched).
 - confirmed_by_owner: yes (2026-10-31, "ok, tout par défaut")
 - milestone: M2
-- next_step: task-414-03-doc-muzzle-flash
+- next_step: none
 - started: 2026-10-31T22:17:02Z
 - waiting_for: none
-- result: open
+- result: Done. bp-muzzle-flash created; sys-weapons, sys-weapons-shotgun, bp-burst-rifle updated; lint clean (8a21d3d2)
 
 ## Questions
 Decided 2026-10-31 (owner "ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -31,7 +31,7 @@ Decided 2026-10-31 (owner "ok, tout par défaut"): every default below is accept
 3. task-414-03-doc-muzzle-flash (vault/reference/tasks/task-414-muzzle-flash/task-414-03-doc-muzzle-flash.md) — doc: create bp-muzzle-flash (fx index); update sys-weapons, sys-weapons-shotgun, bp-burst-rifle
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-414-01-ns-muzzle-flash]] — step 1, bp.
 - [[task-414-02-spawn-muzzle-flash]] — step 2, cpp.
 - [[task-414-03-doc-muzzle-flash]] — step 3, doc.
