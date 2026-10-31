@@ -1,9 +1,9 @@
 ---
 id: task-407-miner-right-arm-fix-compare
 description: "Global task: right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images."
-parent: tasks-done-index
+parent: tasks-to-do-index
 kind: task
-status: done
+status: wait-answers
 ---
 # Miner right arm correction on the idle pose, compared on one frame
 
@@ -13,10 +13,10 @@ status: done
 - gdd_check: Read 2026-10-31: [[miner]] (approved; animation = Mixamo clips on the miner skeleton played by ABP_Miner; weapon socket WeaponSocket_R on the right hand; left hand by IK on the handguard, provisional tasks 400 and 401; nothing on an upper/lower body split or the right arm pose), [[bp-miner]] (AnimGraph: Locomotion state machine -> LocalToComponent -> Two Bone IK on LeftHand -> ComponentToLocal -> Output; LeftHandIKTarget is in RightHand bone space, so the left hand follows the right hand and the rifle; IK alpha 0 in the ABP editor preview (no weapon); bones are Mixamo names without prefix: RightHand, RightForeArm, RightArm, LeftHand; mesh forward = component +Y, left = +X), [[sys-player-classes]] (URRMinerAnimInstance gives MoveX, MoveY, GroundSpeed, LeftHandIKTarget, LeftHandIKAlpha; rr.Debug.MinerAnimForce forces the move vector), [[task-386-miner-mixamo-animation]] (clips A_Miner_*, idle = Rifle Aiming Idle; open defect: arms in T-pose while the legs run in some blend space samples, cause not found; BS_Miner_Locomotion owner fix, do not change), [[task-405-right-elbow-raise]] (a right elbow raise was planned then cancelled by the owner 2026-10-31 "Laisse tomber le coude"; this new request asks for it again, with a hand-forward part and comparison images), [[agent-capture]] and [[task-401-04-hands-fit-capture]] (from the default top-down camera the right hand is hidden by the head: captures ambiguous; rr.Debug.Camera <Pitch> <ArmLength> [Yaw] exists for close views). Conflicts: none, rendering only; shot origin (floor + 50 uu along the aim) and every game rule unchanged. Open values for this point: the correction method (Q5), the default amounts and directions (Q6), the comparison set (Q7). Moving the right hand forward also moves the rifle mesh and, through the IK, the left hand (visual only, Muzzle stays visual only, shots unchanged). Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-31, "ok")
 - milestone: M2
-- next_step: none
-- started: 2026-10-31T07:27:49Z
-- waiting_for: none
-- result: Done. Commit 32c5c0ce. RightElbowOffset (0,0,5) and RightHandOffset (0,3,0) plus transient AppliedRightElbowOffset/AppliedRightHandOffset (ABP must read the Applied* ones), cvars rr.Debug.MinerArmFix and rr.Debug.MinerAnimFreeze; RogueRigsEditor build exit 0. First run blocked by Live Coding (cost of run 1 counted by the previous executor).
+- next_step: task-407-02-abp-right-arm-fix
+- started: 2026-10-31T07:29:39Z
+- waiting_for: owner launches the editor for task-407-02 (bp)
+- result: open
 
 ## Questions
 Decided 2026-10-31 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -31,7 +31,7 @@ Decided 2026-10-31 (owner "ok"): every default below is accepted; values provisi
 4. task-407-04-doc-right-arm-fix (vault/reference/tasks/task-407-miner-right-arm-fix-compare/task-407-04-doc-right-arm-fix.md) — doc: doc: bp-miner (right arm correction, how to tune) and sys-player-classes (offsets and debug cvars)
 
 ## Relations
-- [[tasks-done-index]] — parent index.
+- [[tasks-to-do-index]] — parent index.
 - [[task-407-01-right-arm-offsets-cvars]] — step 1, cpp.
 - [[task-407-02-abp-right-arm-fix]] — step 2, bp.
 - [[task-407-03-right-arm-fix-capture]] — step 3, capture.
