@@ -1,9 +1,9 @@
 ---
 id: task-410-right-hand-offset-live
 description: "Global task: right hand offset on the V2Grip pose, live by cvar and in ABP_Miner Class Defaults; arm by IK, rifle follows the hand."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Live control of the right hand offset
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[burst-rifle]] (approved; mesh at (0, 0, 0), scale 1.25 on WeaponSocket_R, task-409; edit applied on confirmation: the rifle follows the right hand, an offset or a firing animation moving the hand moves the rifle), [[burst-rifle-mesh]] (pivot at the pistol grip, LeftHandGrip on the handguard), [[bp-burst-rifle]] (RifleMesh (0, 0, 0), Muzzle (52.25, 0, 0), visual only; unchanged), [[bp-miner]] (WeaponSocket_R on RightHand, socket scale 0.01 against a RightHand bone scale about 100; AnimGraph Locomotion -> Layered blend per bone (Spine, UpperBodySequence = V2Grip) -> LocalToComponent -> left Two Bone IK (effector LeftHandIKTarget in RightHand bone space) -> ComponentToLocal; no right arm node), [[sys-player-classes]] (cvar pattern of rr.Debug.MinerUpperPose; RefreshLeftHandIK at weapon add), [[sys-weapons]] (shot origin independent of the mesh), [[task-409-miner-right-hand-on-grip]] (V2Grip: RightHand moved 16.38 cm in hand space, rotation kept; offset 0 keeps it). Code read: RRMinerAnimInstance.cpp. Feasible without a new animation: right arm IK plus a bone rotation in ABP_Miner, fed by the anim instance. Since the rifle hangs on the right hand socket it moves with the hand (Q1), and the left hand IK target, expressed in RightHand bone space from a rigid grip, stays on the handguard without a refresh because the right arm nodes run before the left IK. Risk: the right arm has a fixed length; an offset beyond reach leaves the hand short of the target, so keep offsets to a few cm. Conflicts: none, rendering only. Open values: none. Milestone M2.
 - confirmed_by_owner: yes (2026-10-31, "Q1 ça suit la main, c'est normal. Plus tard, si je veux faire une animation de tir et que la main droite bouge, c'est normal que le fusil bouge avec. le reste par défaut")
 - milestone: M2
-- next_step: task-410-03-doc-right-hand-offset
+- next_step: none
 - started: 2026-10-31T20:13:59Z
 - waiting_for: none
-- result: open
+- result: Done. sys-player-classes and bp-miner updated, commit e567cab9; lint OK
 
 ## Questions
 Decided 2026-10-31, owner answer (relayed by the main session, verbatim): "Q1 ça suit la main, c'est normal. Plus tard, si je veux faire une animation de tir et que la main droite bouge, c'est normal que le fusil bouge avec. le reste par défaut"; values provisional, owner 2026-10-31.
@@ -32,7 +32,7 @@ Decided 2026-10-31, owner answer (relayed by the main session, verbatim): "Q1 ç
 3. task-410-03-doc-right-hand-offset (vault/reference/tasks/task-410-right-hand-offset-live/task-410-03-doc-right-hand-offset.md) — doc: sys-player-classes and bp-miner: right hand offset, cvar, ABP nodes, how to keep values
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-410-01-right-hand-offset-code]] — step 1, cpp.
 - [[task-410-02-abp-right-arm-offset]] — step 2, bp.
 - [[task-410-03-doc-right-hand-offset]] — step 3, doc.

@@ -3,7 +3,7 @@ id: task-410-03-doc-right-hand-offset
 description: "Doc: sys-player-classes and bp-miner: right hand offset properties, cvar, ABP right arm nodes, how to keep values"
 parent: task-410-right-hand-offset-live
 kind: task
-status: in-progress
+status: done
 ---
 # Live control of the right hand offset: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The two nodes name the properties, the cvar with syntax, units and axes, the ABP nodes, that the rifle and the left hand follow the right hand, the reach risk and how to keep a value; unverified items stated (no PIE run by the crew); lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 32024, cache read 97766, output 3774
+- usage: turns 5, context start 12k peak 32k, resumes 0, 0 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T20:21:24Z
 - waiting_for: none
-- result: open
+- result: sys-player-classes and bp-miner updated, commit e567cab9; lint OK
 
 ## Relations
 - [[task-410-right-hand-offset-live]] — parent global task.
