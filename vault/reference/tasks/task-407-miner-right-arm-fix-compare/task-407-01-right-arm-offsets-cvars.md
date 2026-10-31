@@ -3,7 +3,7 @@ id: task-407-01-right-arm-offsets-cvars
 description: "Cpp: URRMinerAnimInstance: RightElbowOffset, RightHandOffset, debug cvars MinerArmFix and MinerAnimFreeze"
 parent: task-407-miner-right-arm-fix-compare
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right arm correction on the idle pose, compared on one frame: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Properties and cvars as in the goal, help texts listed by `node Tools/capture/commands.js MinerA` / `MinerArm`; RogueRigsEditor builds without warnings from the change; game rules untouched; committed by path `task-407-01-right-arm-offsets-cvars: ...`.
 - editor_state: closed
 - token_ceiling: 0.8 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 44, cache write 76970, cache read 565745, output 13921
+- usage: turns 22, context start 12k peak 41k, resumes 0, 3 min, units 0.22 M
+- runs: 2
 - milestone: M2
 - started: 2026-10-31T07:27:49Z
 - waiting_for: none
-- result: open
+- result: Commit 32c5c0ce. RightElbowOffset (0,0,5) and RightHandOffset (0,3,0) plus transient AppliedRightElbowOffset/AppliedRightHandOffset (ABP must read the Applied* ones), cvars rr.Debug.MinerArmFix and rr.Debug.MinerAnimFreeze; RogueRigsEditor build exit 0. First run blocked by Live Coding (cost of run 1 counted by the previous executor).
 
 ## Relations
 - [[task-407-miner-right-arm-fix-compare]] — parent global task.

@@ -415,3 +415,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-404-rifle-mesh-owner-offset]] — BP_BurstRifle RifleMesh at the owner relative location and scale 1.25, Muzzle moved to the scaled barrel tip. Status done.
 - [[task-405-right-elbow-raise]] — raise the miner right elbow a little away from the body in every clip, hand and rifle unchanged, owner-tunable offset. Status cancelled.
 - [[task-406-miner-upper-body-idle-layer]] — ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later. Status done.
+- [[task-407-miner-right-arm-fix-compare]] — right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images. Status done.
