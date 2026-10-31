@@ -417,3 +417,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-406-miner-upper-body-idle-layer]] — ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later. Status done.
 - [[task-407-miner-right-arm-fix-compare]] — right elbow raised a little and right hand slightly forward on the upper body pose, owner offsets, same-frame comparison images. Status cancelled.
 - [[task-408-miner-right-arm-in-animation]] — three new upper body animations from the idle with the right elbow raised, compared on one frame, the chosen one drives the upper body. Status done.
+- [[task-409-miner-right-hand-on-grip]] — new upper body animation from V2 with the right hand on the rifle grip; RifleMesh offset reset so the rifle stays in place. Status done.
