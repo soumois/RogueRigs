@@ -11,3 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
+- [[task-409-miner-right-hand-on-grip]] — new upper body animation from V2 with the right hand on the rifle grip; RifleMesh offset reset so the rifle stays in place. Status wait-answers.
