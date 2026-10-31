@@ -3,7 +3,7 @@ id: task-409-03-import-v2-grip
 description: "Bp: import A_Miner_UpperRifle_V2Grip on SKEL_Miner, ABP_Miner UpperBodySequence set to it"
 parent: task-409-miner-right-hand-on-grip
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: /Game/RogueRigs/Characters/Miner/Anims/A_Miner_UpperRifle_V2Grip exists on SKEL_Miner (no new skeleton), imported with the settings of V1..V3, length and frame count equal to A_Miner_UpperRifle_V2; ABP_Miner UpperBodySequence class default = A_Miner_UpperRifle_V2Grip, graph unchanged otherwise; compiles without error; saved and committed by path `task-409-03-import-v2-grip: ...`.
 - editor_state: open
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 52591, cache read 886885, output 6847
+- usage: turns 23, context start 12k peak 53k, resumes 0, 1 min, units 0.19 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T19:43:07Z
 - waiting_for: none
-- result: open
+- result: V2Grip imported on SKEL_Miner (3.1 s, 93 frames = V2), ABP_Miner UpperBodySequence = V2Grip, compile null no error; commit 3266af72. Agent stopped a running PIE session
 
 ## Relations
 - [[task-409-miner-right-hand-on-grip]] — parent global task.

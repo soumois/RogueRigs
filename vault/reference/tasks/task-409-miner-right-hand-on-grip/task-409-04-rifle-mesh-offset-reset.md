@@ -3,7 +3,7 @@ id: task-409-04-rifle-mesh-offset-reset
 description: "Bp: BP_BurstRifle: RifleMesh location (0, 0, 0), scale 1.25 kept, Muzzle (52.25, 0, 0)"
 parent: task-409-miner-right-hand-on-grip
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T19:44:52Z
 - waiting_for: none
 - result: open
 
