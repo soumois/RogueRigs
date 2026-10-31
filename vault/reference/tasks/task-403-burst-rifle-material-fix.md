@@ -1,9 +1,9 @@
 ---
 id: task-403-burst-rifle-material-fix
 description: "Global task: diagnose in the editor why SM_BurstRifle renders flat cream-white in game, fix M_BurstRifle or its textures, check by capture."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle material fix: colours readable in game
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[burst-rifle]] (spec approved; look: white + teal + rust salvaged plates, dark gunmetal grip, barrel and muzzle; Meshy maps accepted, task-395 rebake cancelled), [[burst-rifle-mesh]] (four 2048 maps, Unreal assets of task-400-02: M_BurstRifle 4 samples, BaseColor sRGB, Normal, Metallic and Roughness sRGB off TC_Masks; material compile unverified), [[bp-burst-rifle]] (RifleMesh = SM_BurstRifle; open observation: renders flat cream-white in RifleInHand2), [[task-400-burst-rifle-in-hand]] (done; capture C1 ambiguous for this reason). Conflicts: none. Open values the work needs: none in the GDD; the fix scope (Q1), the mask texture settings (Q2) and the capture (Q3) are asked. Out of scope: left-hand IK ([[task-401-miner-hands-fit-rifle]], separate, todo, not started). Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-31, "Ok")
 - milestone: M2
-- next_step: task-403-03-doc-burst-rifle-material-fix
+- next_step: none
 - started: 2026-10-31T04:33:01Z
 - waiting_for: none
-- result: open
+- result: Done. Doc nodes updated (bp-burst-rifle, burst-rifle-mesh, unreal-mcp-quirks), commit 71a658bb; cause, fix, compile and capture outcome recorded.
 
 ## Questions
 Decided 2026-10-31 (owner "Ok"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -30,7 +30,7 @@ Decided 2026-10-31 (owner "Ok"): every default below is accepted; values provisi
 3. task-403-03-doc-burst-rifle-material-fix (vault/reference/tasks/task-403-burst-rifle-material-fix/task-403-03-doc-burst-rifle-material-fix.md) — doc: update bp-burst-rifle and burst-rifle-mesh with the cause and the fix
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-403-01-burst-rifle-material-diagnose-fix]] — step 1, bp.
 - [[task-403-02-burst-rifle-colours-capture]] — step 2, capture.
 - [[task-403-03-doc-burst-rifle-material-fix]] — step 3, doc.

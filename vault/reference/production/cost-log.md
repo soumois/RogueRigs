@@ -926,17 +926,18 @@ kind: note
 | [[task-400-07-doc-burst-rifle-in-hand]] | sonnet | 1 | 0k | 37k | 177k | 10k | 0.11 | 7 | 0 |
 | [[task-403-01-burst-rifle-material-diagnose-fix]] | sonnet | 1 | 0k | 46k | 330k | 9k | 0.14 | 12 | 0 |
 | [[task-403-02-burst-rifle-colours-capture]] | sonnet | 1 | 0k | 28k | 198k | 3k | 0.07 | 10 | 0 |
+| [[task-403-03-doc-burst-rifle-material-fix]] | sonnet | 1 | 0k | 26k | 90k | 3k | 0.06 | 5 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 362.32 | 0k | 85.09 M | 1788.49 M | 15437k |
+| All subtask rows above | 362.38 | 0k | 85.11 M | 1788.58 M | 15440k |
 | model mixed | 7.92 | 0k | 2.85 M | 23.35 M | 403k |
 | model opus | 196.21 | 0k | 43.71 M | 986.00 M | 8599k |
-| model sonnet | 158.19 | 0k | 38.53 M | 779.13 M | 6435k |
-| Executors and legacy orchestrators that ran a task (pilot) | 24.87 | 4k | 11.05 M | 69.81 M | 813k |
+| model sonnet | 158.25 | 0k | 38.55 M | 779.22 M | 6438k |
+| Executors and legacy orchestrators that ran a task (pilot) | 24.89 | 4k | 11.06 M | 69.90 M | 815k |
 | Planning runs (planners and legacy planning passes) | 29.71 | 3k | 9.37 M | 108.28 M | 1434k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 65.48 | 5k | 10.45 M | 442.97 M | 1622k |

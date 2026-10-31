@@ -410,3 +410,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-399-total-duskite-number-overlap]] — on the level-end stats screen the Total Duskite number is drawn over the end of its label; place it beside the label. Status done.
 - [[task-400-burst-rifle-in-hand]] — import SM_BurstRifle, put it on BP_BurstRifle instead of the cube and attach it to a right hand socket of the miner. Status done.
 - [[task-402-capture-map-path-msys]] — capture.js and Run-StressTest.ps1 pass a correct /Game/... map path even when called from Git Bash (MSYS path rewrite); agent docs updated. Status done.
+- [[task-403-burst-rifle-material-fix]] — diagnose and fix the flat cream-white look of SM_BurstRifle in game (M_BurstRifle, textures), check the colours by capture. Status done.
