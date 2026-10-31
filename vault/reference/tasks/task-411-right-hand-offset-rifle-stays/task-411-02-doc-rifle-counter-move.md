@@ -3,7 +3,7 @@ id: task-411-02-doc-rifle-counter-move
 description: "Doc: sys-player-classes, bp-miner, bp-burst-rifle: the offset moves the hand on a still rifle (counter-move), left hand refresh"
 parent: task-411-right-hand-offset-rifle-stays
 kind: task
-status: in-progress
+status: done
 ---
 # Right hand offset moves the hand on the rifle, the rifle stays in place: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The three nodes state the counter-move rule, the left hand refresh, that the rifle follows the hand in animations but not the offset, the reach risk; no stale task-410 sentence says the offset moves the rifle; unverified items stated (no PIE run by the crew); lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 39030, cache read 130147, output 5341
+- usage: turns 6, context start 12k peak 39k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T20:47:35Z
 - waiting_for: none
-- result: open
+- result: Doc: sys-player-classes, bp-miner, bp-burst-rifle updated (commit c2be1ed7); no PIE run; gdd burst-rifle line not edited by doc
 
 ## Relations
 - [[task-411-right-hand-offset-rifle-stays]] — parent global task.

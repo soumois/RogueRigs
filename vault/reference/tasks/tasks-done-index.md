@@ -419,3 +419,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-408-miner-right-arm-in-animation]] — three new upper body animations from the idle with the right elbow raised, compared on one frame, the chosen one drives the upper body. Status done.
 - [[task-409-miner-right-hand-on-grip]] — new upper body animation from V2 with the right hand on the rifle grip; RifleMesh offset reset so the rifle stays in place. Status done.
 - [[task-410-right-hand-offset-live]] — right hand offset on the V2Grip pose, live by cvar and in ABP_Miner Class Defaults; arm by IK, rifle follows the hand. Status done.
+- [[task-411-right-hand-offset-rifle-stays]] — fix of task-410: the right hand offset counter-moves RifleMesh and Muzzle so the hand slides on a still rifle; left hand IK refreshed. Status done.

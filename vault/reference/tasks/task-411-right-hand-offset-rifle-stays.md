@@ -1,9 +1,9 @@
 ---
 id: task-411-right-hand-offset-rifle-stays
 description: "Global task: fix of task-410: the right hand offset counter-moves RifleMesh and Muzzle so the hand slides on a still rifle; left hand IK refreshed."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Right hand offset moves the hand on the rifle, the rifle stays in place
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[burst-rifle]] (approved; the task-410 line says a right hand offset moves the rifle with the hand; edit on confirmation: the rifle follows the hand in the animations, the offset moves the hand on the rifle), [[bp-burst-rifle]] (RifleMesh (0, 0, 0), scale 1.25, Muzzle (52.25, 0, 0) under the root, visual only), [[bp-miner]] and [[sys-player-classes]] (task-410: right arm Two Bone IK with effector RightHandIKEffector in RightHand bone space, Transform (Modify) Bone RightHandRotationDelta, both before the left IK; left IK target in RightHand bone space computed by RefreshLeftHandIK from the grip in weapon actor space, at weapon add only). Verified 2026-10-31 in Saved/Logs/RogueRigs.log (owner PIE session 20:30-20:31): the cvar is applied and logged ("10 0 0", "100 0 0", "0 10 0", "0 20 0"), alpha 1, effector 0.0997 bone units for 10 cm (bone scale about 100, so correct); no ABP_Miner or TwoBoneIK warning. So the command works as task-410 specified; the defect is the design choice Q1 of task-410 (rifle carried by the hand), not a bug. Note: "100 0 0" is 1 m, far beyond the arm reach. Code read: RRMinerAnimInstance.cpp RefreshRightHandOffset (D = S^-1 * O * S), RRWeapon.h (Muzzle is a public-read BlueprintReadOnly component, protected in C++: a const getter may be needed). Conflicts: none, rendering only. Risk: an offset beyond the arm reach leaves the hand short while the rifle is counter-moved by the full offset, so the rifle shifts by the unreached part (Q1). Milestone M2.
 - confirmed_by_owner: yes (2026-10-31, "Confirme, fermé")
 - milestone: M2
-- next_step: task-411-02-doc-rifle-counter-move
+- next_step: none
 - started: 2026-10-31T20:41:21Z
 - waiting_for: none
-- result: open
+- result: Done. Doc: sys-player-classes, bp-miner, bp-burst-rifle updated (commit c2be1ed7); no PIE run; gdd burst-rifle line not edited by doc
 
 ## Questions
 Decided 2026-10-31 (owner "Confirme, fermé"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -28,7 +28,7 @@ Decided 2026-10-31 (owner "Confirme, fermé"): every default below is accepted; 
 2. task-411-02-doc-rifle-counter-move (vault/reference/tasks/task-411-right-hand-offset-rifle-stays/task-411-02-doc-rifle-counter-move.md) — doc: sys-player-classes, bp-miner, bp-burst-rifle: the offset moves the hand on a still rifle (counter-move), left hand refresh
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-411-01-rifle-counter-move]] — step 1, cpp.
 - [[task-411-02-doc-rifle-counter-move]] — step 2, doc.
 - [[task-410-right-hand-offset-live]] — added the offset, cvar and ABP right arm nodes this task fixes.
