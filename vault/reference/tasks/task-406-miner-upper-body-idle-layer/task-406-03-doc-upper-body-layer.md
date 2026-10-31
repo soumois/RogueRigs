@@ -3,7 +3,7 @@ id: task-406-03-doc-upper-body-layer
 description: "Doc: doc: bp-miner (AnimGraph with the upper body layer, how to swap the source) and sys-player-classes (UpperBodySequence)"
 parent: task-406-miner-upper-body-idle-layer
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner upper body from the idle rifle pose over the locomotion legs: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T07:11:47Z
 - waiting_for: none
 - result: open
 

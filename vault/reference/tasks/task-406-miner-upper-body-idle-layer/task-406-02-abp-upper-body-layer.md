@@ -3,7 +3,7 @@ id: task-406-02-abp-upper-body-layer
 description: "Bp: ABP_Miner: Layered blend per bone, legs from locomotion, upper body from UpperBodySequence (A_Miner_Idle)"
 parent: task-406-miner-upper-body-idle-layer
 kind: task
-status: in-progress
+status: done
 ---
 # Miner upper body from the idle rifle pose over the locomotion legs: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: First report the current AnimGraph (owner edits); if a Layered blend per bone exists, complete it instead of adding a second. AnimGraph reads back: Locomotion state machine -> Layered blend per bone (base = locomotion; blend pose 0 = looping Sequence Player bound to UpperBodySequence; branch filter Spine, depth 0; mesh space rotation blend on) -> LocalToComponent -> left hand Two Bone IK -> ComponentToLocal -> Output; ABP_Miner class default UpperBodySequence = A_Miner_Idle; compiled without error and saved; owner edits kept; PIE standing then moving (through the cheat settings or player input, else reported unverified): arm bones keep the idle pose relative to Spine (RightHand, LeftHand within 5 uu) while the feet move, left hand within 3 uu of LeftHandGrip; BS_Miner_Locomotion and the A_Miner clips not modified; ABP_Miner.uasset committed by path `task-406-02-abp-upper-body-layer: ...`.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 52, cache write 75569, cache read 1298428, output 15482
+- usage: turns 26, context start 12k peak 76k, resumes 0, 2 min, units 0.30 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T07:09:37Z
 - waiting_for: none
-- result: open
+- result: Layered blend per bone (Spine, depth 0, mesh space rotation on) + looping sequence player on UpperBodySequence added in ABP_Miner, class default A_Miner_Idle, compiled and saved (b03e520d). PIE bone check not run: unverified. Unconnected owner TwoBoneIK_0 left untouched.
 
 ## Relations
 - [[task-406-miner-upper-body-idle-layer]] — parent global task.
