@@ -3,7 +3,7 @@ id: task-404-02-doc-rifle-mesh-offset
 description: "Doc: update bp-burst-rifle (RifleMesh transform, Muzzle), sys-player-classes and bp-miner (IK refresh limit)"
 parent: task-404-rifle-mesh-owner-offset
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle mesh at the owner position and scale 1.25: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: bp-burst-rifle gives RifleMesh location (9.898091, -1.129037, -13.0), scale 1.25 (owner 2026-10-31) and the Muzzle value; sys-player-classes states the refresh-at-weapon-add limit (or the Q5 B outcome); bp-miner states that LeftHandGrip sets the left hand and Joint Target is the left elbow pole, alpha 0 in the ABP preview; lint clean; committed by path.
 - editor_state: closed
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 31662, cache read 116625, output 3289
+- usage: turns 6, context start 11k peak 35k, resumes 0, 0 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T06:25:41Z
 - waiting_for: none
-- result: open
+- result: bp-burst-rifle, sys-player-classes, bp-miner updated (commit e7b6c3a6); lint clean; unverified PIE items stated in the docs.
 
 ## Relations
 - [[task-404-rifle-mesh-owner-offset]] — parent global task.

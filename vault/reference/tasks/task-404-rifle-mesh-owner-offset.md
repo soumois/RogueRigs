@@ -1,9 +1,9 @@
 ---
 id: task-404-rifle-mesh-owner-offset
 description: "Global task: BP_BurstRifle RifleMesh at the owner relative location and scale 1.25, Muzzle moved to the scaled barrel tip."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle mesh at the owner position and scale 1.25
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[burst-rifle]] (approved; game mesh SM_BurstRifle "overall length 60 cm", held at socket WeaponSocket_R, left hand on LeftHandGrip by IK, shot origin and height unchanged, provisional owner 2026-10-30), [[burst-rifle-mesh]] (SM_BurstRifle pivot at the pistol grip, muzzle +X, mesh x -18.19 to 41.81 cm; socket LeftHandGrip (22, 0, 0) on the handguard x 14 to 27), [[bp-burst-rifle]] (RifleMesh relative location 0, scale 1; inherited Muzzle at (41.8, 0, 0) under the root, not under RifleMesh; Muzzle is visual only), [[bp-miner]] (WeaponSocket_R on RightHand, world scale 1; ABP_Miner Two Bone IK on LeftHand, effector LeftHandIKTarget in RightHand bone space, joint target (45, 10, 95) cm Component Space, stretching on 1.0 to 1.2, provisional), [[sys-player-classes]] (URRMinerAnimInstance computes LeftHandIKTarget once, on OnWeaponAdded, from the held weapon mesh socket LeftHandGrip in the weapon actor space, so it follows the RifleMesh relative location and scale; alpha 1 only with a held weapon, so 0 in the ABP editor preview where no weapon is held; a live edit of RifleMesh in PIE does not refresh it), [[sys-weapons]] (shot origin = floor + ShotHeight 50 uu along the aim, independent of the mesh). Milestone M2 (art). Conflict: [[burst-rifle]] says the game mesh is 60 cm long; scale 1.25 shows it 75 cm (Q2). Open values: Muzzle position after the scale (Q1). LeftHandGrip needs no change: it is a mesh socket, so it moves and scales with RifleMesh (grip at 22 cm becomes 27.5 cm forward of the pistol grip, 13 cm lower in the socket frame). Left hand follow: LeftHandIKTarget refreshes only on OnWeaponAdded (events over polling, owner 2026-10-11), hence the owner report "la main n'a pas suivi" after a live move (Q5).
 - confirmed_by_owner: yes (2026-10-31, "Laisse tomber le coude et execue le reste")
 - milestone: M2
-- next_step: task-404-02-doc-rifle-mesh-offset
+- next_step: none
 - started: 2026-10-31T06:21:45Z
 - waiting_for: none
-- result: open
+- result: Done. bp-burst-rifle, sys-player-classes, bp-miner updated (commit e7b6c3a6); lint clean; unverified PIE items stated in the docs.
 
 ## Questions
 Decided 2026-10-31 (owner "Laisse tomber le coude et execue le reste"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -30,7 +30,7 @@ Decided 2026-10-31 (owner "Laisse tomber le coude et execue le reste"): every de
 2. task-404-02-doc-rifle-mesh-offset (vault/reference/tasks/task-404-rifle-mesh-owner-offset/task-404-02-doc-rifle-mesh-offset.md) — doc: update bp-burst-rifle (RifleMesh transform, Muzzle), sys-player-classes and bp-miner (IK refresh limit)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-404-01-rifle-mesh-transform]] — step 1, bp.
 - [[task-404-02-doc-rifle-mesh-offset]] — step 2, doc.
 - [[task-405-right-elbow-raise]] — point 2, the right elbow raise, cancelled by the owner 2026-10-31.

@@ -412,4 +412,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-401-miner-hands-fit-rifle]] — the miner left hand holds the rifle handguard by IK in ABP_Miner while the right hand holds the grip, in every clip. Status done.
 - [[task-402-capture-map-path-msys]] — capture.js and Run-StressTest.ps1 pass a correct /Game/... map path even when called from Git Bash (MSYS path rewrite); agent docs updated. Status done.
 - [[task-403-burst-rifle-material-fix]] — diagnose and fix the flat cream-white look of SM_BurstRifle in game (M_BurstRifle, textures), check the colours by capture. Status done.
+- [[task-404-rifle-mesh-owner-offset]] — BP_BurstRifle RifleMesh at the owner relative location and scale 1.25, Muzzle moved to the scaled barrel tip. Status done.
 - [[task-405-right-elbow-raise]] — raise the miner right elbow a little away from the body in every clip, hand and rifle unchanged, owner-tunable offset. Status cancelled.
