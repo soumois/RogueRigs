@@ -12,4 +12,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-404-rifle-mesh-owner-offset]] — BP_BurstRifle RifleMesh at the owner relative location and scale 1.25, Muzzle moved to the scaled barrel tip. Status wait-answers.
-- [[task-405-left-elbow-joint-target]] — find why the ABP_Miner Two Bone IK Joint Target Location has no effect and make the left elbow follow it. Status wait-answers.
+- [[task-405-right-elbow-raise]] — raise the miner right elbow a little away from the body in every clip, hand and rifle unchanged, owner-tunable offset. Status wait-answers.
