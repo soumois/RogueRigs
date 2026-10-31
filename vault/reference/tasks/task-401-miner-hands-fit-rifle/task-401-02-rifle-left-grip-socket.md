@@ -3,7 +3,7 @@ id: task-401-02-rifle-left-grip-socket
 description: "Bp: SM_BurstRifle socket LeftHandGrip on the handguard"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner hands fitted to the burst rifle: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T05:38:17Z
 - waiting_for: none
 - result: open
 

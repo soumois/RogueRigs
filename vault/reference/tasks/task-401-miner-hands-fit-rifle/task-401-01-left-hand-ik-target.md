@@ -3,7 +3,7 @@ id: task-401-01-left-hand-ik-target
 description: "Cpp: URRMinerAnimInstance: left hand IK target in right hand space and alpha"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: in-progress
+status: done
 ---
 # Miner hands fitted to the burst rifle: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor target builds; both properties exist and are filled from the held weapon; no per-frame socket search; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 92564, cache read 880738, output 9111
+- usage: turns 12, context start 58k peak 93k, resumes 0, 4 min, units 0.25 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T05:33:59Z
 - waiting_for: none
-- result: open
+- result: LeftHandIKTarget (right hand bone space, location) and LeftHandIKAlpha added to URRMinerAnimInstance, event driven via OnWeaponAdded; build ok; commit 5b6e3fc3. Limitation: no weapon-removed event.
 
 ## Relations
 - [[task-401-miner-hands-fit-rifle]] — parent global task.
