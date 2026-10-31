@@ -3,7 +3,7 @@ id: task-407-04-doc-right-arm-fix
 description: "Doc: doc: bp-miner (right arm correction, how to tune) and sys-player-classes (offsets and debug cvars)"
 parent: task-407-miner-right-arm-fix-compare
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner right arm correction on the idle pose, compared on one frame: doc
 

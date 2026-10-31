@@ -3,7 +3,7 @@ id: task-407-03-right-arm-fix-capture
 description: "Capture: capture: one frozen frame, five offset pairs from two close views, labelled comparison sheets for the owner"
 parent: task-407-miner-right-arm-fix-compare
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner right arm correction on the idle pose, compared on one frame: capture
 

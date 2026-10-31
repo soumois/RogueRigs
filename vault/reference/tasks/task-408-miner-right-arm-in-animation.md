@@ -1,0 +1,47 @@
+---
+id: task-408-miner-right-arm-in-animation
+description: "Global task: right elbow raised and right hand forward baked into variant copies of the idle pose, compared in game on one frozen frame."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Miner right arm corrected in the animation, variants compared on one frame
+
+- request: Owner, 2026-10-31, verbatim (French, relayed by the main session), point 2 of the request of [[task-406-miner-upper-body-idle-layer]]: "Ensuite, correction du bras droit sur cette pose : relever un peu le coude droit, et avancer légèrement la main droite vers l'avant. Pour valider, faire plusieurs images d'une même frame (captures de la même frame avec différentes valeurs de correction) pour que l'owner compare." First planned as [[task-407-miner-right-arm-fix-compare]] (ABP offsets driven by C++); owner correction while it ran (relayed, verbatim): "attend la correction, je parlais dans l'animation directement" = the correction is made in the animation itself (the idle rifle pose that feeds UpperBodySequence), not by an ABP IK or C++ offsets; he still wants several images of the same frame with different correction values to compare. task-407 cancelled; its committed work is handled here (Q5): 32c5c0ce (C++ RightElbowOffset, RightHandOffset, AppliedRightElbowOffset, AppliedRightHandOffset, rr.Debug.MinerArmFix, rr.Debug.MinerAnimFreeze) and fc07fb0d (ABP_Miner right arm Modify Bone and Two Bone IK, committed by 407-02 before the executor was stopped).
+- goal: The right arm correction lives in the animation: four variant sequences of the idle rifle pose with the right elbow raised and the right hand forward by increasing amounts (Q3), A_Miner_Idle untouched; the owner sees the same frozen frame with each variant (and the unchanged idle) in game, from close views, and picks the one to set as UpperBodySequence (Q6); the ABP and C++ offsets of task-407 are removed (Q5).
+- acceptance: ABP_Miner.uasset back to its task-406 content (b03e520d), right arm nodes gone, compiles; URRMinerAnimInstance without RightElbowOffset, RightHandOffset, the Applied* pair and rr.Debug.MinerArmFix; rr.Debug.MinerAnimFreeze kept; new debug cvar rr.Debug.MinerUpperPose "<sequence name>" sets UpperBodySequence of the player miner to /Game/RogueRigs/Characters/Miner/Anims/<name> (empty = class default); build clean; Art/Meshes/Miner/Anims/A_Miner_UpperRifle_V1..V4.fbx made from A_Miner_Idle.fbx in headless Blender: on every frame RightHand moved forward (mesh forward) by H cm within 0.5 cm and the right elbow (RightForeArm head) raised by E cm within 1 cm, every other bone identical to the idle, same frame count; imported as AnimSequences on SKEL_Miner in /Game/RogueRigs/Characters/Miner/Anims/ with the task-386 settings; UpperBodySequence default still A_Miner_Idle; capture: one frozen standing frame, idle plus V1..V4 from a right side and a three-quarter front close view, 10 frames and two labelled sheets sent to the owner; miner gdd line corrected (edit on confirmation); doc nodes updated; lint clean; committed by path.
+- gdd_check: Read 2026-10-31: [[miner]] (approved; animation = Mixamo clips played by ABP_Miner; since task-406 the upper body from Spine plays UpperBodySequence over the locomotion legs; the line on the right arm correction says "owner-tunable offsets", corrected by the edit on confirmation), [[bp-miner]] (AnimGraph after task-406: Locomotion -> Layered blend per bone (Spine, UpperBodySequence = A_Miner_Idle) -> LocalToComponent -> left hand Two Bone IK -> ComponentToLocal; LeftHandIKTarget in RightHand bone space, so the rifle and the left hand follow the right hand), [[sys-player-classes]] (UpperBodySequence; the 407-01 offsets and cvars are not documented), [[miner-mixamo-clips]] (the nine in-place clip FBX in Art/Meshes/Miner/Anims, A_Miner_Idle.fbx = Rifle Aiming Idle), [[task-386-04-miner-clips-import]] (import settings of the A_Miner sequences on SKEL_Miner), [[task-401-04-hands-fit-capture]] (top-down camera hides the right hand; rr.Debug.Camera gives close views). Is editing A_Miner_Idle directly safe: visually yes, A_Miner_Idle also plays the whole body in the locomotion idle state, but from Spine up every state shows UpperBodySequence, so its arms are never seen outside the upper layer; the risks are elsewhere: the uasset would no longer match Art/Meshes/Miner/Anims/A_Miner_Idle.fbx (a reimport erases the edit), and one asset holds one value, so it cannot give several candidates to compare; hence new variant sequences, A_Miner_Idle untouched (Q1). Conflicts: none, rendering only; shot origin and game rules unchanged. Milestone M2 (art).
+- confirmed_by_owner: no (plan and questions handed back 2026-10-31)
+- milestone: M2
+- next_step: task-408-01-remove-arm-offsets-upper-pose-cvar
+- started: open
+- waiting_for: owner confirmation of the plan
+- result: open
+
+## Questions
+Asked 2026-10-31, each with a default; open until the owner answers.
+- Q1 Where the correction lives: Default: new sequences A_Miner_UpperRifle_V1 to V4, copies of the idle with the right arm corrected; A_Miner_Idle stays as it is (it also plays the legs when standing, and its FBX source stays valid); you then point UpperBodySequence at the one you choose, which is exactly the "change only the upper source" design. Or edit A_Miner_Idle itself (visually safe, its arms only show through the upper layer, but a reimport of its FBX would erase the edit and only one value can be compared at a time).
+- Q2 How the animation is edited: Default: the 3d agent, headless Blender, from Art/Meshes/Miner/Anims/A_Miner_Idle.fbx: on every frame an IK on the right arm moves the hand forward by H cm and raises the elbow by E cm, baked into the keys, nothing else changes, exported FBX (same export settings as task-386). Or in the Unreal animation editor (additive layer or Control Rig bake), done by you by hand.
+- Q3 Candidate values (elbow up E, hand forward H, cm), the series you accepted for task-407: Default: V1 (3, 2), V2 (6, 4), V3 (9, 6), V4 (12, 8), plus the unchanged idle as reference. Or another series (for example elbow and hand varied separately).
+- Q4 Images of the same frame: Default: in game, as the player sees it with the rifle and the left hand IK: miner standing, weapons stopped, animation frozen (rr.Debug.MinerAnimFreeze, already built), each variant set live with a new debug command rr.Debug.MinerUpperPose <name>, shot from a right side and a three-quarter front close view (rr.Debug.Camera): 5 x 2 = 10 frames and two labelled sheets. If switching the sequence restarts it at frame 0, all images show frame 0 of each variant, still one same frame. Or renders of the same frame in Blender by the 3d agent (no C++ change, but without the rifle and the left hand of the game).
+- Q5 What task-407 left in the repo: Default: remove it: ABP_Miner restored to its task-406 version (right arm Modify Bone and Two Bone IK gone), in C++ the two offsets, the Applied* pair and rr.Debug.MinerArmFix removed; rr.Debug.MinerAnimFreeze kept for the capture. Or keep the ABP correction at zero as an extra fine-tuning layer on top of the animation.
+- Q6 After you compare: Default: you set UpperBodySequence in ABP_Miner Class Defaults to the variant you choose (one value); the other variants stay until you ask to delete them. Or you tell us your choice and a small task sets it and deletes the others.
+
+## Subtasks
+1. task-408-01-remove-arm-offsets-upper-pose-cvar (vault/reference/tasks/task-408-miner-right-arm-in-animation/task-408-01-remove-arm-offsets-upper-pose-cvar.md) — cpp: undo task-407 (C++ offsets, MinerArmFix, ABP_Miner restored to b03e520d), keep MinerAnimFreeze, add rr.Debug.MinerUpperPose
+2. task-408-02-upper-rifle-variants (vault/reference/tasks/task-408-miner-right-arm-in-animation/task-408-02-upper-rifle-variants.md) — 3d: headless Blender: four variant FBX of the idle with the right elbow raised and the right hand forward (V1..V4), recorded in miner-mixamo-clips
+3. task-408-03-import-upper-rifle-variants (vault/reference/tasks/task-408-miner-right-arm-in-animation/task-408-03-import-upper-rifle-variants.md) — bp: import A_Miner_UpperRifle_V1..V4 on SKEL_Miner, ABP_Miner compiles after the restore
+4. task-408-04-upper-rifle-variants-capture (vault/reference/tasks/task-408-miner-right-arm-in-animation/task-408-04-upper-rifle-variants-capture.md) — capture: capture: one frozen frame, idle and V1..V4 from two close views, labelled sheets for the owner
+5. task-408-05-doc-upper-rifle-variants (vault/reference/tasks/task-408-miner-right-arm-in-animation/task-408-05-doc-upper-rifle-variants.md) — doc: doc: bp-miner (variants, how to pick one as UpperBodySequence) and sys-player-classes (MinerAnimFreeze, MinerUpperPose)
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-408-01-remove-arm-offsets-upper-pose-cvar]] — step 1, cpp.
+- [[task-408-02-upper-rifle-variants]] — step 2, 3d.
+- [[task-408-03-import-upper-rifle-variants]] — step 3, bp.
+- [[task-408-04-upper-rifle-variants-capture]] — step 4, capture.
+- [[task-408-05-doc-upper-rifle-variants]] — step 5, doc.
+- [[task-407-miner-right-arm-fix-compare]] — cancelled first plan (ABP offsets); its commits are undone here.
+- [[task-406-miner-upper-body-idle-layer]] — the upper body layer whose source these variants replace.
+- [[bp-miner]] — documents ABP_Miner.
+- [[miner-mixamo-clips]] — the clip FBX the variants are made from.

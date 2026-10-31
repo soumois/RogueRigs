@@ -3,7 +3,7 @@ id: task-407-02-abp-right-arm-fix
 description: "Bp: ABP_Miner: right arm correction from the two offsets, after the upper body layer, before the left hand IK"
 parent: task-407-miner-right-arm-fix-compare
 kind: task
-status: in-progress
+status: cancelled
 ---
 # Miner right arm correction on the idle pose, compared on one frame: bp
 
