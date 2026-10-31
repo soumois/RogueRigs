@@ -3,7 +3,7 @@ id: task-401-03-abp-left-hand-ik
 description: "Bp: ABP_Miner: Two Bone IK on the left arm onto LeftHandGrip"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner hands fitted to the burst rifle: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T05:41:48Z
 - waiting_for: none
 - result: open
 
