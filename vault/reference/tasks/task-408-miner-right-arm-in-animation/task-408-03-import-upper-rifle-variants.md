@@ -3,7 +3,7 @@ id: task-408-03-import-upper-rifle-variants
 description: "Bp: import A_Miner_UpperRifle_V1..V3 on SKEL_Miner, ABP_Miner upper body set to V2, compiles after the restore"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: bp
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-10-31T07:46:36Z
-- waiting_for: owner session launches the Unreal Editor (subtask 03 bp)
+- started: 2026-10-31T07:47:36Z
+- waiting_for: none
 - result: open
 
 ## Relations
