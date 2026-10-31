@@ -3,7 +3,7 @@ id: task-410-01-right-hand-offset-code
 description: "Cpp: URRMinerAnimInstance: RightHandOffset properties, cvar rr.Debug.RightHandOffset, ABP inputs (effector, rotation delta, alpha)"
 parent: task-410-right-hand-offset-live
 kind: task
-status: in-progress
+status: done
 ---
 # Live control of the right hand offset: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Development Editor build succeeds with no new warning in the edited files; code review shows: properties and cvar as specified (ECVF_Cheat, help text with syntax, units, axes, empty reset); inputs computed at anim begin and on cvar change only, cvar for the player miner only; a comment states the socket-frame to RightHand-bone-space conversion and the pivot correction; offset 0 gives alpha 0; no change to RifleMesh, Muzzle, weapon or asset code; existing automation tests still compile (no test added); committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 24, cache write 57029, cache read 405725, output 17784
+- usage: turns 12, context start 12k peak 57k, resumes 0, 4 min, units 0.20 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T20:13:59Z
 - waiting_for: none
-- result: open
+- result: Build OK, commit 5ca2bac7; RRMinerAnimInstance props RightHandOffsetLocation/Rotation, cvar rr.Debug.RightHandOffset, inputs RightHandIKEffector/RightHandRotationDelta/RightHandOffsetAlpha; not run in PIE
 
 ## Relations
 - [[task-410-right-hand-offset-live]] — parent global task.

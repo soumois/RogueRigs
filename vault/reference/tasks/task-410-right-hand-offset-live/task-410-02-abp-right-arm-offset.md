@@ -3,7 +3,7 @@ id: task-410-02-abp-right-arm-offset
 description: "Bp: ABP_Miner: right arm Two Bone IK and RightHand rotation from the new inputs, before the left hand IK"
 parent: task-410-right-hand-offset-live
 kind: task
-status: todo
+status: in-progress
 ---
 # Live control of the right hand offset: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T20:17:55Z
 - waiting_for: none
 - result: open
 
