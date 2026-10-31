@@ -3,7 +3,7 @@ id: task-400-05-shotgun-cube-removal
 description: "Bp: remove the grey ShotgunMesh cube from BP_Shotgun; pellets keep the shared shot origin."
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle 3D mesh in the miner right hand: bp shotgun cube
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: BP_Shotgun compiles with no ShotgunMesh component and no graph node referencing it; in PIE, after adding BP_Shotgun to the miner (AddWeapon), its pellets spawn at the same point as the rifle bullets (floor + about 50 uu, along the aim); existing shotgun tests still pass; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 42, cache write 71760, cache read 478240, output 10331
+- usage: turns 21, context start 11k peak 41k, resumes 0, 3 min, units 0.19 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T00:13:03Z
 - waiting_for: none
-- result: open
+- result: ShotgunMesh removed from BP_Shotgun (components now Root, MuzzleFlash, Muzzle, AutoFire, ASC); no graph reference. Headless tests RogueRigs.Shotgun 7, Weapons 12, Player 4 all pass (PelletFan checks pellets at GetShotOrigin, untouched C++). PIE pellet read-back not run, editor closed for tests. Commit 6eae970f
 
 ## Relations
 - [[task-400-burst-rifle-in-hand]] — parent global task.

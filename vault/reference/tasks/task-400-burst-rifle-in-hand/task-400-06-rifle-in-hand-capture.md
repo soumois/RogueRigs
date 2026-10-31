@@ -3,7 +3,7 @@ id: task-400-06-rifle-in-hand-capture
 description: "Capture: game capture: the 3D rifle in the right hand, idle and running"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T00:16:47Z
 - waiting_for: none
 - result: open
 
