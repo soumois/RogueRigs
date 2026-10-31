@@ -34,7 +34,7 @@ Walk With Rifle covers 322 cm in 1.43 s, likely two strides: the speed is the wh
 - `Art/Meshes/Miner/SK_Miner.fbx`: mesh plus armature, no animation, no mesh edit: 25,744 triangles, 185.5 x 46.5 x 170 cm. Textures are referenced (copied to `SK_Miner.fbm/`), not embedded.
 
 ## Upper rifle variants (task-408-02)
-Owner 2026-10-31: new animations based on the idle with the right elbow raised, three proposals, the idle untouched ([[task-408-miner-right-arm-in-animation]]). Elbow only, right hand unchanged (Q7 default).
+Owner 2026-10-31: new animations based on the idle with the right elbow raised, three proposals, the idle untouched ([[task-408-miner-right-arm-in-animation]]). The owner chose V2 (2026-10-31); V1 and V3 are kept until he asks. Elbow only, right hand unchanged (Q7 default).
 - Files: `Art/Meshes/Miner/Anims/A_Miner_UpperRifle_V1.fbx`, `_V2.fbx`, `_V3.fbx`: 66 bones, 94 frames, 30 fps, same export settings as above. Script `Tools/art/blender/miner_upper_rifle.py` (`build`, `verify`, `render`); report `Art/Source/miner-mixamo/upper_rifle_variants.report.json`.
 - Method: from A_Miner_Idle.fbx, on every frame RightArm and RightForeArm are rotated rigidly about the shoulder to hand axis (the hand head does not move) by the smallest angle that raises the RightForeArm head by E in world Z; RightHand is restored to its idle world orientation (fingers follow); keys baked on every frame.
 - Measured against the idle on all 94 frames (re-read from the FBX):
