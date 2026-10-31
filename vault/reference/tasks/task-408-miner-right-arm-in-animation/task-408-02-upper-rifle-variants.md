@@ -3,7 +3,7 @@ id: task-408-02-upper-rifle-variants
 description: "3d: headless Blender: three new animations from the idle with the right elbow raised 3, 6, 9 cm (V1..V3), recorded in miner-mixamo-clips"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: 3d
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Three FBX exist with the same skeleton (66 bones, same names), frame count and frame rate as A_Miner_Idle.fbx; measured on every frame against the idle: RightHand head within 0.5 cm of the idle, RightForeArm head raised by E (3, 6, 9 cm) within 1 cm, every bone outside RightArm, RightForeArm, RightHand and the right fingers identical (under 0.01 cm, 0.01 deg); Hips still in place; export with FBX_SCALE_UNITS as in task-386; no Blender process left running; FBX, script and miner-mixamo-clips committed by path `task-408-02-upper-rifle-variants: ...`.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 30, cache write 52589, cache read 492915, output 17872
+- usage: turns 15, context start 12k peak 53k, resumes 0, 5 min, units 0.20 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T07:46:29Z
 - waiting_for: none
-- result: open
+- result: Done, commits d7549f09 and 592261e0: V1..V3 FBX (elbow +3/6/9 cm exact, hand dev 0.0001 cm, other bones identical, 94 frames 30 fps), script Tools/art/blender/miner_upper_rifle.py, miner-mixamo-clips updated; stills not reviewed
 
 ## Relations
 - [[task-408-miner-right-arm-in-animation]] — parent global task.
