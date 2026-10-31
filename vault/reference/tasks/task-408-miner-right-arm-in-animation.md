@@ -3,7 +3,7 @@ id: task-408-miner-right-arm-in-animation
 description: "Global task: three new upper body animations from idle with the right elbow raised, compared on one frame, the chosen one drives the upper body."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Miner right arm corrected in new upper body animations from the idle
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-408-03-import-upper-rifle-variants
 - started: 2026-10-31T07:41:29Z
-- waiting_for: none
+- waiting_for: Unreal Editor to be launched for subtask 03 (bp)
 - result: open
 
 ## Questions
