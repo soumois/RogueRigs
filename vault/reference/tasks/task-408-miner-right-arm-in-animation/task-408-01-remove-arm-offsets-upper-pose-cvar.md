@@ -3,7 +3,7 @@ id: task-408-01-remove-arm-offsets-upper-pose-cvar
 description: "Cpp: undo task-407 (C++ offsets, MinerArmFix, ABP_Miner restored to b03e520d), keep MinerAnimFreeze, add rr.Debug.MinerUpperPose"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T07:41:29Z
 - waiting_for: none
 - result: open
 
