@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[burst-rifle]] (spec approved; look: white + teal + rust salvaged plates, dark gunmetal grip, barrel and muzzle; Meshy maps accepted, task-395 rebake cancelled), [[burst-rifle-mesh]] (four 2048 maps, Unreal assets of task-400-02: M_BurstRifle 4 samples, BaseColor sRGB, Normal, Metallic and Roughness sRGB off TC_Masks; material compile unverified), [[bp-burst-rifle]] (RifleMesh = SM_BurstRifle; open observation: renders flat cream-white in RifleInHand2), [[task-400-burst-rifle-in-hand]] (done; capture C1 ambiguous for this reason). Conflicts: none. Open values the work needs: none in the GDD; the fix scope (Q1), the mask texture settings (Q2) and the capture (Q3) are asked. Out of scope: left-hand IK ([[task-401-miner-hands-fit-rifle]], separate, todo, not started). Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-31, "Ok")
 - milestone: M2
-- next_step: task-403-01-burst-rifle-material-diagnose-fix
+- next_step: task-403-02-burst-rifle-colours-capture
 - started: 2026-10-31T04:33:01Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-403-02-burst-rifle-colours-capture
 description: "Capture: game capture: the rifle shows teal, rust and dark areas and is shaded like the miner"
 parent: task-403-burst-rifle-material-fix
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle material fix: colours readable in game: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T04:35:13Z
 - waiting_for: none
 - result: open
 

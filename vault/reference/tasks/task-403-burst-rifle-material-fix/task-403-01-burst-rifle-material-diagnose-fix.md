@@ -3,7 +3,7 @@ id: task-403-01-burst-rifle-material-diagnose-fix
 description: "Bp: diagnose in the editor why SM_BurstRifle renders flat cream-white and fix M_BurstRifle or its textures"
 parent: task-403-burst-rifle-material-fix
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle material fix: colours readable in game: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The summary names one cause with evidence read in the editor (graph pins, compile log, texture sRGB/compression/sampler type, slot material, UV channel count); M_BurstRifle compiles with no error and is saved; a lit editor view (viewport or asset preview screenshot in `Saved/`) shows teal, rust and dark areas on SM_BurstRifle; only rifle assets changed (Q1); committed by path. If the cause is outside the rifle assets, nothing is changed and the cause with evidence is reported for the owner.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 45766, cache read 330230, output 9044
+- usage: turns 12, context start 11k peak 46k, resumes 0, 2 min, units 0.14 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T04:33:01Z
 - waiting_for: none
-- result: open
+- result: Cause: RifleMesh OverrideMaterials=[MI_GB_Shot] (greybox cream-yellow) masked M_BurstRifle; override cleared, BP and M_BurstRifle saved, commit 988cbeec. M_BurstRifle wiring and textures read correct, recompile no error. Lit editor view not captured (bp may not screenshot); visual check deferred to 403-02.
 
 ## Relations
 - [[task-403-burst-rifle-material-fix]] — parent global task.
