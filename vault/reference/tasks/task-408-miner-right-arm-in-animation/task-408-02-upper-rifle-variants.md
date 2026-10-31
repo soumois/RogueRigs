@@ -3,7 +3,7 @@ id: task-408-02-upper-rifle-variants
 description: "3d: headless Blender: three new animations from the idle with the right elbow raised 3, 6, 9 cm (V1..V3), recorded in miner-mixamo-clips"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T07:46:29Z
 - waiting_for: none
 - result: open
 
