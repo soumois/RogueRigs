@@ -3,7 +3,7 @@ id: task-401-01-left-hand-ik-target
 description: "Cpp: URRMinerAnimInstance: left hand IK target in right hand space and alpha"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner hands fitted to the burst rifle: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T05:33:59Z
 - waiting_for: none
 - result: open
 

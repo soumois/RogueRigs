@@ -3,7 +3,7 @@ id: task-401-miner-hands-fit-rifle
 description: "Global task: the miner left hand holds the rifle handguard by IK in ABP_Miner while the right hand holds the grip, in every clip."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner hands fitted to the burst rifle
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-10-30, "Ok, par défaut")
 - milestone: M2
 - next_step: task-401-01-left-hand-ik-target
-- started: open
+- started: 2026-10-31T05:33:59Z
 - waiting_for: none
 - result: open
 
