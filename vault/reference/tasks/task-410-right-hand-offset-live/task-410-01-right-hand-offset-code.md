@@ -3,7 +3,7 @@ id: task-410-01-right-hand-offset-code
 description: "Cpp: URRMinerAnimInstance: RightHandOffset properties, cvar rr.Debug.RightHandOffset, ABP inputs (effector, rotation delta, alpha)"
 parent: task-410-right-hand-offset-live
 kind: task
-status: todo
+status: in-progress
 ---
 # Live control of the right hand offset: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T20:09:04Z
 - waiting_for: none
 - result: open
 
