@@ -3,7 +3,7 @@ id: task-400-01-weapon-hand-socket
 description: "Cpp: per-weapon hand socket on ARRWeapon, used by ARRMiner when attaching"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle 3D mesh in the miner right hand: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor target builds; the new property exists on ARRWeapon with None default; ARRMiner uses it when set and the old path otherwise; weapon tests green; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 36, cache write 57625, cache read 727519, output 12203
+- usage: turns 18, context start 12k peak 63k, resumes 0, 6 min, units 0.21 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-30T23:54:46Z
 - waiting_for: none
-- result: open
+- result: ARRWeapon::HandSocketName (FName, None default) + GetHandSocketName; ARRMiner::AddWeapon snaps to it when the mesh has the socket, else old path (warning if missing). Build ok, Weapons 12 and Shotgun 9 green; 2 Integration tests fail (JuiceKillDropsStreamingCubes XP pickup collision, LevelUpUpgradeLoop RerollButton), not proven pre-existing. Commit f8d051dc
 
 ## Relations
 - [[task-400-burst-rifle-in-hand]] — parent global task.
