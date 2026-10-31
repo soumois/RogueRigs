@@ -21,6 +21,7 @@ kind: doc
 ## Left hand IK in ABP_Miner (task-401-03, provisional)
 Owner "Ok, par défaut" 2026-10-30 ([[task-401-miner-hands-fit-rifle]]). AnimGraph: Locomotion state machine -> LocalToComponent -> Two Bone IK -> ComponentToLocal -> Output Pose.
 - Two Bone IK: IK bone LeftHand (chain LeftHand, LeftForeArm, LeftArm); effector location = `LeftHandIKTarget` in Bone Space of bone RightHand; alpha = `LeftHandIKAlpha` (both from [[sys-player-classes]]). Joint target (45, 10, 95) cm in Component Space (mesh forward is component +Y, left is +X; elbow down and out), provisional. Stretching on with defaults (from 1.0, max 1.2); twist defaults; the end bone takes no effector rotation (hand orientation not matched to the grip).
+- Which value moves what (task-404): the left HAND is set by the socket `LeftHandGrip` on SM_BurstRifle (Static Mesh Editor, Socket Manager). The Joint Target Location is the left ELBOW pole only; editing it does not move the hand, and in the ABP editor preview the IK alpha is 0 (no weapon held), so nothing visibly changes there. The target is computed at weapon add, so a live RifleMesh or LeftHandGrip edit in PIE is not followed, a saved one is at the next spawn ([[sys-player-classes]]).
 - Grip point: socket `LeftHandGrip` on SM_BurstRifle ([[burst-rifle-mesh]]).
 - verified: PIE read-back hand-to-grip distance 0.00001 uu standing and in the four forced directions; transients of 2-3 frames at start or force change up to about 26 uu. Capture (task-401-04, frames in `Saved/Captures/HandsFit401/`): C1 to C3 ambiguous (right hand hidden from the top-down camera, left hand at the front of the rifle), C4 seen with caveats; the owner judges.
 
@@ -54,4 +55,5 @@ Removed on 2026-10-21 by owner direction ("repars d une lumiere flat"): the cent
 - [[task-401-miner-hands-fit-rifle]] — added the left hand Two Bone IK in ABP_Miner.
 - [[sys-player-classes]] — the anim instance variables the IK reads.
 - [[burst-rifle-mesh]] — the LeftHandGrip socket.
+- [[task-404-rifle-mesh-owner-offset]] — left hand vs elbow pole note and refresh limit.
 - [[task-393-miner-over-lit]] — added MI_Miner and BaseColorScale.
