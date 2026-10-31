@@ -1,9 +1,9 @@
 ---
 id: task-412-shots-from-rifle-muzzle
 description: "Global task: miner shots start at the real burst rifle Muzzle with a vertical capsule collision reaching down to rocks, above the floor."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shots leave from the rifle muzzle
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[weapons-index]] (approved: "No shot passes over a rock block"), [[burst-rifle]] (approved; provisional line "shot origin and height unchanged (tasks 400, 401)" superseded by the request; the 14 uu projectile sphere line extended; edits on confirmation), [[shotgun]] (pellets leave from the same point as every weapon shot, owner task-400 Q2), [[miner]] ("Cannot shoot through or over rock blocks"), [[turret]] (unchanged). Tech read: [[sys-weapons]] (GetShotOrigin floor + ShotHeight 50 + capsule radius + ShotForwardOffset 20; without a miner the Muzzle), [[sys-projectiles]], [[bp-projectile]] (BP_Projectile: inherited CollisionSphere and movement, added ShotMesh NoCollision), [[bp-burst-rifle]]. Code read: Projectiles/RRProjectile.cpp (root USphereComponent CollisionSphere radius 14, object type Projectile, overlaps Pawn (robot hits through OnSphereBeginOverlap, needs an ASC), blocks WorldStatic and WorldDynamic (rocks, grid floor, barrels through OnProjectileStop + GetCellFromHit), swept by UProjectileMovementComponent, flat yaw so a capsule root stays vertical); subclasses ARRShotgunPellet, ARRTurretBullet, ARREnemyProjectile (radius 10); RRWeapon.cpp, RRShotgun.cpp, RRTurret.cpp (turret precedent), RRMiner (camera pitch -50, arm 1400), grid BlockHeight 100; robot capsules: chaser half 62, shooter 88, kamikaze 96.8 hovering, heavy 124. Assessment of the owner proposal: feasible; it keeps the approved rock rule for any Muzzle height as long as the capsule bottom (floor + 20) is below 100, and it shows the bullet at the real barrel height, which the first plan did not. It is not code-free: the collision root of ARRProjectile changes from sphere to capsule (shared by all four projectile classes, so their Blueprints must be recompiled and checked, Q7), and the capsule is sized per shot. It does not remove the Q3 check: the Muzzle is 60 to 90 uu ahead of the miner axis, inside a rock when he hugs it, and a projectile spawned inside a blocking rock is depenetrated by the movement code, possibly out of the far face; a robot between the miner and the Muzzle is not touched by the spawned capsule. Side effect: the taller capsule also stops on any WorldStatic or WorldDynamic collision up to the Muzzle height (props, chest, extractor) that the 36 to 64 uu sphere passed under or over. Open values needed: none. Owner working tree: BP_BurstRifle.uasset and ABP_Miner.uasset modified, not committed (rifle scale 1.5 in the log); no step stages them (Q6). Milestone M2. Answer 2026-10-31 recorded: gdd edits applied on confirmation to burst-rifle (origin line, collision line), shotgun (look line) and weapons-index (shown-weapon principle).
 - confirmed_by_owner: yes (2026-10-31, "Q4 le fusil à pompe tire depuis le muzzle de la mitrailette. [...] Q5- Pas de capture. Q6 - Laisse le muzzle, j'aime bien avoir la main dessus. ok pour le reste")
 - milestone: M2
-- next_step: task-412-03-doc-shot-origin-muzzle
+- next_step: none
 - started: 2026-10-31T21:19:20Z
 - waiting_for: none
-- result: open
+- result: Done. Done, commit d5ac630e: nine doc nodes updated (capsule root, Muzzle origin, Q3 sweep, fallbacks, shown-weapon principle, tests); BP_Projectile ShotMesh collision discrepancy recorded; lint OK
 
 ## Questions
 Decided 2026-10-31 (owner answer in request): Q1, Q2, Q3, Q7 defaults; Q4 default widened to a principle (every other player weapon shoots from the shown weapon Muzzle); Q5 no capture; Q6 default. Values provisional, owner 2026-10-31.
@@ -34,7 +34,7 @@ Decided 2026-10-31 (owner answer in request): Q1, Q2, Q3, Q7 defaults; Q4 defaul
 3. task-412-03-doc-shot-origin-muzzle (vault/reference/tasks/task-412-shots-from-rifle-muzzle/task-412-03-doc-shot-origin-muzzle.md) — doc: sys-projectiles, sys-weapons, sys-weapons-shotgun, bp-burst-rifle, bp-projectile, bp-shotgun, bp-turret, bp-shooter, sys-automation-tests
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-412-01-shot-origin-muzzle-capsule]] — step 1, cpp.
 - [[task-412-02-bp-projectiles-recompile]] — step 2, bp.
 - [[task-412-03-doc-shot-origin-muzzle]] — step 3, doc.

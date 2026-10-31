@@ -3,7 +3,7 @@ id: task-412-03-doc-shot-origin-muzzle
 description: "Doc: sys-projectiles, sys-weapons, sys-weapons-shotgun, bp-burst-rifle, bp-projectile, bp-shotgun, bp-turret, bp-shooter, sys-automation-tests"
 parent: task-412-shots-from-rifle-muzzle
 kind: task
-status: in-progress
+status: done
 ---
 # Shots leave from the rifle muzzle: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Every listed node states the new rule and the commits; no stale "CollisionSphere", "visual only" or "shot origin unchanged" sentence left in them; lint clean; committed by path.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 71175, cache read 723104, output 20825
+- usage: turns 17, context start 13k peak 71k, resumes 0, 2 min, units 0.27 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T21:36:35Z
 - waiting_for: none
-- result: open
+- result: Done, commit d5ac630e: nine doc nodes updated (capsule root, Muzzle origin, Q3 sweep, fallbacks, shown-weapon principle, tests); BP_Projectile ShotMesh collision discrepancy recorded; lint OK
 
 ## Relations
 - [[task-412-shots-from-rifle-muzzle]] — parent global task.

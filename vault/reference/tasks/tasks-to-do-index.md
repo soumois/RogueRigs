@@ -11,4 +11,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-412-shots-from-rifle-muzzle]] — Miner shots start at the real burst rifle Muzzle (every other weapon too), vertical capsule from 20 uu above the floor. Status in-progress.
