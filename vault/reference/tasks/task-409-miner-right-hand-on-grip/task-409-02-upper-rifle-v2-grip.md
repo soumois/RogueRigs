@@ -3,7 +3,7 @@ id: task-409-02-upper-rifle-v2-grip
 description: "3d: headless Blender: A_Miner_UpperRifle_V2Grip from V2, right hand moved onto the grip, hand rotation kept"
 parent: task-409-miner-right-hand-on-grip
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right hand on the rifle pistol grip, rifle kept where the owner placed it: 3d
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: FBX exists with the same skeleton (66 bones, same names), frame count and rate as A_Miner_UpperRifle_V2.fbx; socket X axis check passed and stated; measured on every frame: new WeaponSocket_R point within 0.5 cm of the V2 grip target, RightHand component-space rotation within 0.5 deg of V2, finger local transforms identical, RightForeArm head at its V2 height within 1 cm on every frame where the arm allows it and the frames where it cannot listed with their height gap (Q2, not a failure), bones outside RightShoulder, RightArm, RightForeArm, RightHand identical to V2 (under 0.01 cm, 0.01 deg), no bone stretch; if a frame cannot reach within 0.5 cm, stop and report the distance per frame instead of exporting; FBX_SCALE_UNITS as in task-386; no Blender process left; committed by path `task-409-02-upper-rifle-v2-grip: ...`.
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 32, cache write 57067, cache read 638431, output 25288
+- usage: turns 16, context start 12k peak 57k, resumes 0, 4 min, units 0.26 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T19:39:14Z
 - waiting_for: none
-- result: open
+- result: FBX A_Miner_UpperRifle_V2Grip exported, all 94 frames reach; socket X check passed; grip 0.0001 cm, hand rot 0 deg, elbow height 0 cm, others identical; commit 0383712e
 
 ## Relations
 - [[task-409-miner-right-hand-on-grip]] — parent global task.
