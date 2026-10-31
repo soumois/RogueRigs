@@ -3,7 +3,7 @@ id: task-408-05-doc-upper-rifle-variants
 description: "Doc: bp-miner (elbow proposals, upper body source, how to pick) and sys-player-classes (MinerAnimFreeze, MinerUpperPose)"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T07:54:45Z
 - waiting_for: none
 - result: open
 

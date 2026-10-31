@@ -3,7 +3,7 @@ id: task-408-04-upper-rifle-variants-capture
 description: "Capture: one frozen frame, idle and the three elbow proposals V1..V3 from two close views, labelled sheets for the owner"
 parent: task-408-miner-right-arm-in-animation
 kind: task
-status: in-progress
+status: done
 ---
 # Miner right arm corrected in the animation, variants compared on one frame: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Miner standing, weapons stopped, animation frozen once, then A_Miner_Idle and V1..V3 set in turn with rr.Debug.MinerUpperPose and shot from the right side view and the three-quarter front view (8 frames, at most 5 launches), one labelled sheet per view. Checklist: C1 every frame of a view shows the same frame (legs, head, left arm, rifle, background identical apart from the right upper arm and forearm); C2 the right elbow is higher from idle to V3; C3 the right hand and the rifle stay at the same place in every frame; C4 the left hand stays on the rifle handguard; C5 no arm stretched straight, crossed through the body or in T-pose. Each point seen, not seen or ambiguous with a path; ambiguous points and the sheets go to the owner.
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 24, cache write 51003, cache read 311623, output 9340
+- usage: turns 11, context start 14k peak 51k, resumes 1 (message x1), 4 min, units 0.14 M
+- runs: 3
 - milestone: M2
 - started: 2026-10-31T07:49:48Z
 - waiting_for: none
-- result: open
+- result: Capture 3 launches, Saved/Captures/UpperRifle408/ (side_*, front_* for idle,V1,V2,V3; sheet_side.png, sheet_front.png, zoom_*). C1 ambiguous (miner drone floats at different place per frame, crosses head/chest in front_V2, front_V3; robots and background identical). C2 ambiguous leaning seen (side view near-arm elbow up and out idle to V3; 3/6/9 cm not confirmable, front view dark). C3 ambiguous (rifle in place, near hand moves slightly). C4 seen. C5 seen (no T-pose, distortion or stretched arm; no bind-pose problem visible). First 2 launches failed: robots occluding, camera on back/left; fixed with Spawner off + KillRobots + yaw. Owner away; sheets sent to him.
 
 ## Relations
 - [[task-408-miner-right-arm-in-animation]] — parent global task.
