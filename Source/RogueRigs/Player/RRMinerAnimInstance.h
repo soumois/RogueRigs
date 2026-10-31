@@ -7,6 +7,7 @@
 #include "RRMinerAnimInstance.generated.h"
 
 class ARRWeapon;
+class UAnimSequenceBase;
 
 /**
  * Native parent of ABP_Miner. Each update it reads the owning pawn velocity and actor yaw (the miner yaw follows the
@@ -26,6 +27,8 @@ class ARRWeapon;
  * (Joint Target / Effector Location Space = Bone Space of the right hand bone). LeftHandIKAlpha is 1 only when the held
  * weapon has a mesh with LeftHandGrip, else 0. Event driven: recomputed when the miner broadcasts OnWeaponAdded, never
  * searched per frame (the weapon is rigid on its socket, so the value does not depend on the pose).
+ * task-406-01: UpperBodySequence is the one swappable source of the upper body layer of ABP_Miner (asset set in the ABP
+ * class defaults); no C++ logic reads it.
  */
 UCLASS()
 class ROGUERIGS_API URRMinerAnimInstance : public UAnimInstance
@@ -127,4 +130,11 @@ protected:
 	/** Upper bound of LocomotionPlayRate (Q4, provisional, owner 2026-10-30). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RogueRigs|Anim", meta = (ClampMin = "1.0"))
 	float MaxPlayRate = 2.5f;
+
+	/**
+	 * Source of the upper body layer in ABP_Miner (task-406): the pose blended over the locomotion legs above the spine.
+	 * Swap it for another weapon pose. No default in C++: set in the ABP_Miner class defaults. Read only by the ABP.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|UpperBody")
+	TObjectPtr<UAnimSequenceBase> UpperBodySequence = nullptr;
 };
