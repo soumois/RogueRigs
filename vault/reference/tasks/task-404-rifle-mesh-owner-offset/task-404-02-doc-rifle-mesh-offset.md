@@ -3,7 +3,7 @@ id: task-404-02-doc-rifle-mesh-offset
 description: "Doc: update bp-burst-rifle (RifleMesh transform, Muzzle), sys-player-classes and bp-miner (IK refresh limit)"
 parent: task-404-rifle-mesh-owner-offset
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle mesh at the owner position and scale 1.25: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T06:25:41Z
 - waiting_for: none
 - result: open
 
