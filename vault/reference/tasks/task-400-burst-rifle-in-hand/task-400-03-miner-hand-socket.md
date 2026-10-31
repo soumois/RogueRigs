@@ -3,7 +3,7 @@ id: task-400-03-miner-hand-socket
 description: "Bp: SKEL_Miner socket WeaponSocket_R on the right hand bone"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle 3D mesh in the miner right hand: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T00:03:55Z
 - waiting_for: none
 - result: open
 

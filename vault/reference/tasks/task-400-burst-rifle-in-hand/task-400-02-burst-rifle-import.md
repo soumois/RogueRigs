@@ -3,7 +3,7 @@ id: task-400-02-burst-rifle-import
 description: "Bp: import SM_BurstRifle with M_BurstRifle and its four textures"
 parent: task-400-burst-rifle-in-hand
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle 3D mesh in the miner right hand: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: SM_BurstRifle reads 9,892 triangles and bounds about 60 x 7.3 x 20.7 uu with the pivot at the grip (not 100 times too large); its slot uses M_BurstRifle with the four textures; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 40, cache write 53907, cache read 666066, output 12835
+- usage: turns 20, context start 11k peak 54k, resumes 0, 2 min, units 0.20 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T00:00:53Z
 - waiting_for: none
-- result: open
+- result: SM_BurstRifle 9,892 tris, bounds 60x7.27x20.68 cm, pivot at grip, M_BurstRifle with 4 textures (Metallic/Roughness TC_Masks sRGB off, bp choice). Import fix: bConvertSceneUnit=true on FbxStaticMeshImportData CDO needed (else 100x too small, 1,130 tris), reset after; for unreal-mcp-quirks. Material compile and collision read-back unverified. Commit 3ce8f7f4
 
 ## Relations
 - [[task-400-burst-rifle-in-hand]] — parent global task.
