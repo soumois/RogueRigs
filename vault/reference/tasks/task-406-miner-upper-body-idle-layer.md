@@ -1,9 +1,9 @@
 ---
 id: task-406-miner-upper-body-idle-layer
 description: "Global task: ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner upper body from the idle rifle pose over the locomotion legs
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-10-31: [[miner]] (approved; animation = Mixamo clips on the miner skeleton played by ABP_Miner; weapon socket WeaponSocket_R on the right hand; left hand by IK on the handguard, provisional tasks 400 and 401; nothing on an upper/lower body split or the right arm pose), [[bp-miner]] (AnimGraph: Locomotion state machine -> LocalToComponent -> Two Bone IK on LeftHand -> ComponentToLocal -> Output; LeftHandIKTarget is in RightHand bone space, so the left hand follows the right hand and the rifle; IK alpha 0 in the ABP editor preview (no weapon); bones are Mixamo names without prefix: RightHand, RightForeArm, RightArm, LeftHand; mesh forward = component +Y, left = +X), [[sys-player-classes]] (URRMinerAnimInstance gives MoveX, MoveY, GroundSpeed, LeftHandIKTarget, LeftHandIKAlpha; rr.Debug.MinerAnimForce forces the move vector), [[task-386-miner-mixamo-animation]] (clips A_Miner_*, idle = Rifle Aiming Idle; open defect: arms in T-pose while the legs run in some blend space samples, cause not found; BS_Miner_Locomotion owner fix, do not change), [[task-405-right-elbow-raise]] (a right elbow raise was planned then cancelled by the owner 2026-10-31 "Laisse tomber le coude"; this new request asks for it again, with a hand-forward part and comparison images), [[agent-capture]] and [[task-401-04-hands-fit-capture]] (from the default top-down camera the right hand is hidden by the head: captures ambiguous; rr.Debug.Camera <Pitch> <ArmLength> [Yaw] exists for close views). Conflicts: none, rendering only; shot origin (floor + 50 uu along the aim) and every game rule unchanged. Open values for this point: the bone name (spine_01 does not exist on the Mixamo skeleton, Q1), where the swappable source lives (Q2), the owner's uncommitted ABP_Miner edits (Q3), visual check (Q4). Side effect: the arms no longer come from the run clips, so the open T-pose arm defect of task-386 should no longer show. Milestone M2 (art).
 - confirmed_by_owner: yes (2026-10-31, "ok")
 - milestone: M2
-- next_step: task-406-03-doc-upper-body-layer
+- next_step: none
 - started: 2026-10-31T07:09:37Z
 - waiting_for: none
-- result: open
+- result: Done. bp-miner and sys-player-classes updated (52670816); unverified items stated; lint clean.
 
 ## Questions
 Decided 2026-10-31 (owner "ok"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -31,7 +31,7 @@ Decided 2026-10-31 (owner "ok"): every default below is accepted; values provisi
 3. task-406-03-doc-upper-body-layer (vault/reference/tasks/task-406-miner-upper-body-idle-layer/task-406-03-doc-upper-body-layer.md) — doc: doc: bp-miner (AnimGraph with the upper body layer, how to swap the source) and sys-player-classes (UpperBodySequence)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-406-01-upper-body-sequence-prop]] — step 1, cpp.
 - [[task-406-02-abp-upper-body-layer]] — step 2, bp.
 - [[task-406-03-doc-upper-body-layer]] — step 3, doc.

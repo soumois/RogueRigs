@@ -414,3 +414,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-403-burst-rifle-material-fix]] — diagnose and fix the flat cream-white look of SM_BurstRifle in game (M_BurstRifle, textures), check the colours by capture. Status done.
 - [[task-404-rifle-mesh-owner-offset]] — BP_BurstRifle RifleMesh at the owner relative location and scale 1.25, Muzzle moved to the scaled barrel tip. Status done.
 - [[task-405-right-elbow-raise]] — raise the miner right elbow a little away from the body in every clip, hand and rifle unchanged, owner-tunable offset. Status cancelled.
+- [[task-406-miner-upper-body-idle-layer]] — ABP_Miner layers the idle rifle pose on the upper body from Spine over the Mixamo locomotion legs, source swappable later. Status done.
