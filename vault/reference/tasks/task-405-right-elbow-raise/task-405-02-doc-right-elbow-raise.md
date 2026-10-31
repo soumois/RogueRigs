@@ -3,7 +3,7 @@ id: task-405-02-doc-right-elbow-raise
 description: "Doc: update bp-miner with the right elbow adjustment and how to tune it"
 parent: task-405-right-elbow-raise
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner right elbow raised a little, owner tunable: doc
 

@@ -3,7 +3,7 @@ id: task-405-01-abp-right-elbow-ik
 description: "Bp: ABP_Miner: right elbow raised by an owner offset, hand kept in place"
 parent: task-405-right-elbow-raise
 kind: task
-status: todo
+status: cancelled
 ---
 # Miner right elbow raised a little, owner tunable: bp
 

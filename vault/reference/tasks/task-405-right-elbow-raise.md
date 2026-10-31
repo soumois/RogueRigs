@@ -1,9 +1,9 @@
 ---
 id: task-405-right-elbow-raise
 description: "Global task: raise the miner right elbow a little away from the body in every clip, hand and rifle unchanged, owner-tunable offset."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: cancelled
 ---
 # Miner right elbow raised a little, owner tunable
 
@@ -13,10 +13,10 @@ status: wait-answers
 - gdd_check: Read 2026-10-31: [[miner]] (approved; animation = Mixamo clips played by ABP_Miner, weapon socket WeaponSocket_R, left hand by IK; nothing on the elbow pose), [[bp-miner]] (ABP_Miner: Locomotion -> LocalToComponent -> Two Bone IK on LeftHand -> ComponentToLocal; WeaponSocket_R on RightHand; mesh forward = component +Y, left = +X; the right arm has no IK and follows the clips; the Mixamo rifle stance puts the right hand at the cheek/shoulder), [[sys-player-classes]] (LeftHandIKTarget is in RightHand bone space, so it stays right as long as the right hand does not move), [[task-386-miner-mixamo-animation]] (Mixamo clips; owner fix 5e8a0735 on BS_Miner_Locomotion, do not change). Conflicts: none (rendering only, no game rule changes). Open values: method and default amount (Q4). Milestone M2 (art).
 - confirmed_by_owner: no (plan and questions handed back 2026-10-31)
 - milestone: M2
-- next_step: task-405-01-abp-right-elbow-ik
+- next_step: none
 - started: open
-- waiting_for: owner confirmation of the plan
-- result: open
+- waiting_for: none
+- result: Cancelled before start by the owner 2026-10-31: "Laisse tomber le coude et execue le reste".
 
 ## Questions
 Asked 2026-10-31, each with a default; open until the owner answers.
@@ -28,7 +28,7 @@ Asked 2026-10-31, each with a default; open until the owner answers.
 2. task-405-02-doc-right-elbow-raise (vault/reference/tasks/task-405-right-elbow-raise/task-405-02-doc-right-elbow-raise.md) — doc: update bp-miner with the right elbow adjustment and how to tune it
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-405-01-abp-right-elbow-ik]] — step 1, bp.
 - [[task-405-02-doc-right-elbow-raise]] — step 2, doc.
 - [[task-404-rifle-mesh-owner-offset]] — point 1, runs first; holds Q1 to Q3 and Q5 (left hand follow).
