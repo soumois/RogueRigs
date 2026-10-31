@@ -3,7 +3,7 @@ id: task-401-04-hands-fit-capture
 description: "Capture: game capture: both hands on the rifle, idle and four directions"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner hands fitted to the burst rifle: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T05:53:42Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-401-03-abp-left-hand-ik
 description: "Bp: ABP_Miner: Two Bone IK on the left arm onto LeftHandGrip"
 parent: task-401-miner-hands-fit-rifle
 kind: task
-status: in-progress
+status: done
 ---
 # Miner hands fitted to the burst rifle: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: ABP_Miner compiles; in PIE standing and with rr.Debug.MinerAnimForce on each of the four directions, the left hand bone is within 3 uu of the rifle LeftHandGrip socket; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 116, cache write 114786, cache read 6634845, output 34313
+- usage: turns 58, context start 59k peak 159k, resumes 0, 12 min, units 0.98 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T05:41:48Z
 - waiting_for: none
-- result: open
+- result: ABP_Miner Two Bone IK on LeftHand after locomotion, effector LeftHandIKTarget in RightHand bone space, alpha LeftHandIKAlpha, joint target (45,10,95) comp space, stretch on; PIE hand-to-grip 0.00001 uu standing and four forced directions; elbow only numerically checked; commit d82f5f9f.
 
 ## Relations
 - [[task-401-miner-hands-fit-rifle]] — parent global task.
