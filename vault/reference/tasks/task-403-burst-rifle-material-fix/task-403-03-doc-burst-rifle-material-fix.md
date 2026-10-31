@@ -3,7 +3,7 @@ id: task-403-03-doc-burst-rifle-material-fix
 description: "Doc: update bp-burst-rifle and burst-rifle-mesh with the cause and the fix"
 parent: task-403-burst-rifle-material-fix
 kind: task
-status: todo
+status: in-progress
 ---
 # Burst rifle material fix: colours readable in game: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-10-31T04:36:53Z
 - waiting_for: none
 - result: open
 

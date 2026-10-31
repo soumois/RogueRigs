@@ -3,7 +3,7 @@ id: task-403-02-burst-rifle-colours-capture
 description: "Capture: game capture: the rifle shows teal, rust and dark areas and is shaded like the miner"
 parent: task-403-burst-rifle-material-fix
 kind: task
-status: in-progress
+status: done
 ---
 # Burst rifle material fix: colours readable in game: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: C1 the rifle in the miner hand shows distinct teal, rust and dark (barrel, grip) areas, not the uniform cream-white silhouette of crop_still-b.png; C2 the rifle is shaded (lit and shadow sides differ) like the miner next to it; C3 the miner looks as in crop_still-b.png (no change). Each point reported; ambiguous points go to the owner.
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 20, cache write 27632, cache read 197683, output 2863
+- usage: turns 10, context start 14k peak 28k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-10-31T04:35:13Z
 - waiting_for: none
-- result: open
+- result: Capture RifleColours403: C1 seen (teal, dark grey, rust patch; no longer flat cream-white), C2 ambiguous (rifle few dozen pixels, miner head overlaps; owner to judge), C3 seen. Frames in Saved/Captures/RifleColours403/ (crop_cmp.png, crop_rifle-rifle.png, contact_sheet.png).
 
 ## Relations
 - [[task-403-burst-rifle-material-fix]] — parent global task.
