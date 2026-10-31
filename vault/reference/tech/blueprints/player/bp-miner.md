@@ -19,11 +19,20 @@ kind: doc
 - verified: PIE (task-024-05): starts with BP_BurstRifle_C_0 only; new-weapon cards for the shotgun and the turret launcher appeared in the offer (CurrentOffer) and picking them added BP_Shotgun_C_0 and BP_TurretLauncher_C_0. Level-up disc rebuilt as a persistent component: PIE with GrantXP 100 and five ChooseUpgrade 0 picks logged no Blueprint Runtime Error (DiscStep read 5 afterwards). Headless (task-024-06, Integration.LevelUpDiscEndsHidden): the timer survives the level-up pause and the disc ends hidden, but DiscStep_Tick hides it on the tick that sets step 5 (0.5 s, max scale 5.5), which is the kept behaviour (doc corrected). Earlier: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
 
 ## Left hand IK in ABP_Miner (task-401-03, provisional)
-Owner "Ok, par défaut" 2026-10-30 ([[task-401-miner-hands-fit-rifle]]). AnimGraph: Locomotion state machine -> LocalToComponent -> Two Bone IK -> ComponentToLocal -> Output Pose.
+Owner "Ok, par défaut" 2026-10-30 ([[task-401-miner-hands-fit-rifle]]). AnimGraph (since task-406 the upper body layer sits before LocalToComponent, see the section below): Locomotion state machine -> Layered blend per bone -> LocalToComponent -> Two Bone IK -> ComponentToLocal -> Output Pose.
 - Two Bone IK: IK bone LeftHand (chain LeftHand, LeftForeArm, LeftArm); effector location = `LeftHandIKTarget` in Bone Space of bone RightHand; alpha = `LeftHandIKAlpha` (both from [[sys-player-classes]]). Joint target (45, 10, 95) cm in Component Space (mesh forward is component +Y, left is +X; elbow down and out), provisional. Stretching on with defaults (from 1.0, max 1.2); twist defaults; the end bone takes no effector rotation (hand orientation not matched to the grip).
 - Which value moves what (task-404): the left HAND is set by the socket `LeftHandGrip` on SM_BurstRifle (Static Mesh Editor, Socket Manager). The Joint Target Location is the left ELBOW pole only; editing it does not move the hand, and in the ABP editor preview the IK alpha is 0 (no weapon held), so nothing visibly changes there. The target is computed at weapon add, so a live RifleMesh or LeftHandGrip edit in PIE is not followed, a saved one is at the next spawn ([[sys-player-classes]]).
 - Grip point: socket `LeftHandGrip` on SM_BurstRifle ([[burst-rifle-mesh]]).
 - verified: PIE read-back hand-to-grip distance 0.00001 uu standing and in the four forced directions; transients of 2-3 frames at start or force change up to about 26 uu. Capture (task-401-04, frames in `Saved/Captures/HandsFit401/`): C1 to C3 ambiguous (right hand hidden from the top-down camera, left hand at the front of the rifle), C4 seen with caveats; the owner judges.
+
+## Upper body layer in ABP_Miner (task-406, provisional)
+Decided in [[task-406-miner-upper-body-idle-layer]] (Q1, Q2). Commits: cpp 49a881c3, bp b03e520d.
+- AnimGraph: State machine `Locomotion` -> Layered blend per bone -> LocalToComponent -> TwoBoneIK (LeftHand, effector `LeftHandIKTarget`, alpha `LeftHandIKAlpha`) -> ComponentToLocal -> Output Pose.
+- Layered blend per bone: BasePose = Locomotion; BlendPoses_0 = looping Sequence Player whose Sequence pin is fed by Get `UpperBodySequence`; branch filter bone `Spine`, blend depth 0; mesh space rotation blend on; weight 1. Legs from locomotion, spine and above from the sequence.
+- Class default: ABP_Miner `UpperBodySequence` = /Game/RogueRigs/Characters/Miner/Anims/A_Miner_Idle ([[sys-player-classes]]).
+- Swap the upper source (another weapon pose): change `UpperBodySequence` in the ABP_Miner class defaults; later it can be set from the starting weapon.
+- Leftover: an unconnected `TwoBoneIK_0` from the owner remains in the graph.
+- Unverified: no PIE reading (RightHand and LeftHand relative to Spine while moving; LeftHand vs `LeftHandGrip`); compiler log not checked for a Spine bone warning; bone name `Spine` not read back from SKEL_Miner.
 
 ## Miner material and brightness (task-393-01, provisional)
 Owner request 2026-10-30: the Meshy miner looked burnt out in the arena. Lever chosen: the miner material only (Q9 A), value Q10 0.6 provisional, the owner tunes by eye ([[task-393-miner-over-lit]]). Not verified by render or PIE.
@@ -57,3 +66,4 @@ Removed on 2026-10-21 by owner direction ("repars d une lumiere flat"): the cent
 - [[burst-rifle-mesh]] — the LeftHandGrip socket.
 - [[task-404-rifle-mesh-owner-offset]] — left hand vs elbow pole note and refresh limit.
 - [[task-393-miner-over-lit]] — added MI_Miner and BaseColorScale.
+- [[task-406-miner-upper-body-idle-layer]] — added the upper body layer and UpperBodySequence.
