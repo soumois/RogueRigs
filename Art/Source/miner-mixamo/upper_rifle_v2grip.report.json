@@ -1,0 +1,498 @@
+{
+  "source": "A_Miner_UpperRifle_V2.fbx",
+  "frames": [
+    {
+      "frame": 3,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 4,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 5,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 6,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 7,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 8,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 9,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 10,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 11,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 12,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 13,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 14,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 15,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 16,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 17,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 18,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 19,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 20,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 21,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 22,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 23,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 24,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 25,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 26,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 27,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 28,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 29,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 30,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 31,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 32,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 33,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 34,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 35,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 36,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 37,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 38,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 39,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 40,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 41,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 42,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 43,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 44,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 45,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 46,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 47,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 48,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 49,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 50,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 51,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 52,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 53,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 54,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 55,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 56,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 57,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 58,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 59,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 60,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 61,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 62,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 63,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 64,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 65,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 66,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 67,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 68,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 69,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 70,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 71,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 72,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 73,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 74,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 75,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 76,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 77,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 78,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 79,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 80,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 81,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 82,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 83,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 84,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 85,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 86,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 87,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 88,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 89,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 90,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 91,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 92,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 93,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 94,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 95,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    },
+    {
+      "frame": 96,
+      "hand_move_cm": 16.378,
+      "elbow_gap_cm": 0.0
+    }
+  ],
+  "verify": {
+    "bones": 66,
+    "same_bones": true,
+    "frames": 94,
+    "same_frames": true,
+    "fps": 30,
+    "same_fps": true,
+    "socket_dist_to_G_cm_max": 9e-05,
+    "hand_rot_dev_deg_max": 0.0,
+    "finger_and_other_local_dev_max": 0.0,
+    "outside_right_arm_pos_dev_cm_max": 0.00011,
+    "outside_right_arm_rot_dev_deg_max": 0.0,
+    "bone_length_dev_cm_max": 4e-05,
+    "elbow_height_dev_cm_min_max": [
+      -0.0,
+      -0.0
+    ],
+    "elbow_frames_beyond_1cm": [],
+    "hand_move_cm_range": [
+      16.378,
+      16.378
+    ]
+  }
+}

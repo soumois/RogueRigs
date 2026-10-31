@@ -45,7 +45,15 @@ Owner 2026-10-31: new animations based on the idle with the right elbow raised, 
 | V2 | 6.00 | about 25.2 to 25.7 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
 | V3 | 9.00 | about 35.9 to 36.4 | 0.0001 | 0 | 0.0001 cm, 0 deg | 0 |
 
+## Upper rifle V2Grip (task-409-02)
+Owner 2026-10-31: right hand on the rifle pistol grip, rifle kept where he placed it ([[task-409-miner-right-hand-on-grip]]).
+- File: `Art/Meshes/Miner/Anims/A_Miner_UpperRifle_V2Grip.fbx`, from `_V2.fbx`: 66 bones, 94 frames, 30 fps, same export settings. Script `Tools/art/blender/miner_upper_rifle_grip.py` (`build`, `verify`); report `Art/Source/miner-mixamo/upper_rifle_v2grip.report.json`.
+- Socket conversion: WeaponSocket_R (Unreal bone space of RightHand) to the Blender bone frame = Y flipped (left to right handed). Check on A_Miner_Idle frame 0: socket origin 0.00002 cm from the midpoint RightHand head / RightHandMiddle1 head, socket X axis = Blender -Y = mesh forward (0.0 deg).
+- Method: per frame, grip G = socket origin + socket frame x RifleMesh offset (9.898091, -1.129037, -13.0) cm of V2. RightHand moved by G minus socket origin (constant 16.38 cm in hand space), hand orientation kept, fingers untouched. RightArm and RightForeArm solved as a two bone chain, bone lengths kept: hand pinned, elbow on the circle of positions at the V2 elbow height (the one nearest the V2 elbow), shortest arc rotations. Keys baked on every frame.
+- Measured on all 94 frames (re-read from the FBX): socket point to G 0.0001 cm max; RightHand orientation deviation 0.0 deg; finger and all other local transforms identical (0.0); elbow height deviation 0.0 cm on every frame (the arm reaches, no frame listed); bones outside the right arm 0.0001 cm, 0.0 deg; bone length change 0.00004 cm; Hips unchanged.
+
 ## Relations
+- [[task-409-miner-right-hand-on-grip]] — the global task that made V2Grip.
 - [[pipelines-index]] — parent index.
 - [[task-386-miner-mixamo-animation]] — the global task that made them.
 - [[art-prompts-miner]] — the rigged miner mesh these clips fit.
