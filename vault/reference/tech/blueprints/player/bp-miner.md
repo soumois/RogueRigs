@@ -51,6 +51,15 @@ Owner request: right hand on the rifle pistol grip, rifle kept where the owner p
 - Switch back: set `UpperBodySequence` to A_Miner_UpperRifle_V2 in the ABP_Miner Class Defaults. Console `rr.Debug.MinerUpperPose A_Miner_UpperRifle_V2` also works, but with V2 the hand only meets the grip if RifleMesh keeps its old offset (9.898091, -1.129037, -13.0); with RifleMesh at 0 the V2 hand sits 16.38 cm off the grip.
 - Unverified: no PIE or capture (the owner checks himself, Q3); compile logs not read; projectile spawn height and left-hand IK (LeftHandGrip) not checked after the change.
 
+## Right hand offset in ABP_Miner (task-410, provisional)
+Owner request: move the right hand live, rifle and left hand follow ([[task-410-right-hand-offset-live]], owner Q1). Commits: cpp 5ca2bac7, bp 1e969c39. Unverified: no PIE run by the crew (the owner checks); compile and reach not read.
+- AnimGraph order: Locomotion -> Layered blend per bone -> LocalToComponent -> right Two Bone IK -> Transform (Modify) Bone RightHand -> left Two Bone IK (unchanged) -> ComponentToLocal -> Output Pose.
+- Right Two Bone IK: IK bone RightHand; effector Bone Space of RightHand = `RightHandIKEffector`; joint target (0, 0, 0) Bone Space of RightForeArm; stretching off; alpha `RightHandOffsetAlpha`.
+- Transform (Modify) Bone: bone RightHand; translation Ignore, scale Ignore, rotation Add to Existing, Bone Space = `RightHandRotationDelta`; alpha `RightHandOffsetAlpha`.
+- Inputs come from `RightHandOffsetLocation` and `RightHandOffsetRotation` ([[sys-player-classes]]: frame, pivot, math). Offset 0 = the V2Grip pose unchanged (alpha 0). The rifle hangs on `WeaponSocket_R`, so it and the left hand follow the hand.
+- Tuning recipe: in PIE type `rr.Debug.RightHandOffset X Y Z [Pitch Yaw Roll]` (cm, deg, socket frame: X muzzle, Y side, Z rifle top); read the LogRogueRigs line `RightHandOffset ...`; type its `RightHandOffsetLocation` and `RightHandOffsetRotation` into the ABP_Miner Class Defaults (category Animation|RightHand) to keep them; `rr.Debug.RightHandOffset ""` restores the class defaults.
+- Reach risk: the arm has a fixed length and stretching is off, so keep offsets to a few cm; beyond reach the hand stops short of the target.
+
 ## Miner material and brightness (task-393-01, provisional)
 Owner request 2026-10-30: the Meshy miner looked burnt out in the arena. Lever chosen: the miner material only (Q9 A), value Q10 0.6 provisional, the owner tunes by eye ([[task-393-miner-over-lit]]). Not verified by render or PIE.
 - M_Miner (/Game/RogueRigs/Characters/Miner/M_Miner, made by the import script): Default Lit; TextureSample_0 (T_Miner_BaseColor) -> new Multiply node (B = scalar parameter `BaseColorScale`, default 1) -> BaseColor; TextureSample_1 (T_Miner_Normal, Normal sampler) is wired to Normal. Roughness, Specular and Metallic are unwired (engine defaults; numbers not read back); emissive not queried.
@@ -64,6 +73,7 @@ Removed on 2026-10-21 by owner direction ("repars d une lumiere flat"): the cent
 - Revert: add a PointLightComponent named `PlayerLight` under the capsule (CollisionCylinder), not under the mesh, with the last values (task-272-02): relativeLocation (0, 0, -15), attenuationRadius 3000, intensity 400, intensityUnits Candelas, lightColor (1.0, 0.7608, 0.6196) (8-bit 255/194/158), sourceRadius 20, castShadows true, bUseInverseSquaredFalloff true, mobility Movable; rest default. Then compile and save. Cost of that light: [[perf-risks]].
 
 ## Relations
+- [[task-410-right-hand-offset-live]] — added the right arm IK and hand rotation nodes.
 - [[task-400-burst-rifle-in-hand]] — added WeaponSocket_R.
 - [[blueprints-index]] — parent index.
 - [[sys-player]] — the C++ class it derives from.
