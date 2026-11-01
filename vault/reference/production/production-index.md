@@ -17,7 +17,7 @@ Capstone submission: November 9, 2026. Budget: one person, 5 to 6 hours a week.
 - [[drgs-analysis]] — DRGS reference run analysis: pacing, arrival, packs, mining, pickups, weapons; open when tuning against DRGS.
 - [[handover-2026-10-09]] — state at the end of the 2026-10-06 to 10-09 session: planned night tasks, unseen features, provisional values, tests, performance; open first when resuming.
 - [[handover-2026-10-06]] — state at the pause of 2026-10-06: next subtask, queue, pending owner decisions; open first when resuming.
-- [[cost-log]] — per-subtask token costs and planner turn/tool traces; open to estimate project cost.
+- [[cost-log]] — per-subtask token costs and detailed planner/BP call traces; open to estimate project cost.
 - [[handover-2026-10-12]] — state after the barrel, logo and art charter session: delivered, open, rules; open first when resuming.
 - [[handover-2026-10-12-gameplay-hud]] — state after the gameplay, HUD, pool and ground-circle session: built but unseen, open decisions, resume.
 - [[handover-2026-10-14-chaser-meshy]] — state after the Meshy chaser session: built, open items and owner decisions, what is not mine, how to resume.

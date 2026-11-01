@@ -7,7 +7,7 @@ const fs = require('fs'), { execSync } = require('child_process');
 const R = require('path').resolve(__dirname, '..', '..').split(require('path').sep).join('/') + '/';
 process.chdir(R);
 const [id, runs] = process.argv.slice(2);
-const data = JSON.parse(execSync('node vault/scripts/agent-usage.js --json --snapshot', { maxBuffer: 1 << 28 }).toString());
+const data = JSON.parse(execSync('node vault/scripts/agent-usage.js --json --snapshot --agent-debug', { maxBuffer: 1 << 28 }).toString());
 const rates = JSON.parse(fs.readFileSync(R + 'vault/scripts/cost-rates.json', 'utf8'));
 const r = data.subtasks.find(x => x.id === id);
 if (!r) throw new Error('no usage for ' + id);

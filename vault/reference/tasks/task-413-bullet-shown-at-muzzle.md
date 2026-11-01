@@ -1,7 +1,7 @@
 ---
 id: task-413-bullet-shown-at-muzzle
 description: "Global task: the rifle bullet visually starts ahead of the Muzzle; measure the cause in game, then draw its first frame at the Muzzle."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
 status: done
 ---
@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-10-31T21:58:10Z
 - waiting_for: none
-- result: Rifle bullets and shotgun pellets are first drawn at the Muzzle (0.0-0.8 uu, was 26-34 uu), fix 148676a4, docs b023819a. Unverified: shotgun in game, 60 fps, visual, motion blur. gdd burst-rifle line not edited (owner confirmation needed).
+- result: Rifle bullets and shotgun pellets first draw at the Muzzle (0.0–0.8 uu, previously 26–34 uu); fix 148676a4 and docs b023819a. Owner confirms the task is finished. The GDD records the first-frame rule. Remaining unverified checks from the original run: shotgun in game, 60 fps, visual appearance and motion blur.
 
 ## Questions
 Decided 2026-10-31 (owner "ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-10-31.
@@ -28,7 +28,7 @@ Decided 2026-10-31 (owner "ok, tout par défaut"): every default below is accept
 2. task-413-02-doc-bullet-first-frame (vault/reference/tasks/task-413-bullet-shown-at-muzzle/task-413-02-doc-bullet-first-frame.md) — doc: sys-projectiles, sys-weapons (first drawn frame at the Muzzle, cause and fix, debug log or cvar)
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-413-01-bullet-first-frame-at-muzzle]] — step 1, cpp.
 - [[task-413-02-doc-bullet-first-frame]] — step 2, doc.
 - [[task-412-shots-from-rifle-muzzle]] — task that made shots leave from the Muzzle; this one fixes where the bullet is first drawn.

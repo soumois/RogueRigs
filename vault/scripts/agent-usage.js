@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Token usage of every agent and main session of this project, from the Claude Code transcripts.
-// Usage: node vault/scripts/agent-usage.js [--json] [--from <task number>] [--snapshot] [--planner-detail <agent-id|session-id>]
+// Usage: node vault/scripts/agent-usage.js [--json] [--from <task number>] [--snapshot] [--agent-debug] [--agent-detail <agent-id|session-id>]
 // Sources: ~/.claude/projects/<project>/<session>/subagents/agent-*.jsonl (+ .meta.json: agentType, description) for agents,
 // ~/.claude/projects/<project>/<session>.jsonl for main sessions. Each API message is counted once (last entry per message id).
 // Machine-local data: nothing is sent anywhere.
@@ -15,10 +15,13 @@ const fs = require('fs'), path = require('path'), os = require('os');
 const args = process.argv.slice(2);
 const asJson = args.includes('--json');
 const doSnapshot = args.includes('--snapshot');
+const agentDebug = args.includes('--agent-debug') || args.includes('--planner-debug');
 const fromIdx = args.indexOf('--from');
 const fromTask = fromIdx >= 0 ? parseInt(args[fromIdx + 1], 10) : 0;
-const detailIdx = args.indexOf('--planner-detail');
-const plannerDetailId = detailIdx >= 0 ? args[detailIdx + 1] : null;
+const plannerDetailIdx = args.indexOf('--planner-detail');
+const plannerDetailId = plannerDetailIdx >= 0 ? args[plannerDetailIdx + 1] : null;
+const agentDetailIdx = args.indexOf('--agent-detail');
+const agentDetailId = agentDetailIdx >= 0 ? args[agentDetailIdx + 1] : null;
 
 const repo = path.resolve(__dirname, '..', '..');
 const slug = repo.replace(/[:\\/ ]/g, '-');
@@ -86,11 +89,24 @@ const addTok = (a, b) => { for (const k of ['input', 'cacheWrite', 'cacheRead', 
 
 const textOf = c => typeof c === 'string' ? c : (Array.isArray(c) ? c.filter(x => x.type === 'text').map(x => x.text).join(' ') : '');
 const isToolResultOnly = c => Array.isArray(c) && c.length > 0 && c.every(x => x.type === 'tool_result');
+const roughTokensOfChars = n => Math.ceil((n || 0) / 4);
+function textMetrics(content) {
+  const text = textOf(content);
+  return {
+    chars: text.length,
+    roughTokens: roughTokensOfChars(text.length),
+    lines: text ? text.split(/\r?\n/).length : 0,
+    blockTypes: Array.isArray(content) ? [...new Set(content.map(x => x.type || 'unknown'))] : (typeof content === 'string' ? ['text'] : []),
+  };
+}
 
 function scan(file, meta, kind, session, id) {
+  const agentType = (meta && meta.agentType) || '';
+  const captureDebug = agentDebug && kind === 'agent' && ['planner', 'orchestrator', 'bp'].includes(agentType);
   const byId = new Map();
   const toolUsesById = new Map();
   const toolResultsById = new Map();
+  let pendingUserMessages = [];
   let prompt = '', seenAssistant = false, start = '', end = '';
   const resumeReasons = {};
   const mentions = {};
@@ -110,9 +126,13 @@ function scan(file, meta, kind, session, id) {
           status: b.is_error === true ? 'error' : 'ok',
           createdGlobals: [...resultText.matchAll(/^created task-\d{3}-[a-z0-9-]+/gm)].length,
           createdTaskFiles: taskFiles.length,
+          ...(captureDebug ? { debug: textMetrics(b.content) } : {}),
         });
       }
       const t = textOf(m.content);
+      if (captureDebug && t && !isToolResultOnly(m.content) && !/^\s*(\[SYSTEM NOTIFICATION|<system-reminder>|<task-notification)/.test(t)) {
+        pendingUserMessages.push(textMetrics(m.content));
+      }
       if (!prompt && t) prompt = t;
       else if (seenAssistant && t && !isToolResultOnly(m.content) && !/^\s*(\[SYSTEM NOTIFICATION|<system-reminder>|<task-notification)/.test(t)) {
         const reason = /turn limit|from where you stopped/i.test(t) ? 'turn-limit' : /rate limit|cut off/i.test(t) ? 'rate-limit' : 'message';
@@ -121,7 +141,11 @@ function scan(file, meta, kind, session, id) {
     }
     if (j.type === 'assistant' && m && m.id) {
       seenAssistant = true;
-      if (m.usage) byId.set(m.id, { model: m.model, u: m.usage });
+      if (m.usage) {
+        const previous = byId.get(m.id);
+        byId.set(m.id, { model: m.model, u: m.usage, userMessages: previous ? previous.userMessages : pendingUserMessages });
+        if (!previous) pendingUserMessages = [];
+      }
       const tools = toolUsesById.get(m.id) || new Map();
       for (const [index, b] of (m.content || []).entries()) {
         if (b.type !== 'tool_use') continue;
@@ -129,6 +153,19 @@ function scan(file, meta, kind, session, id) {
         const key = b.id || `${m.id}:${index}:${b.name}`;
         const previous = tools.get(key);
         const use = { name: b.name || 'unknown', operation: operationOfTool(b.name), path: toolPath(input) };
+        if (captureDebug) {
+          const serializedInput = JSON.stringify(input);
+          const payloadFields = Object.entries(input).filter(([field, value]) => typeof value === 'string' && /(prompt|description|message|instructions|task)/i.test(field))
+            .map(([field, value]) => ({ field, chars: value.length, roughTokens: roughTokensOfChars(value.length) }));
+          const targetAgentType = input.subagent_type || input.agent_type || null;
+          use.debugInput = {
+            chars: serializedInput.length,
+            roughTokens: roughTokensOfChars(serializedInput.length),
+            fields: Object.keys(input).slice(0, 16),
+            payloadFields,
+            ...(typeof targetAgentType === 'string' && /^[a-z0-9_-]{1,40}$/i.test(targetAgentType) ? { targetAgentType } : {}),
+          };
+        }
         if (!use.path && previous && previous.path) use.path = previous.path;
         const taskPath = taskPathKind(use.path);
         if (taskPath) {
@@ -151,7 +188,7 @@ function scan(file, meta, kind, session, id) {
   let firstCtx = null, peakCtx = 0;
   const turnDetails = [], toolCounts = {}, readPaths = {}, lookupPaths = {}, writePaths = {};
   const taskReadPaths = {}, taskWritePaths = {}, taskWorkflowCounts = {}, taskWorkflowOutcomes = {};
-  for (const [messageId, { model, u }] of byId) {
+  for (const [messageId, { model, u, userMessages = [] }] of byId) {
     const tok = { input: u.input_tokens || 0, cacheWrite: u.cache_creation_input_tokens || 0, cacheRead: u.cache_read_input_tokens || 0, output: u.output_tokens || 0 };
     addTok(t, tok);
     if (model && model !== '<synthetic>') { addTok(byModel[modelKey(model)] || (byModel[modelKey(model)] = zeroTok()), tok); models[model] = (models[model] || 0) + 1; }
@@ -162,6 +199,7 @@ function scan(file, meta, kind, session, id) {
       const result = toolResultsById.get(toolId);
       if (result) {
         tool.result = result.status;
+        if (result.debug) tool.debugResult = result.debug;
         if (tool.workflows && tool.workflows.some(w => w.script === 'task-create')) {
           for (const w of tool.workflows) if (w.script === 'task-create') {
             w.createdGlobals = result.createdGlobals;
@@ -185,7 +223,21 @@ function scan(file, meta, kind, session, id) {
         outcomes[outcome] = (outcomes[outcome] || 0) + 1;
       }
     }
-    turnDetails.push({ model: modelKey(model), ...tok, contextTokens: ctx, tools });
+    const turn = { model: modelKey(model), ...tok, units: unitsOf(tok), usd: usdOf({ [modelKey(model)]: tok }), contextTokens: ctx, tools };
+    if (captureDebug) {
+      const toolInputChars = tools.reduce((n, tool) => n + (tool.debugInput && tool.debugInput.chars || 0), 0);
+      const toolResultChars = tools.reduce((n, tool) => n + (tool.debugResult && tool.debugResult.chars || 0), 0);
+      turn.debug = {
+        userMessages,
+        userChars: userMessages.reduce((n, message) => n + message.chars, 0),
+        userRoughTokens: roughTokensOfChars(userMessages.reduce((n, message) => n + message.chars, 0)),
+        toolInputChars,
+        toolInputRoughTokens: roughTokensOfChars(toolInputChars),
+        toolResultChars,
+        toolResultRoughTokens: roughTokensOfChars(toolResultChars),
+      };
+    }
+    turnDetails.push(turn);
   }
   for (let i = 0; i < turnDetails.length - 1; i++) turnDetails[i].nextContextDelta = turnDetails[i + 1].contextTokens - turnDetails[i].contextTokens;
   const desc = (meta && meta.description) || '';
@@ -208,11 +260,14 @@ function scan(file, meta, kind, session, id) {
   if (role === 'pilot') rec.globalTask = ((prompt.match(/task-(\d{2,3})\b/) || [])[1]) || null;
   if (role === 'planning' || role === 'other') rec.promptStart = prompt.replace(/\s+/g, ' ').slice(0, 110);
   if (role === 'planning') rec.handbackTasks = [...new Set([...handback.matchAll(/task-(\d{3})\b/g)].map(x => x[1]))].slice(0, 12);
-  if (role === 'planning') rec.plannerTrace = {
+  const trace = {
+    ...(captureDebug ? { debugLevel: 'deep', debugEstimate: 'text characters / 4; approximate and not billed-token attribution' } : {}),
     toolCounts, readPaths, lookupPaths, writePaths,
     taskActivity: { taskReadPaths, taskWritePaths, taskWorkflowCounts, taskWorkflowOutcomes },
     turns: turnDetails,
   };
+  if (role === 'planning') rec.plannerTrace = trace;
+  if (type === 'bp' && captureDebug) rec.agentTrace = trace;
   if (kind === 'session') rec.tasksMentioned = Object.entries(mentions).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
   return rec;
 }
@@ -239,7 +294,7 @@ if (fs.existsSync(SNAP_FILE)) for (const r of JSON.parse(fs.readFileSync(SNAP_FI
 for (const r of scanned) records.set(r.kind + ':' + r.id, r);
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
-  fs.writeFileSync(SNAP_FILE, '{"version":3,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
+  fs.writeFileSync(SNAP_FILE, '{"version":4,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
 }
 
 // 3. derive the reports
@@ -284,21 +339,30 @@ const totals = {
 };
 for (const k of Object.keys(totals)) { delete totals[k].byModel; }
 
-if (plannerDetailId) {
-  const rec = all.find(r => r.role === 'planning' && (r.id === plannerDetailId || r.session === plannerDetailId));
-  if (!rec) { console.error('No planner record matches ' + plannerDetailId); process.exit(2); }
-  if (!rec.plannerTrace) { console.error('This saved planner record has no tool trace; refresh the snapshot while its transcript is still available.'); process.exit(2); }
-  const detail = { id: rec.id, session: rec.session, start: rec.start, description: rec.desc, model: rec.models, calls: rec.calls, resumes: rec.resumes, input: rec.input, cacheWrite: rec.cacheWrite, cacheRead: rec.cacheRead, output: rec.output, units: unitsOf(rec), plannerTrace: rec.plannerTrace };
+if (plannerDetailId || agentDetailId) {
+  const requestedId = agentDetailId || plannerDetailId;
+  const matches = r => (agentDetailId ? Boolean(r.plannerTrace || r.agentTrace) : r.role === 'planning') && (r.id === requestedId || r.session === requestedId);
+  const rec = all.find(r => matches(r) && r.id === requestedId) || all.find(matches);
+  if (!rec) { console.error(`No ${agentDetailId ? 'agent' : 'planner'} record matches ${requestedId}`); process.exit(2); }
+  const trace = rec.plannerTrace || rec.agentTrace;
+  if (!trace) { console.error('This saved record has no detailed trace; refresh the snapshot while its transcript is still available.'); process.exit(2); }
+  const detail = { id: rec.id, session: rec.session, start: rec.start, description: rec.desc, type: rec.type, role: rec.role, model: rec.models, calls: rec.calls, resumes: rec.resumes, input: rec.input, cacheWrite: rec.cacheWrite, cacheRead: rec.cacheRead, output: rec.output, units: unitsOf(rec), ...(rec.plannerTrace ? { plannerTrace: trace } : { agentTrace: trace }) };
   if (asJson) console.log(JSON.stringify(detail, null, 2));
   else {
     const kTok = n => Math.abs(n) >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
     const MUnits = n => (n / 1e6).toFixed(2);
-    console.log(`Planner detail: ${rec.desc} (${rec.id}, session ${rec.session})`);
+    console.log(`${rec.role === 'planning' ? 'Planner' : `${rec.type} agent`} detail: ${rec.desc} (${rec.id}, session ${rec.session})`);
     console.log(`Model ${rec.models.join('+')}; ${rec.calls} API calls; ${rec.resumes} resumes; ${MUnits(unitsOf(rec))} M units.`);
     console.log('Per-call tokens describe the whole context. Paths and task workflows show activity, not tokens assigned to individual files. Context delta compares prompt sizes at consecutive API calls; it includes all intervening messages and tool results, not just the listed action.');
-    console.log('| Turn | Model | Input | Cache write | Cache read | Prompt ctx | Δ ctx next | Output | Tools, paths and task actions |');
-    console.log('|---:|---|---:|---:|---:|---:|---:|---:|---|');
-    for (const [i, turn] of rec.plannerTrace.turns.entries()) {
+    if (trace.debugLevel === 'deep') console.log(`Debug detail: exact API units per call; message/tool text sizes estimated at ${trace.debugEstimate}. No message, command or file content is stored.`);
+    const deep = trace.debugLevel === 'deep';
+    console.log(deep
+      ? '| Turn | Model | Input | Cache write | Cache read | Output | Units M | USD | Prompt ctx | Δ ctx next | User ≈tok | Tool in ≈tok | Tool out ≈tok | Tools and actions |'
+      : '| Turn | Model | Input | Cache write | Cache read | Prompt ctx | Δ ctx next | Output | Tools, paths and task actions |');
+    console.log(deep
+      ? '|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|'
+      : '|---:|---|---:|---:|---:|---:|---:|---:|---|');
+    for (const [i, turn] of trace.turns.entries()) {
       const activity = turn.tools.map(tool => {
         const workflows = (tool.workflows || []).map(w => {
           const refs = w.taskRefCount ? `, ${w.taskRefCount} task ref(s)` : '';
@@ -306,26 +370,36 @@ if (plannerDetailId) {
           return `${w.script} → ${w.action}${refs}${created}`;
         }).join(', ');
         const result = tool.result ? ` (${tool.result})` : '';
-        return `${tool.name}${tool.operation !== 'other' ? ` ${tool.operation}` : ''}${tool.path ? ': ' + tool.path : ''}${tool.taskScope ? ` [${tool.taskScope}]` : ''}${workflows ? ': ' + workflows : ''}${result}`;
+        const inputSize = tool.debugInput ? `input≈${kTok(tool.debugInput.roughTokens)} tok/${tool.debugInput.chars} ch` : '';
+        const payloadSizes = tool.debugInput && tool.debugInput.payloadFields.length
+          ? tool.debugInput.payloadFields.map(x => `${x.field}≈${kTok(x.roughTokens)} tok`).join(', ') : '';
+        const targetAgent = tool.debugInput && tool.debugInput.targetAgentType ? `agent=${tool.debugInput.targetAgentType}` : '';
+        const outputSize = tool.debugResult ? `result≈${kTok(tool.debugResult.roughTokens)} tok/${tool.debugResult.chars} ch${tool.debugResult.blockTypes.length ? ' [' + tool.debugResult.blockTypes.join('+') + ']' : ''}` : '';
+        const sizes = [inputSize, payloadSizes, targetAgent, outputSize].filter(Boolean).join('; ');
+        return `${tool.name}${tool.operation !== 'other' ? ` ${tool.operation}` : ''}${tool.path ? ': ' + tool.path : ''}${tool.taskScope ? ` [${tool.taskScope}]` : ''}${workflows ? ': ' + workflows : ''}${sizes ? ` {${sizes}}` : ''}${result}`;
       }).join('<br>') || '—';
       const delta = turn.nextContextDelta === undefined ? '—' : `${turn.nextContextDelta >= 0 ? '+' : ''}${kTok(turn.nextContextDelta)}`;
-      console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.contextTokens)} | ${delta} | ${kTok(turn.output)} | ${activity} |`);
+      if (deep) {
+        const usd = turn.usd === null ? '—' : turn.usd.toFixed(4);
+        const d = turn.debug || {};
+        console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.output)} | ${MUnits(turn.units)} | ${usd} | ${kTok(turn.contextTokens)} | ${delta} | ≈${kTok(d.userRoughTokens || 0)} | ≈${kTok(d.toolInputRoughTokens || 0)} | ≈${kTok(d.toolResultRoughTokens || 0)} | ${activity} |`);
+      } else console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.contextTokens)} | ${delta} | ${kTok(turn.output)} | ${activity} |`);
     }
     const paths = (entries, label) => {
       const rows = Object.entries(entries || {}).sort((a, b) => b[1] - a[1]);
       if (rows.length) console.log(`\n${label}: ${rows.map(([p, n]) => `${p} (${n})`).join('; ')}`);
     };
-    paths(rec.plannerTrace.readPaths, 'Files read');
-    paths(rec.plannerTrace.lookupPaths, 'Lookup scopes');
-    paths(rec.plannerTrace.writePaths, 'Files written by direct tools');
-    const taskActivity = rec.plannerTrace.taskActivity || {};
+    paths(trace.readPaths, 'Files read');
+    paths(trace.lookupPaths, 'Lookup scopes');
+    paths(trace.writePaths, 'Files written by direct tools');
+    const taskActivity = trace.taskActivity || {};
     paths(taskActivity.taskReadPaths, 'Task files read by direct tools');
     paths(taskActivity.taskWritePaths, 'Task files written by direct tools');
     const taskCounts = taskActivity.taskWorkflowCounts || {};
     if (Object.keys(taskCounts).length) console.log('\nTask workflow invocations (outcome shown per call): ' + Object.entries(taskCounts).map(([name, n]) => `${name} ${n}`).join(', '));
     const taskOutcomes = taskActivity.taskWorkflowOutcomes || {};
     if (Object.keys(taskOutcomes).length) console.log('Task workflow outcomes: ' + Object.entries(taskOutcomes).map(([name, x]) => `${name} (${x.ok} ok, ${x.error} errors, ${x.unknown} unknown)`).join(', '));
-    console.log('\nTool totals: ' + (Object.entries(rec.plannerTrace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'none'));
+    console.log('\nTool totals: ' + (Object.entries(trace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'none'));
   }
   process.exit(0);
 }
