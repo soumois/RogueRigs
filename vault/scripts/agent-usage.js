@@ -15,7 +15,7 @@ const fs = require('fs'), path = require('path'), os = require('os');
 const args = process.argv.slice(2);
 const asJson = args.includes('--json');
 const doSnapshot = args.includes('--snapshot');
-const agentDebug = args.includes('--agent-debug') || args.includes('--planner-debug');
+const agentDebug = args.includes('--agent-debug') || args.includes('--planner-debug') || args.includes('--agent-detail') || args.includes('--planner-detail');
 const fromIdx = args.indexOf('--from');
 const fromTask = fromIdx >= 0 ? parseInt(args[fromIdx + 1], 10) : 0;
 const plannerDetailIdx = args.indexOf('--planner-detail');
@@ -102,7 +102,7 @@ function textMetrics(content) {
 
 function scan(file, meta, kind, session, id) {
   const agentType = (meta && meta.agentType) || '';
-  const captureDebug = agentDebug && kind === 'agent' && ['planner', 'orchestrator', 'bp'].includes(agentType);
+  const captureDebug = agentDebug && kind === 'agent' && ['planner', 'orchestrator', 'bp', 'cpp'].includes(agentType);
   const byId = new Map();
   const toolUsesById = new Map();
   const toolResultsById = new Map();
@@ -267,7 +267,7 @@ function scan(file, meta, kind, session, id) {
     turns: turnDetails,
   };
   if (role === 'planning') rec.plannerTrace = trace;
-  if (type === 'bp' && captureDebug) rec.agentTrace = trace;
+  if (['bp', 'cpp'].includes(type) && captureDebug) rec.agentTrace = trace;
   if (kind === 'session') rec.tasksMentioned = Object.entries(mentions).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
   return rec;
 }

@@ -6,6 +6,7 @@
 // status=wait-answers (the agent stopped for an owner answer or action) needs waiting_for=<question or owner action>
 // (refused without it, nothing written); it writes `- waiting_for: <text>`, inserted before `- result:` on older nodes.
 // Any other status on a node whose waiting_for is not none sets it to none. A waiting global stays in tasks-to-do-index.
+// status=done on a global also requires every listed subtask to be done, its model/tokens/usage/runs recorded, and a cost-log row.
 const fs = require('fs');
 const f = require('path').resolve(__dirname, '..', 'reference', 'tasks', process.argv[2]);
 let s = fs.readFileSync(f, 'utf8');
@@ -15,6 +16,25 @@ if (/^task-\d+-[^/]+[\\/]task-\d+-\d+-/.test(process.argv[2]) && extra.includes(
   throw new Error('refusing to close ' + process.argv[2] + ': tokens is still open. Run record-cost.js (task-next.js does), or pass tokens=<why it cannot be measured>.');
 }
 const st = (process.argv.find(a => a.startsWith('status=')) || '').slice(7);
+const globalTask = process.argv[2].match(/^(task-\d+-[^/]+)\.md$/);
+if (globalTask && st === 'done') {
+  const taskDir = require('path').resolve(__dirname, '..', 'reference', 'tasks');
+  const subSection = (s.split(/^## Subtasks\s*$/m)[1] || '').split(/^## /m)[0];
+  const subtasks = [...subSection.matchAll(/^\d+\.\s+(task-\d+-\d{2}-[a-z0-9-]+)/gm)].map(m => m[1]);
+  if (!subtasks.length) throw new Error(`refusing ${globalTask[1]}: it has no readable subtasks, so task closure cannot verify recorded costs`);
+  const costLog = fs.readFileSync(require('path').resolve(__dirname, '..', 'reference', 'production', 'cost-log.md'), 'utf8');
+  for (const subtask of subtasks) {
+    const subFile = require('path').join(taskDir, globalTask[1], subtask + '.md');
+    if (!fs.existsSync(subFile)) throw new Error(`refusing ${globalTask[1]}: missing subtask node ${subtask}`);
+    const subText = fs.readFileSync(subFile, 'utf8');
+    if (!/^status: done\s*$/m.test(subText)) throw new Error(`refusing ${globalTask[1]}: ${subtask} is not done`);
+    const openFields = ['model', 'tokens', 'usage', 'runs'].filter(k => new RegExp('^- ' + k + ': open\\s*$', 'm').test(subText));
+    if (openFields.length) throw new Error(`refusing ${globalTask[1]}: ${subtask} has unrecorded ${openFields.join(', ')}`);
+    if (!new RegExp('^\\| \\[\\[' + subtask + '\\]\\] \\|', 'm').test(costLog)) {
+      throw new Error(`refusing ${globalTask[1]}: ${subtask} has no cost-log row`);
+    }
+  }
+}
 const waitArg = extra.find(a => a.startsWith('waiting_for='));
 const waitText = waitArg === undefined ? '' : waitArg.slice(12).trim();
 if (st === 'wait-answers' && !waitText) throw new Error('refusing status=wait-answers on ' + process.argv[2] + ': pass waiting_for=<question or owner action>. Nothing changed.');

@@ -40,6 +40,10 @@ Doc subtask (owner 2026-10-27, [[task-325-doc-agent]]): a global with cpp or bp 
 
 Capture subtask (owner 2026-10-29, [[task-360-capture-agent]]): a visual check is a subtask for [[agent-capture]] (`agent: capture`), not for cpp. Its `done_when` is a checklist of numbered points C1..Cn taken from the global `acceptance`, each observable on a frame; its `inputs` list the look-before frames, the reference images and the debug commands to use when known. The agent reports each point seen, not seen or ambiguous with the frame or crop path; ambiguous points go to the owner, the Executor does not decide them. Tasks 308, 309, 314 keep their cpp capture subtasks as written.
 
+Uncertainty-driven representative slice (owner 2026-11-01): use this only when the visual result or technical integration is materially uncertain, not for every small change. Keep one global task per owner request. The Planner records the expected result, references, rules to preserve, open decisions and useful resolutions; it says whether correction belongs in an asset, Blueprint, ABP or C++. For an interface, plan one representative element with its key states (for example one shop card with purchase and sold states); for animation, one clip in a game state; for an effect, one effect wired into play; for technical integration, one end-to-end path. A validated mockup may cover the slice and remove the extra check.
+
+Order an implementing slice subtask, then a [[agent-capture]] subtask for one checklist across the useful resolutions, then any expansion subtasks with `depends_on` the passing capture. Nonvisual technical slices use the relevant build, test or integration check instead of a screenshot. A failed capture stops expansion: the Executor sends the observed defect to the same implementer for one focused correction and repeats the check. Ambiguous results or multiple viable directions wait for the owner; a clear passing slice proceeds without another owner checkpoint. The prototype stays inside this one global task; the final doc subtask and per-subtask cost recording still apply.
+
 bp split (owner 2026-10-14): when one owner point needs several editor assets, one bp subtask = one main asset (a Niagara system, a widget, a material with its instances, or a Blueprint), with its own commit; its doc node goes to the doc subtask. Order: materials, then Niagara and widgets, then the Blueprint that wires them, then map placement. Independent bp subtasks on different assets may run in parallel, 3 at most on one editor.
 
 ## 4. Confirm
@@ -53,11 +57,12 @@ Defaults file (owner 2026-10-29, [[task-358-planner-cost]] Q1): the Planner writ
 3. Delegate to the subagent with the subtask node and the resolved paths of its inputs as the only reading list, the description starting with the subtask id. Keep each cpp and bp change summary. The doc subtask is delegated to `doc` the same way, with the brief: commit hashes and changed paths (the agent runs `git show`, the diff is not pasted), a pointer to the global `request` and `gdd_check` for decided values, the change summaries, and the nodes to create or update; it is closed by `task-next.js` like any subtask (cost-log row, `usage` line, model, ALERT lines).
 4. Run the `done_when` checks.
 5. Pass: fill `result`, `model`, `tokens` (input, cache write, cache read, output from `node vault/scripts/agent-usage.js`) and `runs`, add the subtask to [[cost-log]] (turns, context, resumes; read its ALERT lines and write each cause in `result`), set `done`, move `next_step`, lint, commit `task-<id>: done`.
+   Closure gate (owner 2026-11-01): `task-status.js` refuses to mark a global `done` unless every listed subtask is `done`, its `model`, `tokens`, `usage` and `runs` fields are recorded, and its row exists in [[cost-log]]. Close subtasks through `task-next.js`, which records the cost before the status change.
 6. Fail: send the error back to the same agent once. Second failure: set `blocked`, record why, stop and report.
 7. Owner wait: when the Executor stops for an owner action or answer (close the editor, a missing decision), it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<the action or question>"`, commits them by path, and reports. On resume it sets both back with `status=in-progress` (or `task-start.js`; `task-next.js` does it for the next subtask), which resets `waiting_for` to `none`.
 
 ## 6. Close
-Run the global acceptance checks, fill `result`, set `done`, `next_step: none`, commit, report to the owner.
+Run the global acceptance checks, verify every subtask cost row and usage field is present, fill `result`, set `done`, `next_step: none`, commit, report to the owner. `task-status.js` enforces the cost gate when the global is closed.
 
 ## Relations
 - [[orchestrator-runbook]] — the commands that apply this protocol.

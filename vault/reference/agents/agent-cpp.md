@@ -16,6 +16,7 @@ status: provisional
 - output_format: code following [[cpp-standard]]; change summary: files changed with paths, commit hash, classes added, public API, decided values used, doc nodes to create or update, build result.
 - known_limits: 60 turns; a long test or stress run can outlast them: start it in the background, commit the code first, report the run's output path so a resume can collect the result.
 - definition_of_done: command-line build exits 0 with the editor closed; no new compiler warnings in the files touched; lint clean when it touched `vault/`; committed by explicit path; change summary returned.
+- representative_slice: when assigned the first end-to-end technical slice, implement and verify only that path before scaling the pattern; return the code path, observable behavior and the best capture/test to validate it. Visual judgment remains with [[agent-capture]].
 - must_not: edit Blueprints, assets, maps or layout files; change `.uproject`, `*.Build.cs`, `Config/` or plugins unless the subtask says so; change a gdd node; hard-code a tunable value; invent a value marked `open`; kill the owner's editor.
 - model: opus
 - token_ceiling: 1.2 M units (provisional, owner 2026-10-27)
