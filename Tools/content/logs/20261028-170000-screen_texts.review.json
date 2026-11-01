@@ -1,0 +1,7 @@
+{"run_id": "20261028-170000-screen_texts", "rounds": [{"loop": 0, "reviews": [
+  {"item_id": "end_run_won", "verdict": "pass", "rule": null, "reason": "Not in the requested scope; unchanged Rigs-voice line, consistent with L4 (gone before the company's claim is final).", "suggestion": null},
+  {"item_id": "intermission_recap", "verdict": "pass", "rule": null, "reason": "BUY, SOLD, NEED {n} MORE, REROLL, CONTINUE and the tier names COMMON to LEGENDARY are neutral English UI words (T7) with no film line (T3), no vault example (T8) and no faction voice to break; NO REFUNDS. is a dry shop-side quip aimed at nobody, not at the player's skill (T2), and it is not company text, so T6 does not apply.", "suggestion": null},
+  {"item_id": "intermission_run_won", "verdict": "pass", "rule": null, "reason": "Not in the requested scope; unchanged Rigs-voice line with no rule issue.", "suggestion": null},
+  {"item_id": "shop_screen", "verdict": "pass", "rule": null, "reason": "RIG SERVICE TERMINAL frames the shop as Rigs-side equipment, fits the salvage world and the title SPARE PARTS, and uses no company voice, film line or vault example.", "suggestion": null},
+  {"item_id": "loading_level", "verdict": "pass", "rule": null, "reason": "Not in the requested scope; unchanged neutral loading lines with no rule issue.", "suggestion": null}
+]}]}
