@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Token usage of every agent and main session of this project, from the Claude Code transcripts.
-// Usage: node vault/scripts/agent-usage.js [--json] [--from <task number>] [--snapshot]
+// Usage: node vault/scripts/agent-usage.js [--json] [--from <task number>] [--snapshot] [--planner-detail <agent-id|session-id>]
 // Sources: ~/.claude/projects/<project>/<session>/subagents/agent-*.jsonl (+ .meta.json: agentType, description) for agents,
 // ~/.claude/projects/<project>/<session>.jsonl for main sessions. Each API message is counted once (last entry per message id).
 // Machine-local data: nothing is sent anywhere.
@@ -17,6 +17,8 @@ const asJson = args.includes('--json');
 const doSnapshot = args.includes('--snapshot');
 const fromIdx = args.indexOf('--from');
 const fromTask = fromIdx >= 0 ? parseInt(args[fromIdx + 1], 10) : 0;
+const detailIdx = args.indexOf('--planner-detail');
+const plannerDetailId = detailIdx >= 0 ? args[detailIdx + 1] : null;
 
 const repo = path.resolve(__dirname, '..', '..');
 const slug = repo.replace(/[:\\/ ]/g, '-');
@@ -27,6 +29,22 @@ const W = RATES.weights;
 
 const modelKey = m => /opus/.test(m || '') ? 'opus' : /sonnet/.test(m || '') ? 'sonnet' : /haiku/.test(m || '') ? 'haiku' : /fable/.test(m || '') ? 'fable' : 'other';
 const unitsOf = t => t.input * W.input + t.cacheWrite * W.cacheWrite + t.cacheRead * W.cacheRead + t.output * W.output;
+function operationOfTool(name) {
+  const n = String(name || '').toLowerCase();
+  if (n === 'read' || /read_(file|text|resource)|readfile|open_file|view_file/.test(n)) return 'read';
+  if (n === 'grep' || n === 'glob' || /search|list_(files|directory)/.test(n)) return 'lookup';
+  if (n === 'write' || n === 'edit' || /write_file|edit_file/.test(n)) return 'write';
+  return 'other';
+}
+function toolPath(input) {
+  const raw = input && (input.file_path || input.filePath || input.path || input.filename);
+  if (typeof raw !== 'string' || !raw.trim()) return null;
+  const absolute = path.resolve(path.isAbsolute(raw) ? raw : path.join(repo, raw));
+  const relative = path.relative(repo, absolute);
+  if (!relative || relative === '..' || relative.startsWith('..' + path.sep) || path.isAbsolute(relative)) return '[external]';
+  const safe = relative.replace(/\\/g, '/');
+  return /(^|\/)(?:\.env(?:\.|$)|[^/]*(?:secret|credential|password|token)[^/]*)$/i.test(safe) ? '[redacted-path]' : safe;
+}
 // USD from the per-model split; null as soon as one model has no price.
 function usdOf(byModel) {
   let usd = 0;
@@ -45,6 +63,7 @@ const isToolResultOnly = c => Array.isArray(c) && c.length > 0 && c.every(x => x
 
 function scan(file, meta, kind, session, id) {
   const byId = new Map();
+  const toolUsesById = new Map();
   let prompt = '', seenAssistant = false, start = '', end = '';
   const resumeReasons = {};
   const mentions = {};
@@ -65,23 +84,39 @@ function scan(file, meta, kind, session, id) {
     if (j.type === 'assistant' && m && m.id) {
       seenAssistant = true;
       if (m.usage) byId.set(m.id, { model: m.model, u: m.usage });
-      for (const b of m.content || []) {
+      const tools = toolUsesById.get(m.id) || new Map();
+      for (const [index, b] of (m.content || []).entries()) {
         if (b.type !== 'tool_use') continue;
-        const s = JSON.stringify(b.input || {});
+        const input = b.input || {};
+        const key = b.id || `${m.id}:${index}:${b.name}`;
+        const previous = tools.get(key);
+        const use = { name: b.name || 'unknown', operation: operationOfTool(b.name), path: toolPath(input) };
+        if (!use.path && previous && previous.path) use.path = previous.path;
+        tools.set(key, use);
+        const s = JSON.stringify(input);
         if (b.name === 'SubagentHandback') handback += ' ' + (b.input && b.input.message || '');
         if (kind === 'session') for (const x of s.matchAll(/task-(\d{3})\b/g)) mentions[x[1]] = (mentions[x[1]] || 0) + 1;
       }
+      if (tools.size) toolUsesById.set(m.id, tools);
     }
   }
   const t = zeroTok(), byModel = {}, models = {};
   let firstCtx = null, peakCtx = 0;
-  for (const { model, u } of byId.values()) {
+  const turnDetails = [], toolCounts = {}, readPaths = {}, lookupPaths = {};
+  for (const [messageId, { model, u }] of byId) {
     const tok = { input: u.input_tokens || 0, cacheWrite: u.cache_creation_input_tokens || 0, cacheRead: u.cache_read_input_tokens || 0, output: u.output_tokens || 0 };
     addTok(t, tok);
     if (model && model !== '<synthetic>') { addTok(byModel[modelKey(model)] || (byModel[modelKey(model)] = zeroTok()), tok); models[model] = (models[model] || 0) + 1; }
     const ctx = tok.input + tok.cacheWrite + tok.cacheRead;
     if (firstCtx === null) firstCtx = ctx;
     if (ctx > peakCtx) peakCtx = ctx;
+    const tools = [...(toolUsesById.get(messageId) || new Map()).values()];
+    for (const tool of tools) {
+      toolCounts[tool.name] = (toolCounts[tool.name] || 0) + 1;
+      if (tool.path && tool.operation === 'read') readPaths[tool.path] = (readPaths[tool.path] || 0) + 1;
+      if (tool.path && tool.operation === 'lookup') lookupPaths[tool.path] = (lookupPaths[tool.path] || 0) + 1;
+    }
+    turnDetails.push({ model: modelKey(model), ...tok, tools });
   }
   const desc = (meta && meta.description) || '';
   const type = (meta && meta.agentType) || (kind === 'session' ? 'main' : '?');
@@ -103,6 +138,7 @@ function scan(file, meta, kind, session, id) {
   if (role === 'pilot') rec.globalTask = ((prompt.match(/task-(\d{2,3})\b/) || [])[1]) || null;
   if (role === 'planning' || role === 'other') rec.promptStart = prompt.replace(/\s+/g, ' ').slice(0, 110);
   if (role === 'planning') rec.handbackTasks = [...new Set([...handback.matchAll(/task-(\d{3})\b/g)].map(x => x[1]))].slice(0, 12);
+  if (role === 'planning') rec.plannerTrace = { toolCounts, readPaths, lookupPaths, turns: turnDetails };
   if (kind === 'session') rec.tasksMentioned = Object.entries(mentions).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
   return rec;
 }
@@ -129,7 +165,7 @@ if (fs.existsSync(SNAP_FILE)) for (const r of JSON.parse(fs.readFileSync(SNAP_FI
 for (const r of scanned) records.set(r.kind + ':' + r.id, r);
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
-  fs.writeFileSync(SNAP_FILE, '{"version":1,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
+  fs.writeFileSync(SNAP_FILE, '{"version":2,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
 }
 
 // 3. derive the reports
@@ -165,7 +201,7 @@ const tasks = [...taskIds].sort().map(n => {
   return { task: 'task-' + n, workersUnits: w.units, pilotUnits: p.units, pilotAgents: pilots.filter(r => r.globalTask === n).length, totalUnits: w.units + p.units,
     usd: w.usd !== null && p.usd !== null ? w.usd + p.usd : null };
 });
-const planning = all.filter(r => r.role === 'planning').map(r => ({ id: r.id, start: r.start, calls: r.calls, firstCtx: r.firstCtx, units: unitsOf(r), promptStart: r.promptStart, handbackTasks: r.handbackTasks }));
+const planning = all.filter(r => r.role === 'planning').map(r => ({ id: r.id, session: r.session, start: r.start, description: r.desc, models: r.models, calls: r.calls, resumes: r.resumes, resumeReasons: r.resumeReasons, firstCtx: r.firstCtx, peakCtx: r.peakCtx, input: r.input, cacheWrite: r.cacheWrite, cacheRead: r.cacheRead, output: r.output, units: unitsOf(r), promptStart: r.promptStart, handbackTasks: r.handbackTasks, trace: r.plannerTrace || null }));
 const sessions = all.filter(r => r.kind === 'session').map(r => ({ id: r.session, start: r.start, end: r.end, calls: r.calls, firstCtx: r.firstCtx, peakCtx: r.peakCtx, units: unitsOf(r), tasksMentioned: r.tasksMentioned }));
 const other = sumRecs(all.filter(r => r.role === 'other'));
 const totals = {
@@ -173,6 +209,35 @@ const totals = {
   other, sessions: sumRecs(all.filter(r => r.kind === 'session')),
 };
 for (const k of Object.keys(totals)) { delete totals[k].byModel; }
+
+if (plannerDetailId) {
+  const rec = all.find(r => r.role === 'planning' && (r.id === plannerDetailId || r.session === plannerDetailId));
+  if (!rec) { console.error('No planner record matches ' + plannerDetailId); process.exit(2); }
+  if (!rec.plannerTrace) { console.error('This saved planner record has no tool trace; refresh the snapshot while its transcript is still available.'); process.exit(2); }
+  const detail = { id: rec.id, session: rec.session, start: rec.start, description: rec.desc, model: rec.models, calls: rec.calls, resumes: rec.resumes, input: rec.input, cacheWrite: rec.cacheWrite, cacheRead: rec.cacheRead, output: rec.output, units: unitsOf(rec), plannerTrace: rec.plannerTrace };
+  if (asJson) console.log(JSON.stringify(detail, null, 2));
+  else {
+    const kTok = n => n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
+    const MUnits = n => (n / 1e6).toFixed(2);
+    console.log(`Planner detail: ${rec.desc} (${rec.id}, session ${rec.session})`);
+    console.log(`Model ${rec.models.join('+')}; ${rec.calls} API calls; ${rec.resumes} resumes; ${MUnits(unitsOf(rec))} M units.`);
+    console.log('Per-call tokens describe the whole context. Tool paths show activity in that call; they do not assign tokens to individual files.');
+    console.log('| Turn | Model | Input tokens | Cache write | Cache read | Output tokens | Tools and paths |');
+    console.log('|---:|---|---:|---:|---:|---:|---|');
+    for (const [i, turn] of rec.plannerTrace.turns.entries()) {
+      const activity = turn.tools.map(tool => `${tool.name}${tool.path ? ': ' + tool.path : ''}`).join('<br>') || '—';
+      console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.output)} | ${activity} |`);
+    }
+    const paths = (entries, label) => {
+      const rows = Object.entries(entries || {}).sort((a, b) => b[1] - a[1]);
+      if (rows.length) console.log(`\n${label}: ${rows.map(([p, n]) => `${p} (${n})`).join('; ')}`);
+    };
+    paths(rec.plannerTrace.readPaths, 'Files read');
+    paths(rec.plannerTrace.lookupPaths, 'Lookup scopes');
+    console.log('\nTool totals: ' + (Object.entries(rec.plannerTrace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'none'));
+  }
+  process.exit(0);
+}
 
 if (asJson) { console.log(JSON.stringify({ weights: W, subtasks, tasks, planning, sessions, totals, snapshot: SNAP_FILE.replace(repo, '').replace(/\\/g, '/'), records: all.length }, null, 1)); process.exit(0); }
 
@@ -185,7 +250,13 @@ console.log('\n| Global task | Workers (M) | Pilot (M) | Total (M) |');
 console.log('|---|---|---|---|');
 for (const t of tasks) console.log(`| ${t.task} | ${M(t.workersUnits)} | ${M(t.pilotUnits)}${t.pilotAgents ? ` (${t.pilotAgents})` : ''} | ${M(t.totalUnits)} |`);
 console.log('\nPlanning runs (not attributed to a task):');
-for (const p of planning) console.log(`  ${p.start.slice(0, 16)} ${M(p.units)} M, ${p.calls} turns, start ctx ${k(p.firstCtx)}${p.handbackTasks && p.handbackTasks.length ? ', tasks named in its report: ' + p.handbackTasks.join(' ') : ''}`);
+console.log('| Agent ID | Date | Description | Model | Calls | Resumes | Input | Cache write | Cache read | Output | Units (M) | Tool activity |');
+console.log('|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|');
+for (const p of planning) {
+  const activity = p.trace ? Object.entries(p.trace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'no tools' : 'legacy: no trace';
+  const desc = (p.description || '').replace(/\|/g, '/');
+  console.log(`| ${p.id} | ${p.start.slice(0, 10)} | ${desc} | ${p.models.join('+').replace(/claude-/g, '')} | ${p.calls} | ${p.resumes} | ${k(p.input)} | ${k(p.cacheWrite)} | ${k(p.cacheRead)} | ${k(p.output)} | ${M(p.units)} | ${activity}; ${p.trace ? Object.keys(p.trace.readPaths).length + ' files, ' + Object.keys(p.trace.lookupPaths).length + ' lookup scopes' : ''} |`);
+}
 console.log('\nMain sessions:');
 for (const s of sessions) console.log(`  ${s.id} ${s.start.slice(0, 10)}..${s.end.slice(0, 10)} ${M(s.units)} M, ${s.calls} turns, peak ctx ${k(s.peakCtx)}${s.tasksMentioned && s.tasksMentioned.length ? ', tasks: ' + s.tasksMentioned.join(' ') : ''}`);
 const T = totals;

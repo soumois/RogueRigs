@@ -1,16 +1,17 @@
 ---
 id: cost-log
-description: "Input, cache and output tokens, model and runs per subtask from task 013, with totals; read to estimate a future project cost."
+description: "Per-subtask token costs and planner turn/tool traces from available transcripts, with aggregate totals; read to estimate project cost."
 parent: production-index
 kind: note
 ---
 # Cost log
 
 - Source: `node vault/scripts/agent-usage.js` (`--json`, `--from <n>`, `--snapshot`). It reads this machine's Claude Code transcripts and counts every API call once. A worker is matched to its subtask by the id at the start of its description (delegations must start with it); an executor, or a legacy orchestrator launched with "Run global task", is the pilot of the first task number in its prompt; planners and legacy planning passes are listed apart (they create tasks after their prompt, so none is guessed); main sessions are listed one by one.
+- Planner trace: run `node vault/scripts/agent-usage.js --planner-detail <agent-id>` to inspect one planner's token counts per API call, tool names and project-relative paths read. Tokens belong to the whole call context, not to individual files; paths show which reads happened during that call. Traces are recorded for transcripts still available when the snapshot is refreshed; older snapshot-only sessions retain aggregate totals.
 - Columns are billed separately and at different prices: input (uncached), cache write (context written to the prompt cache), cache read (context re-read from the cache on each turn, the cheapest but by far the largest), output (the most expensive per token).
 - Unit (M): input-token equivalents, weights in `vault/scripts/cost-rates.json` (cache write x1.25, cache read x0.1, output x5), one comparable column. Dollar amounts appear only once `usdPerMillionInputTokens` is filled there: open, no price entered. A `~` marks a row derived from rounded columns (rows before 2026-10-26 have no turns).
 - Runs: agent launches. Turns: API calls of the subtask. Resumes: messages sent to an agent after it started; the cause (turn-limit, rate-limit, message) is in the subtask `usage` line.
-- Snapshot: `vault/scripts/usage-snapshot.json`, refreshed at each closing, keeps every agent and session record because Claude Code deletes old transcripts (on 2026-10-26, 566 of 665 subtask rows no longer had theirs).
+- Snapshot: `vault/scripts/usage-snapshot.json`, refreshed at each closing, keeps every agent and session record because Claude Code deletes old transcripts (on 2026-10-26, 566 of 665 subtask rows no longer had theirs). Planner traces include per-call usage and tool/path activity when the source transcript is available.
 - Alerts: `record-cost.js` prints an ALERT when the subtask's `units` exceed `token_ceiling` written `<x> M units` (a legacy ceiling without `M units` gives none), a start context over 25k, a turn-limit resume or 55 turns, and any resume (write its cause in the subtask `result`). `task-status.js` refuses `status=done` while `tokens` is `open`.
 - Not covered: tasks 000 to 012 (their agents carry no subtask id in the description).
 - Each finished subtask adds a row ([[orchestration-protocol]] step 5).
