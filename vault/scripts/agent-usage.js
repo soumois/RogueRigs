@@ -36,6 +36,32 @@ function operationOfTool(name) {
   if (n === 'write' || n === 'edit' || /write_file|edit_file/.test(n)) return 'write';
   return 'other';
 }
+function taskIdsIn(value) {
+  return [...String(value || '').matchAll(/\b(task-\d{3}(?:-\d{2})?(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?)(?=[^a-z0-9-]|$)/ig)]
+    .map(m => m[1]).filter((id, i, all) => all.indexOf(id) === i);
+}
+function taskPathKind(p) {
+  const s = String(p || '').replace(/\\/g, '/');
+  const prefix = s.includes('vault/reference/tasks/') ? 'vault/reference/tasks/' : s.startsWith('reference/tasks/') ? 'reference/tasks/' : null;
+  if (!prefix) return null;
+  const rest = s.slice(s.indexOf(prefix) + prefix.length);
+  return { kind: /^tasks-(?:to-do|done)-index\.md$/.test(rest) ? 'task-index' : 'task-node' };
+}
+const TASK_WORKFLOWS = {
+  'task-create': 'create-tasks', 'task-start': 'start-task', 'task-status': 'update-task-status',
+  'task-next': 'close-or-advance-task', 'task-confirm': 'confirm-task', 'record-cost': 'record-task-cost',
+};
+function taskWorkflows(name, input) {
+  if (!/^(bash|shell|powershell)$/i.test(String(name || ''))) return [];
+  const command = [input && input.command, input && input.cmd].filter(x => typeof x === 'string').join('\n');
+  const out = [];
+  for (const m of command.matchAll(/\b(task-create|task-start|task-status|task-next|task-confirm|record-cost)\.js\b/ig)) {
+    const script = m[1].toLowerCase();
+    const tail = command.slice(m.index + m[0].length).split(/[;\r\n|&]/, 1)[0];
+    out.push({ script, action: TASK_WORKFLOWS[script], taskRefCount: taskIdsIn(tail).length });
+  }
+  return out;
+}
 function toolPath(input) {
   const raw = input && (input.file_path || input.filePath || input.path || input.filename);
   if (typeof raw !== 'string' || !raw.trim()) return null;
@@ -64,6 +90,7 @@ const isToolResultOnly = c => Array.isArray(c) && c.length > 0 && c.every(x => x
 function scan(file, meta, kind, session, id) {
   const byId = new Map();
   const toolUsesById = new Map();
+  const toolResultsById = new Map();
   let prompt = '', seenAssistant = false, start = '', end = '';
   const resumeReasons = {};
   const mentions = {};
@@ -74,6 +101,17 @@ function scan(file, meta, kind, session, id) {
     if (j.timestamp) { start = start || j.timestamp; end = j.timestamp; }
     const m = j.message;
     if (j.type === 'user' && m) {
+      for (const b of (Array.isArray(m.content) ? m.content : [])) {
+        if (b.type !== 'tool_result' || !b.tool_use_id) continue;
+        const resultText = textOf(b.content);
+        const taskFiles = ((resultText.match(/^files:\s*(.*)$/m) || [])[1] || '').split(/\s+/)
+          .filter(p => /^vault\/reference\/tasks\/task-\d{3}/.test(p));
+        toolResultsById.set(b.tool_use_id, {
+          status: b.is_error === true ? 'error' : 'ok',
+          createdGlobals: [...resultText.matchAll(/^created task-\d{3}-[a-z0-9-]+/gm)].length,
+          createdTaskFiles: taskFiles.length,
+        });
+      }
       const t = textOf(m.content);
       if (!prompt && t) prompt = t;
       else if (seenAssistant && t && !isToolResultOnly(m.content) && !/^\s*(\[SYSTEM NOTIFICATION|<system-reminder>|<task-notification)/.test(t)) {
@@ -92,6 +130,15 @@ function scan(file, meta, kind, session, id) {
         const previous = tools.get(key);
         const use = { name: b.name || 'unknown', operation: operationOfTool(b.name), path: toolPath(input) };
         if (!use.path && previous && previous.path) use.path = previous.path;
+        const taskPath = taskPathKind(use.path);
+        if (taskPath) {
+          use.taskScope = taskPath.kind;
+          use.path = `vault/reference/tasks/[${taskPath.kind === 'task-index' ? 'task index' : 'task node'}]`;
+        }
+        const workflows = taskWorkflows(b.name, input);
+        if (workflows.length) {
+          use.workflows = workflows;
+        }
         tools.set(key, use);
         const s = JSON.stringify(input);
         if (b.name === 'SubagentHandback') handback += ' ' + (b.input && b.input.message || '');
@@ -102,7 +149,8 @@ function scan(file, meta, kind, session, id) {
   }
   const t = zeroTok(), byModel = {}, models = {};
   let firstCtx = null, peakCtx = 0;
-  const turnDetails = [], toolCounts = {}, readPaths = {}, lookupPaths = {};
+  const turnDetails = [], toolCounts = {}, readPaths = {}, lookupPaths = {}, writePaths = {};
+  const taskReadPaths = {}, taskWritePaths = {}, taskWorkflowCounts = {}, taskWorkflowOutcomes = {};
   for (const [messageId, { model, u }] of byId) {
     const tok = { input: u.input_tokens || 0, cacheWrite: u.cache_creation_input_tokens || 0, cacheRead: u.cache_read_input_tokens || 0, output: u.output_tokens || 0 };
     addTok(t, tok);
@@ -110,14 +158,36 @@ function scan(file, meta, kind, session, id) {
     const ctx = tok.input + tok.cacheWrite + tok.cacheRead;
     if (firstCtx === null) firstCtx = ctx;
     if (ctx > peakCtx) peakCtx = ctx;
-    const tools = [...(toolUsesById.get(messageId) || new Map()).values()];
+    const tools = [...(toolUsesById.get(messageId) || new Map()).entries()].map(([toolId, tool]) => {
+      const result = toolResultsById.get(toolId);
+      if (result) {
+        tool.result = result.status;
+        if (tool.workflows && tool.workflows.some(w => w.script === 'task-create')) {
+          for (const w of tool.workflows) if (w.script === 'task-create') {
+            w.createdGlobals = result.createdGlobals;
+            w.createdTaskFiles = result.createdTaskFiles;
+          }
+        }
+      }
+      return tool;
+    });
     for (const tool of tools) {
       toolCounts[tool.name] = (toolCounts[tool.name] || 0) + 1;
       if (tool.path && tool.operation === 'read') readPaths[tool.path] = (readPaths[tool.path] || 0) + 1;
       if (tool.path && tool.operation === 'lookup') lookupPaths[tool.path] = (lookupPaths[tool.path] || 0) + 1;
+      if (tool.path && tool.operation === 'write') writePaths[tool.path] = (writePaths[tool.path] || 0) + 1;
+      if (tool.taskScope && tool.path && tool.operation === 'read') taskReadPaths[tool.path] = (taskReadPaths[tool.path] || 0) + 1;
+      if (tool.taskScope && tool.path && tool.operation === 'write') taskWritePaths[tool.path] = (taskWritePaths[tool.path] || 0) + 1;
+      for (const w of tool.workflows || []) {
+        taskWorkflowCounts[w.script] = (taskWorkflowCounts[w.script] || 0) + 1;
+        const outcome = tool.result || 'unknown';
+        const outcomes = taskWorkflowOutcomes[w.script] || (taskWorkflowOutcomes[w.script] = { ok: 0, error: 0, unknown: 0 });
+        outcomes[outcome] = (outcomes[outcome] || 0) + 1;
+      }
     }
-    turnDetails.push({ model: modelKey(model), ...tok, tools });
+    turnDetails.push({ model: modelKey(model), ...tok, contextTokens: ctx, tools });
   }
+  for (let i = 0; i < turnDetails.length - 1; i++) turnDetails[i].nextContextDelta = turnDetails[i + 1].contextTokens - turnDetails[i].contextTokens;
   const desc = (meta && meta.description) || '';
   const type = (meta && meta.agentType) || (kind === 'session' ? 'main' : '?');
   const sub = (desc.match(/^task-\d+-\d+/) || [])[0] || null;
@@ -138,7 +208,11 @@ function scan(file, meta, kind, session, id) {
   if (role === 'pilot') rec.globalTask = ((prompt.match(/task-(\d{2,3})\b/) || [])[1]) || null;
   if (role === 'planning' || role === 'other') rec.promptStart = prompt.replace(/\s+/g, ' ').slice(0, 110);
   if (role === 'planning') rec.handbackTasks = [...new Set([...handback.matchAll(/task-(\d{3})\b/g)].map(x => x[1]))].slice(0, 12);
-  if (role === 'planning') rec.plannerTrace = { toolCounts, readPaths, lookupPaths, turns: turnDetails };
+  if (role === 'planning') rec.plannerTrace = {
+    toolCounts, readPaths, lookupPaths, writePaths,
+    taskActivity: { taskReadPaths, taskWritePaths, taskWorkflowCounts, taskWorkflowOutcomes },
+    turns: turnDetails,
+  };
   if (kind === 'session') rec.tasksMentioned = Object.entries(mentions).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
   return rec;
 }
@@ -165,7 +239,7 @@ if (fs.existsSync(SNAP_FILE)) for (const r of JSON.parse(fs.readFileSync(SNAP_FI
 for (const r of scanned) records.set(r.kind + ':' + r.id, r);
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
-  fs.writeFileSync(SNAP_FILE, '{"version":2,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
+  fs.writeFileSync(SNAP_FILE, '{"version":3,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
 }
 
 // 3. derive the reports
@@ -217,16 +291,25 @@ if (plannerDetailId) {
   const detail = { id: rec.id, session: rec.session, start: rec.start, description: rec.desc, model: rec.models, calls: rec.calls, resumes: rec.resumes, input: rec.input, cacheWrite: rec.cacheWrite, cacheRead: rec.cacheRead, output: rec.output, units: unitsOf(rec), plannerTrace: rec.plannerTrace };
   if (asJson) console.log(JSON.stringify(detail, null, 2));
   else {
-    const kTok = n => n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
+    const kTok = n => Math.abs(n) >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n);
     const MUnits = n => (n / 1e6).toFixed(2);
     console.log(`Planner detail: ${rec.desc} (${rec.id}, session ${rec.session})`);
     console.log(`Model ${rec.models.join('+')}; ${rec.calls} API calls; ${rec.resumes} resumes; ${MUnits(unitsOf(rec))} M units.`);
-    console.log('Per-call tokens describe the whole context. Tool paths show activity in that call; they do not assign tokens to individual files.');
-    console.log('| Turn | Model | Input tokens | Cache write | Cache read | Output tokens | Tools and paths |');
-    console.log('|---:|---|---:|---:|---:|---:|---|');
+    console.log('Per-call tokens describe the whole context. Paths and task workflows show activity, not tokens assigned to individual files. Context delta compares prompt sizes at consecutive API calls; it includes all intervening messages and tool results, not just the listed action.');
+    console.log('| Turn | Model | Input | Cache write | Cache read | Prompt ctx | Δ ctx next | Output | Tools, paths and task actions |');
+    console.log('|---:|---|---:|---:|---:|---:|---:|---:|---|');
     for (const [i, turn] of rec.plannerTrace.turns.entries()) {
-      const activity = turn.tools.map(tool => `${tool.name}${tool.path ? ': ' + tool.path : ''}`).join('<br>') || '—';
-      console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.output)} | ${activity} |`);
+      const activity = turn.tools.map(tool => {
+        const workflows = (tool.workflows || []).map(w => {
+          const refs = w.taskRefCount ? `, ${w.taskRefCount} task ref(s)` : '';
+          const created = w.createdGlobals ? `, ${w.createdGlobals} global(s), ${w.createdTaskFiles} task file(s) created` : '';
+          return `${w.script} → ${w.action}${refs}${created}`;
+        }).join(', ');
+        const result = tool.result ? ` (${tool.result})` : '';
+        return `${tool.name}${tool.operation !== 'other' ? ` ${tool.operation}` : ''}${tool.path ? ': ' + tool.path : ''}${tool.taskScope ? ` [${tool.taskScope}]` : ''}${workflows ? ': ' + workflows : ''}${result}`;
+      }).join('<br>') || '—';
+      const delta = turn.nextContextDelta === undefined ? '—' : `${turn.nextContextDelta >= 0 ? '+' : ''}${kTok(turn.nextContextDelta)}`;
+      console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.contextTokens)} | ${delta} | ${kTok(turn.output)} | ${activity} |`);
     }
     const paths = (entries, label) => {
       const rows = Object.entries(entries || {}).sort((a, b) => b[1] - a[1]);
@@ -234,6 +317,14 @@ if (plannerDetailId) {
     };
     paths(rec.plannerTrace.readPaths, 'Files read');
     paths(rec.plannerTrace.lookupPaths, 'Lookup scopes');
+    paths(rec.plannerTrace.writePaths, 'Files written by direct tools');
+    const taskActivity = rec.plannerTrace.taskActivity || {};
+    paths(taskActivity.taskReadPaths, 'Task files read by direct tools');
+    paths(taskActivity.taskWritePaths, 'Task files written by direct tools');
+    const taskCounts = taskActivity.taskWorkflowCounts || {};
+    if (Object.keys(taskCounts).length) console.log('\nTask workflow invocations (outcome shown per call): ' + Object.entries(taskCounts).map(([name, n]) => `${name} ${n}`).join(', '));
+    const taskOutcomes = taskActivity.taskWorkflowOutcomes || {};
+    if (Object.keys(taskOutcomes).length) console.log('Task workflow outcomes: ' + Object.entries(taskOutcomes).map(([name, x]) => `${name} (${x.ok} ok, ${x.error} errors, ${x.unknown} unknown)`).join(', '));
     console.log('\nTool totals: ' + (Object.entries(rec.plannerTrace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'none'));
   }
   process.exit(0);
@@ -253,7 +344,11 @@ console.log('\nPlanning runs (not attributed to a task):');
 console.log('| Agent ID | Date | Description | Model | Calls | Resumes | Input | Cache write | Cache read | Output | Units (M) | Tool activity |');
 console.log('|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|');
 for (const p of planning) {
-  const activity = p.trace ? Object.entries(p.trace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'no tools' : 'legacy: no trace';
+  const taskActivity = p.trace && p.trace.taskActivity;
+  const taskWorkflows = taskActivity && Object.entries(taskActivity.taskWorkflowCounts || {}).map(([name, n]) => `${name} ${n}`).join(', ');
+  const activity = p.trace ? [Object.entries(p.trace.toolCounts).map(([name, n]) => `${name} ${n}`).join(', ') || 'no tools',
+    taskActivity ? `task file reads ${Object.values(taskActivity.taskReadPaths || {}).reduce((a, n) => a + n, 0)}, direct writes ${Object.values(taskActivity.taskWritePaths || {}).reduce((a, n) => a + n, 0)}` : '',
+    taskWorkflows ? `task workflows: ${taskWorkflows}` : ''].filter(Boolean).join('; ') : 'legacy: no trace';
   const desc = (p.description || '').replace(/\|/g, '/');
   console.log(`| ${p.id} | ${p.start.slice(0, 10)} | ${desc} | ${p.models.join('+').replace(/claude-/g, '')} | ${p.calls} | ${p.resumes} | ${k(p.input)} | ${k(p.cacheWrite)} | ${k(p.cacheRead)} | ${k(p.output)} | ${M(p.units)} | ${activity}; ${p.trace ? Object.keys(p.trace.readPaths).length + ' files, ' + Object.keys(p.trace.lookupPaths).length + ' lookup scopes' : ''} |`);
 }
