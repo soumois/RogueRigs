@@ -1,6 +1,6 @@
 ---
 id: sys-aim-indicator
-description: "Aim laser component of the miner: Plane mesh, Muzzle origin, stop at first robot or rock, hiding, tuning, chevron removal. Open to change the aim indicator."
+description: "Miner aim laser component: Plane mesh, Muzzle origin, stop at first robot or rock, hiding, tuning, chevron removal. Open to change the aim indicator."
 parent: systems-combat-index
 kind: doc
 ---
