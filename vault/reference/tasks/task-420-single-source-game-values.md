@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Audit 2026-11-02. Runtime source already single: 8 CSVs in `Content/RogueRigs/Data/Tables/`, parsed at runtime by `URRBaseStatsLoader` (no imported asset). Copies found: (1) tests: 19 test files hard-code CSV values (`constexpr float PelletDamage = 6.f`, etc.); the owner's hand edits of WeaponStats.csv (d2549efb, Shotgun 6 -> 10, TurretLauncher FireRate 3.3 -> 2.22) left RRShotgunTests, RRTurretTests and RRWeaponCardTests to be fixed by hand (uncommitted in the working tree); (2) gdd nodes restate the numbers (shotgun, burst-rifle, turret stats lines; enemy, player, explosion, upgrade, rarity, XP, ore nodes likely too); today they match the CSV. Not copies of CSV values: about 300 `UPROPERTY(EditDefaultsOnly)` numeric defaults in C++ headers (shake amplitudes, placement distances, pool sizes), possibly overridden in Blueprints; out of scope by default (Q4). No sync or lint between CSV, tests and vault exists in `vault/scripts/` (lint.js checks vault structure only). Conflict: `_authoring` and the Planner write decided values into gdd nodes; the new rule moves the number to the CSV and leaves the citation in the gdd (Q2, Q5). No open value needed. Milestone M3, same as the current work.
 - confirmed_by_owner: yes (2026-11-02, "Tout par défaut")
 - milestone: M3
-- next_step: task-420-01-weapon-tests-read-csv
+- next_step: task-420-02-other-tests-read-csv
 - started: 2026-11-02T19:01:41Z
 - waiting_for: none
 - result: open

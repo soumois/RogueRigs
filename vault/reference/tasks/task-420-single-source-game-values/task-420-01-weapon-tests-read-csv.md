@@ -3,7 +3,7 @@ id: task-420-01-weapon-tests-read-csv
 description: "Cpp: slice: a test helper reading CSV rows, weapon test files use it (no literal CSV value), mutation check"
 parent: task-420-single-source-game-values
 kind: task
-status: in-progress
+status: done
 ---
 # Game values in one place: the CSV tables: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: build ok; RogueRigs.Weapons.*, RogueRigs.Shotgun.*, RogueRigs.Turret.*, weapon card and level-up tests pass; with WeaponStats.csv Shotgun Damage 13, BurstRifle Damage 12, TurretLauncher FireRate 3 they still pass; WeaponStats.csv restored (git diff empty); no `constexpr` or literal in those files equals a WeaponStats value used as an expectation.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 88, cache write 224169, cache read 7109232, output 79083
+- usage: turns 44, context start 12k peak 230k, resumes 0, 13 min, units 1.39 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T19:01:41Z
 - waiting_for: none
-- result: open
+- result: Done: RRTestStatsRows.h helper (FindRow), weapon tests read WeaponStats rows; 36/36 pass with committed CSV and with Shotgun 13/BurstRifle 12/Turret FireRate 3; CSV restored. Commit 31b20d35. Loader has FindRow, not GetCachedRow. Remaining literals in other families go to subtask 02.
 
 ## Relations
 - [[task-420-single-source-game-values]] — parent global task.
