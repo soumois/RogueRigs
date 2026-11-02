@@ -3,7 +3,7 @@ id: task-420-01-weapon-tests-read-csv
 description: "Cpp: slice: a test helper reading CSV rows, weapon test files use it (no literal CSV value), mutation check"
 parent: task-420-single-source-game-values
 kind: task
-status: todo
+status: in-progress
 ---
 # Game values in one place: the CSV tables: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T19:01:41Z
 - waiting_for: none
 - result: open
 

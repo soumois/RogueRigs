@@ -3,7 +3,7 @@ id: task-420-single-source-game-values
 description: "Global task: Make the stat CSV tables the only home of a game value: tests read them, gdd nodes cite rows, not numbers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Game values in one place: the CSV tables
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "Tout par défaut")
 - milestone: M3
 - next_step: task-420-01-weapon-tests-read-csv
-- started: open
+- started: 2026-11-02T19:01:41Z
 - waiting_for: none
 - result: open
 
