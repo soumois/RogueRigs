@@ -14,6 +14,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
@@ -172,8 +173,8 @@ bool FRRLightMovementKnockbackTest::RunTest(const FString& Parameters)
 	}
 	const int32 LightBefore = Movement->GetLightMoveCount();
 
-	// One shotgun pellet (shotgun: 250 uu/s, chaser resistance from the CSV) pushes the walking chaser away from the miner.
-	constexpr float PelletKnockback = 250.f;
+	// One shotgun pellet (WeaponStats.csv Shotgun KnockbackForce, chaser resistance from the CSV) pushes the walking chaser away from the miner.
+	const float PelletKnockback = RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).KnockbackForce;
 	const FVector Away = (Chaser->GetActorLocation() - Miner->GetActorLocation()).GetSafeNormal2D();
 	const float Expected = PelletKnockback * (1.f - Chaser->GetKnockbackResistance());
 	const float StartDistance = FVector::Dist2D(Chaser->GetActorLocation(), Miner->GetActorLocation());

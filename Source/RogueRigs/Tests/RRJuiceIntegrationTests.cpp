@@ -29,6 +29,7 @@
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "UObject/UObjectIterator.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -551,18 +552,20 @@ bool FRRJuiceKamikazeFlareTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("JUICE flare: started %.3f s, %d frames, peak CoreLight %.0f, before flare max %.0f, explosion queued %.3f s"),
 		FlareStart, FlareFrames, PeakIntensity, MaxBeforeFlare, Kamikaze->GetExplosionQueuedTime()));
 	TestEqual(TEXT("CoreLight off while chasing"), MaxBeforeFlare, 0.f);
-	TestTrue(TEXT("flare lasts about 0.65 s (39 frames)"), FlareFrames >= 38 && FlareFrames <= 40);
+	const int32 FuseFrames = FMath::RoundToInt32(Kamikaze->GetFuseTime() / RRTestHarness::FrameSeconds);
+	TestTrue(TEXT("flare lasts about the CSV WindUp (+/- 1 frame)"), FMath::Abs(FlareFrames - FuseFrames) <= 1);
 	TestTrue(TEXT("CoreLight ramps up monotonically"), bMonotonic);
 	TestTrue(TEXT("CoreLight = flare progress x 10000"), bTracksProgress);
 	TestTrue(TEXT("CoreLight near its 10000 peak before the explosion"), PeakIntensity >= 0.9f * JuiceCoreLightPeak && PeakIntensity <= JuiceCoreLightPeak);
 	TestTrue(TEXT("CoreLight renders in game during the flare"), bShownInGame);
-	TestTrue(TEXT("explosion after the flare"), Kamikaze->GetExplosionQueuedTime() >= FlareStart + 0.65 - 1e-3);
+	TestTrue(TEXT("explosion after the flare (fuse = CSV WindUp)"), Kamikaze->GetExplosionQueuedTime() >= FlareStart + Kamikaze->GetFuseTime() - 1e-3);
 	TestEqual(TEXT("CoreLight back to 0 after the flare (OnFlareEnd)"), CoreLight->Intensity, 0.f);
 	for (int32 Frame = 0; Frame < 10; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	TestEqual(TEXT("miner hit once by the explosion (100 -> 70)"), MinerASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()), HealthBefore - 30.f, 0.01f);
+	TestEqual(TEXT("miner hit once by the explosion (ExplosionStats Kamikaze MinerDamage)"), MinerASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()),
+		HealthBefore - RRTestStats::ExplosionRow(*this, RRTestStats::KamikazeRow).MinerDamage, 0.01f);
 	return true;
 }
 

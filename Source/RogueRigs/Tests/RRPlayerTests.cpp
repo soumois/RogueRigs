@@ -24,10 +24,10 @@ namespace RRPlayerTests
 {
 	using namespace RRTestHarness;
 
-	/** Health the tests give the miner before hitting it (miner gdd base value). */
+	/** Health the tests set on the miner before hitting it (scenario value written on the ASC, not read from PlayerBaseStats.csv). */
 	constexpr float TestMaxHealth = 100.f;
 
-	/** Flat damage of one test hit (task-009-01: 10 lowers 100 to 90). */
+	/** Flat damage of one test hit (scenario value, task-009-01: 10 lowers 100 to 90). */
 	constexpr float HitDamage = 10.f;
 
 	/** Blueprint of the run game mode. */

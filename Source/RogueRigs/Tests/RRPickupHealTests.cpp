@@ -14,6 +14,7 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -28,8 +29,11 @@ namespace RRPickupHealTests
 	/** Open floor cell of the legacy arena_m1 layout (as the pickup motion tests). */
 	const FIntPoint HealMinerCell(40, 40);
 
-	/** Heal per pickup in the tests (OreTypes.csv row Heal, task-088-02). */
-	constexpr float HealPerPickup = 15.f;
+	/** Heal per pickup in the tests: OreTypes.csv row Heal HealValue (task-088-02, read from the CSV since task-420). */
+	float ReadHealPerPickup(FAutomationTestBase& Test)
+	{
+		return RRTestStats::OreRow(Test, RRTestStats::HealOreRow).HealValue;
+	}
 
 	/** Spawns BP_Miner on HealMinerCell, possessed by a player controller (pickups look for the player 0 pawn), weapons stopped, MaxHealth 100 and Health set. */
 	ARRMiner* SpawnHealMiner(FAutomationTestBase& Test, const FTestWorld& TestWorld, float Health)
@@ -103,6 +107,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRPickupHealFullHealthTest, "RogueRigs.Pickups
 bool FRRPickupHealFullHealthTest::RunTest(const FString& Parameters)
 {
 	using namespace RRPickupHealTests;
+	const float HealPerPickup = ReadHealPerPickup(*this);
 
 	FTestWorld TestWorld(TEXT("RRPickupHealFull"));
 	UClass* HealClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
@@ -159,7 +164,7 @@ bool FRRPickupHealFullHealthTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("HEALFULL left-behind pickup collected %d frames after the damage, health %.1f"), Frames, HealthOf(Miner)));
 	TestEqual(TEXT("left-behind heal pickup collected once damaged"), CountCollected(Recorder.Get(), ERRPickupType::Heal), 1);
 	TestFalse(TEXT("left-behind heal pickup destroyed"), HealWeak.IsValid() && !HealWeak->IsActorBeingDestroyed());
-	TestNearlyEqual(TEXT("damaged 70 + 15 = 85"), HealthOf(Miner), 85.f, 0.01f);
+	TestNearlyEqual(TEXT("damaged 70 + HealValue"), HealthOf(Miner), 70.f + HealPerPickup, 0.01f);
 	return true;
 }
 
@@ -169,6 +174,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRPickupHealPartialTest, "RogueRigs.Pickups.He
 bool FRRPickupHealPartialTest::RunTest(const FString& Parameters)
 {
 	using namespace RRPickupHealTests;
+	const float HealPerPickup = ReadHealPerPickup(*this);
 
 	FTestWorld TestWorld(TEXT("RRPickupHealPartial"));
 	UClass* HealClass = RRTestHarness::LoadTestClass<ARRPickup>(*this, HealPickupClassPath);
@@ -180,7 +186,7 @@ bool FRRPickupHealPartialTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
-	// 95 / 100 and two heal pickups of 15 popping together (as a vein): they latch on the same frame.
+	// 95 / 100 and two heal pickups of HealValue (>= 5) popping together (as a vein): they latch on the same frame.
 	const FVector Feet = MinerFeet(Miner);
 	ARRPickup* First = SpawnPickup(TestWorld, HealClass, Feet, 90.f, HealPerPickup);
 	ARRPickup* Second = SpawnPickup(TestWorld, HealClass, Feet, 270.f, HealPerPickup);
@@ -204,7 +210,7 @@ bool FRRPickupHealPartialTest::RunTest(const FString& Parameters)
 		}
 	}
 	AddInfo(FString::Printf(TEXT("HEALPARTIAL health %.2f, heal collected %d, alive %d"), HealthOf(Miner), CountCollected(Recorder.Get(), ERRPickupType::Heal), Alive));
-	TestNearlyEqual(TEXT("95 + 15 clamped at 100 (5 healed, surplus lost)"), HealthOf(Miner), 100.f, 0.01f);
+	TestNearlyEqual(TEXT("95 + HealValue clamped at 100 (5 healed, surplus lost)"), HealthOf(Miner), 100.f, 0.01f);
 	TestEqual(TEXT("one heal pickup collected"), CountCollected(Recorder.Get(), ERRPickupType::Heal), 1);
 	if (!TestEqual(TEXT("the other one is not consumed once health is full"), Alive, 1) || !Left)
 	{

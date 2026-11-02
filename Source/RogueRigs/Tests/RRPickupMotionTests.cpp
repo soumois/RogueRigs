@@ -27,6 +27,7 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -454,7 +455,8 @@ bool FRRKamikazeFlareTest::RunTest(const FString& Parameters)
 		++FlareStarts;
 		FlareStartTime = Source->GetWorld()->GetTimeSeconds();
 	});
-	TestEqual(TEXT("flare 0.65 s (CSV WindUp)"), Kamikaze->GetFlareDuration(), 0.65f, 1e-4f);
+	const float FuseTime = RRTestStats::EnemyRow(*this, RRTestStats::KamikazeRow).WindUp;
+	TestEqual(TEXT("flare = CSV WindUp"), Kamikaze->GetFlareDuration(), FuseTime, 1e-4f);
 	TestFalse(TEXT("not flaring while chasing"), Kamikaze->IsFlaring());
 	TestEqual(TEXT("progress 0 while chasing"), Kamikaze->GetFlareProgress(), 0.f);
 
@@ -481,7 +483,7 @@ bool FRRKamikazeFlareTest::RunTest(const FString& Parameters)
 		FlareStartTime, Kamikaze->GetArmTime(), FlareLength, FlaringFrames, LastProgress));
 	TestEqual(TEXT("one flare start event"), FlareStarts, 1);
 	TestEqual(TEXT("flare starts on arming"), FlareStartTime, Kamikaze->GetArmTime(), 1e-6);
-	TestTrue(TEXT("explosion 0.65 s after the flare start (within one frame)"), FlareLength >= 0.65 - 1e-3 && FlareLength <= 0.65 + FrameSeconds + 1e-3);
+	TestTrue(TEXT("explosion WindUp s after the flare start (within one frame)"), FlareLength >= FuseTime - 1e-3 && FlareLength <= FuseTime + FrameSeconds + 1e-3);
 	TestTrue(TEXT("flare progress rises monotonically"), bProgressMonotonic);
 	TestTrue(TEXT("flare progress near 1 just before the explosion"), LastProgress >= 0.95f);
 	TestEqual(TEXT("progress 1 after the fuse explosion"), Kamikaze->GetFlareProgress(), 1.f);

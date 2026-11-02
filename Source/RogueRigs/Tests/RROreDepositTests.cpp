@@ -18,6 +18,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -150,16 +151,17 @@ bool FRROreTableRowTest::RunTest(const FString& Parameters)
 {
 	using namespace RROreDepositTests;
 
-	// OreTypes.csv, row Duskite (owner 2026-10-10, renamed 2026-10-11): 8 % of the rock, 2 x 2 deposits, value 1, no colour (alpha 0, violet material kept).
+	// OreTypes.csv, row Duskite (owner 2026-10-10, renamed 2026-10-11): a share of the rock, square deposits, a chunk value, no colour (alpha 0, violet material kept).
+	// The numbers live in the CSV (task-420): the row must be usable; RogueRigs.Ore.Placement derives its checks from it.
 	FRROreTypeRow Duskite;
 	if (!TestTrue(TEXT("row Duskite found in OreTypes.csv"), ARRArenaGrid::GetOreType(DuskiteId, Duskite)))
 	{
 		return false;
 	}
 	TestEqual(TEXT("Duskite is the Ore block type"), Duskite.CellType, ERRCellType::Ore);
-	TestNearlyEqual(TEXT("Duskite share of rock 0.08"), Duskite.RockShare, 0.08f);
-	TestEqual(TEXT("Duskite deposits are 2 x 2"), Duskite.GroupSize, 2);
-	TestEqual(TEXT("Duskite chunk value 1"), Duskite.ChunkValue, 1);
+	TestTrue(TEXT("Duskite share of rock in (0, 1)"), Duskite.RockShare > 0.f && Duskite.RockShare < 1.f);
+	TestTrue(TEXT("Duskite deposits are at least 1 x 1"), Duskite.GroupSize >= 1);
+	TestTrue(TEXT("Duskite chunk value > 0"), Duskite.ChunkValue > 0);
 	TestTrue(TEXT("Duskite writes no colour (alpha 0)"), Duskite.Color.A <= 0.f);
 	AddExpectedError(TEXT("row 'Silver' not found"), EAutomationExpectedErrorFlags::Contains, 1);
 	FRROreTypeRow Missing;
@@ -183,7 +185,13 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// Count: 8 % of the layout rock in 2 x 2 groups (17 904 rock blocks before task-088-01 gave 358).
+	// Count: RockShare of the layout rock in GroupSize x GroupSize groups (Duskite row of OreTypes.csv).
+	const FRROreTypeRow DuskiteRow = RRTestStats::OreRow(*this, RRTestStats::DuskiteRow);
+	const int32 GroupCells = DuskiteRow.GroupSize * DuskiteRow.GroupSize;
+	if (!TestTrue(TEXT("CSV: Duskite GroupSize >= 1"), GroupCells >= 1))
+	{
+		return false;
+	}
 	int32 PlainRock = 0;
 	for (int32 Y = 0; Y < 240; ++Y)
 	{
@@ -192,14 +200,13 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 			PlainRock += Plain->GetCellType(FIntPoint(X, Y)) == ERRCellType::Rock ? 1 : 0;
 		}
 	}
-	const int32 Expected = FMath::RoundToInt32(0.08f * PlainRock / 4.f);
+	const int32 Expected = FMath::RoundToInt32(DuskiteRow.RockShare * PlainRock / static_cast<float>(GroupCells));
 	const TArray<int32> Ids = GetTableDepositIds(Grid);
 	const int32 Placed = Grid->GetPlacedDepositCount(DuskiteId);
 	UE_LOG(LogRogueRigs, Display, TEXT("RogueRigs.Ore.Placement: %d Duskite deposits on arena_m1_fine (%d rock blocks, expected %d)."), Placed, PlainRock, Expected);
 	AddInfo(FString::Printf(TEXT("%d Duskite deposits on arena_m1_fine (%d rock blocks, expected %d)"), Placed, PlainRock, Expected));
-	TestEqual(TEXT("placed count = 8 % of rock / 4"), Placed, Expected);
+	TestEqual(TEXT("placed count = RockShare x rock / GroupSize^2"), Placed, Expected);
 	TestEqual(TEXT("one table deposit per placed count"), Ids.Num(), Placed);
-	TestTrue(TEXT("count close to 358"), FMath::Abs(Placed - 358) <= 10);
 	TestEqual(TEXT("no deposit without the table"), GetTableDepositIds(Plain).Num(), 0);
 
 	// Shape and overlap: each deposit is a 2 x 2 square of Duskite, every cell was rock in the plain layout (never heal ore,
@@ -211,7 +218,7 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 		const FRRGridDeposit& Deposit = *Grid->GetDeposit(Id);
 		FIntPoint Min(TNumericLimits<int32>::Max(), TNumericLimits<int32>::Max());
 		FIntPoint Max(TNumericLimits<int32>::Min(), TNumericLimits<int32>::Min());
-		bool bOk = Deposit.Cells.Num() == 4 && Deposit.OreId == DuskiteId && Deposit.CellType == ERRCellType::Ore && Deposit.ChunkValue == 1;
+		bool bOk = Deposit.Cells.Num() == GroupCells && Deposit.OreId == DuskiteId && Deposit.CellType == ERRCellType::Ore && Deposit.ChunkValue == DuskiteRow.ChunkValue;
 		for (const FIntPoint& Cell : Deposit.Cells)
 		{
 			Min = FIntPoint(FMath::Min(Min.X, Cell.X), FMath::Min(Min.Y, Cell.Y));
@@ -221,14 +228,14 @@ bool FRROrePlacementTest::RunTest(const FString& Parameters)
 			bOk &= !bAlreadySeen && Grid->GetCellType(Cell) == ERRCellType::Ore && Plain->GetCellType(Cell) == ERRCellType::Rock
 				&& Grid->GetDepositId(Cell) == Id && Grid->IsTableDepositCell(Cell);
 		}
-		bOk &= Max - Min == FIntPoint(1, 1);
+		bOk &= Max - Min == FIntPoint(DuskiteRow.GroupSize - 1, DuskiteRow.GroupSize - 1);
 		if (!bOk && ++Errors <= 5)
 		{
-			AddError(FString::Printf(TEXT("deposit %d is not a 2 x 2 Duskite square on rock (%d cells, from %s to %s)"), Id, Deposit.Cells.Num(), *Min.ToString(), *Max.ToString()));
+			AddError(FString::Printf(TEXT("deposit %d is not a GroupSize square of Duskite on rock (%d cells, from %s to %s)"), Id, Deposit.Cells.Num(), *Min.ToString(), *Max.ToString()));
 		}
 	}
-	TestEqual(TEXT("every deposit is a 2 x 2 Duskite square on former rock"), Errors, 0);
-	TestEqual(TEXT("Duskite cells = 4 x deposits"), Seen.Num(), 4 * Ids.Num());
+	TestEqual(TEXT("every deposit is a GroupSize square of Duskite on former rock"), Errors, 0);
+	TestEqual(TEXT("Duskite cells = GroupSize^2 x deposits"), Seen.Num(), GroupCells * Ids.Num());
 
 	// Heal veins and barrels are untouched: same cells as the plain build.
 	int32 Changed = 0;
@@ -538,7 +545,7 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("row Heal is the HealOre block type"), HealRow.CellType, ERRCellType::HealOre);
 	TestNearlyEqual(TEXT("row Heal never placed on rock (veins come from the layout)"), HealRow.RockShare, 0.f);
-	TestNearlyEqual(TEXT("row Heal: 15 HP per pickup"), HealRow.HealValue, 15.f);
+	TestTrue(TEXT("row Heal: HealValue > 0 HP per pickup"), HealRow.HealValue > 0.f);
 	TestTrue(TEXT("row Heal writes no colour (alpha 0)"), HealRow.Color.A <= 0.f);
 
 	FTestWorld TestWorld;
@@ -574,8 +581,8 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 			Max = FIntPoint(FMath::Max(Max.X, Cell.X), FMath::Max(Max.Y, Cell.Y));
 		}
 		TestTrue(FString::Printf(TEXT("heal vein at %s is a 2 x 2 square"), *Min.ToString()), Deposit.Cells.Num() == 4 && Max - Min == FIntPoint(1, 1));
-		TestTrue(FString::Printf(TEXT("heal vein at %s: row Heal, 15 HP, no colour"), *Min.ToString()),
-			Deposit.OreId == HealId && FMath::IsNearlyEqual(Deposit.HealValue, 15.f) && !Deposit.bHasColor);
+		TestTrue(FString::Printf(TEXT("heal vein at %s: row Heal, its HealValue, no colour"), *Min.ToString()),
+			Deposit.OreId == HealId && FMath::IsNearlyEqual(Deposit.HealValue, HealRow.HealValue) && !Deposit.bHasColor);
 		if (Deposit.Cells.Contains(HealVeinCell))
 		{
 			TargetId = Id;
@@ -662,7 +669,7 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 			{
 				Seen.Add(*It);
 				++HealPickupsSeen;
-				TestNearlyEqual(TEXT("heal pickup worth 15 HP (row Heal)"), It->GetHealAmount(), 15.f);
+				TestNearlyEqual(TEXT("heal pickup worth the row Heal HealValue"), It->GetHealAmount(), HealRow.HealValue);
 			}
 		}
 		bool bAllBroken = true;

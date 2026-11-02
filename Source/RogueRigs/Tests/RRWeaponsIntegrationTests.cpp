@@ -23,6 +23,7 @@
 #include "Projectiles/RRTurretBullet.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UI/RRHUDWidget.h"
 #include "UObject/StrongObjectPtr.h"
 #include "UObject/UnrealType.h"
@@ -404,7 +405,7 @@ bool FRRIntegrationWeaponCardEquipsShotgunTest::RunTest(const FString& Parameter
 	TestTrue(TEXT("the shotgun is BP_Shotgun"), Shotgun->GetClass() == ShotgunClass);
 	TestEqual(TEXT("two weapons"), Miner->GetWeapons().Num(), 2);
 	TestTrue(TEXT("BP_Shotgun fires BP_ShotgunPellet"), Shotgun->GetProjectileClass() && Shotgun->GetProjectileClass()->IsChildOf(PelletClass));
-	TestEqual(TEXT("BP_Shotgun stats row Shotgun: 7 pellets"), Shotgun->GetPelletCount(), 7);
+	TestEqual(TEXT("BP_Shotgun stats row Shotgun: CSV PelletCount"), Shotgun->GetPelletCount(), RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).PelletCount);
 	TestFalse(TEXT("screen closed"), LevelUp->IsAwaitingChoice());
 	TestTrue(TEXT("UpgradeScreen collapsed"), GetWidgetVisibility(*this, HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
 	TestFalse(TEXT("world resumed"), World->IsPaused());
@@ -483,7 +484,7 @@ bool FRRIntegrationShotgunPelletsPierceTest::RunTest(const FString& Parameters)
 	AimAlong(Miner, FVector::ForwardVector);
 	Shotgun->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
 	const int32 Pierce = Shotgun->GetPierceCount();
-	TestEqual(TEXT("CSV pierce 3"), Pierce, 3);
+	TestEqual(TEXT("CSV Pierce"), Pierce, FMath::RoundToInt32(RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).Pierce));
 	const float PelletDamage = Shotgun->GetAbilitySystemComponent()->GetNumericAttribute(URRWeaponAttributeSet::GetDamageAttribute());
 
 	// A line of Pierce + 1 frozen BP_Chaser on the center pellet ray, 55 uu apart from 460 uu: the +/-5 deg pellets pass beside them.
@@ -521,7 +522,7 @@ bool FRRIntegrationShotgunPelletsPierceTest::RunTest(const FString& Parameters)
 		++PelletCount;
 		BlueprintPellets += It->IsA(PelletClass) ? 1 : 0;
 	}
-	TestEqual(TEXT("7 pellets spawned"), PelletCount, 7);
+	TestEqual(TEXT("CSV PelletCount pellets spawned"), PelletCount, RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).PelletCount);
 	TestEqual(TEXT("every pellet is BP_ShotgunPellet"), BlueprintPellets, PelletCount);
 
 	// Until the pellets are gone (lifetime Range / speed).
@@ -572,7 +573,7 @@ bool FRRIntegrationPlaceTurretKillsRobotTest::RunTest(const FString& Parameters)
 	StopMinerWeapons(Miner);
 	AimAlong(Miner, FVector::ForwardVector);
 	TestTrue(TEXT("the miner finds its launcher"), Miner->FindTurretLauncher() == Launcher);
-	TestEqual(TEXT("2 charges"), Launcher->GetCharges(), 2);
+	TestEqual(TEXT("full charges (CSV MagazineSize)"), Launcher->GetCharges(), FMath::RoundToInt32(RRTestStats::WeaponRow(*this, RRTestStats::TurretLauncherRow).MagazineSize));
 
 	// The input: BP_RRPlayerController resolves its place-turret action, then one press runs its Started handler.
 	TestNotNull(TEXT("BP_RRPlayerController resolves a place-turret action"), FPlayerControllerAccess::PlaceTurretActionOf(Controller));

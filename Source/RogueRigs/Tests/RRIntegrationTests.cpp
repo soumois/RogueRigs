@@ -44,6 +44,7 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UI/RRHUDWidget.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Upgrades/RRUpgradeComponent.h"
@@ -1174,14 +1175,15 @@ bool FRRIntegrationKamikazeReachesTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("exploded by its fuse"), Kamikaze->HasDetonated());
-	TestTrue(TEXT("fuse 0.65 s (within one frame)"), Fuse >= 0.65 - 1e-3 && Fuse <= 0.65 + FrameSeconds + 1e-3);
+	const float FuseTime = RRTestStats::EnemyRow(*this, RRTestStats::KamikazeRow).WindUp;
+	TestTrue(TEXT("fuse = EnemyStats Kamikaze WindUp (within one frame)"), Fuse >= FuseTime - 1e-3 && Fuse <= FuseTime + FrameSeconds + 1e-3);
 	TestEqual(TEXT("row Kamikaze"), Recorder->GetExplosionRows()[0], FName(TEXT("Kamikaze")));
 	if (TestEqual(TEXT("miner hit once"), Hits.Num(), 1))
 	{
-		TestEqual(TEXT("hit = Kamikaze miner damage (30)"), Hits[0].Damage, Stats.MinerDamage);
+		TestEqual(TEXT("hit = Kamikaze miner damage"), Hits[0].Damage, Stats.MinerDamage);
 	}
-	TestEqual(TEXT("explosion miner damage is 30"), Stats.MinerDamage, 30.f);
-	TestEqual(TEXT("miner Health lowered by 30"), GetHealth(Miner), StartHealth - Stats.MinerDamage);
+	TestEqual(TEXT("explosion miner damage = ExplosionStats Kamikaze MinerDamage"), Stats.MinerDamage, RRTestStats::ExplosionRow(*this, RRTestStats::KamikazeRow).MinerDamage);
+	TestEqual(TEXT("miner Health lowered by MinerDamage"), GetHealth(Miner), StartHealth - Stats.MinerDamage);
 	TestFalse(TEXT("miner alive"), Miner->IsDead());
 	TestFalse(TEXT("kamikaze destroyed"), Weak.IsValid() && !Weak->IsActorBeingDestroyed());
 	TestEqual(TEXT("no XP after a fuse explosion"), CountXPPickups(TestWorld.Get()), 0);
@@ -1299,8 +1301,13 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 		It->Destroy();
 	}
 	const float KamikazeMaxHealth = Kamikaze->GetAbilitySystemComponent()->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute());
-	TestEqual(TEXT("kamikaze at full health (100)"), GetHealth(Kamikaze), KamikazeMaxHealth);
-	TestEqual(TEXT("kamikaze MaxHealth 100"), KamikazeMaxHealth, 100.f);
+	TestEqual(TEXT("kamikaze at full health"), GetHealth(Kamikaze), KamikazeMaxHealth);
+	TestEqual(TEXT("kamikaze MaxHealth from the CSV"), KamikazeMaxHealth, RRTestStats::EnemyRow(*this, RRTestStats::KamikazeRow).MaxHealth);
+	const float RifleDamage = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow).Damage;
+	if (!TestTrue(TEXT("CSV: rifle damage > 0"), RifleDamage > 0.f))
+	{
+		return false;
+	}
 	TArray<FHit> RifleHits;
 	int32 CriticalHits = 0;
 	UWorld* World = TestWorld.Get();
@@ -1333,13 +1340,13 @@ bool FRRIntegrationRifleKillsKamikazeTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("kamikaze took %d rifle hit(s) (%d critical) before dying, first %.0f, Health %.0f -> 0"),
 		RifleHits.Num(), CriticalHits, RifleHits.Num() > 0 ? RifleHits[0].Damage : 0.f, KamikazeMaxHealth));
-	TestEqual(TEXT("10 rifle hits to kill the 100 HP kamikaze"), RifleHits.Num(), 10);
+	TestEqual(TEXT("ceil(MaxHealth / rifle Damage) hits to kill the kamikaze"), RifleHits.Num(), FMath::CeilToInt32(KamikazeMaxHealth / RifleDamage));
 	TestEqual(TEXT("no critical hit"), CriticalHits, 0);
 	for (const FHit& Hit : RifleHits)
 	{
-		TestEqual(TEXT("every rifle hit deals 10"), Hit.Damage, 10.f);
+		TestEqual(TEXT("every rifle hit deals the CSV Damage"), Hit.Damage, RifleDamage);
 	}
-	// task-096-01: a rifle kill runs the 0.65 s kill fuse (as a proximity trigger), then the explosion and the XP.
+	// task-096-01: a rifle kill runs the kill fuse (WindUp) (as a proximity trigger), then the explosion and the XP.
 	for (int32 Frame = 0; Frame < 60 && !Kamikaze->HasDetonated(); ++Frame)
 	{
 		TestWorld.Tick();
@@ -1618,7 +1625,8 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	}
 
 	// Heal and feedback at once, game still running during the choice delay.
-	TestEqual(TEXT("level-up heals 20 % of max: 50 -> 70"), MinerASC->GetNumericAttribute(Health), 70.f, 1e-3f);
+	TestEqual(TEXT("level-up heals 20 % of max (PlayerBaseStats MaxHealth): 50 + 0.2 x MaxHealth"), MinerASC->GetNumericAttribute(Health),
+		50.f + 0.2f * RRTestStats::PlayerRow(*this).MaxHealth, 1e-3f);
 	TestEqual(TEXT("one level-up effect"), Recorder->GetLevelUpEffects().Num(), 1);
 	TestTrue(TEXT("choice delay running"), LevelUp->IsChoiceDelayActive());
 	TestFalse(TEXT("world not paused at the level-up"), World->IsPaused());

@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (312 uu), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row, blocks destroyed over frames nearest first (task-121-01).
+// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (CSV radius), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row, blocks destroyed over frames nearest first (task-121-01).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -16,6 +16,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -110,15 +111,16 @@ bool FRRExplosionBlocksInRadiusTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Barrel radius 700 (owner 2026-10-12, was 350)"), Stats.Radius, 700.f);
-	TestEqual(TEXT("Barrel damage 40"), Stats.Damage, 40.f);
-	TestEqual(TEXT("Barrel miner damage 40"), Stats.MinerDamage, 40.f);
+	// The values live in ExplosionStats.csv (task-420): the rows must be usable; the checks below derive from them.
+	TestTrue(TEXT("Barrel radius > 0"), Stats.Radius > 0.f);
+	TestTrue(TEXT("Barrel damage > 0"), Stats.Damage > 0.f);
+	TestTrue(TEXT("Barrel miner damage > 0"), Stats.MinerDamage > 0.f);
 	TestTrue(TEXT("Barrel terrain source"), Stats.TerrainSource == ERRTerrainDamageSource::Barrel);
 	FRRExplosionStatsRow KamikazeStats;
 	TestTrue(TEXT("Kamikaze row loads"), Subsystem->GetExplosionStats(TEXT("Kamikaze"), KamikazeStats));
-	TestEqual(TEXT("Kamikaze radius 312"), KamikazeStats.Radius, 312.f);
-	TestEqual(TEXT("Kamikaze damage 40 (owner 2026-10-23, was 30)"), KamikazeStats.Damage, 40.f);
-	TestEqual(TEXT("Kamikaze miner damage 30"), KamikazeStats.MinerDamage, 30.f);
+	TestTrue(TEXT("Kamikaze radius > 0"), KamikazeStats.Radius > 0.f);
+	TestTrue(TEXT("Kamikaze damage > 0"), KamikazeStats.Damage > 0.f);
+	TestTrue(TEXT("Kamikaze miner damage > 0"), KamikazeStats.MinerDamage > 0.f);
 
 	// Blocks around the floor cell west of the test rock, before the explosion.
 	const FIntPoint CenterCell = RockWestFloorCell;
@@ -206,8 +208,9 @@ bool FRRExplosionDamagesOnceTest::RunTest(const FString& Parameters)
 	const float MinerHealth = Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute());
 	const float NearHealth = Attribute(NearASC, URRHealthAttributeSet::GetHealthAttribute());
 	AddInfo(FString::Printf(TEXT("miner %.1f -> %.1f, near still chaser %.1f -> %.1f"), TestMaxHealth, MinerHealth, NearStart, NearHealth));
-	TestEqual(TEXT("miner hit once by 40"), MinerHealth, TestMaxHealth - 40.f);
-	TestEqual(TEXT("near still chaser hit once by 40"), NearHealth, NearStart - 40.f);
+	const FRRExplosionStatsRow BarrelRow = RRTestStats::ExplosionRow(*this, RRTestStats::BarrelRow);
+	TestEqual(TEXT("miner hit once by the Barrel MinerDamage"), MinerHealth, TestMaxHealth - BarrelRow.MinerDamage);
+	TestEqual(TEXT("near still chaser hit once by the Barrel Damage"), NearHealth, NearStart - BarrelRow.Damage);
 	TestEqual(TEXT("far still chaser untouched"), Attribute(FarASC, URRHealthAttributeSet::GetHealthAttribute()), FarStart);
 	TestFalse(TEXT("miner alive"), Miner->IsDead());
 	return true;
@@ -409,7 +412,10 @@ bool FRRExplosionVisualTest::RunTest(const FString& Parameters)
 		float CollisionRadius;
 		float Damage;
 	};
-	const FRowCase Cases[] = { { TEXT("Barrel"), 700.f, 40.f }, { TEXT("Kamikaze"), 312.f, 40.f } };
+	// Expected collision radius and damage read once from the CSV rows (task-420); the subsystem must return them unchanged.
+	const FRRExplosionStatsRow BarrelCsv = RRTestStats::ExplosionRow(*this, RRTestStats::BarrelRow);
+	const FRRExplosionStatsRow KamikazeCsv = RRTestStats::ExplosionRow(*this, RRTestStats::KamikazeRow);
+	const FRowCase Cases[] = { { TEXT("Barrel"), BarrelCsv.Radius, BarrelCsv.Damage }, { TEXT("Kamikaze"), KamikazeCsv.Radius, KamikazeCsv.Damage } };
 	for (int32 Index = 0; Index < UE_ARRAY_COUNT(Cases); ++Index)
 	{
 		const FRowCase& Case = Cases[Index];
@@ -556,12 +562,13 @@ bool FRRExplosionBlocksSpreadTest::RunTest(const FString& Parameters)
 	};
 
 	UAbilitySystemComponent* MinerASC = Miner->GetAbilitySystemComponent();
+	const float BarrelMinerDamage = RRTestStats::ExplosionRow(*this, RRTestStats::BarrelRow).MinerDamage;
 	TestTrue(TEXT("explosion queued"), Subsystem->QueueExplosion(Center, TEXT("Barrel"), nullptr, nullptr));
 	TestWorld.Tick();
 
 	// Explosion frame: event, damage and visual at once; one block destroyed (the nearest), the others still blocks, queued.
 	TestEqual(TEXT("OnExplosion once"), Recorder->GetExplosionRows().Num(), 1);
-	TestEqual(TEXT("miner hit at the explosion"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), TestMaxHealth - 40.f);
+	TestEqual(TEXT("miner hit at the explosion"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), TestMaxHealth - BarrelMinerDamage);
 	int32 FXCount = 0;
 	for (TActorIterator<ARRExplosionFX> It(TestWorld.Get()); It; ++It)
 	{
@@ -590,7 +597,7 @@ bool FRRExplosionBlocksSpreadTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("nearest blocks first every frame"), bNearestFirst);
 	TestEqual(TEXT("every block inside destroyed"), CountStanding(Inside), 0);
 	TestEqual(TEXT("ring beyond the radius kept"), CountStanding(Outside), Outside.Num());
-	TestEqual(TEXT("miner hit once"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), TestMaxHealth - 40.f);
+	TestEqual(TEXT("miner hit once"), Attribute(MinerASC, URRHealthAttributeSet::GetHealthAttribute()), TestMaxHealth - BarrelMinerDamage);
 
 	// Cleanup: blocks still queued when the grid leaves play are dropped, never destroyed later.
 	if (Outside.Num() > 0)

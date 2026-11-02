@@ -13,6 +13,7 @@
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -126,13 +127,15 @@ bool FRRLevelUpHealTest::RunTest(const FString& Parameters)
 	const FGameplayAttribute Health = URRHealthAttributeSet::GetHealthAttribute();
 	const FGameplayAttribute MaxHealth = URRHealthAttributeSet::GetMaxHealthAttribute();
 	UAbilitySystemComponent* ASC = S.Miner->GetAbilitySystemComponent();
-	TestEqual(TEXT("max health 100"), MinerAttr(S.Miner, MaxHealth), 100.f, 1e-4f);
+	// PlayerBaseStats.csv Miner MaxHealth (task-420: read, never copied); the 20 % heal is the level-up flow default.
+	const float Max = RRTestStats::PlayerRow(*this).MaxHealth;
+	TestEqual(TEXT("max health = CSV MaxHealth"), MinerAttr(S.Miner, MaxHealth), Max, 1e-4f);
 
-	// Wounded: 50 + 20 % of 100.
+	// Wounded: 50 + 20 % of max.
 	ASC->SetNumericAttributeBase(Health, 50.f);
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestEqual(TEXT("level 2"), S.Progression->GetLevel(), 2);
-	TestEqual(TEXT("level-up heals 20 % of max: 50 -> 70"), MinerAttr(S.Miner, Health), 70.f, 1e-4f);
+	TestEqual(TEXT("level-up heals 20 % of max: 50 + 0.2 x max"), MinerAttr(S.Miner, Health), 50.f + 0.2f * Max, 1e-4f);
 	TestEqual(TEXT("one effect event"), Recorder->GetLevelUpEffects().Num(), 1);
 	if (Recorder->GetLevelUpEffects().Num() == 1)
 	{
@@ -143,17 +146,17 @@ bool FRRLevelUpHealTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("no offer yet"), Recorder->GetOfferCardCounts().Num(), 0);
 
 	// Near full: clamped to max.
-	ASC->SetNumericAttributeBase(Health, 95.f);
+	ASC->SetNumericAttributeBase(Health, Max - 5.f);
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestEqual(TEXT("level 3"), S.Progression->GetLevel(), 3);
-	TestEqual(TEXT("95 + 20 clamped to 100"), MinerAttr(S.Miner, Health), 100.f, 1e-4f);
-	TestEqual(TEXT("max health unchanged"), MinerAttr(S.Miner, MaxHealth), 100.f, 1e-4f);
+	TestEqual(TEXT("max - 5 + 20 % clamped to max"), MinerAttr(S.Miner, Health), Max, 1e-4f);
+	TestEqual(TEXT("max health unchanged"), MinerAttr(S.Miner, MaxHealth), Max, 1e-4f);
 
 	// Two levels in one call: two heals.
 	ASC->SetNumericAttributeBase(Health, 40.f);
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 2));
 	TestEqual(TEXT("level 5"), S.Progression->GetLevel(), 5);
-	TestEqual(TEXT("two heals: 40 + 2 x 20"), MinerAttr(S.Miner, Health), 80.f, 1e-4f);
+	TestEqual(TEXT("two heals: 40 + 2 x 20 % of max"), MinerAttr(S.Miner, Health), FMath::Min(40.f + 2.f * 0.2f * Max, Max), 1e-4f);
 	TestEqual(TEXT("four effect events"), Recorder->GetLevelUpEffects().Num(), 4);
 	TestEqual(TEXT("four choices owed"), S.LevelUp->GetPendingChoices(), 4);
 	return true;

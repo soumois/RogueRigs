@@ -216,7 +216,7 @@ bool FRRBarrelFuseRadiusFineTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Barrel radius 700"), Stats.Radius, 700.f);
+	TestTrue(TEXT("Barrel radius > 0 (ExplosionStats.csv)"), Stats.Radius > 0.f);
 
 	// Worst case: the candidate centre (every 6 cells, away from the border) with the most blocks in the radius and no barrel in it.
 	const FIntPoint Size = Grid->GetGridSize();
@@ -293,7 +293,7 @@ bool FRRBarrelFuseRadiusFineTest::RunTest(const FString& Parameters)
 	{
 		Kept += Grid->IsBlockCell(Cell) ? 1 : 0;
 	}
-	TestEqual(TEXT("every block inside 700 uu destroyed"), Kept, 0);
+	TestEqual(TEXT("every block inside the Barrel radius destroyed"), Kept, 0);
 	int32 Lost = 0;
 	for (const FIntPoint& Cell : Outside)
 	{
@@ -333,8 +333,8 @@ bool FRRBarrelFuseRadiusFineTest::RunTest(const FString& Parameters)
 		BatchMs = (FPlatformTime::Seconds() - T0) * 1000.0;
 	}
 
-	const FString Report = FString::Printf(TEXT("700 uu explosion on arena_m1_fine: centre (%d, %d), %d blocks destroyed; explosion frame %.2f ms (baseline frame %.2f ms, difference %.2f ms); DestroyCellsInRadius alone %.2f ms for %d blocks"),
-		BestCell.X, BestCell.Y, Inside.Num(), ExplosionFrameMs, BaselineMs, ExplosionFrameMs - BaselineMs, BatchMs, BatchCount);
+	const FString Report = FString::Printf(TEXT("%.0f uu explosion on arena_m1_fine: centre (%d, %d), %d blocks destroyed; explosion frame %.2f ms (baseline frame %.2f ms, difference %.2f ms); DestroyCellsInRadius alone %.2f ms for %d blocks"),
+		Stats.Radius, BestCell.X, BestCell.Y, Inside.Num(), ExplosionFrameMs, BaselineMs, ExplosionFrameMs - BaselineMs, BatchMs, BatchCount);
 	AddInfo(Report);
 	UE_LOG(LogRogueRigs, Display, TEXT("BarrelFuse cost: %s"), *Report);
 	return true;

@@ -1334,8 +1334,15 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 	Rifle->GetAutoFireComponent()->StopFiring();
 	Upgrades->SetRandomSeed(20261005);
 
-	// Value rows: blue +1, purple +2, yellow +3 points, the same on one weapon (whole robots); none for grey or green.
-	const float Expected[] = { 0.f, 0.f, 1.f, 2.f, 3.f };
+	// Value rows (UpgradeValues.csv Pierce_Blue, Pierce_Purple, Pierce_Yellow): whole points, targeted = GlobalValue x TargetedMultiplier;
+	// none for grey or green.
+	float Expected[URRUpgradeComponent::TierCount] = {};
+	float ExpectedTargeted[URRUpgradeComponent::TierCount] = {};
+	for (int32 Rank = 2; Rank < URRUpgradeComponent::TierCount; ++Rank)
+	{
+		Expected[Rank] = RRTestStats::UpgradeCardValue(*this, ERRUpgradeStat::Pierce, static_cast<ERRUpgradeRarity>(Rank), false);
+		ExpectedTargeted[Rank] = RRTestStats::UpgradeCardValue(*this, ERRUpgradeStat::Pierce, static_cast<ERRUpgradeRarity>(Rank), true);
+	}
 	for (int32 Rank = 0; Rank < URRUpgradeComponent::TierCount; ++Rank)
 	{
 		const ERRUpgradeRarity Tier = static_cast<ERRUpgradeRarity>(Rank);
@@ -1354,7 +1361,7 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 		}
 		TestTrue(Label + TEXT(": piercing row"), bHasRow);
 		TestNearlyEqual(Label + TEXT(": global value"), Global, Expected[Rank]);
-		TestNearlyEqual(Label + TEXT(": targeted value"), Targeted, Expected[Rank]);
+		TestNearlyEqual(Label + TEXT(": targeted value"), Targeted, ExpectedTargeted[Rank]);
 		TestTrue(Label + TEXT(": card"), bCard);
 		TestEqual(Label + TEXT(": card name"), Card.DisplayName.ToString(), FString(TEXT("Piercing")));
 		TestEqual(Label + TEXT(": card value text"), Card.ValueText.ToString(), FString::Printf(TEXT("+%d"), FMath::RoundToInt32(Expected[Rank])));
@@ -1388,7 +1395,7 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 	// Application: all-weapons blue then targeted yellow on the CSV Pierce; the next bullet carries the sum.
 	const float BasePierce = ReadRifleRow(*this).Pierce;
 	const float AfterBlue = BasePierce + Expected[2];
-	const float AfterYellow = AfterBlue + Expected[4];
+	const float AfterYellow = AfterBlue + ExpectedTargeted[4];
 	TestNearlyEqual(TEXT("rifle Pierce = CSV Pierce"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), BasePierce);
 	FRRUpgradeCard Blue;
 	FRRUpgradeCard Yellow;

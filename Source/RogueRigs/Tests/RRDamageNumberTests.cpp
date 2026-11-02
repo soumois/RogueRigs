@@ -17,6 +17,7 @@
 #include "NiagaraSystem.h"
 #include "Settings/RRGameUserSettings.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -500,7 +501,13 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	};
 
 	FPushRecorder Recorder(Numbers);
-	// Chaser A: two normal hits of 10 = two numbers (no merging); chaser B: one critical hit (10 x CritDamage 1.5).
+	// Chaser A: two normal hits of the rifle Damage = two numbers (no merging); chaser B: one critical hit (Damage x CritDamage).
+	// WeaponStats.csv row BurstRifle (task-420: read, never copied).
+	const FRRWeaponStatsRow RifleRow = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow);
+	const float NormalValue = RifleRow.Damage;
+	const float CriticalValue = RifleRow.Damage * RifleRow.CritDamage;
+	auto DigitsOf = [](float Value) { return FString::FromInt(FMath::RoundToInt32(Value)).Len(); };
+	const int32 ExpectedDigits = 2 * DigitsOf(NormalValue) + DigitsOf(CriticalValue);
 	ApplyHit(ChaserA, 0.f);
 	ApplyHit(ChaserA, 0.f);
 	ApplyHit(ChaserB, 1.f);
@@ -511,17 +518,18 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	const int32 IndexA = Recorder.FindValue(10.f);
-	const int32 IndexB = Recorder.FindValue(15.f);
-	const int32 TensCount = Algo::CountIf(Recorder.Numbers, [](const FRRDamageNumber& Number) { return FMath::IsNearlyEqual(Number.Value, 10.f); });
-	if (TestTrue(TEXT("chaser A 10 twice"), IndexA != INDEX_NONE && TensCount == 2) && TestTrue(TEXT("chaser B critical 15"), IndexB != INDEX_NONE))
+	const int32 IndexA = Recorder.FindValue(NormalValue);
+	const int32 IndexB = Recorder.FindValue(CriticalValue);
+	const int32 TensCount = Algo::CountIf(Recorder.Numbers, [NormalValue](const FRRDamageNumber& Number) { return FMath::IsNearlyEqual(Number.Value, NormalValue); });
+	if (TestTrue(TEXT("chaser A: rifle Damage twice"), IndexA != INDEX_NONE && TensCount == 2) && TestTrue(TEXT("chaser B critical Damage x CritDamage"), IndexB != INDEX_NONE))
 	{
 		TestFalse(TEXT("normal hits not critical"), Recorder.Numbers[IndexA].bCritical);
 		TestTrue(TEXT("crit flagged"), Recorder.Numbers[IndexB].bCritical);
 		TestTrue(TEXT("crit larger"), Recorder.Numbers[IndexB].Size > Recorder.Numbers[IndexA].Size);
 	}
 	const TArray<FRRDamageDigit>& Digits = Numbers->GetLastDigits();
-	TestEqual(TEXT("one batch, 6 digits (10, 10 and 15)"), Numbers->GetDigitBatchId() * 10 + Digits.Num(), 16);
+	TestEqual(TEXT("one batch, the digits of the three numbers"), Numbers->GetDigitBatchId(), 1);
+	TestEqual(TEXT("digits of the three numbers"), Digits.Num(), ExpectedDigits);
 
 	if (bAssetHasContract)
 	{
@@ -530,10 +538,10 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 		const TArray<int32> Criticals = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayInt32(Component, URRDamageNumberSubsystem::DigitCriticalsParameter);
 		const TArray<FVector> Positions = UNiagaraDataInterfaceArrayFunctionLibrary::GetNiagaraArrayPosition(Component, URRDamageNumberSubsystem::DigitPositionsParameter);
 		TestEqual(TEXT("DigitBatchId 1 on the component"), ReadInt(BatchIdVariable), 1);
-		TestEqual(TEXT("DigitCount 6 on the component"), ReadInt(CountVariable), 6);
-		if (TestTrue(TEXT("6 entries per array"), Indices.Num() == 6 && Criticals.Num() == 6 && Positions.Num() == 6))
+		TestEqual(TEXT("DigitCount on the component"), ReadInt(CountVariable), ExpectedDigits);
+		if (TestTrue(TEXT("one entry per digit in each array"), Indices.Num() == ExpectedDigits && Criticals.Num() == ExpectedDigits && Positions.Num() == ExpectedDigits))
 		{
-			for (int32 Index = 0; Index < 6; ++Index)
+			for (int32 Index = 0; Index < ExpectedDigits; ++Index)
 			{
 				TestEqual(FString::Printf(TEXT("digit %d value"), Index), Indices[Index], Digits[Index].Digit);
 				TestEqual(FString::Printf(TEXT("digit %d crit 0/1"), Index), Criticals[Index], Digits[Index].bCritical ? 1 : 0);
@@ -555,7 +563,7 @@ bool FRRDamageNumberNiagaraTest::RunTest(const FString& Parameters)
 	const bool bInstance = Numbers->GetParticleStats(Live, Spawned);
 	AddInfo(FString::Printf(TEXT("DAMAGENUMBERS niagara: pushed %d, instance %d, live %d, spawned %d"), Numbers->GetTotalPushedCount(), bInstance ? 1 : 0, Live, Spawned));
 	TestTrue(TEXT("system instance exists"), bInstance);
-	TestEqual(TEXT("one particle per digit, spawned once"), Spawned, 6);
+	TestEqual(TEXT("one particle per digit, spawned once"), Spawned, ExpectedDigits);
 	return true;
 }
 
