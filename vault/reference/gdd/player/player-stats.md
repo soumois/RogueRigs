@@ -28,14 +28,14 @@ Damage (%), fire rate (%), reload speed (%), critical chance (points), critical 
 - A future upgrade on heals received (%): candidate, not decided.
 
 ## Base values (provisional, owner to test)
-| Stat | Base |
+| Stat | Base (`PlayerBaseStats.csv` row `Miner`) |
 |---|---|
-| Max health | 100 |
-| Move speed | 600 uu/s (3 cells/s) |
-| Pickup radius | 300 uu (1.5 cells) |
-| XP gain | ×1.0 |
-| Mining speed | ×1.0 |
-| Luck | 0 |
+| Max health | column `MaxHealth` |
+| Move speed | column `MoveSpeed` |
+| Pickup radius | column `PickupRadius` |
+| XP gain | column `XPGain` |
+| Mining speed | column `MiningSpeed` |
+| Luck | column `Luck` |
 
 ## Relations
 - [[player-index]] — parent index.

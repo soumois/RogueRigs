@@ -1,20 +1,20 @@
 ---
 id: shotgun
-description: "Shotgun: 7 piercing projectile pellets toward the aim with knockback; acquired as a weapon card; stats, upgrades and look."
+description: "Shotgun: piercing projectile pellets toward the aim with knockback; acquired as a weapon card; stats, upgrades and look."
 parent: weapons-index
 kind: spec
 status: approved
 ---
 # Shotgun
 
-- fire_mode: auto toward the aim (manual aim kept, unlike DRGS); each shot fires 7 projectile pellets spread ±15° (owner 2026-10-05, replaces the cone wave).
-- effect_on_hit: each pellet damages, pierces 3 robots, rolls its own crit and knocks back, reduced by the target's knockback resistance.
+- fire_mode: auto toward the aim (manual aim kept, unlike DRGS); each shot fires projectile pellets (`PelletCount`) spread by `SpreadDeg`, `WeaponStats.csv` row `Shotgun` (owner 2026-10-05, replaces the cone wave).
+- effect_on_hit: each pellet damages, pierces robots (`Pierce`), rolls its own crit and knocks back, reduced by the target's knockback resistance.
 - blocked_by_rock: yes (pellets stop on rock)
-- pellets (owner 2026-10-05, confirmed by the owner after handover-2026-10-06): even fan, speed 3000 uu/s, they damage barrels like bullets.
-- stats (provisional, owner 2026-10-31): 10 damage per pellet, 7 pellets, pierce 3, range 700 uu, knockback 250 uu/s per pellet hit, magazine 2, 0.5 s between shots, reload 2.5 s; crit chance 5 %; crit damage ×1.5 base.
+- pellets (owner 2026-10-05, confirmed by the owner after handover-2026-10-06): even fan, speed `ProjectileSpeed`, they damage barrels like bullets.
+- stats (provisional, owner 2026-10-31): `WeaponStats.csv` row `Shotgun`, columns `Damage` (per pellet), `PelletCount`, `Pierce`, `Range`, `KnockbackForce` (per pellet hit), `MagazineSize`, `FireRate`, `ReloadTime`, `CritChance`, `CritDamage`.
 - Acquired as a level-up weapon card; the miner starts with the burst rifle only ([[upgrades]]).
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
-- effect pool: none (4-direction fire does not apply); piercing is a stat (base 3) and can be upgraded.
+- effect pool: none (4-direction fire does not apply); piercing is a stat (base `Pierce`) and can be upgraded.
 - vfx_sfx: white-gold pellets and muzzle flash ([[color-code]]); sound open.
 - look: no visible weapon mesh; the grey placeholder cube is removed and the pellets leave from the same point as every weapon shot (owner 2026-10-30, task-400 Q2: "Tu retires le cube, les autres tirs partiront du même endroit"); that point is the burst rifle Muzzle, with the same vertical capsule collision as the rifle bullets ([[weapons-index]] shown-weapon rule; provisional, owner 2026-10-31, task-412).
 - milestone: M1

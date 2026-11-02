@@ -11,11 +11,11 @@ status: approved
 - On destruction it plays a particle burst and explodes ([[explosions]]).
 - It is one of the three block-destruction sources ([[destruction-rules]]).
 - It has health. Shots and explosions damage it (provisional); it explodes when its health reaches 0.
-- Values (provisional, owner 2026-10-12): health 20 (two rifle bullets), explosion radius 700 uu, character damage 40; about 20 barrels in arena_m1, in walls along paths, some in pairs for chains.
+- Values (provisional, owner 2026-10-12): health 20 (two rifle bullets), explosion radius and character damage in `ExplosionStats.csv` row `Barrel`, columns `Radius`, `Damage`, `MinerDamage`; about 20 barrels in arena_m1, in walls along paths, some in pairs for chains.
 - Asset: modeled by hand.
 - Milestone: M1.
 
-- Owner rules 2026-10-12 (replace the explosion radius and the instant explosion above): the explosion radius is doubled, 350 to 700 uu (character damage 40 unchanged); when its health reaches 0 it does not explode at once: it explodes 1.5 s later, whatever killed it (a barrel hit by another explosion too, so chains become slow and readable); from 0 health a danger zone appears on the ground at the explosion radius (orange, "explodes") and a second circle grows inside it until it reaches the edge of the zone at the moment of the explosion, the same ground-circle logic as the capture zones ([[ground-telegraph]]).
+- Owner rules 2026-10-12 (replace the explosion radius and the instant explosion above): the explosion radius is doubled, 350 uu to the `Radius` of `ExplosionStats.csv` row `Barrel` (character damage unchanged); when its health reaches 0 it does not explode at once: it explodes 1.5 s later, whatever killed it (a barrel hit by another explosion too, so chains become slow and readable); from 0 health a danger zone appears on the ground at the explosion radius (orange, "explodes") and a second circle grows inside it until it reaches the edge of the zone at the moment of the explosion, the same ground-circle logic as the capture zones ([[ground-telegraph]]).
 
 - Barrel count (owner 2026-10-13, provisional): 25 % more barrels than the first value: about 20 in `arena_m1` instead of 16, and the same ratio on larger layouts. GDD only: the current map is not changed.
 

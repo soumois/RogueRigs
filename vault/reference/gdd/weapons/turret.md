@@ -22,16 +22,16 @@ status: approved
 - projectile: projectile; blocked_by_rock: yes.
 
 ## Values
-- stats (provisional, owner 2026-11-01): damage 6 per bullet, 2.22 shots/s (about 0.45 s between shots), pierce 4, crit chance 5 %, charges 2, recharge 12 s, lifetime 10 s, target range 1500 uu; crit damage ×1.5 base. Other base ratios follow the project data.
+- stats (provisional, owner 2026-11-01): `WeaponStats.csv` row `TurretLauncher`, columns `Damage` (per bullet), `FireRate`, `Pierce`, `CritChance`, `CritDamage`, `MagazineSize` (charges), `ReloadTime` (recharge), `TurretLifetime`, `Range` (target range). Other base ratios follow the project data.
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 - Name and texts: "Lance-tourelles" and the current short French weapon descriptions in the level-up cards are kept as working texts (confirmed by the owner after handover-2026-10-06); final wording open.
-- effect pool: none; piercing is a stat (base 4) upgraded like any weapon stat ([[upgrades]]).
+- effect pool: none; piercing is a stat (base `Pierce`) upgraded like any weapon stat ([[upgrades]]).
 - vfx_sfx: white + teal + rust body, white-gold shots ([[color-code]]); sound open.
 - milestone: M2, pulled into the current work (owner 2026-10-05)
 
 - Size (owner 2026-10-06 third test): the placed turret is drawn 50 % larger; it was barely visible.
 
-- Recharge (owner 2026-10-06 fourth test): one charge recharges in 12 s (was 6 s).
+- Recharge (owner 2026-10-06 fourth test): one charge recharges in `ReloadTime` (was 6 s).
 
 - Spacing (owner 2026-10-07, provisional): a turret placed less than 100 uu from a standing turret moves to the nearest free reachable floor cell at least 100 uu away; if none is near, it lands where aimed.
 

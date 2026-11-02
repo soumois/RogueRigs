@@ -13,15 +13,15 @@ status: approved
 - parts (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): 10 rigid parts as the chaser, the cannon on the right forearm part (arm cannon integrated from the elbow)
 - model_source (provisional, owner 2026-10-22): the owner's Meshy mesh (7263 triangles kept), flattened panels, cleaned texture, base colour only ([[robots-meshy-raw-2026-10-22]]); 176 cm tall (the current capsule)
 - size: 1.0 × the miner (provisional, owner 2026-10-04)
-- animations (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): walk loop with a light knee bend (at most 15 degrees), rest pose when stopped; aim clip = cannon arm raised over the first 0.3 s of the 0.6 s laser, held; fire clip = 0.2 s recoil at the shot. Was: none in grey-box (owner 2026-10-04)
+- animations (provisional, owner 2026-10-22, decided, not built yet: tasks 281 to 288): walk loop with a light knee bend (at most 15 degrees), rest pose when stopped; aim clip = cannon arm raised over the first half of the laser (`WindUp`), held; fire clip = 0.2 s recoil at the shot. Was: none in grey-box (owner 2026-10-04)
 - behavior:
   - keeps distance from the miner;
   - never backs away from the miner (owner 2026-10-06): it closes in until in range with line of sight, then stops and fires, even when the miner comes into contact;
   - fires only with line of sight; when blocked, repositions to find a firing position;
   - its shots stop on rock blocks ([[destruction-rules]]).
-- telegraph: a red targeting laser before each shot, shown only with line of sight; during the 0.6 s laser a red charge-up glow grows at the cannon tip (provisional, owner 2026-10-23).
+- telegraph: a red targeting laser before each shot, shown only with line of sight; during the laser (`WindUp`, `EnemyStats.csv` row `Shooter`) a red charge-up glow grows at the cannon tip (provisional, owner 2026-10-23).
 - colors: acid green; red eyes, yellow logo plate; red shots and laser ([[color-code]])
-- stats (provisional, owner 2026-10-04): hp 40, speed 180 uu/s (owner 2026-10-06: every robot moves at the same speed, 180; before that 151, was 151; owner 2026-10-06 third test: 10 % slower again, was 168; owner 2026-10-06 second test: 30 % slower so the miner has time to dig, was 240; 20 % slower, owner 2026-10-06, was 300), damage 12 per shot, one shot every 2 s, targeting laser 0.6 s before each shot, projectile 1200 uu/s (dodgeable), range 960 uu (about 14 cells of 67 uu; owner 2026-10-06: 20 % shorter, was 1200), preferred distance 800 uu (about 12 cells) ± 1 cell, xp_value 2, knockback_resistance 0.2.
+- stats (provisional, owner 2026-10-04): `EnemyStats.csv` row `Shooter`, columns `MaxHealth`, `MoveSpeed` (owner 2026-10-06: every robot moves at the same speed), `Damage` (per shot), `AttackRate`, `WindUp` (targeting laser before each shot), `ProjectileSpeed` (dodgeable), `AttackRange` (owner 2026-10-06: 20 % shorter, was 1200 uu), `PreferredDistance` ± `PreferredDistanceTolerance`, `XPValue`, `KnockbackResistance`.
 - fires only while it is on screen; its shots stop on rock without breaking it and never hit other robots (owner 2026-10-04).
 - milestone: M2, pulled into the current work (owner 2026-10-04)
 - references: `vault/assets/enemies-lineup.jpg`
