@@ -3,7 +3,7 @@ id: task-419-02-doc
 description: "Doc: update sys-enemies-heavy and sys-camera-shake for the slam shake"
 parent: task-419-camera-shake-on-heavy-slam
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake from the heavy ground slam: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:59:22Z
 - waiting_for: none
 - result: open
 

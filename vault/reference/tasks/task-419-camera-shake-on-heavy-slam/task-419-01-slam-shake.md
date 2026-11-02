@@ -3,7 +3,7 @@ id: task-419-01-slam-shake
 description: "Cpp: slam shake preset played at the heavy on the slam frame with distance falloff"
 parent: task-419-camera-shake-on-heavy-slam
 kind: task
-status: in-progress
+status: done
 ---
 # Camera shake from the heavy ground slam: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor build green; PerformSlam calls the located shake once per slam at the feet with 8 uu and 722 uu max distance (2 x AttackRange); no call in Telegraph; full RogueRigs automation suite with no new failure (heavy tests included); committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 32, cache write 104699, cache read 615280, output 10212
+- usage: turns 16, context start 12k peak 58k, resumes 0, 11 min, units 0.24 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T18:47:37Z
 - waiting_for: none
-- result: open
+- result: Done e64de0ba: URRHeavySlamCameraShake (8 uu, 0.3 s, 25 Hz), SlamShakeClass and SlamShakeMaxDistanceFactor 2 on ARRHeavy, call in PerformSlam (722 uu). Build green; suite 271 pass, 4 known failures plus Spawner.RecycleKeepsSpawnsAhead (MCP log line, passes on rerun).
 
 ## Relations
 - [[task-419-camera-shake-on-heavy-slam]] — parent global task.
