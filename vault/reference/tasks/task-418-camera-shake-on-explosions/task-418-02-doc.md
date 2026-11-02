@@ -3,7 +3,7 @@ id: task-418-02-doc
 description: "Doc: update sys-explosions and sys-camera-shake for the explosion shake"
 parent: task-418-camera-shake-on-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake from nearby explosions: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:46:18Z
 - waiting_for: none
 - result: open
 

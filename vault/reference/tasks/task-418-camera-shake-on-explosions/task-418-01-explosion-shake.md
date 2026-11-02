@@ -3,7 +3,7 @@ id: task-418-01-explosion-shake
 description: "Cpp: explosion shake preset played at each resolved explosion with distance falloff"
 parent: task-418-camera-shake-on-explosions
 kind: task
-status: in-progress
+status: done
 ---
 # Camera shake from nearby explosions: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor build green; each resolved explosion calls the located shake once at its centre with barrel 10 uu / 1400 uu, kamikaze 7 uu / 624 uu; no call on fuse start; -nullrhi tests unaffected (no local camera = nothing played); full RogueRigs automation suite with no new failure; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 42, cache write 129987, cache read 874477, output 13388
+- usage: turns 21, context start 12k peak 69k, resumes 0, 10 min, units 0.32 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T18:35:47Z
 - waiting_for: none
-- result: open
+- result: URRExplosionCameraShake preset (0.35 s, 25 Hz, translation); per-source ShakeScale/ShakeMaxDistanceFactor columns in ExplosionStats.csv (barrel 10 uu/1400, kamikaze 7 uu/624); URRExplosionSubsystem::PlayShake in Explode via PlayCameraShakeAtLocation; build green, suite 272/276 with only the 4 known failures; commit 6d459c6f
 
 ## Relations
 - [[task-418-camera-shake-on-explosions]] — parent global task.
