@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Checked 2026-11-02. Test 1: the test check dates from task-028-03 (no pickup component may collide, the trail blocked the miner). task-229 (owner 2026-10-17, "Collision uniquement sur mur et sol", done) made PickupMesh the only body: profile `Pickup` in Config/DefaultEngine.ini = PhysicsOnly (value 2, the observed one), blocks WorldStatic, ignores Pawn and every other channel; `ARRPickup::BeginPlay` sets every other primitive NoCollision ([[sys-pickups-lifecycle]]). The miner still cannot be blocked or carried. Verdict: the test is wrong, the asset is right. Test 2: [[xp-level-up]] card animation (owner 2026-10-19, provisional): cards dealt face down, about 0.8 s; reroll (owner 2026-10-26): button greyed when unaffordable. [[wbp-upgrade-choice]] (task-243-05): StartDeal disables RerollButton, AnimStep (widget tick, real time) enables it to RerollAllowed at 0.8 s. The test reads the button right after the offer, during the deal; headless, the widget tick does not run. Verdict: the test is wrong, the widget is right. No conflict, no open value, no CSV value involved. Owner said "une tâche": one global with one cpp subtask per test (different files, disjoint) and a doc subtask.
 - confirmed_by_owner: yes (2026-11-02, "Tout par défaut")
 - milestone: M3
-- next_step: task-421-02-levelup-reroll-button-test
+- next_step: task-421-03-doc
 - started: 2026-11-02T23:11:02Z
 - waiting_for: none
 - result: open

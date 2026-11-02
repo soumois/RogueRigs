@@ -3,7 +3,7 @@ id: task-421-02-levelup-reroll-button-test
 description: "Cpp: LevelUpUpgradeLoop checks RerollButton after the 0.8 s deal"
 parent: task-421-fix-two-failing-integration-tests
 kind: task
-status: in-progress
+status: done
 ---
 # Fix the two pre-existing failing integration tests: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build ok; `RogueRigs.Integration.LevelUpUpgradeLoop` passes headless and the other tests of RRIntegrationTests.cpp still pass; only that test file changed; committed.
 - editor_state: closed
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 57231, cache read 761572, output 10985
+- usage: turns 17, context start 12k peak 64k, resumes 0, 3 min, units 0.20 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T23:14:11Z
 - waiting_for: none
-- result: open
+- result: PlayCardDeal helper fires WBP_UpgradeChoice Tick event 50 frames (0.8 s real time, primary path); disabled during deal, enabled=bCanReroll after; 13/13 tests of file pass. Commit 9f059680. Caveat: rare-card suspense (2.2 s+) not covered, seed deals none.
 
 ## Relations
 - [[task-421-fix-two-failing-integration-tests]] — parent global task.
