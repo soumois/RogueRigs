@@ -24,4 +24,4 @@ status: approved
 ## Relations
 - [[player-index]] — parent index.
 - [[drone]] — the miner's helper.
-- [[aim-indicator]] — ground chevrons showing the aim direction.
+- [[aim-indicator]] — aim laser from the rifle muzzle showing the aim direction.

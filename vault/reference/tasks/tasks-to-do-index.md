@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-415-aim-laser]] — Replace the white aim chevrons of the miner by a thin white-gold aim laser from the rifle muzzle, as in the owner reference video. Status wait-answers.
+- [[task-415-aim-laser]] — Replace the white aim chevrons of the miner by a thin white-gold aim laser from the rifle muzzle, as in the owner reference video. Status todo.

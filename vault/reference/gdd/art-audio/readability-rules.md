@@ -10,7 +10,7 @@ applies_to: art, vfx, level-design, image prompts
 - Terrain separates by brightness: breakable rock is lighter; ore glows.
 - Cracks always mean "damaged, digs faster" (owner 2026-10-17, was "breakable"): intact breakable rock is smooth, cracks then tilted plates show lost health or weaker rock.
 - Acid green and steel blue are reserved for enemies in every biome; terrain never uses enemy colors.
-- Red means enemy fire (shots, targeting lasers: moving lines) or healing (heal ore and pickups: static on the floor).
+- Red means enemy fire (shots, targeting lasers: moving lines) or healing (heal ore and pickups: static on the floor). The miner aim laser is white-gold, never red (owner 2026-11-02, [[aim-indicator]]).
 - Orange means "explodes": barrels and the kamikaze's core.
 - Rarity colors appear only in the interface, never on an object in the arena.
 - The shooter must be spotted in under a second.

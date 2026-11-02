@@ -17,7 +17,7 @@ status: approved
 | XP pickups | glowing cyan, shaped as a hex nut (owner 2026-10-13, provisional until modelled; resource pickups other than ore keep this look); the big XP block (many pieces merged) is a data chip whose glowing core is bright magenta-pink with a glow of the same hue (owner 2026-10-13, was white), on a dark gunmetal board; implemented as MI_PickupXPBig: base (1, 0.15, 0.75), emissive (1, 0.2, 0.8) x 4, with magenta trail NS_XPTrailBig and sparkle NS_PickupSparkleBig; the big XP chip core now glows lilac-violet, GlowColor about (0.8, 0.25, 1.0), provisional, owner 2026-10-13, while NS_PickupSparkleBig, NS_XPTrailBig and MI_PickupXPBig stay magenta (a mismatch for the owner to decide) |
 | Miner, turrets, drone | white + teal + rust |
 | Drone camera eye | glows orange (1, 0.45, 0.08), a detail on a white + teal + rust element (owner 2026-10-21, "c'est juste visuel", task-279, provisional intensity) |
-| Player shots, mining laser | white-gold |
+| Player shots, mining laser, aim laser | white-gold (aim laser: owner 2026-11-02, [[aim-indicator]]) |
 | Command console, shuttle | white + teal (player side) |
 | Console marked rocks | pulsing white outline |
 | Enemy shots, targeting laser | red (moving lines) |
