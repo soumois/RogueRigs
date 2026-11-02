@@ -1,6 +1,6 @@
 ---
 id: task-416-camera-shake-mixing-falloff
-description: "Global task: Shared camera shake: shakes of different sources add up with a cap, and a shake at a world point fades with distance up to a max."
+description: "Global task: shared camera shake: different sources add up with a cap; a shake at a world point fades with distance up to a max."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
