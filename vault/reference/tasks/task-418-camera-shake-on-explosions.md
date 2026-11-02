@@ -1,9 +1,9 @@
 ---
 id: task-418-camera-shake-on-explosions
 description: "Global task: Each barrel or kamikaze explosion shakes the camera, a bit stronger when closer, nothing beyond a max distance."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Camera shake from nearby explosions
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-11-02: [[sys-camera-shake]] (task-310): one shared C++ shake, URRCameraShakeLibrary::PlayCameraShake(WorldContext, Scale, ShakeClass) on the first local player camera manager, translation-only Perlin pattern, chest preset 0.2 s, (0,4,4) uu, 25 Hz, bSingleInstance true (a new call restarts it, no stacking), no distance falloff; its doc says "Heavy slam and explosions do not shake the camera (owner default Q21, 2026-10-23)": this request reverses that default on the owner's word, no conflict question needed. No gdd node describes camera shake today ([[visual-style]] camera line only); decided values go into [[visual-style]] (mixing), [[miner]] (hit), [[explosions]] (explosion shake) and [[enemy-heavy]] (slam shake) through the edits applied on confirmation. Values marked open before the questions: every strength, duration, falloff, max distance and the mixing rule. Milestone: juice is M3 work, done now on the owner request (task-310 was M2). Units: 1 m = 100 uu; a grid cell is 67 uu. [[explosions]]: sources barrel and kamikaze, one link per tick with a 0.08 s chain delay, barrel fuse 1.5 s. [[barrel]] radius 700 uu, [[enemy-kamikaze]] radius 312 uu. [[sys-explosions]]: single resolution path (characters, FX, then OnExplosion), per-row ExplosionStats.csv: the trigger point and where per-source values can live.
 - confirmed_by_owner: yes (2026-11-02, "ok")
 - milestone: M3
-- next_step: task-418-02-doc
+- next_step: none
 - started: 2026-11-02T18:35:47Z
 - waiting_for: none
-- result: open
+- result: Done. sys-explosions and sys-camera-shake updated for the explosion shake (trigger, strengths, max distances, tuning in ExplosionStats.csv); commit 7932dc64; lint OK
 
 ## Questions
 Decided 2026-11-02 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-02.
@@ -29,6 +29,6 @@ Decided 2026-11-02 (owner "ok"): every default below is accepted; values provisi
 2. task-418-02-doc (vault/reference/tasks/task-418-camera-shake-on-explosions/task-418-02-doc.md) — doc: update sys-explosions and sys-camera-shake for the explosion shake
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-418-01-explosion-shake]] — step 1, cpp.
 - [[task-418-02-doc]] — step 2, doc.
