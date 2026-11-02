@@ -1,9 +1,9 @@
 ---
 id: task-420-single-source-game-values
 description: "Global task: Make the stat CSV tables the only home of a game value: tests read them, gdd nodes cite rows, not numbers."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Game values in one place: the CSV tables
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Audit 2026-11-02. Runtime source already single: 8 CSVs in `Content/RogueRigs/Data/Tables/`, parsed at runtime by `URRBaseStatsLoader` (no imported asset). Copies found: (1) tests: 19 test files hard-code CSV values (`constexpr float PelletDamage = 6.f`, etc.); the owner's hand edits of WeaponStats.csv (d2549efb, Shotgun 6 -> 10, TurretLauncher FireRate 3.3 -> 2.22) left RRShotgunTests, RRTurretTests and RRWeaponCardTests to be fixed by hand (uncommitted in the working tree); (2) gdd nodes restate the numbers (shotgun, burst-rifle, turret stats lines; enemy, player, explosion, upgrade, rarity, XP, ore nodes likely too); today they match the CSV. Not copies of CSV values: about 300 `UPROPERTY(EditDefaultsOnly)` numeric defaults in C++ headers (shake amplitudes, placement distances, pool sizes), possibly overridden in Blueprints; out of scope by default (Q4). No sync or lint between CSV, tests and vault exists in `vault/scripts/` (lint.js checks vault structure only). Conflict: `_authoring` and the Planner write decided values into gdd nodes; the new rule moves the number to the CSV and leaves the citation in the gdd (Q2, Q5). No open value needed. Milestone M3, same as the current work.
 - confirmed_by_owner: yes (2026-11-02, "Tout par défaut")
 - milestone: M3
-- next_step: task-420-04-doc
+- next_step: none
 - started: 2026-11-02T19:01:41Z
 - waiting_for: none
-- result: open
+- result: Done. Done: sys-automation-tests documents RRTestStatsRows.h, the single-source rule and 2 known pre-existing failures; 4 sys-tests-* cite CSV rows. Commit 3a98d11c. First doc run cut by usage limit, rerun finished from its uncommitted edits (counted as 2 runs). Rule in _authoring/cpp-standard already present from confirmation.
 
 ## Questions
 Decided 2026-11-02 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-02.
@@ -34,7 +34,7 @@ Decided 2026-11-02 (owner "Tout par défaut"): every default below is accepted; 
 4. task-420-04-doc (vault/reference/tasks/task-420-single-source-game-values/task-420-04-doc.md) — doc: test docs: tests read expected values from the CSV through the helper
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-420-01-weapon-tests-read-csv]] — step 1, cpp.
 - [[task-420-02-other-tests-read-csv]] — step 2, cpp.
 - [[task-420-03-gdd-cite-csv]] — step 3, doc.
