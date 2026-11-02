@@ -13,6 +13,7 @@ All design, agent definitions, technical docs, production plans and tasks live i
 - Gameplay logic in C++ (`Source/RogueRigs/`). Blueprints are a thin layer: placement, events calling C++, a few visual effects.
 - Every Blueprint change updates its doc node in `vault/reference/tech/blueprints/`.
 - Never put secrets in the repository.
+- Every image or prompt is labelled "keep" (goes in the repo, `Art/Source/<asset>/`, and is listed in a vault node) or "temporary" (discussion only, e.g. the rejected variant of a pair). Temporary files go in `Saved/Scratch/` (git-ignored), never in `Art/Source/`. Never leave an unlabelled file untracked, and never delete an untracked art file before checking the vault (handovers, task `expected_output`) for references.
 - After editing the vault: `node vault/scripts/lint.js --write`, fix all problems, then commit.
 
 ## Build
