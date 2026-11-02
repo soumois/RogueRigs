@@ -47,7 +47,8 @@ URRAimIndicatorComponent::URRAimIndicatorComponent(const FObjectInitializer& Obj
 
 UObject* URRAimIndicatorComponent::ResolveAsset(const FSoftObjectPath& Path, const TCHAR* What, FSoftObjectPath& CachedPath, TWeakObjectPtr<UObject>& Cache, bool& bWarned)
 {
-	if (CachedPath != Path || Path.IsNull())
+	// Resolved again when the path changed or the cached asset was collected (editor, between two plays).
+	if (CachedPath != Path || !Cache.IsValid())
 	{
 		CachedPath = Path;
 		Cache = nullptr;

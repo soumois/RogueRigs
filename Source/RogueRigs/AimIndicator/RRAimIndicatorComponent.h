@@ -89,7 +89,7 @@ public:
 	UMaterialInstanceDynamic* GetIndicatorMaterialInstance() const { return IndicatorMaterialInstance; }
 
 protected:
-	/** Loads Path once per run into Cache (a missing asset logs one warning naming What and is not retried). */
+	/** Loads Path into Cache, again only when the path changed or the cached asset is gone; a missing asset logs one warning per run naming What. */
 	static UObject* ResolveAsset(const FSoftObjectPath& Path, const TCHAR* What, FSoftObjectPath& CachedPath, TWeakObjectPtr<UObject>& Cache, bool& bWarned);
 
 	/** Writes Color, EmissiveGain, Opacity, CoreFrac, GlowOpacity and TipFadeFrac to the dynamic instance, if any. */
