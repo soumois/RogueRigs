@@ -28,6 +28,7 @@ Base: the Epic C++ coding standard for Unreal Engine. Project-specific rules bel
 
 ## Data
 - No tunable value hard-coded: tunables come from CSV/DataTables or `UPROPERTY(EditDefaultsOnly)` defaults.
+- A value held in a CSV under `Content/RogueRigs/Data/Tables/` is never repeated in code or tests: a test reads its expected value from the CSV row and derives the rest from it (owner 2026-11-02, task-420).
 - No AI call at runtime.
 - Log through the `LogRogueRigs` category; no `GEngine->AddOnScreenDebugMessage` left in committed code.
 

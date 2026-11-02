@@ -30,6 +30,7 @@ applies_to: writing
 - End with `## Relations`: `- [[id]] — <relation + when to open>`.
 - An index (`root`, `*-index`) is a pure router: title, then `## Children` (every node whose `parent` is this index, one gloss each, the descent path), then `## Relations` (parent, cross-links; never a child). No prose beyond a few lines: pitch, rules and values go in a child node. Its `description` already says where you are; the parent gloss said why you came. Task indexes under `reference/tasks/` keep a single `## Relations`.
 - A fact already stated elsewhere is referenced with a wikilink, never copied.
+- A game value held in a CSV under `Content/RogueRigs/Data/Tables/` lives only there: a gdd node cites the file and row (`WeaponStats.csv` row `Shotgun`) with its status and decision date, never the number; a changed value is a CSV edit (owner 2026-11-02, task-420).
 
 ## Blueprint documentation rule
 - Every Blueprint has a `doc` node in `tech/blueprints/` (template `blueprint.md`).
