@@ -425,3 +425,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-414-muzzle-flash]] — a short white-gold Niagara muzzle flash at the shown rifle Muzzle on every miner shot; today shots have no particle. Status done.
 - [[task-415-aim-laser]] — Replace the white aim chevrons of the miner by a thin white-gold aim laser from the rifle muzzle, as in the owner reference video. Status done.
 - [[task-416-camera-shake-mixing-falloff]] — Shared camera shake: shakes of different sources add up with a cap, and a shake at a world point fades with distance up to a max. Status done.
+- [[task-417-camera-shake-on-damage]] — The camera shakes lightly each time the miner loses health, mixed with any explosion or slam shake playing. Status done.

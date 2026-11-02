@@ -3,7 +3,7 @@ id: task-417-02-doc
 description: "Doc: update sys-camera-shake and sys-player for the hit shake"
 parent: task-417-camera-shake-on-damage
 kind: task
-status: in-progress
+status: done
 ---
 # Camera shake when the miner takes damage: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Both nodes name the hit preset, its values and its trigger; lint clean; committed.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 35630, cache read 100638, output 3451
+- usage: turns 5, context start 11k peak 36k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T18:34:11Z
 - waiting_for: none
-- result: open
+- result: sys-camera-shake, sys-player, sys-player-classes updated with URRHitCameraShake, HitShakeClass and trigger; lint clean; commit 62efb380
 
 ## Relations
 - [[task-417-camera-shake-on-damage]] — parent global task.
