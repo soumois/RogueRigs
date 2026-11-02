@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the juice with the final Blueprints (RogueRigs.Integration.Juice*) and of the damage-number stacking over displayed numbers (RogueRigs.DamageNumbers.StackOverDisplayed, DisplayFromAsset): task-027-03.
+// Rogue Rigs - automation tests of the juice with the final Blueprints (RogueRigs.Integration.Juice*) and of the damage-number stacking over displayed numbers (RogueRigs.DamageNumbers.StackOverDisplayed, DisplayFromAsset): task-027-03; XP cube collision check matches the task-229 physics body since task-421-01.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -25,6 +25,7 @@
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
+#include "Projectiles/RRCollisionChannels.h"
 #include "Player/RRMiner.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -401,12 +402,28 @@ bool FRRJuiceKillStreamTest::RunTest(const FString& Parameters)
 	{
 		TestNotNull(TEXT("BP_PickupXP has a TrailFX Niagara component"), FindJuiceComponent<UNiagaraComponent>(Cube.Get(), TEXT("TrailFX")));
 		TestFalse(TEXT("TrailFX inactive during the pop"), IsJuiceTrailActive(Cube.Get()));
-		// task-028-03: the saved Trail blocked the miner (it climbed onto the cube); no pickup component may collide.
+		// task-028-03: the saved Trail blocked the miner (it climbed onto the cube); no pickup component may block or carry it.
+		// task-229-02 (task-421-01): PickupMesh, the actor root, is the only body: profile Pickup, physics only, Pawn ignored;
+		// every other component has no collision.
+		const UPrimitiveComponent* PickupMesh = Cast<UPrimitiveComponent>(Cube->GetRootComponent());
+		TestTrue(TEXT("BP_PickupXP root is PickupMesh"), PickupMesh && PickupMesh->GetFName() == TEXT("PickupMesh"));
 		TInlineComponentArray<UPrimitiveComponent*> Primitives(Cube.Get());
 		for (const UPrimitiveComponent* Primitive : Primitives)
 		{
-			TestEqual(FString::Printf(TEXT("BP_PickupXP %s has no collision"), *Primitive->GetName()),
-				static_cast<int32>(Primitive->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::NoCollision));
+			if (Primitive == PickupMesh)
+			{
+				TestEqual(TEXT("BP_PickupXP PickupMesh uses the Pickup profile"),
+					Primitive->GetCollisionProfileName(), RRCollisionChannels::PickupProfile);
+				TestEqual(TEXT("BP_PickupXP PickupMesh is physics only"),
+					static_cast<int32>(Primitive->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::PhysicsOnly));
+				TestEqual(TEXT("BP_PickupXP PickupMesh ignores Pawn"),
+					static_cast<int32>(Primitive->GetCollisionResponseToChannel(ECC_Pawn)), static_cast<int32>(ECR_Ignore));
+			}
+			else
+			{
+				TestEqual(FString::Printf(TEXT("BP_PickupXP %s has no collision"), *Primitive->GetName()),
+					static_cast<int32>(Primitive->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::NoCollision));
+			}
 			TestEqual(FString::Printf(TEXT("BP_PickupXP %s cannot be stepped on"), *Primitive->GetName()),
 				static_cast<int32>(Primitive->CanCharacterStepUpOn.GetValue()), static_cast<int32>(ECB_No));
 		}
