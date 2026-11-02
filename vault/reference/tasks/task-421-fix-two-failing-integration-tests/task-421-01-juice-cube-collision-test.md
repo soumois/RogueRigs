@@ -3,7 +3,7 @@ id: task-421-01-juice-cube-collision-test
 description: "Cpp: JuiceKillDropsStreamingCubes accepts the physics-only PickupMesh (profile Pickup), other components NoCollision"
 parent: task-421-fix-two-failing-integration-tests
 kind: task
-status: in-progress
+status: done
 ---
 # Fix the two pre-existing failing integration tests: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build ok; `RogueRigs.Integration.JuiceKillDropsStreamingCubes` passes headless and the other tests of RRJuiceIntegrationTests.cpp still pass; only that test file changed; committed.
 - editor_state: closed
 - token_ceiling: 0.6 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 30, cache write 53298, cache read 591569, output 8640
+- usage: turns 15, context start 12k peak 53k, resumes 0, 3 min, units 0.17 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T23:11:02Z
 - waiting_for: none
-- result: open
+- result: Test now accepts PickupMesh profile Pickup (PhysicsOnly, Pawn ignored), others NoCollision, all not steppable; build ok; 5 tests of file pass. Commit 1ddb602d.
 
 ## Relations
 - [[task-421-fix-two-failing-integration-tests]] — parent global task.

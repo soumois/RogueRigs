@@ -3,7 +3,7 @@ id: task-421-02-levelup-reroll-button-test
 description: "Cpp: LevelUpUpgradeLoop checks RerollButton after the 0.8 s deal"
 parent: task-421-fix-two-failing-integration-tests
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the two pre-existing failing integration tests: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T23:14:11Z
 - waiting_for: none
 - result: open
 
