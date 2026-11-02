@@ -3,6 +3,9 @@
 #include "Enemies/RRHeavy.h"
 
 #include "AbilitySystemComponent.h"
+#include "Camera/CameraShakeBase.h"
+#include "Camera/RRCameraShakeLibrary.h"
+#include "Camera/RRHeavySlamCameraShake.h"
 #include "Components/CapsuleComponent.h"
 #include "Damage/RRGE_DamageFlat.h"
 #include "Engine/World.h"
@@ -21,6 +24,8 @@ ARRHeavy::ARRHeavy(const FObjectInitializer& ObjectInitializer)
 	XPCubeCount = 12;
 	ArrivalRangeRatio = 0.5f;
 	DamageEffectClass = URRGE_DamageFlat::StaticClass();
+	// Slam camera shake preset (task-419-01).
+	SlamShakeClass = URRHeavySlamCameraShake::StaticClass();
 	// Wider damage number disc for the larger body (damage-numbers: 45 uu, task-059-01).
 	DamageNumberSpawnRadius = 45.f;
 	// Baked clips (task-284-05): walk = clip 0 while moving; rest = clip 3 held at its last frame (row 61) while stopped. The
@@ -174,6 +179,12 @@ void ARRHeavy::PerformSlam(ARRMiner* Target, double Now)
 	PlayClip(RecoverClipId, 0.0);
 
 	const FVector Feet = GetActorLocation() - FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	// Slam shake at the feet, once per slam frame, hit or not (task-419 Q8, Q9); nothing beyond the max distance.
+	const float ShakeMaxDistance = Stats.AttackRange * SlamShakeMaxDistanceFactor;
+	if (SlamShakeClass && ShakeMaxDistance > 0.f)
+	{
+		URRCameraShakeLibrary::PlayCameraShakeAtLocation(this, Feet, ShakeMaxDistance, 1.f, SlamShakeClass);
+	}
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARRHeavy %s: slam %d at t=%.3f, hits %d."), *GetName(), SlamCount, Now, SlamHitCount);
 	OnSlam(Feet, Stats.AttackRange);
 }

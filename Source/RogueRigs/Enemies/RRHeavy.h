@@ -6,6 +6,7 @@
 #include "Enemies/RREnemy.h"
 #include "RRHeavy.generated.h"
 
+class UCameraShakeBase;
 class UGameplayEffect;
 class URRGroundTelegraphComponent;
 
@@ -32,6 +33,8 @@ enum class ERRHeavyState : uint8
  * the shockwave around the heavy, radius Stats.AttackRange, applies DamageEffectClass (URRGE_DamageFlat, SetByCaller Data.Damage =
  * Stats.Damage, scaled by AttackPower) to the miner if within the radius; it never touches terrain or other robots; OnSlam ->
  * Recover (movement off) for RecoverDuration, then OnRecover -> Chase. In contact, slams are 1 / Stats.AttackRate seconds apart.
+ * Camera shake (task-419-01): each slam frame plays SlamShakeClass once at the feet through
+ * URRCameraShakeLibrary::PlayCameraShakeAtLocation, max distance Stats.AttackRange x SlamShakeMaxDistanceFactor (722 uu), hit or not.
  * Knockback resistance comes from the CSV (base ApplyKnockback). The capsule (48 x 124) fits one-cell corridors (200 uu); the
  * Blueprint mesh is twice the chaser's.
  * GroundTelegraph (sys-ground-telegraph, task-115-01): shown in Danger mode at radius GetSlamRadius on entering Telegraph,
@@ -120,7 +123,7 @@ protected:
 	 */
 	void UpdateTelegraphClipFrame();
 
-	/** Performs the slam: damage to the miner within the radius, counters, recover clip, OnSlam. */
+	/** Performs the slam: damage to the miner within the radius, counters, recover clip, slam camera shake at the feet, OnSlam. */
 	void PerformSlam(ARRMiner* Target, double Now);
 
 	/** Called when the telegraph starts (raise the arms, light the eyes and stripes). */
@@ -146,6 +149,20 @@ protected:
 	/** Seconds the heavy stays still after a slam before walking again (its punish window). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Slam", meta = (ClampMin = 0, Units = "s"))
 	float RecoverDuration = 0.5f;
+
+	/**
+	 * Camera shake played once on each slam frame at the heavy's feet, miner hit or not, never during the telegraph (task-419,
+	 * owner 2026-11-02): default URRHeavySlamCameraShake (8 uu, 0.3 s, 25 Hz). None = no slam shake.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Slam")
+	TSubclassOf<UCameraShakeBase> SlamShakeClass;
+
+	/**
+	 * Slam shake max distance as a multiple of the slam radius (Stats.AttackRange): scale 1 at the feet, falling linearly to the
+	 * edge scale (50 %) at radius x this factor, nothing beyond (2: 722 uu, provisional owner 2026-11-02, task-419 Q9). 0 = no shake.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Slam", meta = (ClampMin = 0))
+	float SlamShakeMaxDistanceFactor = 2.f;
 
 	/** Blink frequency of the meshes during the telegraph (base UpdateTelegraphBlink). 0 = no blink: the Blueprint glows instead. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Heavy|Slam", meta = (ClampMin = 0, Units = "Hz"))
