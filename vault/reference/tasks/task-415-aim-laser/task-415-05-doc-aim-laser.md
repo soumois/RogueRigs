@@ -3,7 +3,7 @@ id: task-415-05-doc-aim-laser
 description: "Doc: rewrite sys-aim-indicator for the laser; update sys-player"
 parent: task-415-aim-laser
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser replaces the white aim chevrons: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:03:43Z
 - waiting_for: none
 - result: open
 
