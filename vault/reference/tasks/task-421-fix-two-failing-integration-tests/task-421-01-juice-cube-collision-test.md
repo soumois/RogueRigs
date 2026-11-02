@@ -3,7 +3,7 @@ id: task-421-01-juice-cube-collision-test
 description: "Cpp: JuiceKillDropsStreamingCubes accepts the physics-only PickupMesh (profile Pickup), other components NoCollision"
 parent: task-421-fix-two-failing-integration-tests
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the two pre-existing failing integration tests: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T23:11:02Z
 - waiting_for: none
 - result: open
 

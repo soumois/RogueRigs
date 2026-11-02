@@ -3,7 +3,7 @@ id: task-421-fix-two-failing-integration-tests
 description: "Global task: Fix Integration.JuiceKillDropsStreamingCubes and Integration.LevelUpUpgradeLoop: both tests predate owner decisions; the asset and widget are right."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the two pre-existing failing integration tests
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "Tout par défaut")
 - milestone: M3
 - next_step: task-421-01-juice-cube-collision-test
-- started: open
+- started: 2026-11-02T23:11:02Z
 - waiting_for: none
 - result: open
 
