@@ -3,7 +3,7 @@ id: task-416-02-doc
 description: "Doc: update sys-camera-shake for mixing and the located call"
 parent: task-416-camera-shake-mixing-falloff
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shakes mix and fade with distance: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:22:24Z
 - waiting_for: none
 - result: open
 

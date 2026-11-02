@@ -3,7 +3,7 @@ id: task-416-01-shake-mixing-falloff
 description: "Cpp: additive mixing with cap and located shake with distance falloff in the shared camera shake"
 parent: task-416-camera-shake-mixing-falloff
 kind: task
-status: in-progress
+status: done
 ---
 # Camera shakes mix and fade with distance: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor build green; the located call returns null and plays nothing beyond the max distance and scales 1 at the epicenter, 0.5 at the max distance (read in code); two different preset classes can play at once and their offsets add; a same-class call restarts at max(old, new) scale; the summed offset is capped at 12 uu; PlayCameraShake keeps its signature and chest behaviour; full RogueRigs automation suite with no new failure versus before; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 52, cache write 146613, cache read 1137040, output 20575
+- usage: turns 26, context start 12k peak 74k, resumes 0, 17 min, units 0.40 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T18:05:08Z
 - waiting_for: none
-- result: open
+- result: Done, commit da0128f9: URRCameraShakeModifier (mixing, same-class max-scale restart, 12 uu cap), PlayCameraShakeAtLocation + GetDistanceFalloffScale (1 to 0.5, 0 beyond, 2D). Build green; suite 272 pass / 4 fail same before and after (task-415 test edits). Not verified in play.
 
 ## Relations
 - [[task-416-camera-shake-mixing-falloff]] — parent global task.
