@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Templates/SubclassOf.h"
 #include "UObject/ObjectKey.h"
 #include "Explosions/RRExplosionStatsRow.h"
 #include "RRExplosionSubsystem.generated.h"
@@ -12,6 +13,7 @@ class AActor;
 class ARRArenaGrid;
 class ARRExplosionFX;
 class UAbilitySystemComponent;
+class UCameraShakeBase;
 
 /** Broadcast by URRExplosionSubsystem after each explosion resolved (terrain, characters and FX done). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, Center, FName, RowName);
@@ -23,14 +25,15 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, C
  * An explosion, in order: destroys every block whose cell center is within the 2D radius (grid QueueDestroyCellsInRadius,
  * source from the row: barrels at once, the other blocks nearest first under the grid's per-frame budget, task-121-01); applies URRGE_DamageExplosion once to every actor whose ASC owns a URRHealthAttributeSet and whose
  * location is within the 2D radius (the row's MinerDamage to an ARRMiner, its Damage to any other character, task-294-01);
- * spawns the row's FX class; broadcasts OnExplosion.
+ * spawns the row's FX class; plays ExplosionShakeClass at the centre (task-418-01: URRCameraShakeLibrary::PlayCameraShakeAtLocation,
+ * scale ShakeScale, max distance Radius x ShakeMaxDistanceFactor, once per resolved explosion, never on a fuse); broadcasts OnExplosion.
  * No-one-shot rule: when the target is an ARRMiner at full health (Health >= MaxHealth), the damage is capped at
  * Health - MinerHealthLeftAtFullHealth, so an explosion never takes a full-health miner to 0. Below full health the damage
  * is not capped. I-frames are respected: the GE is refused while the miner has State.Invulnerable.
  * Visual (explosions gdd, owner 2026-10-10): the FX radius is the collision radius x VisualRadiusScale (1.05) and the FX holds its
  * final state VisualHoldSeconds (0.1 s) before fading; the collision radius and the damage are not changed.
- * Stats come from ExplosionStats.csv (FRRExplosionStatsRow). ChainDelay, MinerHealthLeftAtFullHealth, VisualRadiusScale and
- * VisualHoldSeconds are config
+ * Stats come from ExplosionStats.csv (FRRExplosionStatsRow). ChainDelay, MinerHealthLeftAtFullHealth, VisualRadiusScale,
+ * VisualHoldSeconds and ExplosionShakeClass are config
  * properties (DefaultGame.ini, section [/Script/RogueRigs.RRExplosionSubsystem]) with runtime setters.
  */
 UCLASS(Config = Game)
@@ -39,6 +42,9 @@ class ROGUERIGS_API URRExplosionSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	/** Sets ExplosionShakeClass to URRExplosionCameraShake before the config is read. */
+	URRExplosionSubsystem();
+
 	/** Path of the explosion stats CSV, relative to FPaths::ProjectContentDir(). */
 	static const TCHAR* ExplosionStatsPath;
 
@@ -112,6 +118,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Explosions")
 	float GetVisualHoldSeconds() const { return VisualHoldSeconds; }
 
+	/** Camera shake class played at each resolved explosion (default URRExplosionCameraShake). */
+	UFUNCTION(BlueprintPure, Category = "Explosions")
+	TSubclassOf<UCameraShakeBase> GetExplosionShakeClass() const { return ExplosionShakeClass; }
+
 	/** Uses Grid as the terrain (instead of the first ARRArenaGrid of the world). */
 	UFUNCTION(BlueprintCallable, Category = "Explosions")
 	void SetGrid(ARRArenaGrid* InGrid) { Grid = InGrid; }
@@ -145,6 +155,9 @@ protected:
 	/** Damage dealt to Target: Stats.MinerDamage after the no-one-shot cap for an ARRMiner, Stats.Damage for any other character. */
 	float ComputeCharacterDamage(const AActor* Target, const UAbilitySystemComponent& TargetASC, const FRRExplosionStatsRow& Stats) const;
 
+	/** Plays ExplosionShakeClass at the center (scale Stats.ShakeScale, max distance Stats.Radius x Stats.ShakeMaxDistanceFactor); nothing without a local camera. */
+	void PlayShake(const FPendingExplosion& Explosion);
+
 	/** Spawns the row's FX class at the center, sized to GetVisualRadius(radius) with VisualHoldSeconds; nothing when the class is empty or missing. */
 	void SpawnFX(const FPendingExplosion& Explosion);
 
@@ -169,6 +182,13 @@ protected:
 	/** Seconds every explosion FX holds its final state before fading (explosions gdd, owner 2026-10-10: 0.1 s). */
 	UPROPERTY(Config, EditAnywhere, Category = "Explosions", meta = (ClampMin = "0"))
 	float VisualHoldSeconds = 0.1f;
+
+	/**
+	 * Camera shake played at the centre of each resolved explosion (task-418, owner 2026-11-02): default URRExplosionCameraShake
+	 * (10 uu, 0.35 s, 25 Hz); strength and max distance per source come from ExplosionStats.csv. None = no explosion shake.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions")
+	TSubclassOf<UCameraShakeBase> ExplosionShakeClass;
 
 	/** Terrain of the explosions. */
 	TWeakObjectPtr<ARRArenaGrid> Grid;

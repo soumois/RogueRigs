@@ -4,6 +4,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Camera/CameraShakeBase.h"
+#include "Camera/RRCameraShakeLibrary.h"
+#include "Camera/RRExplosionCameraShake.h"
 #include "Damage/RRGE_DamageExplosion.h"
 #include "Engine/DataTable.h"
 #include "Enemies/RREnemy.h"
@@ -25,6 +28,11 @@
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRExplosionSubsystem)
 
 const TCHAR* URRExplosionSubsystem::ExplosionStatsPath = TEXT("RogueRigs/Data/Tables/ExplosionStats.csv");
+
+URRExplosionSubsystem::URRExplosionSubsystem()
+{
+	ExplosionShakeClass = URRExplosionCameraShake::StaticClass();
+}
 
 void URRExplosionSubsystem::Tick(float DeltaTime)
 {
@@ -151,6 +159,7 @@ void URRExplosionSubsystem::Explode(const FPendingExplosion& Explosion)
 	}
 	DamageCharacters(Explosion);
 	SpawnFX(Explosion);
+	PlayShake(Explosion);
 	UE_LOG(LogRogueRigs, Verbose, TEXT("Explosion '%s' at %s (radius %.0f, damage %.0f, miner damage %.0f)"), *Explosion.RowName.ToString(), *Explosion.Center.ToString(), Explosion.Stats.Radius, Explosion.Stats.Damage, Explosion.Stats.MinerDamage);
 	OnExplosion.Broadcast(Explosion.Center, Explosion.RowName);
 }
@@ -239,6 +248,17 @@ float URRExplosionSubsystem::ComputeCharacterDamage(const AActor* Target, const 
 		return FMath::Min(Damage, FMath::Max(Health - MinerHealthLeftAtFullHealth, 0.f));
 	}
 	return Damage;
+}
+
+void URRExplosionSubsystem::PlayShake(const FPendingExplosion& Explosion)
+{
+	// Resolved explosion only (a fuse never reaches Explode); each chain link plays it again (task-418 Q6).
+	const float MaxDistance = Explosion.Stats.Radius * Explosion.Stats.ShakeMaxDistanceFactor;
+	if (!ExplosionShakeClass || Explosion.Stats.ShakeScale <= 0.f || MaxDistance <= 0.f)
+	{
+		return;
+	}
+	URRCameraShakeLibrary::PlayCameraShakeAtLocation(this, Explosion.Center, MaxDistance, Explosion.Stats.ShakeScale, ExplosionShakeClass);
 }
 
 void URRExplosionSubsystem::SpawnFX(const FPendingExplosion& Explosion)
