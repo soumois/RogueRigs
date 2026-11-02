@@ -3,7 +3,7 @@ id: task-419-camera-shake-on-heavy-slam
 description: "Global task: The heavy ground slam shakes the camera when the miner is within a max distance, a bit stronger when closer."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake from the heavy ground slam
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "ok")
 - milestone: M3
 - next_step: task-419-01-slam-shake
-- started: open
+- started: 2026-11-02T18:47:37Z
 - waiting_for: none
 - result: open
 

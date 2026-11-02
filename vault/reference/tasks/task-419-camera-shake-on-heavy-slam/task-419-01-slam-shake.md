@@ -3,7 +3,7 @@ id: task-419-01-slam-shake
 description: "Cpp: slam shake preset played at the heavy on the slam frame with distance falloff"
 parent: task-419-camera-shake-on-heavy-slam
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake from the heavy ground slam: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:47:37Z
 - waiting_for: none
 - result: open
 
