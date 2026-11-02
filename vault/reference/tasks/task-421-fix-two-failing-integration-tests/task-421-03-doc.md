@@ -3,7 +3,7 @@ id: task-421-03-doc
 description: "Doc: test doc nodes: the two fixes, known failures removed"
 parent: task-421-fix-two-failing-integration-tests
 kind: task
-status: in-progress
+status: done
 ---
 # Fix the two pre-existing failing integration tests: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-automation-tests no longer lists the two tests as known failures; sys-tests-juice-damage-numbers and sys-tests-progression describe the new checks with commit hashes; lint clean; committed.
 - editor_state: any
 - token_ceiling: 0.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 10, cache write 30181, cache read 93083, output 2525
+- usage: turns 5, context start 11k peak 30k, resumes 0, 0 min, units 0.06 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T23:17:20Z
 - waiting_for: none
-- result: open
+- result: Three test doc nodes updated (commit 6d9452f4), known failures none left; lint clean.
 
 ## Relations
 - [[task-421-fix-two-failing-integration-tests]] — parent global task.

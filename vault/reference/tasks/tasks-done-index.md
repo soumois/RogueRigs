@@ -429,3 +429,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-418-camera-shake-on-explosions]] — Each barrel or kamikaze explosion shakes the camera, a bit stronger when closer, nothing beyond a max distance. Status done.
 - [[task-419-camera-shake-on-heavy-slam]] — The heavy ground slam shakes the camera when the miner is within a max distance, a bit stronger when closer. Status done.
 - [[task-420-single-source-game-values]] — Make the stat CSV tables the only place a game value lives: tests read them, gdd nodes cite the row instead of copying numbers. Status done.
+- [[task-421-fix-two-failing-integration-tests]] — Fix Integration.JuiceKillDropsStreamingCubes and Integration.LevelUpUpgradeLoop: both tests predate owner decisions; the asset and widget are right. Status done.

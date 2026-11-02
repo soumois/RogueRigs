@@ -1,9 +1,9 @@
 ---
 id: task-421-fix-two-failing-integration-tests
 description: "Global task: Fix Integration.JuiceKillDropsStreamingCubes and Integration.LevelUpUpgradeLoop: both tests predate owner decisions; the asset and widget are right."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Fix the two pre-existing failing integration tests
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Checked 2026-11-02. Test 1: the test check dates from task-028-03 (no pickup component may collide, the trail blocked the miner). task-229 (owner 2026-10-17, "Collision uniquement sur mur et sol", done) made PickupMesh the only body: profile `Pickup` in Config/DefaultEngine.ini = PhysicsOnly (value 2, the observed one), blocks WorldStatic, ignores Pawn and every other channel; `ARRPickup::BeginPlay` sets every other primitive NoCollision ([[sys-pickups-lifecycle]]). The miner still cannot be blocked or carried. Verdict: the test is wrong, the asset is right. Test 2: [[xp-level-up]] card animation (owner 2026-10-19, provisional): cards dealt face down, about 0.8 s; reroll (owner 2026-10-26): button greyed when unaffordable. [[wbp-upgrade-choice]] (task-243-05): StartDeal disables RerollButton, AnimStep (widget tick, real time) enables it to RerollAllowed at 0.8 s. The test reads the button right after the offer, during the deal; headless, the widget tick does not run. Verdict: the test is wrong, the widget is right. No conflict, no open value, no CSV value involved. Owner said "une tâche": one global with one cpp subtask per test (different files, disjoint) and a doc subtask.
 - confirmed_by_owner: yes (2026-11-02, "Tout par défaut")
 - milestone: M3
-- next_step: task-421-03-doc
+- next_step: none
 - started: 2026-11-02T23:11:02Z
 - waiting_for: none
-- result: open
+- result: Done. Three test doc nodes updated (commit 6d9452f4), known failures none left; lint clean.
 
 ## Questions
 Decided 2026-11-02 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-02.
@@ -30,7 +30,7 @@ Decided 2026-11-02 (owner "Tout par défaut"): every default below is accepted; 
 3. task-421-03-doc (vault/reference/tasks/task-421-fix-two-failing-integration-tests/task-421-03-doc.md) — doc: test doc nodes: the two fixes, known failures removed
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-421-01-juice-cube-collision-test]] — step 1, cpp.
 - [[task-421-02-levelup-reroll-button-test]] — step 2, cpp.
 - [[task-421-03-doc]] — step 3, doc.
