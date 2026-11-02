@@ -3,7 +3,7 @@ id: task-415-01-mat-aim-laser
 description: "Bp: create the M_AimLaser material (white-gold core, soft glow, tip fade) in Content/RogueRigs/FX/"
 parent: task-415-aim-laser
 kind: task
-status: in-progress
+status: done
 ---
 # Aim laser replaces the white aim chevrons: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: M_AimLaser exists, compiles without error, exposes Color, EmissiveGain, Opacity, CoreFrac, GlowOpacity, TipFadeFrac with the defaults above; committed by path as `task-415-01-mat-aim-laser: <summary>`.
 - editor_state: Unreal editor open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus+sonnet
+- tokens: input 56, cache write 108244, cache read 1090369, output 17497
+- usage: turns 29, context start 12k peak 66k, resumes 0, 3 min, units 0.33 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T17:29:01Z
 - waiting_for: none
-- result: open
+- result: M_AimLaser created (Translucent, Unlit, two-sided; 6 params with defaults; commit 1700f6ff); render unverified
 
 ## Relations
 - [[task-415-aim-laser]] — parent global task.

@@ -3,7 +3,7 @@ id: task-415-02-aim-laser-component
 description: "Cpp: replace the chevron decal of the miner by the aim laser component (Muzzle origin, stop at rock, 1200 uu max)"
 parent: task-415-aim-laser
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser replaces the white aim chevrons: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T17:32:46Z
 - waiting_for: none
 - result: open
 
