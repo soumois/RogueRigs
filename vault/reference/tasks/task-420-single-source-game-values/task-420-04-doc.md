@@ -3,7 +3,7 @@ id: task-420-04-doc
 description: "Doc: test docs: tests read expected values from the CSV through the helper"
 parent: task-420-single-source-game-values
 kind: task
-status: todo
+status: in-progress
 ---
 # Game values in one place: the CSV tables: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T19:59:33Z
 - waiting_for: none
 - result: open
 
