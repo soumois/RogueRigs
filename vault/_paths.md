@@ -88,6 +88,7 @@ blueprints-index  reference/tech/blueprints/blueprints-index.md
 blueprints-player-index  reference/tech/blueprints/player/blueprints-player-index.md
 blueprints-ui-index  reference/tech/blueprints/ui/blueprints-ui-index.md
 blueprints-world-index  reference/tech/blueprints/world/blueprints-world-index.md
+bp-aim-laser-material  reference/tech/blueprints/fx/bp-aim-laser-material.md
 bp-arena-grid  reference/tech/blueprints/world/bp-arena-grid.md
 bp-asteroid-field  reference/tech/blueprints/world/bp-asteroid-field.md
 bp-asteroid-material  reference/tech/blueprints/world/bp-asteroid-material.md

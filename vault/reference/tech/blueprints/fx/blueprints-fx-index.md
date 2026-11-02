@@ -15,6 +15,7 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-pickup-sparkle]] — BP_PickupSparkle, the XP collect sparkle.
 - [[bp-deposit-crystal-material]] — M_DepositCrystalGlow, the lit and rim-lit crystal material of the Duskite and heal deposits.
 - [[bp-blob-shadow-material]] — M_BlobShadow and MI_BlobShadow, the unlit radial fake shadow disc under robots, miner and drone.
+- [[bp-aim-laser-material]] — M_AimLaser, the translucent unlit aim laser material of the miner (core, glow, tip fade).
 - [[bp-explosion-fx]] — BP_ExplosionFX, the explosion visual.
 - [[bp-explosion-fx-barrel]] — BP_ExplosionFX_Barrel, the barrel explosion visual (burst and ring).
 - [[bp-explosion-shockwave]] — M_ExplosionShockwave and its orange instance, the explosion ground ring decal.
