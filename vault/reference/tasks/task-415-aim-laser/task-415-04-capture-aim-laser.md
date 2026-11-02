@@ -3,7 +3,7 @@ id: task-415-04-capture-aim-laser
 description: "Capture: capture the aim laser in a -game run and check C1 to C7"
 parent: task-415-aim-laser
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser replaces the white aim chevrons: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T17:58:50Z
 - waiting_for: none
 - result: open
 
