@@ -423,3 +423,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-412-shots-from-rifle-muzzle]] — Miner shots start at the real burst rifle Muzzle (every other weapon too), vertical capsule from 20 uu above the floor. Status done.
 - [[task-413-bullet-shown-at-muzzle]] — the burst rifle bullet visually starts ahead of the Muzzle; measure the cause in game and make its first shown frame sit at the Muzzle. Status done.
 - [[task-414-muzzle-flash]] — a short white-gold Niagara muzzle flash at the shown rifle Muzzle on every miner shot; today shots have no particle. Status done.
+- [[task-415-aim-laser]] — Replace the white aim chevrons of the miner by a thin white-gold aim laser from the rifle muzzle, as in the owner reference video. Status done.

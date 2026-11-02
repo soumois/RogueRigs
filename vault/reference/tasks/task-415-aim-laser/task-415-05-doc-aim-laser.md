@@ -3,7 +3,7 @@ id: task-415-05-doc-aim-laser
 description: "Doc: rewrite sys-aim-indicator for the laser; update sys-player"
 parent: task-415-aim-laser
 kind: task
-status: in-progress
+status: done
 ---
 # Aim laser replaces the white aim chevrons: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-aim-indicator describes the laser and no longer the chevrons, with the task-415 commit hashes; sys-player updated; `node vault/scripts/lint.js --write` clean; committed by path as `task-415-05-doc-aim-laser: <summary>`.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 14, cache write 35860, cache read 136979, output 5661
+- usage: turns 7, context start 11k peak 36k, resumes 0, 1 min, units 0.09 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T18:03:43Z
 - waiting_for: none
-- result: open
+- result: Docs written (commit 6c2949e0): sys-aim-indicator rewritten, sys-player, new bp-aim-laser-material, fx index; lint clean; gdd nodes untouched
 
 ## Relations
 - [[task-415-aim-laser]] — parent global task.
