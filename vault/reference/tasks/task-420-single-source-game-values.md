@@ -1,6 +1,6 @@
 ---
 id: task-420-single-source-game-values
-description: "Global task: Make the stat CSV tables the only place a game value lives: tests read them, gdd nodes cite the row instead of copying numbers."
+description: "Global task: Make the stat CSV tables the only home of a game value: tests read them, gdd nodes cite rows, not numbers."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
