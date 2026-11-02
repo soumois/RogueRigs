@@ -82,8 +82,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * BlobShadowDiameterScale); the i-frames blink (mesh and its children) leaves it alone.
  * Light mask (task-272-07): LightMask (URRPlayerLightMaskComponent) writes the miner position and the mask tunables into
  * MPC_PlayerLight each tick (radial post-process brightening, neutral by default).
- * Aim indicator (task-328-03): AimIndicator (URRAimIndicatorComponent), ground chevrons along GetAimDirection, stopped at
- * the first rock block; shown while alive, hidden in HandleDeath.
+ * Aim indicator (task-415-02): AimIndicator (URRAimIndicatorComponent), a white-gold laser from the shown rifle Muzzle along
+ * GetAimDirection at Muzzle height, stopped at the first robot or block; shown while alive, hidden in HandleDeath.
  * Subclass in Blueprint for the mesh and animation.
  */
 UCLASS(Abstract)
@@ -129,7 +129,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Miner|Aim")
 	bool IsUsingMouseAim() const { return bUsingMouseAim; }
 
-	/** Ground chevrons along the aim (default subobject, task-328-03). */
+	/** Aim laser from the rifle Muzzle along the aim (default subobject, task-415-02). */
 	UFUNCTION(BlueprintPure, Category = "Miner|Aim")
 	URRAimIndicatorComponent* GetAimIndicator() const { return AimIndicator; }
 
@@ -411,7 +411,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRPlayerLightMaskComponent> LightMask;
 
-	/** Aim chevrons decal at the miner's feet along the aim (task-328-03): placed each tick, hidden at death. */
+	/** Aim laser from the shown rifle Muzzle along the aim (task-415-02): placed each tick, hidden at death. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRAimIndicatorComponent> AimIndicator;
 

@@ -1,149 +1,176 @@
-// Rogue Rigs - aim indicator (gdd aim-indicator): a decal projected on the ground in front of the miner drawing a row of white-gold chevrons along the aim.
+// Rogue Rigs - aim indicator (gdd aim-indicator): a thin white-gold laser from the shown rifle Muzzle along the miner's aim, stopped at the first robot or block.
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/DecalComponent.h"
+#include "Components/SceneComponent.h"
 #include "RRAimIndicatorComponent.generated.h"
 
 class ARRMiner;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
+class UStaticMesh;
+class UStaticMeshComponent;
 
 /**
- * Aim chevrons of the miner (gdd aim-indicator, task-328-03): a decal projected straight down (follows the floor and the top
- * of rocks) whose material M_AimChevrons draws ChevronCount chevrons along the aim, the first FirstOffset uu from the miner,
- * then every Spacing uu, opacity x Decay per chevron. Direction only: no link to any weapon, no effect on aim, fire, turret
- * placement or the drone. A decal is a scene component, not a primitive: no collision, overlap or navigation.
- * Each tick (TG_PostPhysics, after the miner turned and moved) it is placed at the miner's feet, its local +Z (the material's
- * forward, UV.x) along ARRMiner::GetAimDirection and its projection axis (local X) straight down; the box starts at the
- * miner (UV.x = 0) and runs 2 x HalfLength forward. VisibleLength = min(GetFixedLength(), 2D distance from the miner along
- * the aim to the first block cell, ARRArenaGrid::GetClearDistance); no grid: the fixed length. A chevron whose tip lies
- * beyond VisibleLength is not drawn (material rule), so the row stops at the first rock block.
+ * Aim laser of the miner (gdd aim-indicator, task-415-02): at BeginPlay this scene component creates LaserMesh, a transient
+ * static mesh component drawing a flat engine Plane (DefaultMeshPath, /Engine/BasicShapes/Plane) with M_AimLaser
+ * (DefaultMaterialPath), both loaded by path. Pure visual: no collision, no overlap, no shadow, no navigation, no effect on
+ * aim, fire, turrets or the drone. The component itself stays a plain scene component (not a primitive) so the AimIndicator
+ * subobject that BP_Miner saved when it was a decal still loads (a static mesh component reads more native data than a decal
+ * wrote: serial size mismatch).
+ * Each tick (TG_PostPhysics, after the miner turned and moved and the hand pose moved the rifle) the plane is laid
+ * horizontally at the Muzzle height (parallel to the floor, never in it), starting at the Muzzle of the shown hand weapon
+ * (ARRWeapon::FindHandWeapon; without one, the first weapon's GetShotOrigin; without a weapon, hidden), along
+ * ARRMiner::GetAimDirection kept horizontal. Its width is Width; its length (GetLaserLength) is the nearer of the first block
+ * cell on the aim line (ARRArenaGrid::GetClearDistance from the Muzzle) and the first living robot hit capsule on the aim line
+ * (FindRobotDistance), capped at MaxLength (MaxLength without grid and robot). The plane's UV.x runs from 0 at the Muzzle to
+ * 1 at the tip, UV.y across (the M_AimLaser contract).
  * Visible whenever the owning miner is alive, mouse and stick aim alike; hidden at death (ARRMiner::HandleDeath calls
- * HideIndicator, and the tick hides it while the miner IsDead). No brightness compensation for the player light mask.
- * Material: DecalMaterial when set on the component, else DefaultMaterialPath (config); a missing asset logs one warning per
- * run and nothing is drawn (tick off). The material is warmed up through ARRDecalWarmUp at BeginPlay.
+ * HideIndicator, and the tick hides it while the miner IsDead). A missing mesh or material logs one warning per run and
+ * nothing is drawn (tick off).
  */
 UCLASS(Config = Game, ClassGroup = (RogueRigs), meta = (BlueprintSpawnableComponent))
-class ROGUERIGS_API URRAimIndicatorComponent : public UDecalComponent
+class ROGUERIGS_API URRAimIndicatorComponent : public USceneComponent
 {
 	GENERATED_BODY()
 
 public:
-	/** Material parameter names (M_AimChevrons of task-328-02 declares exactly these). */
-	static const FName ChevronCountParameterName;
-	static const FName FirstOffsetParameterName;
-	static const FName SpacingParameterName;
-	static const FName OpeningDegParameterName;
-	static const FName ArmLengthParameterName;
-	static const FName LineWidthParameterName;
-	static const FName DecayParameterName;
+	/** Material parameter names (M_AimLaser of task-415-01 declares exactly these). */
 	static const FName ColorParameterName;
+	static const FName EmissiveGainParameterName;
 	static const FName OpacityParameterName;
-	static const FName HalfLengthParameterName;
-	static const FName HalfWidthParameterName;
-	static const FName VisibleLengthParameterName;
+	static const FName CoreFracParameterName;
+	static const FName GlowOpacityParameterName;
+	static const FName TipFadeFracParameterName;
 
-	/** Hidden until the first refresh; ticks in TG_PostPhysics, absolute location and rotation, never fades with screen size, no navigation. */
+	/** Ticks in TG_PostPhysics; no navigation. The laser mesh is created at BeginPlay, hidden until the first refresh. */
 	URRAimIndicatorComponent(const FObjectInitializer& ObjectInitializer);
 
-	/** Sizes the box, resolves the material, creates the dynamic instance and writes every parameter, warms the material up, then places the decal once. */
+	/** Resolves the plane mesh and the material, creates LaserMesh and the dynamic instance, writes every parameter, then places the laser once. */
 	virtual void BeginPlay() override;
+
+	/** Destroys LaserMesh. */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Each frame: RefreshIndicator. */
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	/**
-	 * Hidden when the owner is not a living ARRMiner or there is no material; otherwise places the decal at the miner's feet
-	 * along the aim, writes VisibleLength (fixed length capped at the first block cell on the aim line) and shows it.
+	 * Hidden when the owner is not a living ARRMiner, there is no mesh, material or shot origin, or the length is 0; otherwise
+	 * lays the plane from the Muzzle along the aim over GetLaserLength and shows it.
 	 */
 	void RefreshIndicator();
 
-	/** Hides the decal at once (miner death). The next RefreshIndicator shows it again only while the miner is alive. */
+	/** Hides the laser at once (miner death). The next RefreshIndicator shows it again only while the miner is alive. */
 	void HideIndicator();
 
 	/** True while drawn. */
 	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
-	bool IsIndicatorShown() const { return IsVisible(); }
+	bool IsIndicatorShown() const;
 
-	/** Fixed length of the row in uu: tip distance of the last chevron, FirstOffset + (ChevronCount - 1) x Spacing. */
+	/** The plane drawing the laser (created at BeginPlay; null before it or without mesh or material). Absolute transform. */
 	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
-	float GetFixedLength() const;
+	UStaticMeshComponent* GetLaserMesh() const { return LaserMesh; }
 
-	/** VisibleLength written at the last refresh (uu from the miner; the fixed length before the first one). */
+	/** Maximum laser length in uu (MaxLength): the length with no block and no robot on the aim line. */
 	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
-	float GetVisibleLength() const { return VisibleLength; }
+	float GetMaxLength() const { return MaxLength; }
+
+	/** Laser length in uu from the Muzzle at the last refresh (MaxLength before the first one). */
+	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
+	float GetLaserLength() const { return LaserLength; }
+
+	/** World location the laser started from at the last refresh (the hand weapon Muzzle). */
+	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
+	FVector GetLaserOrigin() const { return LaserOrigin; }
 
 	/** The dynamic instance the parameters are written to (null without a material). */
 	UMaterialInstanceDynamic* GetIndicatorMaterialInstance() const { return IndicatorMaterialInstance; }
 
 protected:
-	/** Loads DefaultMaterialPath once per run (cached; a missing asset logs one warning and is not retried). */
-	UMaterialInterface* ResolveDefaultMaterial() const;
+	/** Loads Path once per run into Cache (a missing asset logs one warning naming What and is not retried). */
+	static UObject* ResolveAsset(const FSoftObjectPath& Path, const TCHAR* What, FSoftObjectPath& CachedPath, TWeakObjectPtr<UObject>& Cache, bool& bWarned);
 
-	/** Writes every static parameter (count, spacing, shape, colour, box half sizes) and VisibleLength to the dynamic instance, if any. */
+	/** Writes Color, EmissiveGain, Opacity, CoreFrac, GlowOpacity and TipFadeFrac to the dynamic instance, if any. */
 	void ApplyParameters();
 
-	/** The owner as a miner (null for any other owner: the indicator stays hidden). */
+	/** The owner as a miner (null for any other owner: the laser stays hidden). */
 	ARRMiner* GetOwnerMiner() const;
 
-	/** Default material when DecalMaterial is not set on the component (task-328-02). Config: [/Script/RogueRigs.RRAimIndicatorComponent]. */
+	/**
+	 * Laser start for Miner: the Muzzle of its shown hand weapon; without one, the first weapon's GetShotOrigin. False without a
+	 * weapon. OutVerticalHalfHeight: the half height of the hand weapon's shot capsule (ARRWeapon::GetShotPlacement), 0 otherwise.
+	 */
+	bool FindLaserOrigin(const ARRMiner& Miner, FVector& OutOrigin, float& OutVerticalHalfHeight) const;
+
+	/**
+	 * Distance in uu from Origin along Direction (horizontal, unit) to the first living robot hit capsule (ARREnemy::GetHitCapsule,
+	 * not IsDead) touched by a vertical capsule of radius RobotSweepRadius and half height max(VerticalHalfHeight, radius),
+	 * swept over MaxDistance against Pawn objects, the miner ignored (drone, turrets, projectiles and pickups are not robots and
+	 * are skipped). MaxDistance when none.
+	 */
+	float FindRobotDistance(const ARRMiner& Miner, const FVector& Origin, const FVector& Direction, float VerticalHalfHeight, float MaxDistance) const;
+
+	/** Laser plane mesh (task-415-02). Config: [/Script/RogueRigs.RRAimIndicatorComponent]. */
 	UPROPERTY(Config, EditDefaultsOnly, Category = "Aim Indicator")
-	FSoftObjectPath DefaultMaterialPath = FSoftObjectPath(TEXT("/Game/RogueRigs/FX/M_AimChevrons.M_AimChevrons"));
+	FSoftObjectPath DefaultMeshPath = FSoftObjectPath(TEXT("/Engine/BasicShapes/Plane.Plane"));
 
-	/** Number of chevrons (aim-indicator: 5, provisional). Material ChevronCount. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "1", ClampMax = "16"))
-	int32 ChevronCount = 5;
+	/** Laser material (task-415-01). Config: [/Script/RogueRigs.RRAimIndicatorComponent]. */
+	UPROPERTY(Config, EditDefaultsOnly, Category = "Aim Indicator")
+	FSoftObjectPath DefaultMaterialPath = FSoftObjectPath(TEXT("/Game/RogueRigs/FX/M_AimLaser.M_AimLaser"));
 
-	/** Distance in uu from the miner to the first chevron tip (aim-indicator: 120, provisional). Material FirstOffset. */
+	/** Side of the plane mesh in uu (engine Plane: 100), used to scale it to the laser length and width. */
+	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "1", Units = "cm"))
+	float LaserMeshSize = 100.f;
+
+	/** Maximum laser length in uu (task-415 Q3: 1200, provisional). */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
-	float FirstOffset = 120.f;
+	float MaxLength = 1200.f;
 
-	/** Distance in uu between two chevron tips (aim-indicator: 74, provisional). Material Spacing. */
+	/** Full laser width in uu: 3 uu core + 8 uu glow each side (task-415 Q5: 19, provisional). */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
-	float Spacing = 74.f;
+	float Width = 19.f;
 
-	/** Full opening angle of a chevron in degrees (aim-indicator: about 60, provisional). Material OpeningDeg. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "180", Units = "deg"))
-	float OpeningDeg = 60.f;
-
-	/** Length in uu of each chevron arm (aim-indicator: 40, provisional). Material ArmLength. */
+	/** Radius in uu of the sweep that finds the first robot on the aim line (half the laser Width: the drawn laser stops where it touches a robot). */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
-	float ArmLength = 40.f;
+	float RobotSweepRadius = 9.5f;
 
-	/** Line width in uu (aim-indicator: 12, provisional). Material LineWidth. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
-	float LineWidth = 12.f;
-
-	/** Opacity factor from one chevron to the next (aim-indicator: x0.78, provisional). Material Decay. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
-	float Decay = 0.78f;
-
-	/** Chevron colour, linear RGB (aim-indicator: white-gold sRGB (255, 236, 170), linear about (1.0, 0.84, 0.40)). Material Color. */
+	/** Laser colour, linear RGB (white-gold sRGB (255, 236, 170), M_AimLaser default). Material Color. */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator")
 	FLinearColor Color = FLinearColor(1.f, 0.84f, 0.40f, 1.f);
 
-	/** Opacity of the first chevron (aim-indicator: 1). Material Opacity. */
+	/** Emissive multiplier of the colour (M_AimLaser default 1). Material EmissiveGain. */
+	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0"))
+	float EmissiveGain = 1.f;
+
+	/** Opacity of the core (M_AimLaser default 1). Material Opacity. */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
 	float Opacity = 1.f;
 
-	/** Half length in uu of the decal box along the aim (material default of task-328-02: 500); must cover GetFixedLength plus half a line and the glow. Material HalfLength. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "1", Units = "cm"))
-	float HalfLength = 500.f;
+	/** Share of the width taken by the bright core (M_AimLaser default 0.16 = 3 / 19). Material CoreFrac. */
+	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
+	float CoreFrac = 0.16f;
 
-	/** Half width in uu of the decal box across the aim (material default of task-328-02: 64). Material HalfWidth. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "1", Units = "cm"))
-	float HalfWidth = 64.f;
+	/** Opacity of the soft glow around the core (M_AimLaser default 0.3). Material GlowOpacity. */
+	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
+	float GlowOpacity = 0.3f;
 
-	/** Half height in uu of the projection box above and below the miner's feet (as the ground telegraph): reaches the floor and the top of rocks. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "1", Units = "cm"))
-	float ProjectionHalfDepth = 256.f;
+	/** Share of the length, at the tip, fading to zero (M_AimLaser default 0.15). Material TipFadeFrac. */
+	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
+	float TipFadeFrac = 0.15f;
 
-	/** VisibleLength last written to the material (uu). */
-	float VisibleLength = 0.f;
+	/** Laser length in uu at the last refresh. */
+	float LaserLength = 0.f;
 
-	/** Dynamic instance of the chevron material (null without a material). */
+	/** Laser start (world) at the last refresh. */
+	FVector LaserOrigin = FVector::ZeroVector;
+
+	/** Plane component drawing the laser (transient, created at BeginPlay). */
+	UPROPERTY(Transient)
+	TObjectPtr<UStaticMeshComponent> LaserMesh;
+
+	/** Dynamic instance of the laser material (null without a material). */
 	UPROPERTY(Transient)
 	TObjectPtr<UMaterialInstanceDynamic> IndicatorMaterialInstance;
 };

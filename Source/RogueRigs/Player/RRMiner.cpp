@@ -102,7 +102,7 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	// task-272-07: feeds MPC_PlayerLight (post-process light mask around the miner).
 	LightMask = CreateDefaultSubobject<URRPlayerLightMaskComponent>(TEXT("LightMask"));
 
-	// task-328-03: ground chevrons along the aim (absolute transform, placed by the component each tick).
+	// task-415-02: aim laser from the rifle Muzzle along the aim (absolute transform, placed by the component each tick).
 	AimIndicator = CreateDefaultSubobject<URRAimIndicatorComponent>(TEXT("AimIndicator"));
 	AimIndicator->SetupAttachment(GetCapsuleComponent());
 }
@@ -564,7 +564,7 @@ void ARRMiner::SetMeshVisible(bool bVisible)
 void ARRMiner::HandleDeath(AActor* DeathInstigator)
 {
 	URRGroundTelegraphComponent::HideAllOn(this);
-	// Aim chevrons are hidden at death (aim-indicator); the component's tick keeps them hidden while IsDead.
+	// Aim laser hidden at death (aim-indicator); the component's tick keeps them hidden while IsDead.
 	if (AimIndicator)
 	{
 		AimIndicator->HideIndicator();

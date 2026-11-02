@@ -1,36 +1,37 @@
-// Rogue Rigs - aim indicator (gdd aim-indicator): a decal projected on the ground in front of the miner drawing a row of white-gold chevrons along the aim.
+// Rogue Rigs - aim indicator (gdd aim-indicator): a thin white-gold laser from the shown rifle Muzzle along the miner's aim, stopped at the first robot or block.
 
 #include "AimIndicator/RRAimIndicatorComponent.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/CollisionProfile.h"
+#include "Engine/StaticMesh.h"
+#include "Engine/World.h"
+#include "Enemies/RREnemy.h"
 #include "Grid/RRArenaGrid.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/PackageName.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
-#include "Telegraph/RRDecalWarmUp.h"
+#include "Weapons/RRWeapon.h"
 
-const FName URRAimIndicatorComponent::ChevronCountParameterName(TEXT("ChevronCount"));
-const FName URRAimIndicatorComponent::FirstOffsetParameterName(TEXT("FirstOffset"));
-const FName URRAimIndicatorComponent::SpacingParameterName(TEXT("Spacing"));
-const FName URRAimIndicatorComponent::OpeningDegParameterName(TEXT("OpeningDeg"));
-const FName URRAimIndicatorComponent::ArmLengthParameterName(TEXT("ArmLength"));
-const FName URRAimIndicatorComponent::LineWidthParameterName(TEXT("LineWidth"));
-const FName URRAimIndicatorComponent::DecayParameterName(TEXT("Decay"));
 const FName URRAimIndicatorComponent::ColorParameterName(TEXT("Color"));
+const FName URRAimIndicatorComponent::EmissiveGainParameterName(TEXT("EmissiveGain"));
 const FName URRAimIndicatorComponent::OpacityParameterName(TEXT("Opacity"));
-const FName URRAimIndicatorComponent::HalfLengthParameterName(TEXT("HalfLength"));
-const FName URRAimIndicatorComponent::HalfWidthParameterName(TEXT("HalfWidth"));
-const FName URRAimIndicatorComponent::VisibleLengthParameterName(TEXT("VisibleLength"));
+const FName URRAimIndicatorComponent::CoreFracParameterName(TEXT("CoreFrac"));
+const FName URRAimIndicatorComponent::GlowOpacityParameterName(TEXT("GlowOpacity"));
+const FName URRAimIndicatorComponent::TipFadeFracParameterName(TEXT("TipFadeFrac"));
 
 namespace RRAimIndicator
 {
-	/** Default material resolved once per run (the path it was resolved for, the result, whether the warning was logged). */
-	FSoftObjectPath ResolvedPath;
-	TWeakObjectPtr<UMaterialInterface> ResolvedMaterial;
-	bool bResolved = false;
-	bool bWarned = false;
+	/** Default mesh and material resolved once per run (the path each was resolved for, the result, whether the warning was logged). */
+	FSoftObjectPath MeshPath;
+	TWeakObjectPtr<UObject> Mesh;
+	bool bMeshWarned = false;
+	FSoftObjectPath MaterialPath;
+	TWeakObjectPtr<UObject> Material;
+	bool bMaterialWarned = false;
 }
 
 URRAimIndicatorComponent::URRAimIndicatorComponent(const FObjectInitializer& ObjectInitializer)
@@ -38,85 +39,96 @@ URRAimIndicatorComponent::URRAimIndicatorComponent(const FObjectInitializer& Obj
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = true;
-	// After the miner's tick (aim and yaw, TG_PrePhysics) and its movement: placed on this frame's aim and location.
+	// After the miner's tick (aim and yaw, TG_PrePhysics), its movement and the hand pose: placed on this frame's Muzzle and aim.
 	PrimaryComponentTick.TickGroup = TG_PostPhysics;
 	bCanEverAffectNavigation = false;
-	// Hidden until the first refresh in play (no stray box in the Blueprint preview or before the material exists).
-	SetVisibleFlag(false);
-	// Placed in world space every tick: the owner's rotation and the capsule height never leak into the box.
-	SetUsingAbsoluteLocation(true);
-	SetUsingAbsoluteRotation(true);
-	// Projects along local X: straight down by default (yaw set each tick).
-	SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	// Top-down camera: never fade out with screen size.
-	FadeScreenSize = 0.f;
-	DecalSize = FVector(ProjectionHalfDepth, HalfWidth, HalfLength);
-	VisibleLength = GetFixedLength();
+	LaserLength = MaxLength;
 }
 
-float URRAimIndicatorComponent::GetFixedLength() const
+UObject* URRAimIndicatorComponent::ResolveAsset(const FSoftObjectPath& Path, const TCHAR* What, FSoftObjectPath& CachedPath, TWeakObjectPtr<UObject>& Cache, bool& bWarned)
 {
-	return FirstOffset + FMath::Max(ChevronCount - 1, 0) * Spacing;
+	if (CachedPath != Path || Path.IsNull())
+	{
+		CachedPath = Path;
+		Cache = nullptr;
+		// Check the package first: loading a missing asset makes the engine log its own warning on every try.
+		const FString PackageName = Path.GetLongPackageName();
+		if (!PackageName.IsEmpty() && FPackageName::DoesPackageExist(PackageName))
+		{
+			Cache = Path.TryLoad();
+		}
+		if (!Cache.IsValid() && !bWarned)
+		{
+			bWarned = true;
+			UE_LOG(LogRogueRigs, Warning, TEXT("Aim indicator: %s %s not found; the aim laser is not drawn (task-415-02)."), What, *Path.ToString());
+		}
+	}
+	return Cache.Get();
 }
 
 void URRAimIndicatorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DecalSize = FVector(ProjectionHalfDepth, HalfWidth, HalfLength);
-	VisibleLength = GetFixedLength();
+	LaserLength = MaxLength;
 
-	UMaterialInterface* Material = DecalMaterial;
-	if (Material && Material->IsA<UMaterialInstanceDynamic>())
+	UStaticMesh* PlaneMesh = nullptr;
+	UMaterialInterface* LaserMaterial = nullptr;
 	{
-		Material = Cast<UMaterialInstanceDynamic>(Material)->Parent;
-	}
-	if (!Material)
-	{
-		Material = ResolveDefaultMaterial();
+		using namespace RRAimIndicator;
+		PlaneMesh = Cast<UStaticMesh>(ResolveAsset(DefaultMeshPath, TEXT("mesh"), MeshPath, Mesh, bMeshWarned));
+		LaserMaterial = Cast<UMaterialInterface>(ResolveAsset(DefaultMaterialPath, TEXT("material"), MaterialPath, Material, bMaterialWarned));
 	}
 
-	if (!Material)
+	AActor* Owner = GetOwner();
+	if (!PlaneMesh || !LaserMaterial || !Owner)
 	{
-		// Missing asset: nothing to draw (warned once in ResolveDefaultMaterial).
+		// Missing asset: nothing to draw (warned once in ResolveAsset).
 		IndicatorMaterialInstance = nullptr;
-		SetDecalMaterial(nullptr);
-		HideIndicator();
 		SetComponentTickEnabled(false);
 		return;
 	}
 
-	IndicatorMaterialInstance = UMaterialInstanceDynamic::Create(Material, this);
-	SetDecalMaterial(IndicatorMaterialInstance);
+	LaserMesh = NewObject<UStaticMeshComponent>(Owner, MakeUniqueObjectName(Owner, UStaticMeshComponent::StaticClass(), TEXT("AimLaserMesh")), RF_Transient);
+	// Pure visual.
+	LaserMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	LaserMesh->SetGenerateOverlapEvents(false);
+	LaserMesh->SetCanEverAffectNavigation(false);
+	LaserMesh->CanCharacterStepUpOn = ECB_No;
+	LaserMesh->CastShadow = false;
+	LaserMesh->bCastDynamicShadow = false;
+	LaserMesh->bReceivesDecals = false;
+	LaserMesh->PrimaryComponentTick.bCanEverTick = false;
+	// Hidden until the first refresh.
+	LaserMesh->SetVisibleFlag(false);
+	// Placed in world space every tick: the owner's rotation, scale and capsule height never leak into the plane.
+	LaserMesh->SetUsingAbsoluteLocation(true);
+	LaserMesh->SetUsingAbsoluteRotation(true);
+	LaserMesh->SetUsingAbsoluteScale(true);
+	LaserMesh->SetStaticMesh(PlaneMesh);
+	LaserMesh->SetupAttachment(this);
+	LaserMesh->RegisterComponent();
+
+	IndicatorMaterialInstance = UMaterialInstanceDynamic::Create(LaserMaterial, this);
+	LaserMesh->SetMaterial(0, IndicatorMaterialInstance);
 	ApplyParameters();
-	// Draw the material once out of sight (once per world): its first shown frame is not the engine default decal (task-201-01).
-	ARRDecalWarmUp::WarmUp(GetWorld(), Material);
 
 	RefreshIndicator();
 }
 
-UMaterialInterface* URRAimIndicatorComponent::ResolveDefaultMaterial() const
+void URRAimIndicatorComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	using namespace RRAimIndicator;
-	if (!bResolved || ResolvedPath != DefaultMaterialPath)
+	if (LaserMesh)
 	{
-		bResolved = true;
-		ResolvedPath = DefaultMaterialPath;
-		ResolvedMaterial = nullptr;
-		// Check the package first: loading a missing asset makes the engine log its own warning on every try.
-		const FString PackageName = DefaultMaterialPath.GetLongPackageName();
-		if (!PackageName.IsEmpty() && FPackageName::DoesPackageExist(PackageName))
-		{
-			ResolvedMaterial = Cast<UMaterialInterface>(DefaultMaterialPath.TryLoad());
-		}
-		if (!ResolvedMaterial.IsValid() && !bWarned)
-		{
-			bWarned = true;
-			UE_LOG(LogRogueRigs, Warning, TEXT("Aim indicator: material %s not found; the aim chevrons are not drawn (task-328-02)."),
-				*DefaultMaterialPath.ToString());
-		}
+		LaserMesh->DestroyComponent();
+		LaserMesh = nullptr;
 	}
-	return ResolvedMaterial.Get();
+	Super::EndPlay(EndPlayReason);
+}
+
+bool URRAimIndicatorComponent::IsIndicatorShown() const
+{
+	return LaserMesh && LaserMesh->IsVisible();
 }
 
 void URRAimIndicatorComponent::ApplyParameters()
@@ -125,19 +137,12 @@ void URRAimIndicatorComponent::ApplyParameters()
 	{
 		return;
 	}
-	IndicatorMaterialInstance->SetScalarParameterValue(ChevronCountParameterName, static_cast<float>(ChevronCount));
-	IndicatorMaterialInstance->SetScalarParameterValue(FirstOffsetParameterName, FirstOffset);
-	IndicatorMaterialInstance->SetScalarParameterValue(SpacingParameterName, Spacing);
-	IndicatorMaterialInstance->SetScalarParameterValue(OpeningDegParameterName, OpeningDeg);
-	IndicatorMaterialInstance->SetScalarParameterValue(ArmLengthParameterName, ArmLength);
-	IndicatorMaterialInstance->SetScalarParameterValue(LineWidthParameterName, LineWidth);
-	IndicatorMaterialInstance->SetScalarParameterValue(DecayParameterName, Decay);
 	IndicatorMaterialInstance->SetVectorParameterValue(ColorParameterName, Color);
+	IndicatorMaterialInstance->SetScalarParameterValue(EmissiveGainParameterName, EmissiveGain);
 	IndicatorMaterialInstance->SetScalarParameterValue(OpacityParameterName, Opacity);
-	// The material maps UV to uu with the box half sizes: keep them equal to DecalSize.
-	IndicatorMaterialInstance->SetScalarParameterValue(HalfLengthParameterName, HalfLength);
-	IndicatorMaterialInstance->SetScalarParameterValue(HalfWidthParameterName, HalfWidth);
-	IndicatorMaterialInstance->SetScalarParameterValue(VisibleLengthParameterName, VisibleLength);
+	IndicatorMaterialInstance->SetScalarParameterValue(CoreFracParameterName, CoreFrac);
+	IndicatorMaterialInstance->SetScalarParameterValue(GlowOpacityParameterName, GlowOpacity);
+	IndicatorMaterialInstance->SetScalarParameterValue(TipFadeFracParameterName, TipFadeFrac);
 }
 
 ARRMiner* URRAimIndicatorComponent::GetOwnerMiner() const
@@ -151,43 +156,111 @@ void URRAimIndicatorComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	RefreshIndicator();
 }
 
+bool URRAimIndicatorComponent::FindLaserOrigin(const ARRMiner& Miner, FVector& OutOrigin, float& OutVerticalHalfHeight) const
+{
+	OutVerticalHalfHeight = 0.f;
+	const ARRWeapon* FirstWeapon = nullptr;
+	for (const ARRWeapon* Weapon : Miner.GetWeapons())
+	{
+		if (IsValid(Weapon))
+		{
+			FirstWeapon = Weapon;
+			break;
+		}
+	}
+	if (!FirstWeapon)
+	{
+		return false;
+	}
+	if (const ARRWeapon* HandWeapon = FirstWeapon->FindHandWeapon(); HandWeapon && HandWeapon->GetMuzzle())
+	{
+		// The shown rifle Muzzle, where the shots leave (task-412); the shot capsule height gives the robot sweep its vertical reach.
+		OutOrigin = HandWeapon->GetMuzzle()->GetComponentLocation();
+		OutVerticalHalfHeight = HandWeapon->GetShotPlacement().CapsuleHalfHeight;
+		return true;
+	}
+	OutOrigin = FirstWeapon->GetShotOrigin();
+	return true;
+}
+
+float URRAimIndicatorComponent::FindRobotDistance(const ARRMiner& Miner, const FVector& Origin, const FVector& Direction, float VerticalHalfHeight, float MaxDistance) const
+{
+	const UWorld* World = GetWorld();
+	if (!World || MaxDistance <= 0.f)
+	{
+		return MaxDistance;
+	}
+
+	const float Radius = FMath::Max(RobotSweepRadius, 0.f);
+	const FCollisionShape Shape = FCollisionShape::MakeCapsule(Radius, FMath::Max(VerticalHalfHeight, Radius));
+	// Robots are found by their hit capsule (object type Pawn, the shape the shots hit); other pawns are filtered below.
+	const FCollisionObjectQueryParams ObjectParams(ECC_Pawn);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(RRAimLaserRobots), /*bTraceComplex*/ false, &Miner);
+
+	TArray<FHitResult> Hits;
+	World->SweepMultiByObjectType(Hits, Origin, Origin + Direction * MaxDistance, FQuat::Identity, ObjectParams, Shape, Params);
+
+	float Nearest = MaxDistance;
+	for (const FHitResult& Hit : Hits)
+	{
+		const ARREnemy* Robot = Cast<ARREnemy>(Hit.GetActor());
+		if (!IsValid(Robot) || Robot->IsDead() || Robot->IsDeathPending() || Hit.GetComponent() != Robot->GetHitCapsule())
+		{
+			continue;
+		}
+		// Initial overlap (robot on the Muzzle): distance 0.
+		Nearest = FMath::Min(Nearest, Hit.bStartPenetrating ? 0.f : Hit.Distance);
+	}
+	return Nearest;
+}
+
 void URRAimIndicatorComponent::RefreshIndicator()
 {
 	const ARRMiner* Miner = GetOwnerMiner();
-	if (!IndicatorMaterialInstance || !IsValid(Miner) || Miner->IsActorBeingDestroyed() || Miner->IsDead())
+	if (!IndicatorMaterialInstance || !LaserMesh || !IsValid(Miner) || Miner->IsActorBeingDestroyed() || Miner->IsDead())
 	{
 		HideIndicator();
 		return;
 	}
 
+	FVector Origin;
+	float VerticalHalfHeight = 0.f;
+	if (!FindLaserOrigin(*Miner, Origin, VerticalHalfHeight))
+	{
+		HideIndicator();
+		return;
+	}
+	LaserOrigin = Origin;
+
 	const FVector Forward = Miner->GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
-	const FVector MinerLocation = Miner->GetActorLocation();
-	const UCapsuleComponent* Capsule = Miner->GetCapsuleComponent();
-	const FVector Feet = MinerLocation - FVector(0.f, 0.f, Capsule ? Capsule->GetScaledCapsuleHalfHeight() : 0.f);
 
-	// Local X (projection) straight down, local +Z (material forward, UV.x) along the aim, local Y to its right
-	// (DeferredDecal.usf: UV = OSPosition.zy * 0.5 + 0.5, OSPosition = local position / DecalSize). Built from axes, not
-	// from a pitch -90 rotator, to stay clear of the gimbal ambiguity at that pitch.
-	const FQuat Rotation = FRotationMatrix::MakeFromXZ(FVector::DownVector, Forward).ToQuat();
-	// UV.x = 0 at the miner: the box centre is HalfLength ahead of the feet.
-	SetWorldLocationAndRotation(Feet + Forward * HalfLength, Rotation);
-
-	// Fixed length, cut at the first block cell on the aim line (miner cannot shoot through rock); no grid: fixed length.
-	float NewVisibleLength = GetFixedLength();
+	// Nearer of the first block cell and the first living robot on the aim line, capped at MaxLength.
+	float Length = MaxLength;
 	if (const ARRArenaGrid* Grid = Miner->GetArenaGrid(); IsValid(Grid))
 	{
-		NewVisibleLength = FMath::Min(NewVisibleLength, Grid->GetClearDistance(MinerLocation, Forward, NewVisibleLength));
+		Length = FMath::Min(Length, Grid->GetClearDistance(Origin, Forward, Length));
 	}
-	if (NewVisibleLength != VisibleLength)
+	Length = FMath::Min(Length, FindRobotDistance(*Miner, Origin, Forward, VerticalHalfHeight, Length));
+	LaserLength = FMath::Max(Length, 0.f);
+
+	if (LaserLength <= KINDA_SMALL_NUMBER || LaserMeshSize <= 0.f)
 	{
-		VisibleLength = NewVisibleLength;
-		IndicatorMaterialInstance->SetScalarParameterValue(VisibleLengthParameterName, VisibleLength);
+		HideIndicator();
+		return;
 	}
 
-	SetVisibility(true);
+	// Engine Plane: LaserMeshSize square centred on its pivot in local XY, normal +Z, UV.x = 0 at local -X and 1 at +X (checked
+	// on the mesh vertices, task-415-02). Local +X along the aim, flat (horizontal) at the Muzzle height: UV.x = 0 at the Muzzle.
+	const FQuat Rotation = FRotationMatrix::MakeFromXZ(Forward, FVector::UpVector).ToQuat();
+	LaserMesh->SetWorldLocationAndRotation(Origin + Forward * (LaserLength * 0.5f), Rotation);
+	LaserMesh->SetWorldScale3D(FVector(LaserLength / LaserMeshSize, Width / LaserMeshSize, 1.f));
+	LaserMesh->SetVisibility(true);
 }
 
 void URRAimIndicatorComponent::HideIndicator()
 {
-	SetVisibility(false);
+	if (LaserMesh)
+	{
+		LaserMesh->SetVisibility(false);
+	}
 }
