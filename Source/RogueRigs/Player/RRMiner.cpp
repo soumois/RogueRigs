@@ -4,6 +4,9 @@
 
 #include "AimIndicator/RRAimIndicatorComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/CameraShakeBase.h"
+#include "Camera/RRCameraShakeLibrary.h"
+#include "Camera/RRHitCameraShake.h"
 #include "Damage/RRGE_IFrames.h"
 #include "Drone/RRDrone.h"
 #include "Engine/World.h"
@@ -67,6 +70,7 @@ ARRMiner::ARRMiner(const FObjectInitializer& ObjectInitializer)
 	Upgrades = CreateDefaultSubobject<URRUpgradeComponent>(TEXT("Upgrades"));
 	LevelUp = CreateDefaultSubobject<URRLevelUpComponent>(TEXT("LevelUp"));
 	IFramesEffectClass = URRGE_IFrames::StaticClass();
+	HitShakeClass = URRHitCameraShake::StaticClass();
 
 	// Camera boom with a fixed world rotation.
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -499,6 +503,12 @@ bool ARRMiner::IsDead() const
 
 void ARRMiner::HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft)
 {
+	// Hit shake on every consumed hit, lethal one included (task-417 Q4); i-frame refusals never broadcast.
+	if (Damage > 0.f && HitShakeClass)
+	{
+		URRCameraShakeLibrary::PlayCameraShake(this, 1.f, HitShakeClass);
+	}
+
 	// A lethal hit gets no i-frames: the death handler takes over.
 	if (HealthLeft > 0.f && !IsDead())
 	{

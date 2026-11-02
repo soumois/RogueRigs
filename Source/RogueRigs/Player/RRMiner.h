@@ -17,6 +17,7 @@ class ARRTurretLauncher;
 class ARRWeapon;
 class UAbilitySystemComponent;
 class UCameraComponent;
+class UCameraShakeBase;
 class URRAbilitySystemComponent;
 class URRAimIndicatorComponent;
 class URRBlobShadowComponent;
@@ -74,7 +75,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * overlap events) and ignores its weapons when moving. No dash or item logic.
  * Damage (sys-damage): on each hit of its health set (OnDamageReceived) that leaves Health above 0, the miner applies
  * IFramesEffectClass (URRGE_IFrames, State.Invulnerable for IFramesDuration, SetByCaller Data.Duration) to itself in the
- * same call stack, and blinks its mesh at BlinkRate until the i-frames end (visibility restored). On the health set
+ * same call stack, and blinks its mesh at BlinkRate until the i-frames end (visibility restored). Every hit with damage
+ * above 0 (lethal one included) also plays HitShakeClass through URRCameraShakeLibrary::PlayCameraShake. On the health set
  * OnDeath (single death, State.Dead added by the set) it stops moving, ignores move and aim input, stops its weapons
  * firing and broadcasts OnDeath. At BeginPlay it registers with the run game mode (ARRGameMode::RegisterMiner), which
  * turns OnDeath into the game over.
@@ -481,6 +483,13 @@ protected:
 	/** Mesh blink frequency during the i-frames, in full hide/show cycles per second. 0 = no blink. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Damage", meta = (ClampMin = 0, Units = "Hz"))
 	float BlinkRate = 12.f;
+
+	/**
+	 * Camera shake played on each hit that takes damage (lethal hit included; a hit refused by the i-frames never
+	 * reaches the handler). Default URRHitCameraShake (5 uu, 0.2 s, 25 Hz, provisional owner 2026-11-02). None = no shake.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Damage")
+	TSubclassOf<UCameraShakeBase> HitShakeClass;
 
 	/** Weapon classes spawned, attached and acquired at BeginPlay, in order (Blueprint subclasses of ARRWeapon). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Weapons")
