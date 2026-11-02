@@ -1448,6 +1448,43 @@ namespace RRIntegrationUpgradeTests
 		return Child ? Child->GetVisibility() : ESlateVisibility::Hidden;
 	}
 
+	/** Seconds of the WBP_UpgradeChoice card deal (task-243-05, provisional, owner 2026-10-19): RerollButton disabled until it ends. */
+	constexpr float CardDealSeconds = 0.8f;
+
+	/**
+	 * Plays the WBP_UpgradeChoice card deal to its end (task-421-02). The deal runs from the widget Event Tick on real time; the
+	 * headless HUD is in no viewport, so Slate never ticks it: each world frame (real time advances under the pause) calls the
+	 * Blueprint Tick event of the HUD child UpgradeChoice, until CardDealSeconds plus two frames have passed.
+	 * Checks RerollButton is disabled while the deal runs.
+	 */
+	void PlayCardDeal(FAutomationTestBase& Test, const FTestWorld& TestWorld, UUserWidget* HUD, const TCHAR* Label)
+	{
+		UUserWidget* Choice = Cast<UUserWidget>(URRHUDWidget::FindWidgetInTree(HUD, TEXT("UpgradeChoice")));
+		const UWidget* Reroll = URRHUDWidget::FindWidgetInTree(HUD, TEXT("RerollButton"));
+		UFunction* TickEvent = Choice ? Choice->FindFunction(TEXT("Tick")) : nullptr;
+		if (!Test.TestNotNull(TEXT("WBP_HUD has UpgradeChoice"), Choice) || !Test.TestNotNull(TEXT("WBP_HUD has RerollButton"), Reroll)
+			|| !Test.TestNotNull(TEXT("WBP_UpgradeChoice has a Tick event"), TickEvent))
+		{
+			return;
+		}
+		Test.TestFalse(FString::Printf(TEXT("%s: RerollButton disabled during the deal"), Label), Reroll->GetIsEnabled());
+		// Parameters built by reflection (default FGeometry, InDeltaTime one frame): the module does not link SlateCore.
+		TArray<uint8, TAlignedHeapAllocator<16>> Params;
+		Params.SetNumZeroed(TickEvent->ParmsSize);
+		TickEvent->InitializeStruct(Params.GetData());
+		if (FFloatProperty* Delta = FindFProperty<FFloatProperty>(TickEvent, TEXT("InDeltaTime")))
+		{
+			Delta->SetPropertyValue_InContainer(Params.GetData(), FrameSeconds);
+		}
+		const int32 Frames = FMath::CeilToInt32(CardDealSeconds / FrameSeconds) + 2;
+		for (int32 Frame = 0; Frame < Frames; ++Frame)
+		{
+			TestWorld.Tick();
+			Choice->ProcessEvent(TickEvent, Params.GetData());
+		}
+		TickEvent->DestroyStruct(Params.GetData());
+	}
+
 	/** Checks that WBP_HUD shows Cards: UpgradeScreen visible, RerollButton enabled as bCanReroll, CardName0..2 = display names. */
 	void CheckHUDCards(FAutomationTestBase& Test, UUserWidget* HUD, const TArray<FRRUpgradeCard>& Cards, bool bCanReroll, const TCHAR* Label)
 	{
@@ -1684,6 +1721,7 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("reroll offered"), Recorder->GetOfferRerollFlags()[0]);
 	const TArray<FRRUpgradeCard> FirstCards = Recorder->GetLastOfferCards();
 	CheckOfferValid(*this, Miner, FirstCards, TEXT("first offer"));
+	PlayCardDeal(*this, TestWorld, HUD, TEXT("first offer"));
 	CheckHUDCards(*this, HUD, FirstCards, true, TEXT("first offer"));
 
 	// Frozen: game time, spawner, rifle and position hold over 1 s of frames.
@@ -1718,6 +1756,7 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("refused reroll spends nothing"), RunFlow->GetSecuredOre(), 15);
 	const TArray<FRRUpgradeCard> Cards = Recorder->GetLastOfferCards();
 	CheckOfferValid(*this, Miner, Cards, TEXT("rerolled offer"));
+	PlayCardDeal(*this, TestWorld, HUD, TEXT("rerolled offer"));
 	CheckHUDCards(*this, HUD, Cards, false, TEXT("rerolled offer"));
 	for (const FRRUpgradeCard& Card : Cards)
 	{
