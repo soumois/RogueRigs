@@ -3,7 +3,7 @@ id: task-416-01-shake-mixing-falloff
 description: "Cpp: additive mixing with cap and located shake with distance falloff in the shared camera shake"
 parent: task-416-camera-shake-mixing-falloff
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shakes mix and fade with distance: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:05:08Z
 - waiting_for: none
 - result: open
 

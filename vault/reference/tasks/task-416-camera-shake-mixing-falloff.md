@@ -3,7 +3,7 @@ id: task-416-camera-shake-mixing-falloff
 description: "Global task: shared camera shake: different sources add up with a cap; a shake at a world point fades with distance up to a max."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shakes mix and fade with distance
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "ok")
 - milestone: M3
 - next_step: task-416-01-shake-mixing-falloff
-- started: open
+- started: 2026-11-02T18:05:08Z
 - waiting_for: none
 - result: open
 
