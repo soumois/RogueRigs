@@ -3,7 +3,7 @@ id: task-420-03-gdd-cite-csv
 description: "Doc: gdd nodes cite the CSV row instead of copying its numbers"
 parent: task-420-single-source-game-values
 kind: task
-status: todo
+status: in-progress
 ---
 # Game values in one place: the CSV tables: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T19:54:47Z
 - waiting_for: none
 - result: open
 
