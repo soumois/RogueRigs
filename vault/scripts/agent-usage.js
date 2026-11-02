@@ -3,6 +3,7 @@
 // Usage: node vault/scripts/agent-usage.js [--json] [--from <task number>] [--snapshot] [--agent-debug] [--agent-detail <agent-id|session-id>]
 // Sources: ~/.claude/projects/<project>/<session>/subagents/agent-*.jsonl (+ .meta.json: agentType, description) for agents,
 // ~/.claude/projects/<project>/<session>.jsonl for main sessions. Each API message is counted once (last entry per message id).
+// Detailed traces retain the preceding user/tool-result timestamp as a request trigger, the assistant response timestamp, and the interval between triggers.
 // Machine-local data: nothing is sent anywhere.
 // Attribution: an agent whose description starts with a subtask id (task-NNN-SS) is a worker of that subtask; an executor (or a
 //   legacy orchestrator launched with "Run global task ...") is the pilot of the first task number in its prompt; a planner (or a
@@ -107,7 +108,7 @@ function scan(file, meta, kind, session, id) {
   const toolUsesById = new Map();
   const toolResultsById = new Map();
   let pendingUserMessages = [];
-  let prompt = '', seenAssistant = false, start = '', end = '';
+  let prompt = '', seenAssistant = false, start = '', end = '', pendingTriggerTimestamp = '';
   const resumeReasons = {};
   const mentions = {};
   let handback = '';
@@ -117,6 +118,7 @@ function scan(file, meta, kind, session, id) {
     if (j.timestamp) { start = start || j.timestamp; end = j.timestamp; }
     const m = j.message;
     if (j.type === 'user' && m) {
+      if (j.timestamp) pendingTriggerTimestamp = j.timestamp;
       for (const b of (Array.isArray(m.content) ? m.content : [])) {
         if (b.type !== 'tool_result' || !b.tool_use_id) continue;
         const resultText = textOf(b.content);
@@ -143,8 +145,14 @@ function scan(file, meta, kind, session, id) {
       seenAssistant = true;
       if (m.usage) {
         const previous = byId.get(m.id);
-        byId.set(m.id, { model: m.model, u: m.usage, userMessages: previous ? previous.userMessages : pendingUserMessages });
-        if (!previous) pendingUserMessages = [];
+        byId.set(m.id, {
+          model: m.model,
+          u: m.usage,
+          triggerTimestamp: (previous && previous.triggerTimestamp) || pendingTriggerTimestamp || null,
+          responseTimestamp: j.timestamp || (previous && previous.responseTimestamp) || null,
+          userMessages: previous ? previous.userMessages : pendingUserMessages,
+        });
+        if (!previous) { pendingUserMessages = []; pendingTriggerTimestamp = ''; }
       }
       const tools = toolUsesById.get(m.id) || new Map();
       for (const [index, b] of (m.content || []).entries()) {
@@ -188,7 +196,7 @@ function scan(file, meta, kind, session, id) {
   let firstCtx = null, peakCtx = 0;
   const turnDetails = [], toolCounts = {}, readPaths = {}, lookupPaths = {}, writePaths = {};
   const taskReadPaths = {}, taskWritePaths = {}, taskWorkflowCounts = {}, taskWorkflowOutcomes = {};
-  for (const [messageId, { model, u, userMessages = [] }] of byId) {
+  for (const [messageId, { model, u, userMessages = [], triggerTimestamp = null, responseTimestamp = null }] of byId) {
     const tok = { input: u.input_tokens || 0, cacheWrite: u.cache_creation_input_tokens || 0, cacheRead: u.cache_read_input_tokens || 0, output: u.output_tokens || 0 };
     addTok(t, tok);
     if (model && model !== '<synthetic>') { addTok(byModel[modelKey(model)] || (byModel[modelKey(model)] = zeroTok()), tok); models[model] = (models[model] || 0) + 1; }
@@ -223,7 +231,7 @@ function scan(file, meta, kind, session, id) {
         outcomes[outcome] = (outcomes[outcome] || 0) + 1;
       }
     }
-    const turn = { model: modelKey(model), ...tok, units: unitsOf(tok), usd: usdOf({ [modelKey(model)]: tok }), contextTokens: ctx, tools };
+    const turn = { model: modelKey(model), triggerTimestamp, responseTimestamp, triggerGapSeconds: null, ...tok, units: unitsOf(tok), usd: usdOf({ [modelKey(model)]: tok }), contextTokens: ctx, tools };
     if (captureDebug) {
       const toolInputChars = tools.reduce((n, tool) => n + (tool.debugInput && tool.debugInput.chars || 0), 0);
       const toolResultChars = tools.reduce((n, tool) => n + (tool.debugResult && tool.debugResult.chars || 0), 0);
@@ -239,7 +247,12 @@ function scan(file, meta, kind, session, id) {
     }
     turnDetails.push(turn);
   }
-  for (let i = 0; i < turnDetails.length - 1; i++) turnDetails[i].nextContextDelta = turnDetails[i + 1].contextTokens - turnDetails[i].contextTokens;
+  for (let i = 0; i < turnDetails.length; i++) {
+    const current = turnDetails[i].triggerTimestamp ? Date.parse(turnDetails[i].triggerTimestamp) : NaN;
+    const previous = i && turnDetails[i - 1].triggerTimestamp ? Date.parse(turnDetails[i - 1].triggerTimestamp) : NaN;
+    if (Number.isFinite(current) && Number.isFinite(previous)) turnDetails[i].triggerGapSeconds = Math.round((current - previous) / 1000);
+    if (i < turnDetails.length - 1) turnDetails[i].nextContextDelta = turnDetails[i + 1].contextTokens - turnDetails[i].contextTokens;
+  }
   const desc = (meta && meta.description) || '';
   const type = (meta && meta.agentType) || (kind === 'session' ? 'main' : '?');
   const sub = (desc.match(/^task-\d+-\d+/) || [])[0] || null;
@@ -294,7 +307,7 @@ if (fs.existsSync(SNAP_FILE)) for (const r of JSON.parse(fs.readFileSync(SNAP_FI
 for (const r of scanned) records.set(r.kind + ':' + r.id, r);
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
-  fs.writeFileSync(SNAP_FILE, '{"version":4,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
+  fs.writeFileSync(SNAP_FILE, '{"version":5,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
 }
 
 // 3. derive the reports
@@ -353,15 +366,15 @@ if (plannerDetailId || agentDetailId) {
     const MUnits = n => (n / 1e6).toFixed(2);
     console.log(`${rec.role === 'planning' ? 'Planner' : `${rec.type} agent`} detail: ${rec.desc} (${rec.id}, session ${rec.session})`);
     console.log(`Model ${rec.models.join('+')}; ${rec.calls} API calls; ${rec.resumes} resumes; ${MUnits(unitsOf(rec))} M units.`);
-    console.log('Per-call tokens describe the whole context. Paths and task workflows show activity, not tokens assigned to individual files. Context delta compares prompt sizes at consecutive API calls; it includes all intervening messages and tool results, not just the listed action.');
+    console.log('Per-call tokens describe the whole context. Trigger UTC is the latest preceding user/tool-result transcript timestamp; response UTC is the assistant usage timestamp. Trigger gaps approximate request spacing, not the exact API start time. Paths and task workflows show activity, not tokens assigned to individual files. Context delta includes all intervening messages and tool results, not just the listed action.');
     if (trace.debugLevel === 'deep') console.log(`Debug detail: exact API units per call; message/tool text sizes estimated at ${trace.debugEstimate}. No message, command or file content is stored.`);
     const deep = trace.debugLevel === 'deep';
     console.log(deep
-      ? '| Turn | Model | Input | Cache write | Cache read | Output | Units M | USD | Prompt ctx | Δ ctx next | User ≈tok | Tool in ≈tok | Tool out ≈tok | Tools and actions |'
-      : '| Turn | Model | Input | Cache write | Cache read | Prompt ctx | Δ ctx next | Output | Tools, paths and task actions |');
+      ? '| Turn | Trigger UTC | Response UTC | Δ trigger s | Model | Input | Cache write | Cache read | Output | Units M | USD | Prompt ctx | Δ ctx next | User ≈tok | Tool in ≈tok | Tool out ≈tok | Tools and actions |'
+      : '| Turn | Trigger UTC | Response UTC | Δ trigger s | Model | Input | Cache write | Cache read | Prompt ctx | Δ ctx next | Output | Tools, paths and task actions |');
     console.log(deep
-      ? '|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|'
-      : '|---:|---|---:|---:|---:|---:|---:|---:|---|');
+      ? '|---:|---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|'
+      : '|---:|---|---|---:|---|---:|---:|---:|---:|---:|---:|---|');
     for (const [i, turn] of trace.turns.entries()) {
       const activity = turn.tools.map(tool => {
         const workflows = (tool.workflows || []).map(w => {
@@ -379,11 +392,14 @@ if (plannerDetailId || agentDetailId) {
         return `${tool.name}${tool.operation !== 'other' ? ` ${tool.operation}` : ''}${tool.path ? ': ' + tool.path : ''}${tool.taskScope ? ` [${tool.taskScope}]` : ''}${workflows ? ': ' + workflows : ''}${sizes ? ` {${sizes}}` : ''}${result}`;
       }).join('<br>') || '—';
       const delta = turn.nextContextDelta === undefined ? '—' : `${turn.nextContextDelta >= 0 ? '+' : ''}${kTok(turn.nextContextDelta)}`;
+      const trigger = turn.triggerTimestamp || '—';
+      const response = turn.responseTimestamp || '—';
+      const triggerGap = turn.triggerGapSeconds === null ? '—' : turn.triggerGapSeconds;
       if (deep) {
         const usd = turn.usd === null ? '—' : turn.usd.toFixed(4);
         const d = turn.debug || {};
-        console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.output)} | ${MUnits(turn.units)} | ${usd} | ${kTok(turn.contextTokens)} | ${delta} | ≈${kTok(d.userRoughTokens || 0)} | ≈${kTok(d.toolInputRoughTokens || 0)} | ≈${kTok(d.toolResultRoughTokens || 0)} | ${activity} |`);
-      } else console.log(`| ${i + 1} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.contextTokens)} | ${delta} | ${kTok(turn.output)} | ${activity} |`);
+        console.log(`| ${i + 1} | ${trigger} | ${response} | ${triggerGap} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.output)} | ${MUnits(turn.units)} | ${usd} | ${kTok(turn.contextTokens)} | ${delta} | ≈${kTok(d.userRoughTokens || 0)} | ≈${kTok(d.toolInputRoughTokens || 0)} | ≈${kTok(d.toolResultRoughTokens || 0)} | ${activity} |`);
+      } else console.log(`| ${i + 1} | ${trigger} | ${response} | ${triggerGap} | ${turn.model} | ${kTok(turn.input)} | ${kTok(turn.cacheWrite)} | ${kTok(turn.cacheRead)} | ${kTok(turn.contextTokens)} | ${delta} | ${kTok(turn.output)} | ${activity} |`);
     }
     const paths = (entries, label) => {
       const rows = Object.entries(entries || {}).sort((a, b) => b[1] - a[1]);
