@@ -3,7 +3,7 @@ id: task-417-01-hit-shake
 description: "Cpp: hit shake preset played from the miner on each damage taken"
 parent: task-417-camera-shake-on-damage
 kind: task
-status: in-progress
+status: done
 ---
 # Camera shake when the miner takes damage: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor build green; the miner damage handler plays the hit preset for damage > 0 including the lethal hit, nothing when no damage is consumed; the preset values match Q4; full RogueRigs automation suite with no new failure; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 87037, cache read 486864, output 8807
+- usage: turns 17, context start 12k peak 47k, resumes 0, 10 min, units 0.20 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T18:23:52Z
 - waiting_for: none
-- result: open
+- result: URRHitCameraShake (5 uu, 0.2 s, 25 Hz) played from ARRMiner::HandleDamageReceived when Damage>0, HitShakeClass EditDefaultsOnly; build green, suite 272 pass, only 4 known failures; commit 07c780b9
 
 ## Relations
 - [[task-417-camera-shake-on-damage]] — parent global task.

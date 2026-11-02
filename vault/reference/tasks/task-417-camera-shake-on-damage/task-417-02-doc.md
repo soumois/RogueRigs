@@ -3,7 +3,7 @@ id: task-417-02-doc
 description: "Doc: update sys-camera-shake and sys-player for the hit shake"
 parent: task-417-camera-shake-on-damage
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake when the miner takes damage: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:34:11Z
 - waiting_for: none
 - result: open
 

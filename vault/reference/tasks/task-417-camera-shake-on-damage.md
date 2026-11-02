@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-11-02: [[sys-camera-shake]] (task-310): one shared C++ shake, URRCameraShakeLibrary::PlayCameraShake(WorldContext, Scale, ShakeClass) on the first local player camera manager, translation-only Perlin pattern, chest preset 0.2 s, (0,4,4) uu, 25 Hz, bSingleInstance true (a new call restarts it, no stacking), no distance falloff; its doc says "Heavy slam and explosions do not shake the camera (owner default Q21, 2026-10-23)": this request reverses that default on the owner's word, no conflict question needed. No gdd node describes camera shake today ([[visual-style]] camera line only); decided values go into [[visual-style]] (mixing), [[miner]] (hit), [[explosions]] (explosion shake) and [[enemy-heavy]] (slam shake) through the edits applied on confirmation. Values marked open before the questions: every strength, duration, falloff, max distance and the mixing rule. Milestone: juice is M3 work, done now on the owner request (task-310 was M2). Units: 1 m = 100 uu; a grid cell is 67 uu. [[miner]]: i-frames 0.25 s after a hit, so at most one hit shake per 0.25 s. [[sys-player]]: ARRMiner already binds the health set OnDamageReceived (i-frames, blink): the trigger point. [[sys-damage]]: OnDamageReceived fires only on consumed damage, never on a refused spec.
 - confirmed_by_owner: yes (2026-11-02, "ok")
 - milestone: M3
-- next_step: task-417-01-hit-shake
+- next_step: task-417-02-doc
 - started: 2026-11-02T18:23:51Z
 - waiting_for: none
 - result: open
