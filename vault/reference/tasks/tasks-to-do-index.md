@@ -11,5 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-419-camera-shake-on-heavy-slam]] — The heavy ground slam shakes the camera when the miner is within a max distance, a bit stronger when closer. Status in-progress.
 - [[task-420-single-source-game-values]] — Make the stat CSV tables the only place a game value lives: tests read them, gdd nodes cite the row instead of copying numbers. Status wait-answers.
