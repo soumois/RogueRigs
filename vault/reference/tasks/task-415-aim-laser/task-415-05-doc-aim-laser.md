@@ -7,7 +7,7 @@ status: todo
 ---
 # Aim laser replaces the white aim chevrons: doc
 
-- goal: Document task-415: rewrite sys-aim-indicator for the aim laser (component, Plane mesh, M_AimLaser parameter contract and defaults, Muzzle origin and height, stop-at-rock, hiding, where to tune, chevron material removed) and update sys-player (the miner aim indicator component); facts only from the commits and change summaries; decided values from the global request, gdd_check and Questions.
+- goal: Document task-415: rewrite sys-aim-indicator for the aim laser (component, Plane mesh, M_AimLaser parameter contract and defaults, Muzzle origin and height, stop at the first robot or rock, hiding, where to tune, chevron material removed) and update sys-player (the miner aim indicator component); facts only from the commits and change summaries; decided values from the global request, gdd_check and Questions.
 - agent: doc
 - depends_on: task-415-01-mat-aim-laser, task-415-02-aim-laser-component, task-415-03-delete-aim-chevrons
 - inputs: task-415-aim-laser (vault/reference/tasks/task-415-aim-laser.md), sys-aim-indicator (vault/reference/tech/systems/combat/sys-aim-indicator.md), sys-player (vault/reference/tech/systems/core/sys-player.md), aim-indicator (vault/reference/gdd/art-audio/aim-indicator.md), agent-doc (vault/reference/agents/agent-doc.md)
