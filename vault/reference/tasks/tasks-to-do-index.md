@@ -11,5 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-418-camera-shake-on-explosions]] — Each barrel or kamikaze explosion shakes the camera, a bit stronger when closer, nothing beyond a max distance. Status todo.
+- [[task-418-camera-shake-on-explosions]] — Each barrel or kamikaze explosion shakes the camera, a bit stronger when closer, nothing beyond a max distance. Status in-progress.
 - [[task-419-camera-shake-on-heavy-slam]] — The heavy ground slam shakes the camera when the miner is within a max distance, a bit stronger when closer. Status todo.

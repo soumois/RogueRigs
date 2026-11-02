@@ -3,7 +3,7 @@ id: task-418-01-explosion-shake
 description: "Cpp: explosion shake preset played at each resolved explosion with distance falloff"
 parent: task-418-camera-shake-on-explosions
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake from nearby explosions: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:35:47Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-418-camera-shake-on-explosions
 description: "Global task: Each barrel or kamikaze explosion shakes the camera, a bit stronger when closer, nothing beyond a max distance."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake from nearby explosions
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "ok")
 - milestone: M3
 - next_step: task-418-01-explosion-shake
-- started: open
+- started: 2026-11-02T18:35:47Z
 - waiting_for: none
 - result: open
 
