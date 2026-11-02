@@ -13,6 +13,7 @@ status: approved
   - characters: hurts robots and the miner, never a one-shot on the miner; a source may deal a different value to the miner than to robots (kamikaze 40 to robots, 30 to the miner, provisional, owner 2026-10-23).
 - Chain reactions (barrel → kamikaze → barrel) resolve one link at a time, with a 0.08 s delay between links (provisional, owner 2026-10-02). The delay also serves juice (P1).
 - An explosion source explodes only once.
+- Camera shake (provisional, owner 2026-11-02, [[task-418-camera-shake-on-explosions]]): every explosion (barrel, kamikaze) shakes the camera when it goes off, not during a fuse; strength at the centre barrel 10 uu, kamikaze 7 uu, 0.35 s; full at the centre, 50 % at the max distance, 0 beyond; max distance 2 × the explosion radius (barrel 1400 uu = 14 m, kamikaze 624 uu, about 6 m). Mixed with the hit shake ([[visual-style]]).
 - Radius and damage per source: [[barrel]], [[enemy-kamikaze]]. Grey-box look (M1): an orange sphere that grows to the radius and fades in 0.25 s.
 
 - Visible explosion (owner 2026-10-10): the visible part is about 5 % larger than the collision radius, so the player is never hit outside what is shown, and it stays 0.1 s at its final state before fading, so it can be seen.

@@ -14,6 +14,7 @@ status: approved
 - Standing against a block makes the [[drone]] dig it.
 - Explosions never one-shot the miner ([[explosions]]).
 - Invulnerability frames after a hit: 0.25 s, the miner blinks (provisional, owner 2026-10-02).
+- Hit shake (provisional, owner 2026-11-02, [[task-417-camera-shake-on-damage]]): every hit that takes health from the miner, the lethal one included, shakes the camera: 5 uu, 0.2 s, same strength whatever the damage; a hit refused by the i-frames does not shake. Mixing: [[visual-style]].
 - Stats: see [[player-stats]].
 - Healing: only from heal pickups dropped by heal ore ([[heal-ore]]).
 - Death ends the run ([[run-structure]]). M1 (single arena): controls cut, "Game Over" text, the level restarts after 3 s (owner 2026-10-02).
