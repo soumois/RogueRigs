@@ -3,7 +3,7 @@ id: task-415-aim-laser
 description: "Global task: replace the ground aim chevrons of the miner by a thin white-gold aim laser from the rifle muzzle, as in the owner video."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser replaces the white aim chevrons
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "Ok, tout par défaut")
 - milestone: M3
 - next_step: task-415-01-mat-aim-laser
-- started: open
+- started: 2026-11-02T17:29:01Z
 - waiting_for: none
 - result: open
 

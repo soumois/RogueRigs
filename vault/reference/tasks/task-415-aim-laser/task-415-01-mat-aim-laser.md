@@ -3,7 +3,7 @@ id: task-415-01-mat-aim-laser
 description: "Bp: create the M_AimLaser material (white-gold core, soft glow, tip fade) in Content/RogueRigs/FX/"
 parent: task-415-aim-laser
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser replaces the white aim chevrons: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T17:29:01Z
 - waiting_for: none
 - result: open
 
