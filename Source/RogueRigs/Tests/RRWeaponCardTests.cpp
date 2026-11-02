@@ -10,6 +10,7 @@
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRShotgun.h"
@@ -186,8 +187,8 @@ bool FRRWeaponCardsDefaultsTest::RunTest(const FString& Parameters)
 	}
 	TestTrue(TEXT("card type NewWeapon"), Shotgun.IsNewWeapon());
 	TestEqual(TEXT("title"), Shotgun.DisplayName.ToString(), FString(TEXT("New weapon")));
-	TestEqual(TEXT("shotgun name"), Shotgun.TargetText.ToString(), FString(TEXT("Shotgun")));
-	TestEqual(TEXT("launcher name"), Launcher.TargetText.ToString(), FString(TEXT("Turret launcher")));
+	TestEqual(TEXT("shotgun name = CSV DisplayName"), Shotgun.TargetText.ToString(), RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).DisplayName);
+	TestEqual(TEXT("launcher name = CSV DisplayName"), Launcher.TargetText.ToString(), RRTestStats::WeaponRow(*this, RRTestStats::TurretLauncherRow).DisplayName);
 	TestEqual(TEXT("shotgun description"), Shotgun.DescriptionText.ToString(), Catalogue[0].Description.ToString());
 	TestTrue(TEXT("no value text"), Shotgun.ValueText.IsEmpty());
 	TestTrue(TEXT("weapon class kept"), Shotgun.WeaponClass.Get() == ARRShotgun::StaticClass());
@@ -311,6 +312,10 @@ bool FRRWeaponCardsPickEquipsTest::RunTest(const FString& Parameters)
 	}
 	const FGameplayAttribute Damage = URRWeaponAttributeSet::GetDamageAttribute();
 	const FGameplayAttribute FireRate = URRWeaponAttributeSet::GetFireRateAttribute();
+	// Base values: the WeaponStats.csv rows.
+	const FRRWeaponStatsRow RifleRow = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow);
+	const FRRWeaponStatsRow ShotgunRow = RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow);
+	const FRRWeaponStatsRow LauncherRow = RRTestStats::WeaponRow(*this, RRTestStats::TurretLauncherRow);
 
 	// A global damage card and a rifle-only fire rate card picked before the shotgun arrives.
 	FRRUpgradeCard GlobalDamage;
@@ -345,9 +350,9 @@ bool FRRWeaponCardsPickEquipsTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("offer ended"), S.Upgrades->HasOffer());
 	TestEqual(TEXT("card recorded"), S.Upgrades->GetPickedUpgrades().Num(), PickedBefore + 1);
 	TestTrue(TEXT("recorded card points at the acquired shotgun"), S.Upgrades->GetPickedUpgrades().Last().TargetWeapon.Get() == Shotgun);
-	TestEqual(TEXT("shotgun damage = base 6 with the global card replayed"), WeaponAttr(Shotgun, Damage), 6.f * (1.f + GlobalDamage.Value), 1e-4f);
-	TestEqual(TEXT("shotgun fire rate = base 2 (rifle card not replayed)"), WeaponAttr(Shotgun, FireRate), 2.f, 1e-4f);
-	TestEqual(TEXT("rifle damage unchanged by the pick"), WeaponAttr(S.Rifle, Damage), 10.f * (1.f + GlobalDamage.Value), 1e-4f);
+	TestEqual(TEXT("shotgun damage = CSV Damage with the global card replayed"), WeaponAttr(Shotgun, Damage), ShotgunRow.Damage * (1.f + GlobalDamage.Value), 1e-4f);
+	TestEqual(TEXT("shotgun fire rate = CSV FireRate (rifle card not replayed)"), WeaponAttr(Shotgun, FireRate), ShotgunRow.FireRate, 1e-4f);
+	TestEqual(TEXT("rifle damage unchanged by the pick"), WeaponAttr(S.Rifle, Damage), RifleRow.Damage * (1.f + GlobalDamage.Value), 1e-4f);
 	TestFalse(TEXT("the same weapon card is refused once owned"), S.Upgrades->ApplyUpgrade(ShotgunCard));
 	TestEqual(TEXT("still two weapons"), S.Miner->GetWeapons().Num(), 2);
 
@@ -383,7 +388,7 @@ bool FRRWeaponCardsPickEquipsTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("three weapons"), S.Miner->GetWeapons().Num(), 3);
-	TestEqual(TEXT("launcher damage = base 6 with the global card replayed"), WeaponAttr(Launcher, Damage), 6.f * (1.f + GlobalDamage.Value), 1e-4f);
+	TestEqual(TEXT("launcher damage = CSV Damage with the global card replayed"), WeaponAttr(Launcher, Damage), LauncherRow.Damage * (1.f + GlobalDamage.Value), 1e-4f);
 	return true;
 }
 

@@ -15,6 +15,7 @@
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRTurret.h"
@@ -37,16 +38,25 @@ namespace RRTurretTests
 	const FIntPoint FrontOfRockCell(35, 40);
 	const FIntPoint VisibleCell(39, 40);
 
-	/** TurretLauncher CSV row (turret gdd, owner 2026-10-05). */
-	constexpr float TurretDamage = 6.f;
-	constexpr float TurretFireRate = 3.3f;
-	constexpr float TurretPierce = 4.f;
-	constexpr float TurretCritChance = 0.05f;
-	constexpr float TurretCritDamage = 1.5f;
-	constexpr int32 TurretCharges = 2;
-	constexpr float RechargeSeconds = 12.f;
-	constexpr float TurretLifetime = 10.f;
-	constexpr float TurretRange = 1500.f;
+	// Expected stats: WeaponStats.csv row TurretLauncher, read through Tests/RRTestStatsRows.h (no literal copy, task-420).
+
+	/** TurretLauncher row of WeaponStats.csv (test error when missing). */
+	FRRWeaponStatsRow ReadLauncherRow(FAutomationTestBase& Test)
+	{
+		return RRTestStats::WeaponRow(Test, RRTestStats::TurretLauncherRow);
+	}
+
+	/** Turret charges of the row: its MagazineSize. */
+	int32 ChargesOf(const FRRWeaponStatsRow& Row)
+	{
+		return FMath::RoundToInt32(Row.MagazineSize);
+	}
+
+	/** Seconds to recharge one turret charge: ReloadTime / ReloadSpeed of the row. */
+	float RechargeOf(const FRRWeaponStatsRow& Row)
+	{
+		return Row.ReloadTime / Row.ReloadSpeed;
+	}
 
 	/** Points the miner's stick aim along Direction (camera yaw 0: screen up = world +X, screen right = world +Y). */
 	void AimAlong(ARRMiner* Miner, const FVector& Direction)
@@ -138,16 +148,18 @@ bool FRRTurretLauncherStatsTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("the launcher is in the miner's weapon list"), Miner->GetWeapons().Contains(Launcher));
 	TestEqual(TEXT("FindTurretLauncher finds it"), Miner->FindTurretLauncher(), Launcher);
 	TestEqual(TEXT("launcher owned by the miner"), Launcher->GetOwnerMiner(), Miner);
-	TestEqual(TEXT("damage 6"), GetAttribute(Launcher, URRWeaponAttributeSet::GetDamageAttribute()), TurretDamage, 1e-4f);
-	TestEqual(TEXT("fire rate 3.3 shots/s"), GetAttribute(Launcher, URRWeaponAttributeSet::GetFireRateAttribute()), TurretFireRate, 1e-4f);
-	TestEqual(TEXT("pierce 4"), GetAttribute(Launcher, URRWeaponAttributeSet::GetPierceAttribute()), TurretPierce, 1e-4f);
-	TestEqual(TEXT("crit chance 5 %"), GetAttribute(Launcher, URRWeaponAttributeSet::GetCritChanceAttribute()), TurretCritChance, 1e-4f);
-	TestEqual(TEXT("crit damage x1.5"), GetAttribute(Launcher, URRWeaponAttributeSet::GetCritDamageAttribute()), TurretCritDamage, 1e-4f);
-	TestEqual(TEXT("2 charges max"), Launcher->GetMaxCharges(), TurretCharges);
-	TestEqual(TEXT("starts with 2 charges"), Launcher->GetCharges(), TurretCharges);
-	TestEqual(TEXT("recharge 12 s"), Launcher->GetRechargeDuration(), RechargeSeconds, 1e-4f);
-	TestEqual(TEXT("turret lifetime 10 s"), Launcher->GetTurretLifetime(), TurretLifetime, 1e-4f);
-	TestEqual(TEXT("range 1500 uu"), Launcher->GetRange(), TurretRange, 1e-3f);
+	const FRRWeaponStatsRow Row = ReadLauncherRow(*this);
+	const int32 Charges = ChargesOf(Row);
+	TestEqual(TEXT("damage = CSV Damage"), GetAttribute(Launcher, URRWeaponAttributeSet::GetDamageAttribute()), Row.Damage, 1e-4f);
+	TestEqual(TEXT("fire rate = CSV FireRate"), GetAttribute(Launcher, URRWeaponAttributeSet::GetFireRateAttribute()), Row.FireRate, 1e-4f);
+	TestEqual(TEXT("pierce = CSV Pierce"), GetAttribute(Launcher, URRWeaponAttributeSet::GetPierceAttribute()), Row.Pierce, 1e-4f);
+	TestEqual(TEXT("crit chance = CSV CritChance"), GetAttribute(Launcher, URRWeaponAttributeSet::GetCritChanceAttribute()), Row.CritChance, 1e-4f);
+	TestEqual(TEXT("crit damage = CSV CritDamage"), GetAttribute(Launcher, URRWeaponAttributeSet::GetCritDamageAttribute()), Row.CritDamage, 1e-4f);
+	TestEqual(TEXT("max charges = CSV MagazineSize"), Launcher->GetMaxCharges(), Charges);
+	TestEqual(TEXT("starts with every charge"), Launcher->GetCharges(), Charges);
+	TestEqual(TEXT("recharge = CSV ReloadTime / ReloadSpeed"), Launcher->GetRechargeDuration(), RechargeOf(Row), 1e-4f);
+	TestEqual(TEXT("turret lifetime = CSV TurretLifetime"), Launcher->GetTurretLifetime(), Row.TurretLifetime, 1e-4f);
+	TestEqual(TEXT("range = CSV Range"), Launcher->GetRange(), Row.Range, 1e-3f);
 	TestFalse(TEXT("not recharging when full"), Launcher->IsRecharging());
 	TestFalse(TEXT("the launcher never auto-fires"), Launcher->GetAutoFireComponent()->IsFiring());
 
@@ -159,7 +171,7 @@ bool FRRTurretLauncherStatsTest::RunTest(const FString& Parameters)
 		++Turrets;
 	}
 	TestEqual(TEXT("no turret without the button"), Turrets, 0);
-	TestEqual(TEXT("charges untouched"), Launcher->GetCharges(), TurretCharges);
+	TestEqual(TEXT("charges untouched"), Launcher->GetCharges(), Charges);
 	return true;
 }
 
@@ -181,47 +193,66 @@ bool FRRTurretChargesTest::RunTest(const FString& Parameters)
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Launcher->OnTurretChargesChanged.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleTurretChargesChanged);
 
+	// Charges and recharge time from the row (MagazineSize charges, ReloadTime / ReloadSpeed each).
+	const FRRWeaponStatsRow Row = ReadLauncherRow(*this);
+	const int32 Charges = ChargesOf(Row);
+	const float Recharge = RechargeOf(Row);
+	if (!TestTrue(TEXT("CSV: at least one charge and a recharge longer than 0.2 s"), Charges >= 1 && Recharge > 0.2f))
+	{
+		return false;
+	}
+
 	// The button path: ARRMiner::PlaceTurret.
 	ARRTurret* First = Miner->PlaceTurret();
 	TestNotNull(TEXT("first press places a turret"), First);
-	TestEqual(TEXT("1 charge left"), Launcher->GetCharges(), 1);
+	TestEqual(TEXT("one charge spent"), Launcher->GetCharges(), Charges - 1);
 	TestTrue(TEXT("the spent charge recharges"), Launcher->IsRecharging());
-	TestEqual(TEXT("recharge 12 s left"), Launcher->GetRechargeRemaining(), RechargeSeconds, 1e-4f);
+	TestEqual(TEXT("full recharge left"), Launcher->GetRechargeRemaining(), Recharge, 1e-4f);
 	if (TestEqual(TEXT("one charge broadcast"), Recorder->GetTurretCharges().Num(), 1))
 	{
-		TestEqual(TEXT("broadcast (1, 2, 12)"), Recorder->GetTurretCharges()[0], FVector(1.f, TurretCharges, RechargeSeconds));
+		TestEqual(TEXT("broadcast (charges - 1, charges, recharge)"), Recorder->GetTurretCharges()[0], FVector(Charges - 1, Charges, Recharge));
 	}
 
-	ARRTurret* Second = Miner->PlaceTurret();
-	TestNotNull(TEXT("second press places a turret"), Second);
+	// Every other charge spent: still one recharge, not restarted.
+	for (int32 Press = 1; Press < Charges; ++Press)
+	{
+		TestNotNull(FString::Printf(TEXT("press %d places a turret"), Press + 1), Miner->PlaceTurret());
+	}
 	TestEqual(TEXT("0 charges left"), Launcher->GetCharges(), 0);
-	TestEqual(TEXT("still one recharge, not restarted"), Launcher->GetRechargeRemaining(), RechargeSeconds, 1e-4f);
-	TestNull(TEXT("third press without a charge places nothing"), Miner->PlaceTurret());
-	TestEqual(TEXT("2 turrets placed"), Launcher->GetTurretsPlaced(), 2);
+	TestEqual(TEXT("still one recharge, not restarted"), Launcher->GetRechargeRemaining(), Recharge, 1e-4f);
+	TestNull(TEXT("a press without a charge places nothing"), Miner->PlaceTurret());
+	TestEqual(TEXT("one turret per charge placed"), Launcher->GetTurretsPlaced(), Charges);
 
-	// One charge at a time: 11.9 s nothing, 12 s one charge, 24 s the second (float steps: the last one overshoots).
-	Launcher->AdvanceRecharge(11.9f);
-	TestEqual(TEXT("no charge after 11.9 s"), Launcher->GetCharges(), 0);
-	TestEqual(TEXT("progress 11.9 / 12"), Launcher->GetRechargeProgress(), 11.9f / 12.f, 1e-3f);
+	// One charge at a time: 0.1 s before the recharge nothing, 0.1 s after it one charge with the leftover carried, then one more
+	// charge per recharge until full (float steps: the last one overshoots).
+	Launcher->AdvanceRecharge(Recharge - 0.1f);
+	TestEqual(TEXT("no charge 0.1 s before the recharge ends"), Launcher->GetCharges(), 0);
+	TestEqual(TEXT("progress (recharge - 0.1) / recharge"), Launcher->GetRechargeProgress(), (Recharge - 0.1f) / Recharge, 1e-3f);
 	Launcher->AdvanceRecharge(0.2f);
-	TestEqual(TEXT("1 charge after 12.1 s"), Launcher->GetCharges(), 1);
-	TestTrue(TEXT("the second charge recharges next"), Launcher->IsRecharging());
-	TestEqual(TEXT("leftover 0.1 s carried"), Launcher->GetRechargeRemaining(), 11.9f, 1e-3f);
-	Launcher->AdvanceRecharge(12.f);
-	TestEqual(TEXT("2 charges after 24.1 s"), Launcher->GetCharges(), TurretCharges);
+	TestEqual(TEXT("1 charge 0.1 s after the recharge"), Launcher->GetCharges(), 1);
+	TestEqual(TEXT("the next charge recharges unless full"), Launcher->IsRecharging(), Charges > 1);
+	if (Charges > 1)
+	{
+		TestEqual(TEXT("leftover 0.1 s carried"), Launcher->GetRechargeRemaining(), Recharge - 0.1f, 1e-3f);
+	}
+	for (int32 Charge = 1; Charge < Charges; ++Charge)
+	{
+		Launcher->AdvanceRecharge(Recharge);
+	}
+	TestEqual(TEXT("every charge back"), Launcher->GetCharges(), Charges);
 	TestFalse(TEXT("no recharge when full"), Launcher->IsRecharging());
-	TestEqual(TEXT("last broadcast (2, 2, 0)"), Recorder->GetTurretCharges().Last(), FVector(TurretCharges, TurretCharges, 0.f));
+	TestEqual(TEXT("last broadcast (charges, charges, 0)"), Recorder->GetTurretCharges().Last(), FVector(Charges, Charges, 0.f));
 
-	// ReloadSpeed shortens the recharge (reload speed upgrades).
-	SetAttribute(Launcher, URRWeaponAttributeSet::GetReloadSpeedAttribute(), 2.f);
+	// ReloadSpeed shortens the recharge (reload speed upgrades): twice the CSV ReloadSpeed halves it.
+	SetAttribute(Launcher, URRWeaponAttributeSet::GetReloadSpeedAttribute(), 2.f * Row.ReloadSpeed);
 	TestNotNull(TEXT("placement after the recharge"), Miner->PlaceTurret());
-	TestEqual(TEXT("recharge 12 / 2 = 6 s"), Launcher->GetRechargeRemaining(), 6.f, 1e-4f);
+	TestEqual(TEXT("recharge halved"), Launcher->GetRechargeRemaining(), 0.5f * Recharge, 1e-4f);
 
 	// A MagazineSize upgrade adds a charge to recharge.
-	Launcher->AdvanceRecharge(6.f);
-	SetAttribute(Launcher, URRWeaponAttributeSet::GetMagazineSizeAttribute(), 3.f);
+	Launcher->AdvanceRecharge(0.5f * Recharge);
+	SetAttribute(Launcher, URRWeaponAttributeSet::GetMagazineSizeAttribute(), Row.MagazineSize + 1.f);
 	Launcher->AdvanceRecharge(0.01f);
-	TestEqual(TEXT("3 charges max after the upgrade"), Launcher->GetMaxCharges(), 3);
+	TestEqual(TEXT("one more max charge after the upgrade"), Launcher->GetMaxCharges(), Charges + 1);
 	TestTrue(TEXT("the new charge recharges"), Launcher->IsRecharging());
 	return true;
 }
@@ -299,36 +330,40 @@ bool FRRTurretStatCopyTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// Upgraded launcher at placement time.
-	SetAttribute(Launcher, URRWeaponAttributeSet::GetDamageAttribute(), 12.f);
-	SetAttribute(Launcher, URRWeaponAttributeSet::GetPierceAttribute(), 6.f);
+	// Upgraded launcher at placement time: damage x2 and pierce +2 over the CSV row.
+	const FRRWeaponStatsRow Row = ReadLauncherRow(*this);
+	const float UpgradedDamage = 2.f * Row.Damage;
+	const int32 UpgradedPierce = FMath::RoundToInt32(Row.Pierce) + 2;
+	SetAttribute(Launcher, URRWeaponAttributeSet::GetDamageAttribute(), UpgradedDamage);
+	SetAttribute(Launcher, URRWeaponAttributeSet::GetPierceAttribute(), static_cast<float>(UpgradedPierce));
 	ARRTurret* Turret = Miner->PlaceTurret();
 	if (!TestNotNull(TEXT("turret placed"), Turret))
 	{
 		return false;
 	}
-	TestEqual(TEXT("copied damage 12"), GetAttribute(Turret, URRWeaponAttributeSet::GetDamageAttribute()), 12.f, 1e-4f);
-	TestEqual(TEXT("copied pierce 6"), Turret->GetPierceCount(), 6);
-	TestEqual(TEXT("copied fire rate 3.3"), GetAttribute(Turret, URRWeaponAttributeSet::GetFireRateAttribute()), TurretFireRate, 1e-4f);
-	TestEqual(TEXT("copied crit chance"), GetAttribute(Turret, URRWeaponAttributeSet::GetCritChanceAttribute()), TurretCritChance, 1e-4f);
-	TestEqual(TEXT("copied crit damage"), GetAttribute(Turret, URRWeaponAttributeSet::GetCritDamageAttribute()), TurretCritDamage, 1e-4f);
-	TestEqual(TEXT("copied range"), Turret->GetRange(), TurretRange, 1e-3f);
+	TestEqual(TEXT("copied upgraded damage"), GetAttribute(Turret, URRWeaponAttributeSet::GetDamageAttribute()), UpgradedDamage, 1e-4f);
+	TestEqual(TEXT("copied upgraded pierce"), Turret->GetPierceCount(), UpgradedPierce);
+	TestEqual(TEXT("copied fire rate = CSV FireRate"), GetAttribute(Turret, URRWeaponAttributeSet::GetFireRateAttribute()), Row.FireRate, 1e-4f);
+	TestEqual(TEXT("copied crit chance = CSV CritChance"), GetAttribute(Turret, URRWeaponAttributeSet::GetCritChanceAttribute()), Row.CritChance, 1e-4f);
+	TestEqual(TEXT("copied crit damage = CSV CritDamage"), GetAttribute(Turret, URRWeaponAttributeSet::GetCritDamageAttribute()), Row.CritDamage, 1e-4f);
+	TestEqual(TEXT("copied range = CSV Range"), Turret->GetRange(), Row.Range, 1e-3f);
 	TestEqual(TEXT("copied projectile speed"), Turret->GetProjectileSpeed(), Launcher->GetProjectileSpeed(), 1e-3f);
 	TestTrue(TEXT("bullet class from the launcher"), Turret->GetProjectileClass() == ARRTurretBullet::StaticClass());
-	TestEqual(TEXT("lifetime 10 s"), Turret->GetLifetime(), TurretLifetime, 1e-4f);
-	TestEqual(TEXT("life span 10 s"), Turret->GetLifeSpan(), TurretLifetime, 0.05f);
+	TestEqual(TEXT("lifetime = CSV TurretLifetime"), Turret->GetLifetime(), Row.TurretLifetime, 1e-4f);
+	TestEqual(TEXT("life span = CSV TurretLifetime"), Turret->GetLifeSpan(), Row.TurretLifetime, 0.05f);
 	TestFalse(TEXT("turret fires without magazine"), Turret->GetAutoFireComponent()->UsesMagazine());
 	TestFalse(TEXT("turret has no collision (invincible, never blocks)"), Turret->GetActorEnableCollision());
 	TestFalse(TEXT("turret is not a miner weapon"), Miner->GetWeapons().Contains(static_cast<ARRWeapon*>(Turret)));
 	TestNull(TEXT("turret not held by the miner"), Turret->GetOwnerMiner());
 
-	// Later upgrades reach only turrets placed later.
-	SetAttribute(Launcher, URRWeaponAttributeSet::GetDamageAttribute(), 20.f);
-	TestEqual(TEXT("placed turret keeps damage 12"), GetAttribute(Turret, URRWeaponAttributeSet::GetDamageAttribute()), 12.f, 1e-4f);
+	// Later upgrades (damage x3) reach only turrets placed later.
+	const float LaterDamage = 3.f * Row.Damage;
+	SetAttribute(Launcher, URRWeaponAttributeSet::GetDamageAttribute(), LaterDamage);
+	TestEqual(TEXT("placed turret keeps its damage"), GetAttribute(Turret, URRWeaponAttributeSet::GetDamageAttribute()), UpgradedDamage, 1e-4f);
 	ARRTurret* Later = Miner->PlaceTurret();
 	if (TestNotNull(TEXT("second turret placed"), Later))
 	{
-		TestEqual(TEXT("new turret has damage 20"), GetAttribute(Later, URRWeaponAttributeSet::GetDamageAttribute()), 20.f, 1e-4f);
+		TestEqual(TEXT("new turret has the later damage"), GetAttribute(Later, URRWeaponAttributeSet::GetDamageAttribute()), LaterDamage, 1e-4f);
 	}
 	return true;
 }
@@ -404,15 +439,34 @@ bool FRRTurretFireAndLifetimeTest::RunTest(const FString& Parameters)
 	const FVector Base = Turret->GetActorLocation();
 	TestTrue(TEXT("turret 200 uu ahead"), Base.Equals(FVector(200.f, 0.f, 0.f), 0.5f));
 
-	ARRChaser* Near = SpawnFrozenChaser(*this, TestWorld, Base + FVector(700.f, 0.f, 0.f));
+	// Expected fire, hits and lifetime derived from the TurretLauncher row.
+	const FRRWeaponStatsRow Row = ReadLauncherRow(*this);
+	constexpr float NearDistance = 700.f;
+	ARRChaser* Near = SpawnFrozenChaser(*this, TestWorld, Base + FVector(NearDistance, 0.f, 0.f));
 	ARRChaser* Far = SpawnFrozenChaser(*this, TestWorld, Base + FVector(0.f, 1000.f, 0.f));
-	ARRChaser* OutOfRange = SpawnFrozenChaser(*this, TestWorld, Base + FVector(-1600.f, 0.f, 0.f));
+	ARRChaser* OutOfRange = SpawnFrozenChaser(*this, TestWorld, Base + FVector(-(Row.Range + 100.f), 0.f, 0.f));
 	if (!Near || !Far || !OutOfRange)
 	{
 		return false;
 	}
-	TestFalse(TEXT("1600 uu is beyond the 1500 uu range"), Turret->IsValidTarget(OutOfRange));
+	TestFalse(TEXT("100 uu beyond the CSV range is out of range"), Turret->IsValidTarget(OutOfRange));
 	TestTrue(TEXT("1000 uu is within range"), Turret->IsValidTarget(Far));
+
+	// Shots in the first second: the first one in the lock frame, then one every 1 / FireRate; 59 frames follow the lock frame.
+	// One frame of tolerance on the first shot gives the bounds; bullets reach the near robot after NearDistance / speed.
+	constexpr int32 FireFrames = 59;
+	const double Elapsed = FireFrames * static_cast<double>(FrameSeconds);
+	const int32 MinShots = FMath::FloorToInt32((Elapsed - FrameSeconds) * Row.FireRate) + 1;
+	const int32 MaxShots = FMath::FloorToInt32((Elapsed + FrameSeconds) * Row.FireRate) + 1;
+	const double Flight = NearDistance / FMath::Max(Launcher->GetProjectileSpeed(), 1.f);
+	const int32 MinArrived = FMath::Max(0, FMath::FloorToInt32((Elapsed - 2.0 * FrameSeconds - Flight) * Row.FireRate) + 1);
+	AddInfo(FString::Printf(TEXT("CSV FireRate %g: %d to %d shots and at least %d hits in the first second"), Row.FireRate, MinShots, MaxShots, MinArrived));
+
+	// The near robot survives every hit of that second (health from the row).
+	UAbilitySystemComponent* NearASC = Near->GetAbilitySystemComponent();
+	const float NearHealth = (MaxShots + 1) * Row.Damage;
+	NearASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), NearHealth);
+	NearASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), NearHealth);
 	int32 NearHits = 0;
 	float NearDamage = 0.f;
 	Near->GetHealthSet()->OnDamageReceived.AddLambda([&NearHits, &NearDamage](float Damage, bool, float) { ++NearHits; NearDamage = Damage; });
@@ -425,33 +479,37 @@ bool FRRTurretFireAndLifetimeTest::RunTest(const FString& Parameters)
 	TestWorld.Tick();
 	TestEqual(TEXT("keeps the locked robot"), Turret->GetTarget(), static_cast<ARREnemy*>(Near));
 
-	// 1 s of fire at 3.3 shots/s: shots at 0, 0.30, 0.61, 0.91 s.
-	RRTurretTests::TickFrames(TestWorld, 58);
-	TestEqual(TEXT("4 bullets in the first second"), Turret->GetShotCount(), 4);
+	// 1 s of fire at the CSV FireRate.
+	RRTurretTests::TickFrames(TestWorld, FireFrames - 1);
+	const int32 Shots = Turret->GetShotCount();
+	AddInfo(FString::Printf(TEXT("%d bullets, %d hits on the near robot in the first second"), Shots, NearHits));
+	TestTrue(FString::Printf(TEXT("%d to %d bullets in the first second (%d)"), MinShots, MaxShots, Shots), Shots >= MinShots && Shots <= MaxShots);
 	bool bCheckedBullet = false;
 	for (TActorIterator<ARRTurretBullet> It(TestWorld.Get()); It; ++It)
 	{
-		TestEqual(TEXT("bullet pierces 4 robots"), It->GetMaxHits(), 4);
+		TestEqual(TEXT("bullet pierces CSV Pierce robots"), It->GetMaxHits(), FMath::RoundToInt32(Row.Pierce));
 		TestEqual(TEXT("bullet owner: the turret"), It->GetOwner(), static_cast<AActor*>(Turret));
 		bCheckedBullet = true;
 		break;
 	}
 	TestTrue(TEXT("a bullet is in flight"), bCheckedBullet);
-	TestTrue(TEXT("the near robot was hit"), NearHits >= 3);
-	TestEqual(TEXT("6 damage per bullet"), NearDamage, TurretDamage, 1e-3f);
+	TestTrue(FString::Printf(TEXT("the near robot was hit by the bullets that arrived (%d to %d)"), MinArrived, Shots), NearHits >= MinArrived && NearHits <= Shots);
+	TestEqual(TEXT("CSV Damage per bullet"), NearDamage, Row.Damage, 1e-3f);
 
 	// Target gone: retarget the nearest valid robot (the newcomer at 300 uu).
 	Near->Destroy();
 	TestWorld.Tick();
 	TestEqual(TEXT("retargets the nearest robot"), Turret->GetTarget(), static_cast<ARREnemy*>(Newcomer));
 
-	// Lifetime 10 s from placement (61 frames already ticked).
+	// CSV TurretLifetime from placement (FireFrames + 2 frames already ticked): there 0.1 s before it, gone 0.05 s after it.
 	TWeakObjectPtr<ARRTurret> WeakTurret(Turret);
-	const int32 FramesTo99 = FMath::CeilToInt32(9.9f / FrameSeconds) - 61;
-	RRTurretTests::TickFrames(TestWorld, FramesTo99);
-	TestTrue(TEXT("turret still there at 9.9 s"), WeakTurret.IsValid() && !WeakTurret->IsActorBeingDestroyed());
-	RRTurretTests::TickFrames(TestWorld, 9);
-	TestTrue(TEXT("turret gone after 10 s"), !WeakTurret.IsValid() || WeakTurret->IsActorBeingDestroyed());
+	const int32 FramesTicked = FireFrames + 2;
+	const int32 FramesBeforeEnd = FMath::RoundToInt32((Row.TurretLifetime - 0.1f) / FrameSeconds) - FramesTicked;
+	const int32 FramesAfterEnd = FMath::RoundToInt32((Row.TurretLifetime + 0.05f) / FrameSeconds) - FramesTicked - FramesBeforeEnd;
+	RRTurretTests::TickFrames(TestWorld, FramesBeforeEnd);
+	TestTrue(TEXT("turret still there 0.1 s before its lifetime"), WeakTurret.IsValid() && !WeakTurret->IsActorBeingDestroyed());
+	RRTurretTests::TickFrames(TestWorld, FramesAfterEnd);
+	TestTrue(TEXT("turret gone after its lifetime"), !WeakTurret.IsValid() || WeakTurret->IsActorBeingDestroyed());
 	return true;
 }
 

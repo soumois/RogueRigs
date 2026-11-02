@@ -22,6 +22,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "UObject/StrongObjectPtr.h"
@@ -217,9 +218,34 @@ namespace RRWeaponTests
 			FMath::Abs(FrameStart - Expected) <= FrameSeconds + ExactTolerance);
 	}
 
+	/** BurstRifle row of WeaponStats.csv (test error when missing). */
+	FRRWeaponStatsRow ReadRifleRow(FAutomationTestBase& Test)
+	{
+		return RRTestStats::WeaponRow(Test, RRTestStats::BurstRifleRow);
+	}
+
+	/** Bullet gap inside a burst at FireRate: BurstDuty of the period shared by the BurstCount - 1 gaps (0 for single shots). */
+	double BurstGapOf(const FRRWeaponStatsRow& Row, float FireRate)
+	{
+		return Row.BurstCount > 1 ? Row.BurstDuty / FireRate / (Row.BurstCount - 1) : 0.0;
+	}
+
+	/** Pause between the last bullet of a burst and the next burst at FireRate: the rest of the period. */
+	double BurstPauseOf(const FRRWeaponStatsRow& Row, float FireRate)
+	{
+		return 1.0 / FireRate - (Row.BurstCount - 1) * BurstGapOf(Row, FireRate);
+	}
+
+	/** Time of shot ShotIndex (0-based) from the first one, uninterrupted bursts at FireRate. */
+	double BurstShotTimeOf(const FRRWeaponStatsRow& Row, float FireRate, int32 ShotIndex)
+	{
+		const int32 Burst = FMath::Max(Row.BurstCount, 1);
+		return (ShotIndex / Burst) / static_cast<double>(FireRate) + (ShotIndex % Burst) * BurstGapOf(Row, FireRate);
+	}
+
 	/**
 	 * Fires a fresh BP_BurstRifle for two bursts and a shot at FireRate and checks the schedule: bullets Gap apart, the next burst
-	 * Period after the first bullet (pause = Period - 2 * Gap). Returns false if the rifle could not be set up.
+	 * Period after the first bullet (pause = Period - (BurstCount - 1) * Gap). Returns false if the rifle could not be set up.
 	 */
 	bool CheckBurstSchedule(FAutomationTestBase& Test, const FTestWorld& TestWorld, float FireRate, double ExpectedGap, double ExpectedPause)
 	{
@@ -238,30 +264,35 @@ namespace RRWeaponTests
 		AutoFire->OnShotFired.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleShotFired);
 		AutoFire->StartFiring();
 
-		const TArray<FShotSample> Shots = RecordShots(Test, Rifle, Recorder.Get(), 7, 120);
-		if (!Test.TestEqual(FString::Printf(TEXT("FireRate %g: 7 shots recorded"), FireRate), Shots.Num(), 7))
+		const int32 Burst = FMath::Max(Rifle->GetBurstCount(), 1);
+		const int32 NumShots = 2 * Burst + 1;
+		const int32 MaxFrames = FMath::CeilToInt32((2.0 / FireRate + 0.5) / FrameSeconds);
+		const TArray<FShotSample> Shots = RecordShots(Test, Rifle, Recorder.Get(), NumShots, MaxFrames);
+		if (!Test.TestEqual(FString::Printf(TEXT("FireRate %g: two bursts and a shot recorded"), FireRate), Shots.Num(), NumShots))
 		{
 			return false;
 		}
 
 		const FString LabelText = FString::Printf(TEXT("FireRate %g"), FireRate);
 		const TCHAR* Label = *LabelText;
-		const double Period = ExpectedPause + 2.0 * ExpectedGap;
+		const double Period = ExpectedPause + (Burst - 1) * ExpectedGap;
+		FString Times;
 		for (int32 Shot = 0; Shot < Shots.Num(); ++Shot)
 		{
-			const double Expected = (Shot / 3) * Period + (Shot % 3) * ExpectedGap;
+			const double Expected = (Shot / Burst) * Period + (Shot % Burst) * ExpectedGap;
 			CheckShotTime(Test, Label, Shot + 1, Shots[Shot], Expected);
-			Test.TestEqual(FString::Printf(TEXT("%s shot %d index in burst"), Label, Shot + 1), Recorder->GetShotIndices()[Shot], Shot % 3);
+			Test.TestEqual(FString::Printf(TEXT("%s shot %d index in burst"), Label, Shot + 1), Recorder->GetShotIndices()[Shot], Shot % Burst);
+			Times += FString::Printf(TEXT("%.4f s (frame %d) "), Shots[Shot].ExactSeconds, Shots[Shot].Frame);
 		}
 
-		const double Gap1 = Shots[1].ExactSeconds - Shots[0].ExactSeconds;
-		const double Gap2 = Shots[2].ExactSeconds - Shots[1].ExactSeconds;
-		const double Pause = Shots[3].ExactSeconds - Shots[2].ExactSeconds;
-		Test.AddInfo(FString::Printf(TEXT("%s: shots at %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f s (frames %d, %d, %d, %d, %d, %d, %d); gaps %.4f, %.4f s; pause %.4f s"),
-			Label, Shots[0].ExactSeconds, Shots[1].ExactSeconds, Shots[2].ExactSeconds, Shots[3].ExactSeconds, Shots[4].ExactSeconds,
-			Shots[5].ExactSeconds, Shots[6].ExactSeconds, Shots[0].Frame, Shots[1].Frame, Shots[2].Frame, Shots[3].Frame, Shots[4].Frame,
-			Shots[5].Frame, Shots[6].Frame, Gap1, Gap2, Pause));
-		Test.TestTrue(FString::Printf(TEXT("%s gap %.3f s"), Label, ExpectedGap), FMath::Abs(Gap1 - ExpectedGap) <= ExactTolerance && FMath::Abs(Gap2 - ExpectedGap) <= ExactTolerance);
+		bool bGapsOk = true;
+		for (int32 Shot = 1; Shot < Burst; ++Shot)
+		{
+			bGapsOk &= FMath::Abs((Shots[Shot].ExactSeconds - Shots[Shot - 1].ExactSeconds) - ExpectedGap) <= ExactTolerance;
+		}
+		const double Pause = Shots[Burst].ExactSeconds - Shots[Burst - 1].ExactSeconds;
+		Test.AddInfo(FString::Printf(TEXT("%s: shots at %s; pause %.4f s"), Label, *Times, Pause));
+		Test.TestTrue(FString::Printf(TEXT("%s gap %.3f s"), Label, ExpectedGap), bGapsOk);
 		Test.TestTrue(FString::Printf(TEXT("%s pause %.3f s"), Label, ExpectedPause), FMath::Abs(Pause - ExpectedPause) <= ExactTolerance);
 		return true;
 	}
@@ -281,17 +312,23 @@ bool FRRWeaponBurstTimingTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// CSV row BurstRifle (burst-rifle, owner values 2026-10-02): FireRate 1.25, BurstCount 3, BurstDuty 0.2.
-	TestNearlyEqual(TEXT("FireRate 1.25 from the CSV"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetFireRateAttribute()), 1.25f);
-	TestEqual(TEXT("BurstCount 3 from the CSV"), Rifle->GetBurstCount(), 3);
-	TestNearlyEqual(TEXT("BurstDuty 0.2 from the CSV"), Rifle->GetBurstDuty(), 0.2f);
+	// CSV row BurstRifle: FireRate, BurstCount, BurstDuty.
+	const FRRWeaponStatsRow Row = ReadRifleRow(*this);
+	TestNearlyEqual(TEXT("FireRate from the CSV"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetFireRateAttribute()), Row.FireRate);
+	TestEqual(TEXT("BurstCount from the CSV"), Rifle->GetBurstCount(), Row.BurstCount);
+	TestNearlyEqual(TEXT("BurstDuty from the CSV"), Rifle->GetBurstDuty(), Row.BurstDuty);
 	TestTrue(TEXT("auto-fire started at acquisition"), Rifle->GetAutoFireComponent()->IsFiring());
 	Rifle->Destroy();
+	if (!TestTrue(TEXT("CSV: bursts of at least 2 bullets"), Row.BurstCount >= 2))
+	{
+		return false;
+	}
 
-	// FireRate 1.25 (CSV): period 0.8 s, bullets at 0, 0.08, 0.16 s, next burst at 0.8 s (pause 0.64 s).
-	CheckBurstSchedule(*this, TestWorld, 1.25f, 0.08, 0.64);
-	// FireRate 3 (upgraded): period 1/3 s, gap 0.2 / 3 / 2 = 0.0333 s, pause 0.8 / 3 = 0.2667 s.
-	CheckBurstSchedule(*this, TestWorld, 3.f, 0.2 / 3.0 / 2.0, (1.0 - 0.2) / 3.0);
+	// CSV FireRate: period 1 / FireRate, bullets BurstDuty x period / (BurstCount - 1) apart, the next burst one period after the first bullet.
+	CheckBurstSchedule(*this, TestWorld, Row.FireRate, BurstGapOf(Row, Row.FireRate), BurstPauseOf(Row, Row.FireRate));
+	// An upgraded FireRate (scenario value, not a CSV value): the same rule at a shorter period (gap of two frames at 3 shots/s).
+	constexpr float UpgradedFireRate = 3.f;
+	CheckBurstSchedule(*this, TestWorld, UpgradedFireRate, BurstGapOf(Row, UpgradedFireRate), BurstPauseOf(Row, UpgradedFireRate));
 	return true;
 }
 
@@ -310,10 +347,21 @@ bool FRRWeaponMagazineReloadTest::RunTest(const FString& Parameters)
 	AutoFire->StopFiring();
 	AutoFire->Configure(Rifle->GetAbilitySystemComponent(), Rifle->GetBurstCount(), Rifle->GetBurstDuty(), Rifle->GetReloadTime());
 
-	TestNearlyEqual(TEXT("MagazineSize 30"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetMagazineSizeAttribute()), 30.f);
-	TestNearlyEqual(TEXT("magazine full at acquisition"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute()), 30.f);
-	TestNearlyEqual(TEXT("ReloadTime 1.5 s"), Rifle->GetReloadTime(), 1.5f);
-	TestNearlyEqual(TEXT("reload duration 1.5 s at ReloadSpeed 1"), AutoFire->GetReloadDuration(), 1.5f);
+	// CSV row BurstRifle: MagazineSize bullets, a ReloadTime / ReloadSpeed reload.
+	const FRRWeaponStatsRow Row = ReadRifleRow(*this);
+	const int32 Magazine = FMath::RoundToInt32(Row.MagazineSize);
+	const double Reload = Row.ReloadTime / Row.ReloadSpeed;
+	TestNearlyEqual(TEXT("MagazineSize from the CSV"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetMagazineSizeAttribute()), Row.MagazineSize);
+	TestNearlyEqual(TEXT("magazine full at acquisition"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute()), Row.MagazineSize);
+	TestNearlyEqual(TEXT("ReloadTime from the CSV"), Rifle->GetReloadTime(), Row.ReloadTime);
+	TestNearlyEqual(TEXT("reload duration = ReloadTime / ReloadSpeed"), AutoFire->GetReloadDuration(), static_cast<float>(Reload));
+	if (!TestTrue(TEXT("CSV: a magazine of at least 2 bullets"), Magazine >= 2))
+	{
+		return false;
+	}
+	// Last bullet of the magazine at its burst time; the reload replaces the pause, the next burst starts at its end.
+	const double LastShotTime = BurstShotTimeOf(Row, Row.FireRate, Magazine - 1);
+	const int32 MaxFrames = FMath::CeilToInt32((LastShotTime + Reload + 1.0) / FrameSeconds);
 
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Recorder->SetAmmoSource(Rifle->GetAbilitySystemComponent());
@@ -324,48 +372,49 @@ bool FRRWeaponMagazineReloadTest::RunTest(const FString& Parameters)
 
 	int32 ReloadFrames = 0;
 	int32 BadAmmoFrames = 0;
-	float AmmoAfterShot29 = -1.f;
-	const TArray<FShotSample> Shots = RecordShots(*this, Rifle, Recorder.Get(), 31, 600, [&](int32 Frame)
+	float AmmoBeforeLastShot = -1.f;
+	const TArray<FShotSample> Shots = RecordShots(*this, Rifle, Recorder.Get(), Magazine + 1, MaxFrames, [&](int32 Frame)
 	{
 		if (AutoFire->IsReloading())
 		{
 			++ReloadFrames;
 			BadAmmoFrames += WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute()) != 0.f ? 1 : 0;
 		}
-		if (Recorder->GetShotIndices().Num() == 29 && AmmoAfterShot29 < 0.f)
+		if (Recorder->GetShotIndices().Num() == Magazine - 1 && AmmoBeforeLastShot < 0.f)
 		{
-			AmmoAfterShot29 = WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute());
+			AmmoBeforeLastShot = WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute());
 		}
 	});
-	if (!TestEqual(TEXT("31 shots recorded"), Shots.Num(), 31))
+	if (!TestEqual(TEXT("a magazine and one shot recorded"), Shots.Num(), Magazine + 1))
 	{
 		return false;
 	}
 
-	// Shot 30 is the last bullet of burst 10: 9 * 0.8 + 0.16 = 7.36 s; the reload replaces the pause, the next burst starts at its end.
-	const double ReloadStart = Shots[29].ExactSeconds;
-	const double ReloadEnd = Shots[30].ExactSeconds;
-	AddInfo(FString::Printf(TEXT("shot 30 at %.4f s (frame %d), shot 31 at %.4f s (frame %d): reload %.4f s over %d frames; ammo after shot 29 %.0f; ammo at reload end %s"),
-		ReloadStart, Shots[29].Frame, ReloadEnd, Shots[30].Frame, ReloadEnd - ReloadStart, ReloadFrames, AmmoAfterShot29,
+	const FShotSample& LastShot = Shots[Magazine - 1];
+	const FShotSample& NextShot = Shots[Magazine];
+	const double ReloadStart = LastShot.ExactSeconds;
+	const double ReloadEnd = NextShot.ExactSeconds;
+	AddInfo(FString::Printf(TEXT("shot %d at %.4f s (frame %d), shot %d at %.4f s (frame %d): reload %.4f s over %d frames; ammo before the last shot %.0f; ammo at reload end %s"),
+		Magazine, ReloadStart, LastShot.Frame, Magazine + 1, ReloadEnd, NextShot.Frame, ReloadEnd - ReloadStart, ReloadFrames, AmmoBeforeLastShot,
 		Recorder->GetAmmoAtReloadFinished().Num() > 0 ? *FString::SanitizeFloat(Recorder->GetAmmoAtReloadFinished()[0]) : TEXT("none")));
-	CheckShotTime(*this, TEXT("magazine"), 30, Shots[29], 7.36);
-	CheckShotTime(*this, TEXT("magazine"), 31, Shots[30], 7.36 + 1.5);
-	TestNearlyEqual(TEXT("1 bullet left after shot 29"), AmmoAfterShot29, 1.f);
-	TestTrue(TEXT("reload of 1.5 s"), FMath::Abs((ReloadEnd - ReloadStart) - 1.5) <= ExactTolerance);
-	TestTrue(TEXT("reloading for 1.5 s +- 1 frame"), FMath::Abs(ReloadFrames - 90) <= 1);
+	CheckShotTime(*this, TEXT("magazine"), Magazine, LastShot, LastShotTime);
+	CheckShotTime(*this, TEXT("magazine"), Magazine + 1, NextShot, LastShotTime + Reload);
+	TestNearlyEqual(TEXT("1 bullet left before the last shot"), AmmoBeforeLastShot, 1.f);
+	TestTrue(TEXT("reload of ReloadTime / ReloadSpeed"), FMath::Abs((ReloadEnd - ReloadStart) - Reload) <= ExactTolerance);
+	TestTrue(TEXT("reloading for the reload duration +- 1 frame"), FMath::Abs(ReloadFrames - FMath::RoundToInt32(Reload / FrameSeconds)) <= 1);
 	TestEqual(TEXT("Ammo 0 during the whole reload"), BadAmmoFrames, 0);
 	TestEqual(TEXT("one reload started"), Recorder->GetReloadDurations().Num(), 1);
 	if (Recorder->GetReloadDurations().Num() > 0)
 	{
-		TestNearlyEqual(TEXT("OnReloadStarted duration 1.5 s"), Recorder->GetReloadDurations()[0], 1.5f);
+		TestNearlyEqual(TEXT("OnReloadStarted duration = ReloadTime / ReloadSpeed"), Recorder->GetReloadDurations()[0], static_cast<float>(Reload));
 	}
 	TestEqual(TEXT("one reload finished"), Recorder->GetAmmoAtReloadFinished().Num(), 1);
 	if (Recorder->GetAmmoAtReloadFinished().Num() > 0)
 	{
-		TestNearlyEqual(TEXT("Ammo back to 30 at the reload end"), Recorder->GetAmmoAtReloadFinished()[0], 30.f);
+		TestNearlyEqual(TEXT("Ammo back to MagazineSize at the reload end"), Recorder->GetAmmoAtReloadFinished()[0], Row.MagazineSize);
 	}
-	TestEqual(TEXT("shot 31 opens a new burst"), Recorder->GetShotIndices()[30], 0);
-	TestNearlyEqual(TEXT("29 bullets left after shot 31"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute()), 29.f);
+	TestEqual(TEXT("the shot after the reload opens a new burst"), Recorder->GetShotIndices()[Magazine], 0);
+	TestNearlyEqual(TEXT("MagazineSize - 1 bullets left after it"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetAmmoAttribute()), Row.MagazineSize - 1.f);
 	TestFalse(TEXT("not reloading after the refill"), AutoFire->IsReloading());
 	return true;
 }
@@ -495,9 +544,13 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 		Hits.Add({ Damage, bIsCritical, HealthLeft });
 	});
 
+	// CSV row BurstRifle: a normal hit deals Damage, a critical one Damage x CritDamage.
+	const FRRWeaponStatsRow Row = ReadRifleRow(*this);
+	const float NormalDamage = Row.Damage;
+	const float CritHitDamage = Row.Damage * Row.CritDamage;
 	UAbilitySystemComponent* RifleASC = Rifle->GetAbilitySystemComponent();
-	TestNearlyEqual(TEXT("rifle Damage 10"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetDamageAttribute()), 10.f);
-	TestNearlyEqual(TEXT("rifle CritDamage 1.5"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetCritDamageAttribute()), 1.5f);
+	TestNearlyEqual(TEXT("rifle Damage from the CSV"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetDamageAttribute()), Row.Damage);
+	TestNearlyEqual(TEXT("rifle CritDamage from the CSV"), RifleASC->GetNumericAttribute(URRWeaponAttributeSet::GetCritDamageAttribute()), Row.CritDamage);
 
 	// Pierce 1: these checks are about one bullet ending on the still chaser (pierce: PierceFourRobots).
 	RifleASC->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
@@ -510,12 +563,12 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("one hit after the normal shot"), Hits.Num(), 1);
 	const float HealthAfterNormal = TargetHealth(StillChaser);
 	AddInfo(FString::Printf(TEXT("normal shot: destroyed at frame %d near %s; health %.1f"), NormalFrame, *LastLocation.ToCompactString(), HealthAfterNormal));
-	TestNearlyEqual(TEXT("Health lowered by 10"), HealthAfterNormal, MaxHealth - 10.f);
+	TestNearlyEqual(TEXT("Health lowered by Damage"), HealthAfterNormal, MaxHealth - NormalDamage);
 	if (Hits.Num() >= 1)
 	{
-		TestNearlyEqual(TEXT("hit 1 damage 10"), Hits[0].Damage, 10.f);
+		TestNearlyEqual(TEXT("hit 1 damage = Damage"), Hits[0].Damage, NormalDamage);
 		TestFalse(TEXT("hit 1 not critical"), Hits[0].bIsCritical);
-		TestNearlyEqual(TEXT("hit 1 health left"), Hits[0].HealthLeft, MaxHealth - 10.f);
+		TestNearlyEqual(TEXT("hit 1 health left"), Hits[0].HealthLeft, MaxHealth - NormalDamage);
 	}
 
 	// Critical hit: CritChance forced to 1 on the weapon ASC (captured when the shot makes its spec).
@@ -525,12 +578,12 @@ bool FRRWeaponProjectileDamageTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("two hits after the critical shot"), Hits.Num(), 2);
 	const float HealthAfterCrit = TargetHealth(StillChaser);
 	AddInfo(FString::Printf(TEXT("critical shot: destroyed at frame %d near %s; health %.1f"), CritFrame, *LastLocation.ToCompactString(), HealthAfterCrit));
-	TestNearlyEqual(TEXT("Health lowered by 15"), HealthAfterNormal - HealthAfterCrit, 15.f);
+	TestNearlyEqual(TEXT("Health lowered by Damage x CritDamage"), HealthAfterNormal - HealthAfterCrit, CritHitDamage);
 	if (Hits.Num() >= 2)
 	{
-		TestNearlyEqual(TEXT("hit 2 damage 15"), Hits[1].Damage, 15.f);
+		TestNearlyEqual(TEXT("hit 2 damage = Damage x CritDamage"), Hits[1].Damage, CritHitDamage);
 		TestTrue(TEXT("hit 2 critical"), Hits[1].bIsCritical);
-		TestNearlyEqual(TEXT("hit 2 health left"), Hits[1].HealthLeft, MaxHealth - 25.f);
+		TestNearlyEqual(TEXT("hit 2 health left"), Hits[1].HealthLeft, MaxHealth - NormalDamage - CritHitDamage);
 	}
 	TestFalse(TEXT("still chaser not dead"), StillChaserASC->HasMatchingGameplayTag(RRGameplayTags::State_Dead));
 
@@ -973,7 +1026,7 @@ bool FRRWeaponProjectileHitFilterTest::RunTest(const FString& Parameters)
 	FVector LastLocation;
 	TestTrue(TEXT("matching shot destroyed on the still chaser"), TickUntilDestroyed(TestWorld, Matching, 30, LastLocation) != INDEX_NONE);
 	TestEqual(TEXT("one hit from the matching shot"), HitCount, 1);
-	TestNearlyEqual(TEXT("Health lowered by 10"), TargetHealth(StillChaser), MaxHealth - 10.f);
+	TestNearlyEqual(TEXT("Health lowered by the CSV Damage"), TargetHealth(StillChaser), MaxHealth - ReadRifleRow(*this).Damage);
 
 	HealthSet->OnDamageReceived.Remove(HitHandle);
 	return true;
@@ -1012,6 +1065,14 @@ namespace RRWeaponTests
 	float RobotHealth(const ARREnemy* Enemy)
 	{
 		return Enemy->GetAbilitySystemComponent()->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute());
+	}
+
+	/** Sets MaxHealth and Health of a robot to Health (a scenario value derived from a CSV row). */
+	void SetRobotHealth(ARREnemy* Enemy, float Health)
+	{
+		UAbilitySystemComponent* ASC = Enemy->GetAbilitySystemComponent();
+		ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), Health);
+		ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), Health);
 	}
 
 	/**
@@ -1054,13 +1115,20 @@ bool FRRWeaponPierceFourRobotsTest::RunTest(const FString& Parameters)
 		TestFalse(FString::Printf(TEXT("(%d, %d) is open floor"), X, PierceShooterCell.Y), Grid->IsBlockCell(FIntPoint(X, PierceShooterCell.Y)));
 	}
 
-	// CSV base: the rifle pierces 4 robots.
-	TestNearlyEqual(TEXT("rifle Pierce 4 (WeaponStats.csv)"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 4.f);
-	TestEqual(TEXT("rifle pierce count 4"), Rifle->GetPierceCount(), 4);
+	// CSV base: the rifle pierces Pierce robots.
+	const FRRWeaponStatsRow Row = ReadRifleRow(*this);
+	const int32 Pierce = FMath::RoundToInt32(Row.Pierce);
+	TestNearlyEqual(TEXT("rifle Pierce from WeaponStats.csv"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), Row.Pierce);
+	TestEqual(TEXT("rifle pierce count = CSV Pierce"), Rifle->GetPierceCount(), Pierce);
+	if (!TestTrue(TEXT("CSV Pierce fits the open row (1 to 5 robots)"), Pierce >= 1 && Pierce <= 5))
+	{
+		return false;
+	}
 
-	// Five robots in a line, 200 uu apart, all within range.
+	// Pierce + 1 robots in a line, 200 uu apart, all within range; each survives two bullets (health from the row).
+	const int32 RobotCount = Pierce + 1;
 	TArray<ARRChaser*> Robots;
-	for (int32 Index = 0; Index < 5; ++Index)
+	for (int32 Index = 0; Index < RobotCount; ++Index)
 	{
 		ARRChaser* Robot = SpawnFrozenChaser(*this, TestWorld, Grid->GetCellCenter(PierceFirstRobotX + Index, PierceShooterCell.Y));
 		if (!Robot)
@@ -1069,42 +1137,51 @@ bool FRRWeaponPierceFourRobotsTest::RunTest(const FString& Parameters)
 		}
 		Robots.Add(Robot);
 	}
-	const float StartHealth = RobotHealth(Robots[0]);
-	TestNearlyEqual(TEXT("chaser starts at 30"), StartHealth, 30.f);
+	TestNearlyEqual(TEXT("chaser starts at the CSV MaxHealth"), RobotHealth(Robots[0]), RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).MaxHealth);
+	const float StartHealth = 3.f * Row.Damage;
+	for (ARRChaser* Robot : Robots)
+	{
+		SetRobotHealth(Robot, StartHealth);
+	}
+	ARRChaser* LastRobot = Robots.Last();
 
-	// One bullet: the first 4 robots take 10 each, the 5th is untouched and the bullet is gone.
+	// One bullet: the first Pierce robots take Damage each, the last one is untouched and the bullet is gone.
 	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
 	if (!Shot)
 	{
 		return false;
 	}
-	TestEqual(TEXT("bullet carries 4 hits"), Shot->GetMaxHits(), 4);
+	TestEqual(TEXT("bullet carries CSV Pierce hits"), Shot->GetMaxHits(), Pierce);
 	FVector LastLocation;
 	const int32 Frame = TickUntilDestroyed(TestWorld, Shot, 40, LastLocation);
-	AddInfo(FString::Printf(TEXT("pierce 4: bullet destroyed at frame %d near %s; health %.0f %.0f %.0f %.0f %.0f"), Frame, *LastLocation.ToCompactString(),
-		RobotHealth(Robots[0]), RobotHealth(Robots[1]), RobotHealth(Robots[2]), RobotHealth(Robots[3]), RobotHealth(Robots[4])));
-	TestTrue(TEXT("bullet destroyed on the 4th robot"), Frame != INDEX_NONE);
-	TestTrue(TEXT("bullet destroyed before the 5th robot"), LastLocation.X < Robots[4]->GetActorLocation().X);
-	for (int32 Index = 0; Index < 4; ++Index)
+	FString Healths;
+	for (const ARRChaser* Robot : Robots)
 	{
-		TestNearlyEqual(FString::Printf(TEXT("robot %d hit once (30 -> 20)"), Index + 1), RobotHealth(Robots[Index]), StartHealth - 10.f);
+		Healths += FString::Printf(TEXT("%.0f "), RobotHealth(Robot));
 	}
-	TestNearlyEqual(TEXT("robot 5 untouched"), RobotHealth(Robots[4]), StartHealth);
+	AddInfo(FString::Printf(TEXT("pierce %d: bullet destroyed at frame %d near %s; health %s"), Pierce, Frame, *LastLocation.ToCompactString(), *Healths));
+	TestTrue(TEXT("bullet destroyed on the last pierced robot"), Frame != INDEX_NONE);
+	TestTrue(TEXT("bullet destroyed before the last robot"), LastLocation.X < LastRobot->GetActorLocation().X);
+	for (int32 Index = 0; Index < Pierce; ++Index)
+	{
+		TestNearlyEqual(FString::Printf(TEXT("robot %d hit once"), Index + 1), RobotHealth(Robots[Index]), StartHealth - Row.Damage);
+	}
+	TestNearlyEqual(TEXT("last robot untouched"), RobotHealth(LastRobot), StartHealth);
 
-	// Pierce is read at fire time: one more point and the next bullet reaches the 5th robot.
-	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 5.f);
+	// Pierce is read at fire time: one more point and the next bullet reaches the last robot.
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), static_cast<float>(RobotCount));
 	ARRProjectile* Second = FireSingleShot(*this, Rifle);
 	if (!Second)
 	{
 		return false;
 	}
-	TestEqual(TEXT("second bullet carries 5 hits"), Second->GetMaxHits(), 5);
-	TestTrue(TEXT("second bullet destroyed on the 5th robot"), TickUntilDestroyed(TestWorld, Second, 40, LastLocation) != INDEX_NONE);
-	for (int32 Index = 0; Index < 4; ++Index)
+	TestEqual(TEXT("second bullet carries CSV Pierce + 1 hits"), Second->GetMaxHits(), RobotCount);
+	TestTrue(TEXT("second bullet destroyed on the last robot"), TickUntilDestroyed(TestWorld, Second, 40, LastLocation) != INDEX_NONE);
+	for (int32 Index = 0; Index < Pierce; ++Index)
 	{
-		TestNearlyEqual(FString::Printf(TEXT("robot %d hit twice in total"), Index + 1), RobotHealth(Robots[Index]), StartHealth - 20.f);
+		TestNearlyEqual(FString::Printf(TEXT("robot %d hit twice in total"), Index + 1), RobotHealth(Robots[Index]), StartHealth - 2.f * Row.Damage);
 	}
-	TestNearlyEqual(TEXT("robot 5 hit once"), RobotHealth(Robots[4]), StartHealth - 10.f);
+	TestNearlyEqual(TEXT("last robot hit once"), RobotHealth(LastRobot), StartHealth - Row.Damage);
 
 	// A weapon without pierce still hits one robot.
 	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 0.f);
@@ -1139,22 +1216,27 @@ bool FRRWeaponPierceStopsOnRockTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	const float StartHealth = RobotHealth(Near);
+	// Health from the BurstRifle row: each robot survives one bullet.
+	const FRRWeaponStatsRow Row = ReadRifleRow(*this);
+	const float StartHealth = 2.f * Row.Damage;
+	SetRobotHealth(Near, StartHealth);
+	SetRobotHealth(Far, StartHealth);
+	SetRobotHealth(Behind, StartHealth);
 
 	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
 	if (!Shot)
 	{
 		return false;
 	}
-	TestEqual(TEXT("bullet carries 4 hits"), Shot->GetMaxHits(), 4);
+	TestEqual(TEXT("bullet carries CSV Pierce hits"), Shot->GetMaxHits(), FMath::RoundToInt32(Row.Pierce));
 	FVector LastLocation;
 	const int32 Frame = TickUntilDestroyed(TestWorld, Shot, 40, LastLocation);
 	AddInfo(FString::Printf(TEXT("rock: bullet destroyed at frame %d near %s"), Frame, *LastLocation.ToCompactString()));
 	TestTrue(TEXT("bullet stopped"), Frame != INDEX_NONE);
 	const float RockEastFace = Grid->GetCellCenter(PierceRockCell.X, PierceRockCell.Y).X + 100.f;
 	TestTrue(TEXT("bullet stopped at the rock, not beyond"), LastLocation.X >= RockEastFace - 60.f);
-	TestNearlyEqual(TEXT("near robot hit"), RobotHealth(Near), StartHealth - 10.f);
-	TestNearlyEqual(TEXT("far robot hit"), RobotHealth(Far), StartHealth - 10.f);
+	TestNearlyEqual(TEXT("near robot hit"), RobotHealth(Near), StartHealth - Row.Damage);
+	TestNearlyEqual(TEXT("far robot hit"), RobotHealth(Far), StartHealth - Row.Damage);
 	TestNearlyEqual(TEXT("robot behind the rock untouched"), RobotHealth(Behind), StartHealth);
 	return true;
 }
@@ -1178,7 +1260,11 @@ bool FRRWeaponPierceNoDoubleHitTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	const float StartHealth = RobotHealth(First);
+	// Health from the BurstRifle row: each robot survives two bullets.
+	const FRRWeaponStatsRow Row = ReadRifleRow(*this);
+	const float StartHealth = 3.f * Row.Damage;
+	SetRobotHealth(First, StartHealth);
+	SetRobotHealth(Second, StartHealth);
 
 	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
 	if (!Shot)
@@ -1221,8 +1307,8 @@ bool FRRWeaponPierceNoDoubleHitTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("first hit at frame %d; first robot moved to x %.0f"), HitFrame, First->GetActorLocation().X));
 	TestTrue(TEXT("bullet flew through the moved robot"), bPassedFirstAgain);
-	TestNearlyEqual(TEXT("pierced robot hit only once"), RobotHealth(First), StartHealth - 10.f);
-	TestNearlyEqual(TEXT("next robot hit"), RobotHealth(Second), StartHealth - 10.f);
+	TestNearlyEqual(TEXT("pierced robot hit only once"), RobotHealth(First), StartHealth - Row.Damage);
+	TestNearlyEqual(TEXT("next robot hit"), RobotHealth(Second), StartHealth - Row.Damage);
 	if (WeakShot.IsValid())
 	{
 		TestEqual(TEXT("two distinct hits counted"), WeakShot->GetHitCount(), 2);
@@ -1299,24 +1385,27 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("piercing cards are offered"), PierceCards > 0);
 	TestEqual(TEXT("no grey or green piercing card"), LowTierPierce, 0);
 
-	// Application: all-weapons blue +1, then targeted yellow +3: 4 -> 5 -> 8; the next bullet carries 8 hits.
-	TestNearlyEqual(TEXT("rifle Pierce 4"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 4.f);
+	// Application: all-weapons blue then targeted yellow on the CSV Pierce; the next bullet carries the sum.
+	const float BasePierce = ReadRifleRow(*this).Pierce;
+	const float AfterBlue = BasePierce + Expected[2];
+	const float AfterYellow = AfterBlue + Expected[4];
+	TestNearlyEqual(TEXT("rifle Pierce = CSV Pierce"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), BasePierce);
 	FRRUpgradeCard Blue;
 	FRRUpgradeCard Yellow;
 	TestTrue(TEXT("blue all-weapons card"), Upgrades->MakeCard(ERRUpgradeStat::Pierce, ERRUpgradeRarity::Blue, ERRUpgradeTarget::AllWeapons, nullptr, Blue));
 	TestTrue(TEXT("yellow rifle card"), Upgrades->MakeCard(ERRUpgradeStat::Pierce, ERRUpgradeRarity::Yellow, ERRUpgradeTarget::Weapon, Rifle, Yellow));
 	TestTrue(TEXT("blue applied"), Upgrades->ApplyUpgrade(Blue));
-	TestNearlyEqual(TEXT("Pierce 5 after blue"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 5.f);
+	TestNearlyEqual(TEXT("Pierce + blue value after blue"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), AfterBlue);
 	TestTrue(TEXT("yellow applied"), Upgrades->ApplyUpgrade(Yellow));
-	TestNearlyEqual(TEXT("Pierce 8 after yellow"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), 8.f);
-	TestEqual(TEXT("pierce count 8"), Rifle->GetPierceCount(), 8);
+	TestNearlyEqual(TEXT("Pierce + blue + yellow after yellow"), WeaponAttribute(Rifle, URRWeaponAttributeSet::GetPierceAttribute()), AfterYellow);
+	TestEqual(TEXT("pierce count after both cards"), Rifle->GetPierceCount(), FMath::RoundToInt32(AfterYellow));
 	TestNearlyEqual(TEXT("base Pierce unchanged"),
-		Rifle->GetAbilitySystemComponent()->GetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute()), 4.f);
+		Rifle->GetAbilitySystemComponent()->GetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute()), BasePierce);
 
 	ARRProjectile* Shot = FireSingleShot(*this, Rifle);
 	if (Shot)
 	{
-		TestEqual(TEXT("upgraded bullet carries 8 hits"), Shot->GetMaxHits(), 8);
+		TestEqual(TEXT("upgraded bullet carries the upgraded pierce"), Shot->GetMaxHits(), FMath::RoundToInt32(AfterYellow));
 		Shot->Destroy();
 	}
 	return true;
