@@ -1,4 +1,4 @@
-// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for 25 with its glow and telegraph clip (id 1), misses beyond 361 uu, takes the BP_Miner shotgun pellet knockback reduced by 0.8 and crosses a one-cell corridor of arena_m1.
+// Rogue Rigs - heavy integration tests with the final Blueprints (RogueRigs.Integration.Heavy*): BP_Heavy telegraphs then slams a vulnerable BP_Miner for its CSV Damage with its glow and telegraph clip (id 1), misses beyond its CSV AttackRange, takes the BP_Miner shotgun pellet knockback reduced by its CSV KnockbackResistance and crosses a one-cell corridor of arena_m1.
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -17,6 +17,7 @@
 #include "Projectiles/RRShotgunPellet.h"
 #include "Tests/RRTestHarness.h"
 #include "Weapons/RRAutoFireComponent.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Weapons/RRShotgun.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -41,13 +42,39 @@ namespace RRHeavyIntegrationTests
 	constexpr int32 CorridorMinY = 66;
 	constexpr int32 CorridorMaxY = 68;
 
-	/** Heavy CSV row: slam damage, radius, telegraph, cadence, knockback resistance; trigger 361 x SlamTriggerRatio 0.7. */
-	constexpr float SlamDamage = 25.f;
-	constexpr float SlamRadius = 361.f;
-	constexpr float TriggerDistance = 252.7f;
-	constexpr double TelegraphSeconds = 1.0;
-	constexpr double SlamPeriod = 2.0;
-	constexpr float HeavyResistance = 0.8f;
+	/** ARRHeavy SlamTriggerRatio default (EditDefaultsOnly, not a CSV value): the telegraph starts within AttackRange x this ratio. */
+	constexpr float SlamTriggerRatio = 0.7f;
+
+	/** Slam values derived from the Heavy row of EnemyStats.csv (task-420: never copied in the test). */
+	struct FSlamValues
+	{
+		/** Damage of one slam (Damage). */
+		float Damage = 0.f;
+		/** Slam radius (AttackRange). */
+		float Radius = 0.f;
+		/** Telegraph trigger distance (AttackRange x SlamTriggerRatio). */
+		float TriggerDistance = 0.f;
+		/** Telegraph duration (WindUp). */
+		double TelegraphSeconds = 0.0;
+		/** Seconds between two slams (1 / AttackRate). */
+		double Period = 0.0;
+		/** Knockback resistance (KnockbackResistance). */
+		float Resistance = 0.f;
+	};
+
+	/** Reads the Heavy row and derives the slam values (test error when the row is missing). */
+	FSlamValues ReadSlamValues(FAutomationTestBase& Test)
+	{
+		const FRREnemyStatsRow Row = RRTestStats::EnemyRow(Test, RRTestStats::HeavyRow);
+		FSlamValues Values;
+		Values.Damage = Row.Damage;
+		Values.Radius = Row.AttackRange;
+		Values.TriggerDistance = Row.AttackRange * SlamTriggerRatio;
+		Values.TelegraphSeconds = Row.WindUp;
+		Values.Period = Row.AttackRate > 0.f ? 1.0 / Row.AttackRate : 0.0;
+		Values.Resistance = Row.KnockbackResistance;
+		return Values;
+	}
 
 	/** ARRHeavy TelegraphClipId: clip written on entering Telegraph (task-285-02; replaced the BP body tilt removed in task-285-03). */
 	constexpr float TelegraphClipId = 1.f;
@@ -223,16 +250,17 @@ bool FRRIntegrationHeavySlamTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestTrue(TEXT("telegraph starts within 252.7 uu (361 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= TriggerDistance + 1.f);
+	const FSlamValues Slam = ReadSlamValues(*this);
+	TestTrue(TEXT("telegraph starts within AttackRange x SlamTriggerRatio"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= Slam.TriggerDistance + 1.f);
 	for (int32 Index = 0; Index < 2; ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("slam %d lands 1.0 s after its telegraph (within one frame)"), Index + 1),
-			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - TelegraphSeconds) <= FrameSeconds + 1e-3);
-		TestEqual(FString::Printf(TEXT("slam %d deals 25 to the vulnerable miner"), Index + 1), HealthAfterSlams[Index], HealthBefore - SlamDamage * (Index + 1));
+		TestTrue(FString::Printf(TEXT("slam %d lands WindUp s after its telegraph (within one frame)"), Index + 1),
+			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - Slam.TelegraphSeconds) <= FrameSeconds + 1e-3);
+		TestEqual(FString::Printf(TEXT("slam %d deals the CSV Damage to the vulnerable miner"), Index + 1), HealthAfterSlams[Index], HealthBefore - Slam.Damage * (Index + 1));
 		TestTrue(FString::Printf(TEXT("recovery %d ends 0.5 s after its slam (within one frame)"), Index + 1),
 			FMath::Abs(RecoverEnds[Index] - SlamTimes[Index] - 0.5) <= FrameSeconds + 1e-3);
 	}
-	TestTrue(TEXT("slams 2 s apart (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - SlamPeriod) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("slams 1 / AttackRate s apart (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - Slam.Period) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("stopped while telegraphing"), bStoppedWhileTelegraphing);
 	TestEqual(TEXT("two hits counted"), Heavy->GetSlamHitCount(), 2);
 	TestTrue(TEXT("BP_Heavy plays the telegraph clip (id 1) when the telegraph starts"), bTelegraphClipAtStart);
@@ -263,13 +291,14 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	const float HealthBefore = Health(Miner);
+	const FSlamValues Slam = ReadSlamValues(*this);
 
-	// 1. During the first telegraph the miner steps to 351 uu (inside the 361 uu radius, outside the 253 uu trigger): hit for 25.
+	// 1. During the first telegraph the miner steps to 10 uu inside the slam radius (outside the trigger): hit for the CSV Damage.
 	if (!TestTrue(TEXT("first telegraph within 5 s"), TickUntilTelegraph(TestWorld, Heavy, 60 * 5)))
 	{
 		return false;
 	}
-	TeleportWestOf(Miner, Heavy, 351.f);
+	TeleportWestOf(Miner, Heavy, Slam.Radius - 10.f);
 	for (int32 Frame = 0; Frame < 90 && Heavy->GetSlamCount() < 1; ++Frame)
 	{
 		TestWorld.Tick();
@@ -277,12 +306,12 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 	const float InsideDistance = FVector::Dist2D(Heavy->GetActorLocation(), Miner->GetActorLocation());
 	const float HealthAfterInside = Health(Miner);
 
-	// 2. During the second telegraph the miner steps to 371 uu (just outside the radius): the slam lands and misses.
+	// 2. During the second telegraph the miner steps to 10 uu outside the radius: the slam lands and misses.
 	if (!TestTrue(TEXT("second telegraph within 5 s"), TickUntilTelegraph(TestWorld, Heavy, 60 * 5)))
 	{
 		return false;
 	}
-	TeleportWestOf(Miner, Heavy, 371.f);
+	TeleportWestOf(Miner, Heavy, Slam.Radius + 10.f);
 	for (int32 Frame = 0; Frame < 90 && Heavy->GetSlamCount() < 2; ++Frame)
 	{
 		TestWorld.Tick();
@@ -292,9 +321,9 @@ bool FRRIntegrationHeavyRadiusTest::RunTest(const FString& Parameters)
 		OutsideDistance, Health(Miner)));
 
 	TestEqual(TEXT("two slams landed"), Heavy->GetSlamCount(), 2);
-	TestTrue(TEXT("slam 1 with the miner inside 361 uu"), InsideDistance < SlamRadius && InsideDistance > TriggerDistance);
-	TestEqual(TEXT("slam 1 deals 25"), HealthAfterInside, HealthBefore - SlamDamage);
-	TestTrue(TEXT("slam 2 with the miner beyond 361 uu"), OutsideDistance > SlamRadius);
+	TestTrue(TEXT("slam 1 with the miner inside the radius"), InsideDistance < Slam.Radius && InsideDistance > Slam.TriggerDistance);
+	TestEqual(TEXT("slam 1 deals the CSV Damage"), HealthAfterInside, HealthBefore - Slam.Damage);
+	TestTrue(TEXT("slam 2 with the miner beyond the radius"), OutsideDistance > Slam.Radius);
 	TestEqual(TEXT("slam 2 deals nothing"), Health(Miner), HealthAfterInside);
 	TestEqual(TEXT("one hit in total"), Heavy->GetSlamHitCount(), 1);
 	return true;
@@ -334,8 +363,9 @@ bool FRRIntegrationHeavyKnockbackTest::RunTest(const FString& Parameters)
 		const FVector Location = Origin + Aim.RotateAngleAxis(AngleDeg, FVector::UpVector) * 500.f;
 		return FVector(Location.X, Location.Y, FloorZ);
 	};
-	ARRHeavy* Heavy = SpawnRobot<ARRHeavy>(*this, TestWorld, HeavyClass, OnRay(15.f));
-	ARRChaser* Chaser = SpawnRobot<ARRChaser>(*this, TestWorld, ChaserClass, OnRay(-15.f));
+	const float EdgeAngle = RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).SpreadDeg;
+	ARRHeavy* Heavy = SpawnRobot<ARRHeavy>(*this, TestWorld, HeavyClass, OnRay(EdgeAngle));
+	ARRChaser* Chaser = SpawnRobot<ARRChaser>(*this, TestWorld, ChaserClass, OnRay(-EdgeAngle));
 	if (!Heavy || !Chaser)
 	{
 		return false;
@@ -345,8 +375,14 @@ bool FRRIntegrationHeavyKnockbackTest::RunTest(const FString& Parameters)
 		Robot->SetActorTickEnabled(false);
 		Robot->GetCharacterMovement()->SetComponentTickEnabled(false);
 	}
-	TestEqual(TEXT("BP_Heavy knockback resistance 0.8"), Heavy->GetKnockbackResistance(), HeavyResistance);
-	TestEqual(TEXT("BP_Chaser knockback resistance 0"), Chaser->GetKnockbackResistance(), 0.f);
+	const FSlamValues Slam = ReadSlamValues(*this);
+	const float ChaserResistance = RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).KnockbackResistance;
+	TestEqual(TEXT("BP_Heavy knockback resistance from the CSV"), Heavy->GetKnockbackResistance(), Slam.Resistance);
+	TestEqual(TEXT("BP_Chaser knockback resistance from the CSV"), Chaser->GetKnockbackResistance(), ChaserResistance);
+	if (!TestTrue(TEXT("CSV: the heavy resists knockback more than the chaser"), Slam.Resistance > ChaserResistance))
+	{
+		return false;
+	}
 	const float HeavyHealth = Health(Heavy);
 	const float ChaserHealth = Health(Chaser);
 	const float Force = Shotgun->GetKnockbackForce();
@@ -395,14 +431,16 @@ bool FRRIntegrationHeavyKnockbackTest::RunTest(const FString& Parameters)
 		Force, HeavyHits, *HeavyLaunch.ToCompactString(), HeavyLaunch.Size2D(), ChaserHits, *ChaserLaunch.ToCompactString(), ChaserLaunch.Size2D(), HeavyPush, ChaserPush,
 		HeavyHealth, Health(Heavy), ChaserHealth, Health(Chaser)));
 
-	TestEqual(TEXT("shotgun knockback 250 per pellet hit"), Force, 250.f);
+	TestEqual(TEXT("shotgun knockback per pellet hit from the CSV"), Force, RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).KnockbackForce);
 	TestEqual(TEXT("BP_Chaser hit by its edge pellet"), ChaserHits, 1);
 	TestTrue(TEXT("BP_Heavy hit by 1 or 2 pellets"), HeavyHits >= 1 && HeavyHits <= 2);
-	TestTrue(TEXT("BP_Chaser launched at the full force along its pellet"), ChaserLaunch.Equals(Aim.RotateAngleAxis(-15.f, FVector::UpVector) * Force, 0.05f));
+	TestTrue(TEXT("BP_Chaser launched at force x (1 - resistance) along its pellet"),
+		ChaserLaunch.Equals(Aim.RotateAngleAxis(-EdgeAngle, FVector::UpVector) * Force * (1.f - ChaserResistance), 0.05f));
 	const double HeavyPerHit = HeavyLaunch.Size2D() / FMath::Max(HeavyHits, 1);
 	const double ChaserPerHit = ChaserLaunch.Size2D() / FMath::Max(ChaserHits, 1);
-	TestTrue(TEXT("BP_Heavy launch per pellet hit is force x (1 - 0.8)"), FMath::IsNearlyEqual(HeavyPerHit, Force * (1.0 - HeavyResistance), 0.01 * Force));
-	TestTrue(TEXT("heavy launch per hit is 0.2 of the chaser's"), FMath::IsNearlyEqual(HeavyPerHit / FMath::Max(ChaserPerHit, 1.0), 0.2, 5e-3));
+	TestTrue(TEXT("BP_Heavy launch per pellet hit is force x (1 - resistance)"), FMath::IsNearlyEqual(HeavyPerHit, Force * (1.0 - Slam.Resistance), 0.01 * Force));
+	TestTrue(TEXT("heavy launch per hit relative to the chaser's = (1 - heavy resistance) / (1 - chaser resistance)"),
+		FMath::IsNearlyEqual(HeavyPerHit / FMath::Max(ChaserPerHit, 1.0), (1.0 - Slam.Resistance) / FMath::Max(1.0 - ChaserResistance, 1e-3), 5e-3));
 	TestTrue(TEXT("BP_Heavy pushed outward"), HeavyLaunch.Dot(Aim) > 0.0);
 	TestEqual(TEXT("BP_Heavy took one pellet damage per hit"), Health(Heavy), HeavyHealth - HeavyHits * PelletDamage);
 	TestTrue(TEXT("BP_Heavy alive"), !Heavy->IsDead());

@@ -20,6 +20,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
@@ -108,27 +109,24 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 {
 	using namespace RRShooterTests;
 
+	// The values live in the CSV (task-420): the rows must be usable, the robots must carry them.
 	FRREnemyStatsRow Row;
-	if (TestTrue(TEXT("EnemyStats.csv row Shooter read"), ARREnemy::LoadStatsRow(TEXT("Shooter"), Row)))
-	{
-		TestEqual(TEXT("MaxHealth 40"), Row.MaxHealth, 40.f);
-		TestEqual(TEXT("MoveSpeed 180"), Row.MoveSpeed, 180.f);
-		TestEqual(TEXT("Damage 12"), Row.Damage, 12.f);
-		TestEqual(TEXT("AttackRate 0.5 (one shot every 2 s)"), Row.AttackRate, 0.5f);
-		TestEqual(TEXT("AttackRange 960 (owner 2026-10-06, was 1200)"), Row.AttackRange, 960.f);
-		TestEqual(TEXT("WindUp 0.6 (laser)"), Row.WindUp, 0.6f);
-		TestEqual(TEXT("XPValue 2"), Row.XPValue, 2);
-		TestEqual(TEXT("KnockbackResistance 0.2"), Row.KnockbackResistance, 0.2f);
-		TestEqual(TEXT("PreferredDistance 800"), Row.PreferredDistance, 800.f);
-		TestEqual(TEXT("PreferredDistanceTolerance 200"), Row.PreferredDistanceTolerance, 200.f);
-		TestEqual(TEXT("ProjectileSpeed 1200"), Row.ProjectileSpeed, 1200.f);
-	}
 	FRREnemyStatsRow KamikazeRow;
-	if (TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), KamikazeRow)))
+	if (!TestTrue(TEXT("EnemyStats.csv row Shooter read"), ARREnemy::LoadStatsRow(TEXT("Shooter"), Row))
+		|| !TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), KamikazeRow)))
 	{
-		TestEqual(TEXT("kamikaze arm range = AttackRange 250"), KamikazeRow.AttackRange, 250.f);
-		TestEqual(TEXT("kamikaze fuse = WindUp 0.65"), KamikazeRow.WindUp, 0.65f);
+		return false;
 	}
+	TestTrue(TEXT("MaxHealth > 0"), Row.MaxHealth > 0.f);
+	TestTrue(TEXT("MoveSpeed > 0"), Row.MoveSpeed > 0.f);
+	TestTrue(TEXT("Damage > 0"), Row.Damage > 0.f);
+	TestTrue(TEXT("AttackRate > 0"), Row.AttackRate > 0.f);
+	TestTrue(TEXT("WindUp > 0 (laser)"), Row.WindUp > 0.f);
+	TestTrue(TEXT("XPValue > 0"), Row.XPValue > 0);
+	TestTrue(TEXT("KnockbackResistance in [0, 1]"), Row.KnockbackResistance >= 0.f && Row.KnockbackResistance <= 1.f);
+	TestTrue(TEXT("ProjectileSpeed > 0"), Row.ProjectileSpeed > 0.f);
+	TestTrue(TEXT("PreferredDistance > PreferredDistanceTolerance > 0"), Row.PreferredDistance > Row.PreferredDistanceTolerance && Row.PreferredDistanceTolerance > 0.f);
+	TestTrue(TEXT("kamikaze arm range and fuse > 0"), KamikazeRow.AttackRange > 0.f && KamikazeRow.WindUp > 0.f);
 
 	FTestWorld TestWorld(TEXT("RRShooterStats"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
@@ -142,15 +140,15 @@ bool FRRShooterStatsTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Health 40"), Health(Shooter), 40.f);
-	TestEqual(TEXT("MaxWalkSpeed 180"), Shooter->GetCharacterMovement()->MaxWalkSpeed, 180.f);
-	TestEqual(TEXT("knockback resistance 0.2"), Shooter->GetKnockbackResistance(), 0.2f);
-	TestEqual(TEXT("arrival at the preferred distance"), Shooter->GetEnemyMovement()->GetArrivalDistance(), 800.f);
+	TestEqual(TEXT("Health = CSV MaxHealth"), Health(Shooter), Row.MaxHealth);
+	TestEqual(TEXT("MaxWalkSpeed = CSV MoveSpeed"), Shooter->GetCharacterMovement()->MaxWalkSpeed, Row.MoveSpeed);
+	TestEqual(TEXT("knockback resistance from the CSV"), Shooter->GetKnockbackResistance(), Row.KnockbackResistance);
+	TestEqual(TEXT("arrival at the preferred distance"), Shooter->GetEnemyMovement()->GetArrivalDistance(), Row.PreferredDistance);
 	TestEqual(TEXT("body radius 34 (miner size)"), Shooter->GetBodyRadius(), 34.f);
 	TestFalse(TEXT("laser hidden at rest"), FShooterAccess::LaserOf(Shooter)->IsVisible());
-	TestEqual(TEXT("kamikaze arm range from the CSV"), Kamikaze->GetArmRange(), 250.f);
-	TestEqual(TEXT("kamikaze fuse from the CSV"), Kamikaze->GetFuseTime(), 0.65f);
-	TestEqual(TEXT("kamikaze arrival 125 (0.5 x the 250 uu arm range)"), Kamikaze->GetEnemyMovement()->GetArrivalDistance(), 125.f);
+	TestEqual(TEXT("kamikaze arm range = CSV AttackRange"), Kamikaze->GetArmRange(), KamikazeRow.AttackRange);
+	TestEqual(TEXT("kamikaze fuse = CSV WindUp"), Kamikaze->GetFuseTime(), KamikazeRow.WindUp);
+	TestEqual(TEXT("kamikaze arrival 0.5 x the arm range"), Kamikaze->GetEnemyMovement()->GetArrivalDistance(), 0.5f * KamikazeRow.AttackRange);
 
 	const TSubclassOf<ARRProjectile> ShotClass = FShooterAccess::ProjectileClassOf(Shooter);
 	TestTrue(TEXT("default shot class is ARREnemyProjectile"), ShotClass == ARREnemyProjectile::StaticClass());
@@ -187,6 +185,7 @@ bool FRRShooterFireTest::RunTest(const FString& Parameters)
 	Shooter->SetViewRectangleOverride(ViewAround(MinerFloor, 4000.f));
 	const float HealthBefore = Health(Miner);
 	UStaticMeshComponent* Laser = FShooterAccess::LaserOf(Shooter);
+	const FRREnemyStatsRow Row = RRTestStats::EnemyRow(*this, RRTestStats::ShooterRow);
 
 	float AimStartDistance = -1.f;
 	double FirstAimStart = -1.0;
@@ -233,18 +232,19 @@ bool FRRShooterFireTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("first aim at t=%.3f s, %.0f uu; shots at %.3f and %.3f s; miner health %.0f -> %.0f; distance after the second shot %.0f uu, state %d"),
 		FirstAimStart, AimStartDistance, FirstShotTime, SecondShotTime, HealthBefore, HealthAfterFirstHit, FinalDistance, static_cast<int32>(Shooter->GetState())));
 
-	TestTrue(TEXT("aimed once within range (<= 960 uu)"), AimStartDistance > 0.f && AimStartDistance <= 960.f);
+	TestTrue(TEXT("aimed once within the CSV AttackRange"), AimStartDistance > 0.f && AimStartDistance <= Row.AttackRange);
 	TestTrue(TEXT("first aim only after approaching (beyond range at spawn)"), FirstAimStart > 0.0);
-	TestTrue(TEXT("first shot 0.6 s after the aim start (within one frame)"),
-		FirstShotTime > 0.0 && FMath::Abs(FirstShotTime - FirstAimStart - 0.6) <= FrameSeconds + 1e-3);
-	TestTrue(TEXT("second shot 2.0 s after the first (within one frame)"),
-		SecondShotTime > 0.0 && FMath::Abs(SecondShotTime - FirstShotTime - 2.0) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("first shot WindUp s after the aim start (within one frame)"),
+		FirstShotTime > 0.0 && FMath::Abs(FirstShotTime - FirstAimStart - Row.WindUp) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("second shot 1 / AttackRate s after the first (within one frame)"),
+		SecondShotTime > 0.0 && FMath::Abs(SecondShotTime - FirstShotTime - 1.0 / Row.AttackRate) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("laser visible during every aim frame"), bLaserShownWhileAiming);
 	TestTrue(TEXT("laser length = muzzle to aim point in open sight"), LaserLengthError < 1.f);
 	TestTrue(TEXT("stopped while aiming"), bStoppedWhileAiming);
-	TestEqual(TEXT("first hit deals 12"), HealthAfterFirstHit, HealthBefore - 12.f);
+	TestEqual(TEXT("first hit deals the CSV Damage"), HealthAfterFirstHit, HealthBefore - Row.Damage);
 	TestTrue(TEXT("shots were live projectiles"), MaxShots >= 1);
-	TestTrue(TEXT("keeps to the preferred ring (600 to 1000 uu)"), FinalDistance >= 600.f && FinalDistance <= 1000.f);
+	TestTrue(TEXT("keeps to the preferred ring (PreferredDistance +/- PreferredDistanceTolerance)"),
+		FinalDistance >= Row.PreferredDistance - Row.PreferredDistanceTolerance && FinalDistance <= Row.PreferredDistance + Row.PreferredDistanceTolerance);
 	TestFalse(TEXT("laser hidden after the shot"), Shooter->IsAiming() && !Laser->IsVisible());
 	return true;
 }
@@ -458,24 +458,25 @@ bool FRRShooterShotRulesTest::RunTest(const FString& Parameters)
 	const float MinerHealth = Health(Miner);
 	const float ChaserHealth = Health(Chaser);
 	const float ShotHeight = 50.f;
+	const FRREnemyStatsRow Row = RRTestStats::EnemyRow(*this, RRTestStats::ShooterRow);
 
 	// 1. Through a robot to the miner: fired west along row 43 from 1000 uu, the chaser in between.
 	const FVector Origin = MinerFloor + FVector(1000.f, 0.f, ShotHeight);
 	TWeakObjectPtr<ARRProjectile> Shot = ARRProjectile::SpawnProjectile(TestWorld.Get(), ARREnemyProjectile::StaticClass(),
-		FTransform(FRotator(0.f, 180.f, 0.f), Origin), Shooter, Shooter, FShooterAccess::DamageSpecOf(Shooter), 1200.f, 1.f);
+		FTransform(FRotator(0.f, 180.f, 0.f), Origin), Shooter, Shooter, FShooterAccess::DamageSpecOf(Shooter), Row.ProjectileSpeed, 1.f);
 	TestTrue(TEXT("shot spawned"), Shot.IsValid());
 	for (int32 Frame = 0; Frame < 60 && Shot.IsValid() && !Shot->IsActorBeingDestroyed(); ++Frame)
 	{
 		TestWorld.Tick();
 	}
 	TestEqual(TEXT("chaser untouched"), Health(Chaser), ChaserHealth);
-	TestEqual(TEXT("miner hit for 12"), Health(Miner), MinerHealth - 12.f);
+	TestEqual(TEXT("miner hit for the CSV Damage"), Health(Miner), MinerHealth - Row.Damage);
 
 	// 2. Into rock (43, 38) from (42, 38): stops, the rock keeps its health.
 	const float RockHealth = Grid->GetCellHealth(RockCell);
 	const FVector RockOrigin = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y) + FVector(0.f, 0.f, ShotHeight);
 	Shot = ARRProjectile::SpawnProjectile(TestWorld.Get(), ARREnemyProjectile::StaticClass(), FTransform(FRotator::ZeroRotator, RockOrigin),
-		Shooter, Shooter, FShooterAccess::DamageSpecOf(Shooter), 1200.f, 1.f);
+		Shooter, Shooter, FShooterAccess::DamageSpecOf(Shooter), Row.ProjectileSpeed, 1.f);
 	int32 StopFrame = -1;
 	for (int32 Frame = 0; Frame < 30; ++Frame)
 	{
@@ -497,7 +498,7 @@ bool FRRShooterShotRulesTest::RunTest(const FString& Parameters)
 		const float BarrelShotHealth = Grid->GetCellShotHealth(BarrelCell);
 		const FVector BarrelOrigin = Grid->GetCellCenter(48, 43) + FVector(0.f, 0.f, ShotHeight);
 		Shot = ARRProjectile::SpawnProjectile(TestWorld.Get(), ARREnemyProjectile::StaticClass(), FTransform(FRotator(0.f, -90.f, 0.f), BarrelOrigin),
-			Shooter, Shooter, FShooterAccess::DamageSpecOf(Shooter), 1200.f, 1.f);
+			Shooter, Shooter, FShooterAccess::DamageSpecOf(Shooter), Row.ProjectileSpeed, 1.f);
 		for (int32 Frame = 0; Frame < 30 && Shot.IsValid() && !Shot->IsActorBeingDestroyed(); ++Frame)
 		{
 			TestWorld.Tick();

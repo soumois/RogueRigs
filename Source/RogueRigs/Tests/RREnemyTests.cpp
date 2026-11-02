@@ -28,6 +28,7 @@
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -179,14 +180,15 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("MaxHealth 30"), Row.MaxHealth, 30.f);
-	TestEqual(TEXT("MoveSpeed 180"), Row.MoveSpeed, 180.f);
-	TestEqual(TEXT("Damage 10"), Row.Damage, 10.f);
-	TestEqual(TEXT("AttackRate 1"), Row.AttackRate, 1.f);
-	TestEqual(TEXT("AttackRange 120"), Row.AttackRange, 120.f);
-	TestEqual(TEXT("WindUp 0.1"), Row.WindUp, 0.1f);
-	TestEqual(TEXT("XPValue 1"), Row.XPValue, 1);
-	TestEqual(TEXT("KnockbackResistance 0"), Row.KnockbackResistance, 0.f);
+	// The values themselves live in the CSV (task-420): the row must be usable, the chaser must carry it.
+	TestTrue(TEXT("MaxHealth > 0"), Row.MaxHealth > 0.f);
+	TestTrue(TEXT("MoveSpeed > 0"), Row.MoveSpeed > 0.f);
+	TestTrue(TEXT("Damage > 0"), Row.Damage > 0.f);
+	TestTrue(TEXT("AttackRate > 0"), Row.AttackRate > 0.f);
+	TestTrue(TEXT("AttackRange > 0"), Row.AttackRange > 0.f);
+	TestTrue(TEXT("WindUp >= 0"), Row.WindUp >= 0.f);
+	TestTrue(TEXT("XPValue > 0"), Row.XPValue > 0);
+	TestTrue(TEXT("KnockbackResistance in [0, 1]"), Row.KnockbackResistance >= 0.f && Row.KnockbackResistance <= 1.f);
 
 	FTestWorld TestWorld(TEXT("RREnemyStats"));
 	ARRChaser* Chaser = SpawnChaser(*this, TestWorld, FVector::ZeroVector);
@@ -194,17 +196,18 @@ bool FRREnemyStatsTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("chaser Stats.Damage from the CSV"), Chaser->GetStats().Damage, 10.f);
-	TestEqual(TEXT("chaser Stats.XPValue from the CSV"), Chaser->GetStats().XPValue, 1);
-	TestEqual(TEXT("MaxHealth attribute 30"), Attribute(Chaser, URRHealthAttributeSet::GetMaxHealthAttribute()), 30.f);
-	TestEqual(TEXT("Health attribute 30"), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), 30.f);
-	TestEqual(TEXT("MoveSpeed attribute 180"), Attribute(Chaser, URRMovementAttributeSet::GetMoveSpeedAttribute()), 180.f);
+	TestEqual(TEXT("chaser Stats.Damage from the CSV"), Chaser->GetStats().Damage, Row.Damage);
+	TestEqual(TEXT("chaser Stats.XPValue from the CSV"), Chaser->GetStats().XPValue, Row.XPValue);
+	TestEqual(TEXT("MaxHealth attribute from the CSV"), Attribute(Chaser, URRHealthAttributeSet::GetMaxHealthAttribute()), Row.MaxHealth);
+	TestEqual(TEXT("Health attribute = MaxHealth"), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), Row.MaxHealth);
+	TestEqual(TEXT("MoveSpeed attribute from the CSV"), Attribute(Chaser, URRMovementAttributeSet::GetMoveSpeedAttribute()), Row.MoveSpeed);
 	TestEqual(TEXT("AttackPower starts at 1"), Attribute(Chaser, URREnemyAttributeSet::GetAttackPowerAttribute()), 1.f);
-	TestEqual(TEXT("MaxWalkSpeed mirrors MoveSpeed"), Chaser->GetCharacterMovement()->MaxWalkSpeed, 180.f);
+	TestEqual(TEXT("MaxWalkSpeed mirrors MoveSpeed"), Chaser->GetCharacterMovement()->MaxWalkSpeed, Row.MoveSpeed);
+	TestEqual(TEXT("knockback resistance from the CSV"), Chaser->GetKnockbackResistance(), Row.KnockbackResistance);
 	TestFalse(TEXT("RVO avoidance off (light separation, task-034-01)"), Chaser->GetCharacterMovement()->bUseRVOAvoidance);
 	const float Arrival = Chaser->GetEnemyMovement()->GetArrivalDistance();
 	AddInfo(FString::Printf(TEXT("arrival distance %.1f uu"), Arrival));
-	TestTrue(TEXT("arrival distance just under the attack range"), Arrival > 0.f && Arrival < 120.f);
+	TestTrue(TEXT("arrival distance just under the attack range"), Arrival > 0.f && Arrival < Row.AttackRange);
 	TestEqual(TEXT("hit capsule overlaps Projectile"), Chaser->GetHitCapsule()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Overlap);
 	TestEqual(TEXT("root capsule ignores Projectile"), Chaser->GetCapsuleComponent()->GetCollisionResponseToChannel(RRCollisionChannels::Projectile), ECR_Ignore);
 	TestEqual(TEXT("starts in Chase"), Chaser->GetState(), ERRChaserState::Chase);
@@ -271,20 +274,28 @@ bool FRREnemyDeathTest::RunTest(const FString& Parameters)
 	const FBox ChaserBounds = Chaser->GetCapsuleComponent()->Bounds.GetBox();
 	TestTrue(TEXT("chaser capsule covers the shot height"), ChaserBounds.Min.Z < MuzzleTarget.Z && ChaserBounds.Max.Z > MuzzleTarget.Z);
 
-	const float ExpectedHealth[] = { 20.f, 10.f, 0.f };
+	// CSV rows: Chaser MaxHealth, BurstRifle Damage (crit off): ceil(MaxHealth / Damage) shots kill.
+	const float MaxHealth = RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).MaxHealth;
+	const float ShotDamage = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow).Damage;
+	if (!TestTrue(TEXT("CSV: chaser health and rifle damage > 0"), MaxHealth > 0.f && ShotDamage > 0.f))
+	{
+		return false;
+	}
+	const int32 ShotsToKill = FMath::CeilToInt32(MaxHealth / ShotDamage);
 	FVector DeathLocation = Chaser->GetActorLocation();
-	for (int32 Shot = 0; Shot < 3; ++Shot)
+	for (int32 Shot = 0; Shot < ShotsToKill; ++Shot)
 	{
 		const int32 Frame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30);
 		TestTrue(FString::Printf(TEXT("shot %d stopped"), Shot + 1), Frame != INDEX_NONE);
-		TestEqual(FString::Printf(TEXT("Health after shot %d"), Shot + 1), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), ExpectedHealth[Shot]);
+		TestEqual(FString::Printf(TEXT("Health after shot %d"), Shot + 1), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()),
+			FMath::Max(MaxHealth - ShotDamage * (Shot + 1), 0.f));
 		AddInfo(FString::Printf(TEXT("shot %d hit at frame %d, health %.1f"), Shot + 1, Frame, Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute())));
-		if (Shot < 2)
+		if (Shot < ShotsToKill - 1)
 		{
 			TestFalse(FString::Printf(TEXT("alive after shot %d"), Shot + 1), Chaser->IsDead());
 		}
 	}
-	TestTrue(TEXT("dead after 3 hits"), Chaser->IsDead());
+	TestTrue(TEXT("dead after ceil(MaxHealth / Damage) hits"), Chaser->IsDead());
 	TestEqual(TEXT("state Dead"), Chaser->GetState(), ERRChaserState::Dead);
 	TestFalse(TEXT("collision disabled"), Chaser->GetActorEnableCollision());
 	TestEqual(TEXT("no XP before the shrink ends"), GetXPPickups(TestWorld.Get()).Num(), 0);
@@ -320,7 +331,7 @@ bool FRREnemyDeathTest::RunTest(const FString& Parameters)
 		TestTrue(TEXT("XP cube ejected from the death point"), FVector::Dist2D(Pickup->GetPopStart(), DeathLocation) < 1.f && FVector::Dist2D(Pickup->GetActorLocation(), DeathLocation) <= 221.f);
 		CubeXP += Pickup->GetXPAmount();
 	}
-	TestEqual(TEXT("cubes add up to 1 XP"), CubeXP, 1.f, 1e-4f);
+	TestEqual(TEXT("cubes add up to the CSV XPValue"), CubeXP, static_cast<float>(RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).XPValue), 1e-4f);
 	return true;
 }
 
@@ -338,7 +349,10 @@ bool FRREnemyAttackTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("miner Health 100"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 100.f);
+	// CSV rows: Miner MaxHealth (PlayerBaseStats), Chaser Damage, WindUp, AttackRate, AttackRange (EnemyStats).
+	const FRRPlayerBaseStatsRow MinerRow = RRTestStats::PlayerRow(*this);
+	const FRREnemyStatsRow ChaserRow = RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow);
+	TestEqual(TEXT("miner Health = CSV MaxHealth"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), MinerRow.MaxHealth);
 	TArray<FHit> Hits;
 	const FDelegateHandle Handle = RecordHits(Miner, Hits);
 
@@ -374,16 +388,17 @@ bool FRREnemyAttackTest::RunTest(const FString& Parameters)
 	for (const FHit& Hit : Hits)
 	{
 		Times += FString::Printf(TEXT(" %.3f"), Hit.Time - WindUpStart);
-		TestEqual(TEXT("each hit deals 10"), Hit.Damage, 10.f);
+		TestEqual(TEXT("each hit deals the CSV Damage"), Hit.Damage, ChaserRow.Damage);
 	}
 	AddInfo(FString::Printf(TEXT("wind-up at %.3f s; hits (s after wind-up):%s; %d attacks"), WindUpStart, *Times, Chaser->GetAttackCount()));
-	TestTrue(TEXT("first hit 0.1 s after the wind-up starts (±1 frame)"), FMath::Abs(Hits[0].Time - WindUpStart - 0.1) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("first hit WindUp s after the wind-up starts (±1 frame)"), FMath::Abs(Hits[0].Time - WindUpStart - ChaserRow.WindUp) <= FrameSeconds + 1e-3);
 	for (int32 Index = 1; Index < Hits.Num(); ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("hit %d at least 1 s after the previous"), Index + 1), Hits[Index].Time - Hits[Index - 1].Time >= 1.0 - 1e-3);
+		TestTrue(FString::Printf(TEXT("hit %d at least 1 / AttackRate s after the previous"), Index + 1),
+			Hits[Index].Time - Hits[Index - 1].Time >= 1.0 / ChaserRow.AttackRate - 1e-3);
 	}
-	TestEqual(TEXT("Health = 100 - 10 per hit"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 100.f - 10.f * Hits.Num());
-	TestTrue(TEXT("chaser stayed in range"), FVector::Dist2D(Chaser->GetActorLocation(), Miner->GetActorLocation()) <= 120.f);
+	TestEqual(TEXT("Health = MaxHealth - Damage per hit"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), MinerRow.MaxHealth - ChaserRow.Damage * Hits.Num());
+	TestTrue(TEXT("chaser stayed in range"), FVector::Dist2D(Chaser->GetActorLocation(), Miner->GetActorLocation()) <= ChaserRow.AttackRange);
 	return true;
 }
 
@@ -441,7 +456,8 @@ bool FRREnemyIFramesTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("second attack within the 0.25 s i-frames"), SecondAttackTime - FirstAttackTime < Miner->GetIFramesDuration());
 	TestTrue(TEXT("miner invulnerable at the second attack"), bInvulnerableAtSecondAttack);
 	TestEqual(TEXT("only one hit applied"), Hits.Num(), 1);
-	TestEqual(TEXT("Health 90"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()), 90.f);
+	TestEqual(TEXT("Health = MaxHealth - one chaser Damage"), Attribute(Miner, URRHealthAttributeSet::GetHealthAttribute()),
+		RRTestStats::PlayerRow(*this).MaxHealth - RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).Damage);
 	return true;
 }
 
@@ -465,12 +481,13 @@ bool FRREnemyDamageNumberTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// One flat hit (no crit), below the chaser's 30 health.
+	// One flat hit (no crit) of 5 (scenario value), below the chaser's CSV MaxHealth.
 	UAbilitySystemComponent* SourceASC = Source->GetAbilitySystemComponent();
 	FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(URRGE_DamageFlat::StaticClass(), 1.f, SourceASC->MakeEffectContext());
 	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, 5.f);
 	SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, Target->GetAbilitySystemComponent());
-	TestEqual(TEXT("target Health 25"), Attribute(Target, URRHealthAttributeSet::GetHealthAttribute()), 25.f);
+	TestEqual(TEXT("target Health = MaxHealth - 5"), Attribute(Target, URRHealthAttributeSet::GetHealthAttribute()),
+		RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).MaxHealth - 5.f);
 
 	// The hit goes to the damage number subsystem (no actor spawned); its window closes 0.25 s later.
 	URRDamageNumberSubsystem* Numbers = TestWorld.Get()->GetSubsystem<URRDamageNumberSubsystem>();
@@ -706,20 +723,27 @@ bool FRREnemyPassiveHitCapsuleTest::RunTest(const FString& Parameters)
 	}
 	TestTrue(TEXT("BP_Chaser shows at least one mesh part at rest"), VisibleAtRest.Contains(true));
 
-	// Three shots of 10 into the walking chaser (30 health), fired 300 uu in front of it along +X while it walks west.
+	// ceil(MaxHealth / Damage) shots (CSV rows Chaser, BurstRifle) into the walking chaser, fired 300 uu in front of it along +X while it walks west.
 	const FVector MuzzleOffset = FWeaponAccess::MuzzleOf(Rifle)->GetComponentLocation() - Rifle->GetActorLocation();
 	const float ShotHeight = Floor.Z + 0.5f * Grid->GetBlockHeight();
-	const float ExpectedHealth[] = { 20.f, 10.f, 0.f };
-	for (int32 Shot = 0; Shot < 3; ++Shot)
+	const float MaxHealth = RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).MaxHealth;
+	const float ShotDamage = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow).Damage;
+	if (!TestTrue(TEXT("CSV: chaser health and rifle damage > 0"), MaxHealth > 0.f && ShotDamage > 0.f))
+	{
+		return false;
+	}
+	const int32 ShotsToKill = FMath::CeilToInt32(MaxHealth / ShotDamage);
+	for (int32 Shot = 0; Shot < ShotsToKill; ++Shot)
 	{
 		const FVector Robot = Chaser->GetActorLocation();
 		const FVector MuzzleTarget(Robot.X - 300.f, Robot.Y, ShotHeight);
 		Rifle->SetActorLocation(MuzzleTarget - MuzzleOffset, false, nullptr, ETeleportType::TeleportPhysics);
 		const int32 Frame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30);
 		TestTrue(FString::Printf(TEXT("shot %d stopped on the robot"), Shot + 1), Frame != INDEX_NONE);
-		TestEqual(FString::Printf(TEXT("health after shot %d"), Shot + 1), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()), ExpectedHealth[Shot]);
+		TestEqual(FString::Printf(TEXT("health after shot %d"), Shot + 1), Attribute(Chaser, URRHealthAttributeSet::GetHealthAttribute()),
+			FMath::Max(MaxHealth - ShotDamage * (Shot + 1), 0.f));
 	}
-	if (!TestTrue(TEXT("dead after 3 hits"), Chaser->IsDead()))
+	if (!TestTrue(TEXT("dead after ceil(MaxHealth / Damage) hits"), Chaser->IsDead()))
 	{
 		return false;
 	}

@@ -1,4 +1,4 @@
-// Rogue Rigs - shooter integration tests with the final Blueprints (RogueRigs.Integration.Shooter*, Integration.PlacedSpawnerMix): BP_Shooter keeps the distance ring and fires laser-then-shot at the real camera view, repositions around rock to fire, BP_ShooterProjectile hits BP_Miner for 12 and spares robots, and the BP_EnemySpawner placed in L_ArenaM1 mixes chaser 65 / kamikaze 12 / shooter 15 / heavy 8 (heavy MaxAlive 5) / shield chaser 0 (director only).
+// Rogue Rigs - shooter integration tests with the final Blueprints (RogueRigs.Integration.Shooter*, Integration.PlacedSpawnerMix): BP_Shooter keeps the distance ring and fires laser-then-shot at the real camera view, repositions around rock to fire, BP_ShooterProjectile hits BP_Miner for its CSV Damage and spares robots, and the BP_EnemySpawner placed in L_ArenaM1 mixes chaser 65 / kamikaze 12 / shooter 15 / heavy 8 (heavy MaxAlive 5) / shield chaser 0 (director only).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -20,6 +20,7 @@
 #include "Projectiles/RREnemyProjectile.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/Package.h"
 #include "UObject/UObjectHash.h"
 #include "Weapons/RRAutoFireComponent.h"
@@ -45,12 +46,33 @@ namespace RRShooterIntegrationTests
 	const FIntPoint CoverMinerCell(39, 43);
 	const FIntPoint CoverShooterCell(39, 48);
 
-	/** Ring of the Shooter CSV row: PreferredDistance 800 +/- PreferredDistanceTolerance 200. */
-	constexpr float RingMin = 600.f;
-	constexpr float RingMax = 1000.f;
+	/** Shooter values derived from the Shooter row of EnemyStats.csv (task-420: never copied in the test). */
+	struct FShooterValues
+	{
+		/** Inner edge of the ring (PreferredDistance - PreferredDistanceTolerance). */
+		float RingMin = 0.f;
+		/** Outer edge of the ring (PreferredDistance + PreferredDistanceTolerance). */
+		float RingMax = 0.f;
+		/** Damage per hit (Damage). */
+		float ShotDamage = 0.f;
+		/** Laser time before a shot (WindUp). */
+		double WindUp = 0.0;
+		/** Seconds between two shots (1 / AttackRate). */
+		double Period = 0.0;
+	};
 
-	/** Shooter CSV damage per hit. */
-	constexpr float ShotDamage = 12.f;
+	/** Reads the Shooter row and derives the values (test error when the row is missing). */
+	FShooterValues ReadShooterValues(FAutomationTestBase& Test)
+	{
+		const FRREnemyStatsRow Row = RRTestStats::EnemyRow(Test, RRTestStats::ShooterRow);
+		FShooterValues Values;
+		Values.RingMin = Row.PreferredDistance - Row.PreferredDistanceTolerance;
+		Values.RingMax = Row.PreferredDistance + Row.PreferredDistanceTolerance;
+		Values.ShotDamage = Row.Damage;
+		Values.WindUp = Row.WindUp;
+		Values.Period = Row.AttackRate > 0.f ? 1.0 / Row.AttackRate : 0.0;
+		return Values;
+	}
 
 	/** One hit received by the miner. */
 	struct FHit
@@ -131,7 +153,7 @@ namespace RRShooterIntegrationTests
 	}
 
 	/** Every hit in Hits deals exactly ShotDamage. */
-	bool AllHitsAre12(const TArray<FHit>& Hits)
+	bool AllHitsDeal(const TArray<FHit>& Hits, float ShotDamage)
 	{
 		for (const FHit& Hit : Hits)
 		{
@@ -150,6 +172,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationShooterRingTest, "RogueRigs.Integ
 bool FRRIntegrationShooterRingTest::RunTest(const FString& Parameters)
 {
 	using namespace RRShooterIntegrationTests;
+	const FShooterValues ShooterValues = ReadShooterValues(*this);
+	const float RingMin = ShooterValues.RingMin;
+	const float RingMax = ShooterValues.RingMax;
+	const float ShotDamage = ShooterValues.ShotDamage;
 
 	FTestWorld TestWorld(TEXT("RRIntegrationShooterRing"));
 	ARRArenaGrid* Grid = nullptr;
@@ -210,7 +236,7 @@ bool FRRIntegrationShooterRingTest::RunTest(const FString& Parameters)
 		{
 			bLaserHiddenOtherwise &= !Laser->IsVisible();
 		}
-		// It aims as soon as the miner is in range (960 uu), then closes to the ring: from its first frame in the ring it must stay there.
+		// It aims as soon as the miner is in range (CSV AttackRange), then closes to the ring: from its first frame in the ring it must stay there.
 		const float Distance = FVector::Dist2D(Shooter->GetActorLocation(), Miner->GetActorLocation());
 		if (RingEntryTime < 0.0 && Distance <= RingMax)
 		{
@@ -245,20 +271,20 @@ bool FRRIntegrationShooterRingTest::RunTest(const FString& Parameters)
 	}
 	for (int32 Index = 0; Index < 3; ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("shot %d fires 0.6 s after its laser starts (within one frame)"), Index + 1),
-			FMath::Abs(ShotTimes[Index] - AimStarts[Index] - 0.6) <= FrameSeconds + 1e-3);
+		TestTrue(FString::Printf(TEXT("shot %d fires WindUp s after its laser starts (within one frame)"), Index + 1),
+			FMath::Abs(ShotTimes[Index] - AimStarts[Index] - ShooterValues.WindUp) <= FrameSeconds + 1e-3);
 	}
-	TestTrue(TEXT("shots 2.0 s apart (within one frame)"), FMath::Abs(ShotTimes[1] - ShotTimes[0] - 2.0) <= FrameSeconds + 1e-3
-		&& FMath::Abs(ShotTimes[2] - ShotTimes[1] - 2.0) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("shots 1 / AttackRate s apart (within one frame)"), FMath::Abs(ShotTimes[1] - ShotTimes[0] - ShooterValues.Period) <= FrameSeconds + 1e-3
+		&& FMath::Abs(ShotTimes[2] - ShotTimes[1] - ShooterValues.Period) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("laser visible on every aim frame"), bLaserShownWhileAiming);
 	TestTrue(TEXT("laser hidden outside the aim"), bLaserHiddenOtherwise);
 	TestTrue(TEXT("stopped while aiming"), bStoppedWhileAiming);
 	TestTrue(TEXT("live shots were BP_ShooterProjectile"), MaxShots >= 1 && bAllShotsOfClass);
 	TestTrue(TEXT("ring reached before the second shot"), RingEntryTime > 0.0 && RingEntryTime < ShotTimes[1]);
-	TestTrue(TEXT("distance ring held once reached (600 to 1000 uu)"), MinRing >= RingMin && MaxRing <= RingMax);
+	TestTrue(TEXT("distance ring held once reached (PreferredDistance +/- PreferredDistanceTolerance)"), MinRing >= RingMin && MaxRing <= RingMax);
 	TestEqual(TEXT("every shot hit the miner"), Hits.Num(), 3);
-	TestTrue(TEXT("each hit deals 12"), AllHitsAre12(Hits));
-	TestEqual(TEXT("miner lost 36"), Health(Miner), HealthBefore - 3.f * ShotDamage);
+	TestTrue(TEXT("each hit deals the CSV Damage"), AllHitsDeal(Hits, ShotDamage));
+	TestEqual(TEXT("miner lost 3 x Damage"), Health(Miner), HealthBefore - 3.f * ShotDamage);
 	return true;
 }
 
@@ -268,6 +294,10 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationShooterRepositionTest, "RogueRigs
 bool FRRIntegrationShooterRepositionTest::RunTest(const FString& Parameters)
 {
 	using namespace RRShooterIntegrationTests;
+	const FShooterValues ShooterValues = ReadShooterValues(*this);
+	const float RingMin = ShooterValues.RingMin;
+	const float RingMax = ShooterValues.RingMax;
+	const float ShotDamage = ShooterValues.ShotDamage;
 
 	FTestWorld TestWorld(TEXT("RRIntegrationShooterReposition"));
 	ARRArenaGrid* Grid = nullptr;
@@ -326,8 +356,8 @@ bool FRRIntegrationShooterRepositionTest::RunTest(const FString& Parameters)
 		&& Grid->HasLineOfSight(AimLocation, Miner->GetActorLocation()));
 	if (TestEqual(TEXT("its shot reached the miner"), Hits.Num(), 1))
 	{
-		TestEqual(TEXT("hit deals 12"), Hits[0].Damage, ShotDamage);
-		TestEqual(TEXT("miner health -12"), Health(Miner), HealthBefore - ShotDamage);
+		TestEqual(TEXT("hit deals the CSV Damage"), Hits[0].Damage, ShotDamage);
+		TestEqual(TEXT("miner health - Damage"), Health(Miner), HealthBefore - ShotDamage);
 	}
 	return true;
 }
@@ -338,6 +368,8 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationShooterSparesRobotsTest, "RogueRi
 bool FRRIntegrationShooterSparesRobotsTest::RunTest(const FString& Parameters)
 {
 	using namespace RRShooterIntegrationTests;
+	const FShooterValues ShooterValues = ReadShooterValues(*this);
+	const float ShotDamage = ShooterValues.ShotDamage;
 
 	FTestWorld TestWorld(TEXT("RRIntegrationShooterSpares"));
 	ARRArenaGrid* Grid = nullptr;
@@ -395,8 +427,8 @@ bool FRRIntegrationShooterSparesRobotsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("chaser unharmed"), Health(Chaser), ChaserHealth);
 	TestEqual(TEXT("shooter unharmed"), Health(Shooter), ShooterHealth);
 	TestEqual(TEXT("every shot passed through to the miner"), Hits.Num(), Shooter->GetShotCount());
-	TestTrue(TEXT("each hit deals 12"), AllHitsAre12(Hits));
-	TestEqual(TEXT("miner lost 12 per shot"), Health(Miner), MinerHealth - ShotDamage * Shooter->GetShotCount());
+	TestTrue(TEXT("each hit deals the CSV Damage"), AllHitsDeal(Hits, ShotDamage));
+	TestEqual(TEXT("miner lost Damage per shot"), Health(Miner), MinerHealth - ShotDamage * Shooter->GetShotCount());
 	return true;
 }
 

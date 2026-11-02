@@ -21,6 +21,7 @@
 #include "Tests/RRTestHarness.h"
 #include "Pool/RRActorPoolSubsystem.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -30,7 +31,7 @@ namespace RRKamikazeTests
 {
 	using namespace RRTestHarness;
 
-	/** Burst rifle Blueprint (10 damage per shot). */
+	/** Burst rifle Blueprint (WeaponStats.csv row BurstRifle damage per shot). */
 	const TCHAR* const BurstRifleClassPath = TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C");
 
 	/** Open floor row of arena_m1: the kamikaze stands on KamikazeCell, the muzzle two cells west (as the enemy tests). */
@@ -140,13 +141,16 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 {
 	using namespace RRKamikazeTests;
 
+	// The values live in the CSV (task-420): the row must be usable, the kamikaze must carry it.
 	FRREnemyStatsRow Row;
-	if (TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), Row)))
+	if (!TestTrue(TEXT("EnemyStats.csv row Kamikaze read"), ARREnemy::LoadStatsRow(TEXT("Kamikaze"), Row)))
 	{
-		TestEqual(TEXT("MaxHealth 100"), Row.MaxHealth, 100.f);
-		TestEqual(TEXT("MoveSpeed 180"), Row.MoveSpeed, 180.f);
-		TestEqual(TEXT("XPValue 1"), Row.XPValue, 1);
+		return false;
 	}
+	TestTrue(TEXT("MaxHealth > 0"), Row.MaxHealth > 0.f);
+	TestTrue(TEXT("MoveSpeed > 0"), Row.MoveSpeed > 0.f);
+	TestTrue(TEXT("XPValue > 0"), Row.XPValue > 0);
+	TestTrue(TEXT("arm range (AttackRange) > 0"), Row.AttackRange > 0.f);
 
 	FTestWorld TestWorld(TEXT("RRKamikazeFuse"));
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
@@ -172,7 +176,7 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Health 100"), Health(Kamikaze), 100.f);
+	TestEqual(TEXT("Health = CSV MaxHealth"), Health(Kamikaze), Row.MaxHealth);
 	TestEqual(TEXT("starts in Chase"), Kamikaze->GetState(), ERRKamikazeState::Chase);
 	TWeakObjectPtr<ARRKamikaze> Weak(Kamikaze);
 
@@ -219,15 +223,15 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	const double Fuse = Kamikaze->GetExplosionQueuedTime() - Kamikaze->GetArmTime();
 	AddInfo(FString::Printf(TEXT("armed at %.1f uu from the miner at t=%.3f s, explosion queued %.3f s later, max armed core scale %.2f, armed drift %.2f uu"),
 		ArmDistance, Kamikaze->GetArmTime(), Fuse, MaxCoreScaleArmed, MaxArmedDrift));
-	TestTrue(TEXT("armed within 250 uu"), ArmDistance > 0.f && ArmDistance <= 250.f);
-	TestTrue(TEXT("armed near the 250 uu edge (one frame of travel)"), ArmDistance > 250.f - 2.f * Row.MoveSpeed * FrameSeconds);
+	TestTrue(TEXT("armed within the CSV AttackRange"), ArmDistance > 0.f && ArmDistance <= Row.AttackRange);
+	TestTrue(TEXT("armed near the AttackRange edge (one frame of travel)"), ArmDistance > Row.AttackRange - 2.f * Row.MoveSpeed * FrameSeconds);
 	TestTrue(TEXT("stopped once armed"), MaxArmedDrift < 1.f);
 	AddInfo(FString::Printf(TEXT("fuse shake over %d armed frames: peak |x| %.2f, |y| %.2f, |z| %.2f uu, rate %.2f Hz first frame -> %.2f Hz last frame, offset after explosion %s"),
 		ArmedFrames, MaxShake.X, MaxShake.Y, MaxShake.Z, FirstShakeRate, LastShakeRate, *Kamikaze->GetFuseShakeOffset().ToString()));
 	TestTrue(TEXT("fuse shake cleared after the explosion"), Kamikaze->GetFuseShakeOffset().IsZero());
 	const float ContactDistance = Kamikaze->GetCapsuleComponent()->GetScaledCapsuleRadius() + Miner->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	TestTrue(TEXT("armed before its capsule touches the miner"), ArmDistance > ContactDistance);
-	TestTrue(TEXT("fuse 0.65 s (within one frame)"), Fuse >= 0.65 - 1e-3 && Fuse <= 0.65 + FrameSeconds + 1e-3);
+	TestTrue(TEXT("fuse = CSV WindUp (within one frame)"), Fuse >= Row.WindUp - 1e-3 && Fuse <= Row.WindUp + FrameSeconds + 1e-3);
 	TestTrue(TEXT("core grew while armed"), MaxCoreScaleArmed > 1.5f);
 	TestTrue(TEXT("dead after the fuse"), Kamikaze->IsDead());
 	TestEqual(TEXT("state Dead"), Kamikaze->GetState(), ERRKamikazeState::Dead);
@@ -244,7 +248,8 @@ bool FRRKamikazeFuseTest::RunTest(const FString& Parameters)
 	}
 	const float MinerHealthAfter = Health(Miner);
 	AddInfo(FString::Printf(TEXT("miner health %.1f -> %.1f"), MinerHealthBefore, MinerHealthAfter));
-	TestEqual(TEXT("miner took 30 damage"), MinerHealthBefore - MinerHealthAfter, 30.f);
+	TestEqual(TEXT("miner took the Kamikaze ExplosionStats MinerDamage"), MinerHealthBefore - MinerHealthAfter,
+		RRTestStats::ExplosionRow(*this, RRTestStats::KamikazeRow).MinerDamage);
 	TestFalse(TEXT("kamikaze destroyed"), Weak.IsValid() && !Weak->IsActorBeingDestroyed());
 	TestEqual(TEXT("no XP after a fuse explosion"), GetXPPickups(TestWorld.Get()).Num(), 0);
 	return true;
@@ -292,14 +297,19 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	const FBox Bounds = Kamikaze->GetCapsuleComponent()->Bounds.GetBox();
 	TestTrue(TEXT("kamikaze capsule covers the shot height"), Bounds.Min.Z < MuzzleTarget.Z && Bounds.Max.Z > MuzzleTarget.Z);
 
-	// Each rifle shot deals 10 (crit 0): health steps down by 10 per shot, the last of MaxHealth / 10 shots kills it.
+	// Each rifle shot deals the BurstRifle Damage (crit 0): health steps down by Damage per shot, the last of ceil(MaxHealth / Damage) shots kills it.
 	const float StartHealth = Health(Kamikaze);
-	TestEqual(TEXT("starts at MaxHealth 100 (EnemyStats.csv)"), StartHealth, 100.f);
-	const int32 ShotsToKill = FMath::CeilToInt(StartHealth / 10.f);
+	TestEqual(TEXT("starts at MaxHealth (EnemyStats.csv)"), StartHealth, RRTestStats::EnemyRow(*this, RRTestStats::KamikazeRow).MaxHealth);
+	const float ShotDamage = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow).Damage;
+	if (!TestTrue(TEXT("CSV: rifle damage > 0"), ShotDamage > 0.f))
+	{
+		return false;
+	}
+	const int32 ShotsToKill = FMath::CeilToInt(StartHealth / ShotDamage);
 	for (int32 Shot = 1; Shot < ShotsToKill; ++Shot)
 	{
 		TestTrue(*FString::Printf(TEXT("shot %d stopped"), Shot), FireOneShot(*this, TestWorld, Rifle));
-		TestEqual(*FString::Printf(TEXT("Health after shot %d"), Shot), Health(Kamikaze), StartHealth - 10.f * Shot);
+		TestEqual(*FString::Printf(TEXT("Health after shot %d"), Shot), Health(Kamikaze), StartHealth - ShotDamage * Shot);
 		TestFalse(*FString::Printf(TEXT("alive after shot %d"), Shot), Kamikaze->IsDead());
 		TestEqual(*FString::Printf(TEXT("no explosion while alive (shot %d)"), Shot), Explosions->IsSourceSpent(Kamikaze), false);
 	}
@@ -338,7 +348,7 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("slot freed once exploded"), Kamikaze->HoldsSpawnSlot());
 	const double Fuse = Kamikaze->GetExplosionQueuedTime() - Kamikaze->GetArmTime();
 	AddInfo(FString::Printf(TEXT("killed at t=%.3f s, explosion queued %.3f s later"), Kamikaze->GetArmTime(), Fuse));
-	TestTrue(TEXT("kill fuse 0.65 s (within one frame)"), Fuse >= Kamikaze->GetFuseTime() - 1e-3 && Fuse <= Kamikaze->GetFuseTime() + FrameSeconds + 1e-3);
+	TestTrue(TEXT("kill fuse = CSV WindUp (within one frame)"), Fuse >= Kamikaze->GetFuseTime() - 1e-3 && Fuse <= Kamikaze->GetFuseTime() + FrameSeconds + 1e-3);
 	const FVector DeathLocation = Kamikaze->GetActorLocation();
 
 	for (int32 Frame = 0; Frame < 30; ++Frame)
@@ -349,7 +359,13 @@ bool FRRKamikazeKilledTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("one explosion"), Recorder->GetExplosionRows().Num(), 1);
 	const bool bChaserAlive = WeakChaser.IsValid() && !WeakChaser->IsActorBeingDestroyed() && !WeakChaser->IsDead();
 	AddInfo(FString::Printf(TEXT("chaser at 150 uu: health %.1f, dead %d"), WeakChaser.IsValid() ? Health(WeakChaser.Get()) : 0.f, bChaserAlive ? 0 : 1));
-	TestFalse(TEXT("the explosion killed the chaser (40 damage on 30 health)"), bChaserAlive);
+	// The kamikaze blast (ExplosionStats Kamikaze Damage) kills the chaser when it reaches the chaser's CSV MaxHealth.
+	const float BlastDamage = RRTestStats::ExplosionRow(*this, RRTestStats::KamikazeRow).Damage;
+	const float ChaserMaxHealth = RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow).MaxHealth;
+	if (BlastDamage >= ChaserMaxHealth)
+	{
+		TestFalse(TEXT("the explosion killed the chaser (blast Damage >= chaser MaxHealth)"), bChaserAlive);
+	}
 
 	int32 NearKamikaze = 0;
 	const TArray<ARRPickup*> Pickups = GetXPPickups(TestWorld.Get());
@@ -382,7 +398,7 @@ bool FRRKamikazeChainTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestWorld.Tick();
-	// A full-health kamikaze (100) survives one Barrel explosion (40): bring it down to that damage so the explosion kills it.
+	// A full-health kamikaze survives one Barrel explosion (CSV rows): bring it down to that damage so the explosion kills it.
 	FRRExplosionStatsRow BarrelStats;
 	if (TestTrue(TEXT("Barrel row loads"), Explosions->GetExplosionStats(TEXT("Barrel"), BarrelStats)))
 	{

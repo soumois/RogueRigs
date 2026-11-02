@@ -16,6 +16,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 
 namespace RRShieldChaserTests
 {
@@ -65,21 +66,26 @@ bool FRRShieldChaserStatsTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Shield 30"), Shield.Shield, 30.f);
-	TestEqual(TEXT("XPValue 2"), Shield.XPValue, 2);
-	TestEqual(TEXT("same MaxHealth as the chaser"), Shield.MaxHealth, Chaser.MaxHealth);
-	TestEqual(TEXT("same MoveSpeed as the chaser (180)"), Shield.MoveSpeed, Chaser.MoveSpeed);
-	TestEqual(TEXT("same Damage as the chaser"), Shield.Damage, Chaser.Damage);
-	TestEqual(TEXT("same AttackRange as the chaser"), Shield.AttackRange, Chaser.AttackRange);
-	TestEqual(TEXT("same WindUp as the chaser"), Shield.WindUp, Chaser.WindUp);
-	for (const TCHAR* RowName : { TEXT("Chaser"), TEXT("Kamikaze"), TEXT("Shooter"), TEXT("Heavy") })
+	// The values live in the CSV (task-420): the ShieldChaser row must be usable, each robot carries its own row. Rows are not
+	// compared with each other: a hand edit of one row must not break the test.
+	TestTrue(TEXT("ShieldChaser Shield > 0"), Shield.Shield > 0.f);
+	TestTrue(TEXT("ShieldChaser MaxHealth > 0"), Shield.MaxHealth > 0.f);
+	TestTrue(TEXT("ShieldChaser MoveSpeed > 0"), Shield.MoveSpeed > 0.f);
+	TestTrue(TEXT("ShieldChaser Damage > 0"), Shield.Damage > 0.f);
+	TestTrue(TEXT("ShieldChaser AttackRange > 0"), Shield.AttackRange > 0.f);
+	TestTrue(TEXT("ShieldChaser XPValue > 0"), Shield.XPValue > 0);
+
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRShieldChaserStats"));
+	ARRShieldChaser* Shielded = RRShieldChaserTests::SpawnShieldTestRobot<ARRShieldChaser>(*this, TestWorld, FVector(0.f, 0.f, 2000.f));
+	ARRChaser* Plain = RRShieldChaserTests::SpawnShieldTestRobot<ARRChaser>(*this, TestWorld, FVector(500.f, 0.f, 2000.f));
+	if (!Shielded || !Plain)
 	{
-		FRREnemyStatsRow Row;
-		if (TestTrue(FString::Printf(TEXT("row %s read"), RowName), ARREnemy::LoadStatsRow(RowName, Row)))
-		{
-			TestEqual(FString::Printf(TEXT("%s has no shield"), RowName), Row.Shield, 0.f);
-		}
+		return false;
 	}
+	TestEqual(TEXT("shield chaser MaxShield = ShieldChaser Shield"), Shielded->GetMaxShield(), Shield.Shield);
+	TestEqual(TEXT("shield chaser health = ShieldChaser MaxHealth"), RRShieldChaserTests::ShieldTestHealth(Shielded), Shield.MaxHealth);
+	TestEqual(TEXT("plain chaser shield = Chaser Shield"), Plain->GetHealthSet()->GetShield(), Chaser.Shield);
+	TestEqual(TEXT("plain chaser health = Chaser MaxHealth"), RRShieldChaserTests::ShieldTestHealth(Plain), Chaser.MaxHealth);
 	return true;
 }
 
@@ -106,36 +112,49 @@ bool FRRShieldChaserAbsorbTest::RunTest(const FString& Parameters)
 	const FDelegateHandle BrokenHandle = Set->OnShieldBroken.AddLambda([&Events]() { Events.Add(TEXT("ShieldBroken")); });
 	const FDelegateHandle DeathHandle = Set->OnDeath.AddLambda([&Events](AActor*) { Events.Add(TEXT("Death")); });
 
-	TestEqual(TEXT("spawns with shield 30"), Shielded->GetShield(), 30.f);
-	TestEqual(TEXT("max shield 30"), Shielded->GetMaxShield(), 30.f);
+	// CSV row ShieldChaser: Shield S, MaxHealth H. Hits derived from them: 0.4 S (shield only), 0.6 S + H / 4 (breaks the shield
+	// and reaches health in the same hit), H / 4 (health only), H / 2 (kills).
+	const FRREnemyStatsRow Row = RRTestStats::EnemyRow(*this, RRTestStats::ShieldChaserRow);
+	const float S = Row.Shield;
+	const float H = Row.MaxHealth;
+	if (!TestTrue(TEXT("CSV: ShieldChaser Shield and MaxHealth > 0"), S > 0.f && H > 0.f))
+	{
+		return false;
+	}
+	const float Hit1 = 0.4f * S;
+	const float Hit2 = 0.6f * S + 0.25f * H;
+	const float Hit3 = 0.25f * H;
+	const float Hit4 = 0.5f * H;
+	TestEqual(TEXT("spawns with the CSV shield"), Shielded->GetShield(), S);
+	TestEqual(TEXT("max shield = CSV Shield"), Shielded->GetMaxShield(), S);
 	TestEqual(TEXT("shield fraction 1"), Shielded->GetShieldFraction(), 1.f);
 	TestTrue(TEXT("has shield"), Shielded->HasShield());
-	TestEqual(TEXT("health 30"), ShieldTestHealth(Shielded), 30.f);
-	TestEqual(TEXT("reads the ShieldChaser row (XP 2)"), Shielded->GetStats().XPValue, 2);
+	TestEqual(TEXT("health = CSV MaxHealth"), ShieldTestHealth(Shielded), H);
+	TestEqual(TEXT("reads the ShieldChaser row (XPValue)"), Shielded->GetStats().XPValue, Row.XPValue);
 
-	// 12: all on the shield.
-	HitShieldTestRobot(Source, Shielded, 12.f);
-	TestEqual(TEXT("hit 12: shield 18"), Shielded->GetShield(), 18.f);
-	TestEqual(TEXT("hit 12: health untouched"), ShieldTestHealth(Shielded), 30.f);
-	TestEqual(TEXT("hit 12: fraction 0.6"), Shielded->GetShieldFraction(), 0.6f, 1e-5f);
-	TestEqual(TEXT("hit 12: no break yet"), Shielded->GetShieldBreakCount(), 0);
+	// Hit 1: all on the shield.
+	HitShieldTestRobot(Source, Shielded, Hit1);
+	TestEqual(TEXT("hit 1: shield 0.6 S"), Shielded->GetShield(), S - Hit1, 1e-4f);
+	TestEqual(TEXT("hit 1: health untouched"), ShieldTestHealth(Shielded), H);
+	TestEqual(TEXT("hit 1: fraction 0.6"), Shielded->GetShieldFraction(), 0.6f, 1e-5f);
+	TestEqual(TEXT("hit 1: no break yet"), Shielded->GetShieldBreakCount(), 0);
 
-	// 25: 18 on the shield, 7 on health, in the same hit; the shield breaks once.
-	HitShieldTestRobot(Source, Shielded, 25.f);
-	TestEqual(TEXT("hit 25: shield 0"), Shielded->GetShield(), 0.f);
-	TestEqual(TEXT("hit 25: health 30 - 7"), ShieldTestHealth(Shielded), 23.f);
-	TestEqual(TEXT("hit 25: fraction 0"), Shielded->GetShieldFraction(), 0.f);
-	TestFalse(TEXT("hit 25: no shield left"), Shielded->HasShield());
-	TestEqual(TEXT("hit 25: one break"), Shielded->GetShieldBreakCount(), 1);
+	// Hit 2: the rest of the shield, then H / 4 on health, in the same hit; the shield breaks once.
+	HitShieldTestRobot(Source, Shielded, Hit2);
+	TestEqual(TEXT("hit 2: shield 0"), Shielded->GetShield(), 0.f);
+	TestEqual(TEXT("hit 2: health H - H / 4"), ShieldTestHealth(Shielded), H - 0.25f * H, 1e-3f);
+	TestEqual(TEXT("hit 2: fraction 0"), Shielded->GetShieldFraction(), 0.f);
+	TestFalse(TEXT("hit 2: no shield left"), Shielded->HasShield());
+	TestEqual(TEXT("hit 2: one break"), Shielded->GetShieldBreakCount(), 1);
 
-	// 5: health only, no second break.
-	HitShieldTestRobot(Source, Shielded, 5.f);
-	TestEqual(TEXT("hit 5: health 18"), ShieldTestHealth(Shielded), 18.f);
-	TestEqual(TEXT("hit 5: still one break"), Shielded->GetShieldBreakCount(), 1);
+	// Hit 3: health only, no second break.
+	HitShieldTestRobot(Source, Shielded, Hit3);
+	TestEqual(TEXT("hit 3: health H / 2"), ShieldTestHealth(Shielded), 0.5f * H, 1e-3f);
+	TestEqual(TEXT("hit 3: still one break"), Shielded->GetShieldBreakCount(), 1);
 
-	// 18: dies.
-	HitShieldTestRobot(Source, Shielded, 18.f);
-	TestTrue(TEXT("hit 18: dead"), Shielded->IsDead());
+	// Hit 4: dies.
+	HitShieldTestRobot(Source, Shielded, Hit4);
+	TestTrue(TEXT("hit 4: dead"), Shielded->IsDead());
 
 	Set->OnDamageReceived.Remove(DamageHandle);
 	Set->OnShieldBroken.Remove(BrokenHandle);
@@ -143,12 +162,13 @@ bool FRRShieldChaserAbsorbTest::RunTest(const FString& Parameters)
 	const FString Order = FString::Join(Events, TEXT(","));
 	AddInfo(FString::Printf(TEXT("events: %s"), *Order));
 	TestEqual(TEXT("event order"), Order, FString(TEXT("Damage,Damage,ShieldBroken,Damage,Damage,Death")));
-	TestTrue(TEXT("damage numbers get the raw hits (12, 25, 5, 18)"), Hits == TArray<float>({ 12.f, 25.f, 5.f, 18.f }));
+	TestTrue(TEXT("damage numbers get the raw hits"), Hits == TArray<float>({ Hit1, Hit2, Hit3, Hit4 }));
 
-	// A plain chaser has no shield: the hit goes straight to health.
-	TestEqual(TEXT("plain chaser shield 0"), Plain->GetHealthSet()->GetShield(), 0.f);
+	// A plain chaser carries its own row's shield; a hit of 5 (scenario value) goes to it first, then to health.
+	const FRREnemyStatsRow ChaserRow = RRTestStats::EnemyRow(*this, RRTestStats::ChaserRow);
+	TestEqual(TEXT("plain chaser shield = Chaser Shield"), Plain->GetHealthSet()->GetShield(), ChaserRow.Shield);
 	HitShieldTestRobot(Source, Plain, 5.f);
-	TestEqual(TEXT("plain chaser health 25"), ShieldTestHealth(Plain), 25.f);
+	TestEqual(TEXT("plain chaser health = MaxHealth - (5 - Shield)"), ShieldTestHealth(Plain), ChaserRow.MaxHealth - FMath::Max(5.f - ChaserRow.Shield, 0.f));
 	return true;
 }
 
@@ -171,20 +191,21 @@ bool FRRShieldChaserBreakAndKillTest::RunTest(const FString& Parameters)
 	const FDelegateHandle BrokenHandle = Set->OnShieldBroken.AddLambda([&Events]() { Events.Add(TEXT("ShieldBroken")); });
 	const FDelegateHandle DeathHandle = Set->OnDeath.AddLambda([&Events](AActor*) { Events.Add(TEXT("Death")); });
 
-	// 60 = 30 shield + 30 health: both in one hit.
-	HitShieldTestRobot(Source, Shielded, 60.f);
+	// Shield + MaxHealth (CSV row ShieldChaser): both in one hit.
+	const FRREnemyStatsRow Row = RRTestStats::EnemyRow(*this, RRTestStats::ShieldChaserRow);
+	HitShieldTestRobot(Source, Shielded, Row.Shield + Row.MaxHealth);
 	Set->OnShieldBroken.Remove(BrokenHandle);
 	Set->OnDeath.Remove(DeathHandle);
 	TestTrue(TEXT("dead"), Shielded->IsDead());
 	TestEqual(TEXT("one break"), Shielded->GetShieldBreakCount(), 1);
 	TestEqual(TEXT("break before death"), FString::Join(Events, TEXT(",")), FString(TEXT("ShieldBroken,Death")));
 
-	// 59 leaves 1 health.
+	// Shield + MaxHealth - 1 leaves 1 health.
 	ARRShieldChaser* Survivor = SpawnShieldTestRobot<ARRShieldChaser>(*this, TestWorld, FVector(0.f, 500.f, 2000.f));
 	if (Survivor)
 	{
-		HitShieldTestRobot(Source, Survivor, 59.f);
-		TestFalse(TEXT("59 does not kill (30 shield + 29 health)"), Survivor->IsDead());
+		HitShieldTestRobot(Source, Survivor, Row.Shield + Row.MaxHealth - 1.f);
+		TestFalse(TEXT("Shield + MaxHealth - 1 does not kill"), Survivor->IsDead());
 		TestEqual(TEXT("1 health left"), ShieldTestHealth(Survivor), 1.f);
 	}
 	return true;

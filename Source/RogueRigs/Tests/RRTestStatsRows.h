@@ -9,7 +9,17 @@
 
 #include "Enemies/RREnemy.h"
 #include "Enemies/RREnemyStatsRow.h"
+#include "Explosions/RRExplosionStatsRow.h"
+#include "Explosions/RRExplosionSubsystem.h"
 #include "GAS/RRBaseStatsLoader.h"
+#include "GAS/RRPlayerBaseStatsRow.h"
+#include "Grid/RRArenaGrid.h"
+#include "Grid/RROreTypeRow.h"
+#include "Progression/RRProgressionComponent.h"
+#include "Progression/RRXPCurveRow.h"
+#include "Upgrades/RRUpgradeComponent.h"
+#include "Upgrades/RRUpgradeRarityRow.h"
+#include "Upgrades/RRUpgradeValueRow.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponStatsRow.h"
 
@@ -32,6 +42,30 @@ namespace RRTestStats
 
 	/** Row name of the chaser in EnemyStats.csv. */
 	constexpr const TCHAR* ChaserRow = TEXT("Chaser");
+
+	/** Row name of the kamikaze in EnemyStats.csv and ExplosionStats.csv (its blast). */
+	constexpr const TCHAR* KamikazeRow = TEXT("Kamikaze");
+
+	/** Row name of the shooter in EnemyStats.csv. */
+	constexpr const TCHAR* ShooterRow = TEXT("Shooter");
+
+	/** Row name of the heavy in EnemyStats.csv. */
+	constexpr const TCHAR* HeavyRow = TEXT("Heavy");
+
+	/** Row name of the shield chaser in EnemyStats.csv. */
+	constexpr const TCHAR* ShieldChaserRow = TEXT("ShieldChaser");
+
+	/** Row name of the miner in PlayerBaseStats.csv. */
+	constexpr const TCHAR* MinerRow = TEXT("Miner");
+
+	/** Row name of the barrel blast in ExplosionStats.csv. */
+	constexpr const TCHAR* BarrelRow = TEXT("Barrel");
+
+	/** Row name of the duskite ore in OreTypes.csv. */
+	constexpr const TCHAR* DuskiteRow = TEXT("Duskite");
+
+	/** Row name of the heal ore in OreTypes.csv. */
+	constexpr const TCHAR* HealOreRow = TEXT("Heal");
 
 	/**
 	 * Copies row RowName of the CSV at ContentRelativePath (relative to the project Content folder) into OutRow. RowType is
@@ -62,6 +96,75 @@ namespace RRTestStats
 		FRREnemyStatsRow Row;
 		ReadRow(Test, ARREnemy::EnemyStatsPath, RowName, Row);
 		return Row;
+	}
+
+	/** Row RowName of PlayerBaseStats.csv (default Miner); a default row (zeros) and a test error when missing. */
+	inline FRRPlayerBaseStatsRow PlayerRow(FAutomationTestBase& Test, FName RowName = MinerRow)
+	{
+		FRRPlayerBaseStatsRow Row;
+		ReadRow(Test, FRRBaseStatsLoader::PlayerBaseStatsPath, RowName, Row);
+		return Row;
+	}
+
+	/** Row RowName of ExplosionStats.csv (Barrel, Kamikaze); a default row (zeros) and a test error when missing. */
+	inline FRRExplosionStatsRow ExplosionRow(FAutomationTestBase& Test, FName RowName)
+	{
+		FRRExplosionStatsRow Row;
+		ReadRow(Test, URRExplosionSubsystem::ExplosionStatsPath, RowName, Row);
+		return Row;
+	}
+
+	/** Row RowName of OreTypes.csv (Duskite, Heal); a default row and a test error when missing. */
+	inline FRROreTypeRow OreRow(FAutomationTestBase& Test, FName RowName)
+	{
+		FRROreTypeRow Row;
+		ReadRow(Test, ARRArenaGrid::OreTypesPath, RowName, Row);
+		return Row;
+	}
+
+	/** Row RowName of UpgradeValues.csv (e.g. Damage_Grey, Pierce_Blue); a default row and a test error when missing. */
+	inline FRRUpgradeValueRow UpgradeValueRow(FAutomationTestBase& Test, FName RowName)
+	{
+		FRRUpgradeValueRow Row;
+		ReadRow(Test, URRUpgradeComponent::UpgradeValuesPath, RowName, Row);
+		return Row;
+	}
+
+	/** Row "<Stat>_<Tier>" of UpgradeValues.csv (e.g. Damage_Blue); a default row and a test error when missing. */
+	inline FRRUpgradeValueRow UpgradeValueRow(FAutomationTestBase& Test, ERRUpgradeStat Stat, ERRUpgradeRarity Tier)
+	{
+		const FString Name = StaticEnum<ERRUpgradeStat>()->GetNameStringByValue(static_cast<int64>(Stat)) + TEXT("_")
+			+ StaticEnum<ERRUpgradeRarity>()->GetNameStringByValue(static_cast<int64>(Tier));
+		return UpgradeValueRow(Test, FName(*Name));
+	}
+
+	/** Card value of Stat at Tier read from UpgradeValues.csv: GlobalValue, times TargetedMultiplier for a one-weapon card. */
+	inline float UpgradeCardValue(FAutomationTestBase& Test, ERRUpgradeStat Stat, ERRUpgradeRarity Tier, bool bTargeted)
+	{
+		const FRRUpgradeValueRow Row = UpgradeValueRow(Test, Stat, Tier);
+		return bTargeted ? Row.GlobalValue * Row.TargetedMultiplier : Row.GlobalValue;
+	}
+
+	/** Row RowName of UpgradeRarities.csv (Grey to Yellow); a default row (zeros) and a test error when missing. */
+	inline FRRUpgradeRarityRow RarityRow(FAutomationTestBase& Test, FName RowName)
+	{
+		FRRUpgradeRarityRow Row;
+		ReadRow(Test, URRUpgradeComponent::UpgradeRaritiesPath, RowName, Row);
+		return Row;
+	}
+
+	/** Row of UpgradeRarities.csv for Tier (row name = tier name); a default row (zeros) and a test error when missing. */
+	inline FRRUpgradeRarityRow RarityRow(FAutomationTestBase& Test, ERRUpgradeRarity Tier)
+	{
+		return RarityRow(Test, FName(*StaticEnum<ERRUpgradeRarity>()->GetNameStringByValue(static_cast<int64>(Tier))));
+	}
+
+	/** XP needed to leave Level (XPCurve.csv row named by the level number, 1-based); 0 and a test error when missing. */
+	inline float XPToNextLevel(FAutomationTestBase& Test, int32 Level)
+	{
+		FRRXPCurveRow Row;
+		ReadRow(Test, URRProgressionComponent::XPCurvePath, FName(*FString::FromInt(Level)), Row);
+		return Row.XPToNextLevel;
 	}
 }
 

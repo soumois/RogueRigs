@@ -19,6 +19,7 @@
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestPickupXP.h"
+#include "Tests/RRTestStatsRows.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 
@@ -76,6 +77,15 @@ namespace RRHeavyTests
 		return true;
 	}
 
+	/** Heavy row of EnemyStats.csv (test error when missing). */
+	FRREnemyStatsRow HeavyRow(FAutomationTestBase& Test)
+	{
+		return RRTestStats::EnemyRow(Test, RRTestStats::HeavyRow);
+	}
+
+	/** ARRHeavy SlamTriggerRatio default (EditDefaultsOnly, not a CSV value): the telegraph starts within AttackRange x this ratio. */
+	constexpr float SlamTriggerRatio = 0.7f;
+
 	/** Weighted spawner entry. */
 	FRRWeightedEnemyClass Entry(TSubclassOf<ARREnemy> Class, float Weight, int32 MaxAlive = 0)
 	{
@@ -94,18 +104,20 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 {
 	using namespace RRHeavyTests;
 
+	// The values live in the CSV (task-420): the row must be usable, the heavy must carry it.
 	FRREnemyStatsRow Row;
-	if (TestTrue(TEXT("EnemyStats.csv row Heavy read"), ARREnemy::LoadStatsRow(TEXT("Heavy"), Row)))
+	if (!TestTrue(TEXT("EnemyStats.csv row Heavy read"), ARREnemy::LoadStatsRow(TEXT("Heavy"), Row)))
 	{
-		TestEqual(TEXT("MaxHealth 300"), Row.MaxHealth, 300.f);
-		TestEqual(TEXT("MoveSpeed 153"), Row.MoveSpeed, 153.f);
-		TestEqual(TEXT("Damage 25 (slam)"), Row.Damage, 25.f);
-		TestEqual(TEXT("AttackRate 0.5 (one slam every 2 s)"), Row.AttackRate, 0.5f);
-		TestEqual(TEXT("AttackRange 361 (slam radius)"), Row.AttackRange, 361.f);
-		TestEqual(TEXT("WindUp 1.0 (telegraph)"), Row.WindUp, 1.f);
-		TestEqual(TEXT("XPValue 5"), Row.XPValue, 5);
-		TestEqual(TEXT("KnockbackResistance 0.8"), Row.KnockbackResistance, 0.8f);
+		return false;
 	}
+	TestTrue(TEXT("MaxHealth > 0"), Row.MaxHealth > 0.f);
+	TestTrue(TEXT("MoveSpeed > 0"), Row.MoveSpeed > 0.f);
+	TestTrue(TEXT("Damage > 0 (slam)"), Row.Damage > 0.f);
+	TestTrue(TEXT("AttackRate > 0 (slam cadence)"), Row.AttackRate > 0.f);
+	TestTrue(TEXT("AttackRange > 0 (slam radius)"), Row.AttackRange > 0.f);
+	TestTrue(TEXT("WindUp > 0 (telegraph)"), Row.WindUp > 0.f);
+	TestTrue(TEXT("XPValue > 0"), Row.XPValue > 0);
+	TestTrue(TEXT("KnockbackResistance in [0, 1]"), Row.KnockbackResistance >= 0.f && Row.KnockbackResistance <= 1.f);
 
 	FTestWorld TestWorld(TEXT("RRHeavyStats"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
@@ -118,12 +130,12 @@ bool FRRHeavyStatsTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("Health 300"), Health(Heavy), 300.f);
-	TestEqual(TEXT("MaxWalkSpeed 153"), Heavy->GetCharacterMovement()->MaxWalkSpeed, 153.f);
-	TestEqual(TEXT("knockback resistance 0.8"), Heavy->GetKnockbackResistance(), 0.8f);
-	TestEqual(TEXT("slam radius 361"), Heavy->GetSlamRadius(), 361.f);
-	TestEqual(TEXT("telegraph 1.0 s"), Heavy->GetTelegraphDuration(), 1.f);
-	TestEqual(TEXT("arrival 180.5 uu (half the slam radius)"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 180.5f);
+	TestEqual(TEXT("Health = CSV MaxHealth"), Health(Heavy), Row.MaxHealth);
+	TestEqual(TEXT("MaxWalkSpeed = CSV MoveSpeed"), Heavy->GetCharacterMovement()->MaxWalkSpeed, Row.MoveSpeed);
+	TestEqual(TEXT("knockback resistance from the CSV"), Heavy->GetKnockbackResistance(), Row.KnockbackResistance);
+	TestEqual(TEXT("slam radius = CSV AttackRange"), Heavy->GetSlamRadius(), Row.AttackRange);
+	TestEqual(TEXT("telegraph = CSV WindUp"), Heavy->GetTelegraphDuration(), Row.WindUp);
+	TestEqual(TEXT("arrival = half the slam radius"), Heavy->GetEnemyMovement()->GetArrivalDistance(), 0.5f * Row.AttackRange);
 	const float Radius = Heavy->GetBodyRadius();
 	TestTrue(TEXT("body radius at most 80 uu"), Radius <= 80.f);
 	TestEqual(TEXT("body 2x chaser (48 x 124)"), Radius, 48.f);
@@ -157,6 +169,7 @@ bool FRRHeavyCadenceTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	const float HealthBefore = Health(Miner);
+	const FRREnemyStatsRow Row = HeavyRow(*this);
 
 	TArray<double> TelegraphStarts;
 	TArray<double> SlamTimes;
@@ -202,15 +215,16 @@ bool FRRHeavyCadenceTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestTrue(TEXT("first telegraph only after walking in (beyond the trigger at spawn)"), TelegraphStarts[0] > 0.5);
-	TestTrue(TEXT("telegraph starts within 252.7 uu (361 x 0.7)"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= 252.7f + 1.f);
+	TestTrue(TEXT("telegraph starts within AttackRange x SlamTriggerRatio"), FirstTelegraphDistance > 0.f && FirstTelegraphDistance <= Row.AttackRange * SlamTriggerRatio + 1.f);
+	const double SlamPeriod = 1.0 / Row.AttackRate;
 	for (int32 Index = 0; Index < 3; ++Index)
 	{
-		TestTrue(FString::Printf(TEXT("slam %d lands 1.0 s after its telegraph (within one frame)"), Index + 1),
-			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - 1.0) <= FrameSeconds + 1e-3);
-		TestEqual(FString::Printf(TEXT("slam %d hits for 25"), Index + 1), HealthAfterSlams[Index], HealthBefore - 25.f * (Index + 1));
+		TestTrue(FString::Printf(TEXT("slam %d lands WindUp s after its telegraph (within one frame)"), Index + 1),
+			FMath::Abs(SlamTimes[Index] - TelegraphStarts[Index] - Row.WindUp) <= FrameSeconds + 1e-3);
+		TestEqual(FString::Printf(TEXT("slam %d hits for the CSV Damage"), Index + 1), HealthAfterSlams[Index], HealthBefore - Row.Damage * (Index + 1));
 	}
-	TestTrue(TEXT("slam 2 lands 2 s after slam 1 (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - 2.0) <= FrameSeconds + 1e-3);
-	TestTrue(TEXT("slam 3 lands 2 s after slam 2 (within one frame)"), FMath::Abs(SlamTimes[2] - SlamTimes[1] - 2.0) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("slam 2 lands 1 / AttackRate s after slam 1 (within one frame)"), FMath::Abs(SlamTimes[1] - SlamTimes[0] - SlamPeriod) <= FrameSeconds + 1e-3);
+	TestTrue(TEXT("slam 3 lands 1 / AttackRate s after slam 2 (within one frame)"), FMath::Abs(SlamTimes[2] - SlamTimes[1] - SlamPeriod) <= FrameSeconds + 1e-3);
 	TestTrue(TEXT("stopped while telegraphing"), bStoppedWhileTelegraphing);
 	TestTrue(TEXT("telegraph progress in [0, 1]"), bProgressInRange);
 	TestTrue(TEXT("telegraph progress reaches 0.95"), MaxProgress >= 0.95f);
@@ -258,7 +272,8 @@ bool FRRHeavyShockwaveTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("miner hit for 25"), Health(Miner), MinerHealth - 25.f);
+	const FRREnemyStatsRow Row = HeavyRow(*this);
+	TestEqual(TEXT("miner hit for the CSV Damage"), Health(Miner), MinerHealth - Row.Damage);
 	TestEqual(TEXT("chaser 200 uu away unharmed"), Health(Chaser), ChaserHealth);
 	TestEqual(TEXT("heavy unharmed"), Health(Heavy), HeavyHealth);
 	TestEqual(TEXT("rock 200 uu away still standing"), Grid->GetCellType(RockCell), ERRCellType::Rock);
@@ -283,7 +298,7 @@ bool FRRHeavyShockwaveTest::RunTest(const FString& Parameters)
 	const float DodgeDistance = FVector::Dist2D(Heavy->GetActorLocation(), Miner->GetActorLocation());
 	AddInfo(FString::Printf(TEXT("dodged slam at %.0f uu"), DodgeDistance));
 	TestEqual(TEXT("second slam landed (committed telegraph)"), Heavy->GetSlamCount(), 2);
-	TestTrue(TEXT("miner beyond the radius"), DodgeDistance > 361.f);
+	TestTrue(TEXT("miner beyond the radius"), DodgeDistance > Row.AttackRange);
 	TestEqual(TEXT("dodged slam deals nothing"), Health(Miner), HealthBeforeDodge);
 	TestEqual(TEXT("one hit in total"), Heavy->GetSlamHitCount(), 1);
 	TestEqual(TEXT("chaser still unharmed"), Health(Chaser), ChaserHealth);
