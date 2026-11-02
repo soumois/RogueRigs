@@ -22,3 +22,5 @@ Efficiency on long subtasks:
 - Run the required build after a coherent change set. If it fails, retain relevant diagnostics, fix known related errors together, then rebuild. Keep successful build output concise; do not rerun unaffected checks.
 - Around 35 model/tool cycles, or when the context has grown substantially, make a brief internal checkpoint of remaining acceptance, build and reporting work. Reuse current context and continue to completion; this is not a turn cap.
 - Do not add tests just to measure workflow cost. Run checks required by the subtask or needed to fix an existing test broken by the change.
+
+Slice boundary: implement only the families and files assigned to this subtask. Do not absorb neighboring C++ slices or repeat their checks; report newly discovered cross-slice work to the Executor. Keep checks and summaries specific to this slice so its cost can be compared with the others.
