@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read 2026-11-02: [[aim-indicator]] (provisional, M3): today white-gold ground chevrons, fixed 416 uu, stop at rock, no glow, and the line "Not a laser: red is enemy fire and the shooter targeting laser, and the owner finds a laser too classic": CONFLICT with the request (Q1). [[readability-rules]] (rule): red = enemy fire incl. targeting lasers, so the player laser must not be red; the reference uses one colour per player, Rogue Rigs is solo (Q2). [[color-code]]: player shots and mining laser white-gold. [[miner]]: aims with mouse or stick; cannot shoot through rock ([[destruction-rules]]). Open values the work needs: length and stop rule (Q3, stop rule answered 2026-11-02: first robot or first wall), height (Q4), thickness and glow (Q5; the chevrons had "no glow halo", the reference has a slight glow), reticle (Q6), turrets (Q7), fate of the chevron code and asset (Q8). Milestone: aim feedback is M3 (juice) work, as the chevrons were; done now on the owner request. Tech read: [[sys-aim-indicator]] (URRAimIndicatorComponent, a decal with M_AimChevrons, GetClearDistance stop); the shooter targeting laser is a scaled engine mesh with a material driven by C++ (RRShooter LaserBeam), the pattern reused here; the shown rifle Muzzle is the shot origin since task-412 ([[sys-weapons]]); no test references AimIndicator; no uncommitted BP_Miner edit. Visible change: capture subtask planned (owner rule 2026-10-16); no representative slice needed beyond it (a single effect, no expansion).
 - confirmed_by_owner: yes (2026-11-02, "Ok, tout par défaut")
 - milestone: M3
-- next_step: task-415-02-aim-laser-component
+- next_step: task-415-03-delete-aim-chevrons
 - started: 2026-11-02T17:29:01Z
 - waiting_for: none
 - result: open

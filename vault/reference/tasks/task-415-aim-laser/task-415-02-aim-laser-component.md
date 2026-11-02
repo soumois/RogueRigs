@@ -3,7 +3,7 @@ id: task-415-02-aim-laser-component
 description: "Cpp: replace the chevron decal of the miner by the aim laser component (Muzzle origin, stop at rock, 1200 uu max)"
 parent: task-415-aim-laser
 kind: task
-status: in-progress
+status: done
 ---
 # Aim laser replaces the white aim chevrons: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Development Editor build succeeds; RogueRigs automation tests that passed before still pass; Source has no reference to M_AimChevrons or the chevron decal; committed by path as `task-415-02-aim-laser-component: <summary>`.
 - editor_state: Unreal editor closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 96, cache write 113290, cache read 3658332, output 45033
+- usage: turns 48, context start 12k peak 113k, resumes 0, 24 min, units 0.73 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-02T17:32:46Z
 - waiting_for: none
-- result: open
+- result: URRAimIndicatorComponent now USceneComponent + transient Plane child (static mesh base crashed BP_Miner load); commits 2b0f9193, 33158869; build OK; 272 pass, 4 fail same as baseline (JuiceKillDropsStreamingCubes, LevelUpUpgradeLoop, Shotgun.Knockback, Turret.FireRangeLifetime); not seen in game
 
 ## Relations
 - [[task-415-aim-laser]] — parent global task.

@@ -3,7 +3,7 @@ id: task-415-03-delete-aim-chevrons
 description: "Bp: delete the unused M_AimChevrons material"
 parent: task-415-aim-laser
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser replaces the white aim chevrons: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T17:57:47Z
 - waiting_for: none
 - result: open
 
