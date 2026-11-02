@@ -3,7 +3,7 @@ id: task-417-camera-shake-on-damage
 description: "Global task: The camera shakes lightly each time the miner loses health, mixed with any explosion or slam shake playing."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake when the miner takes damage
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-02, "ok")
 - milestone: M3
 - next_step: task-417-01-hit-shake
-- started: open
+- started: 2026-11-02T18:23:51Z
 - waiting_for: none
 - result: open
 

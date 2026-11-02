@@ -3,7 +3,7 @@ id: task-417-01-hit-shake
 description: "Cpp: hit shake preset played from the miner on each damage taken"
 parent: task-417-camera-shake-on-damage
 kind: task
-status: todo
+status: in-progress
 ---
 # Camera shake when the miner takes damage: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-02T18:23:52Z
 - waiting_for: none
 - result: open
 
