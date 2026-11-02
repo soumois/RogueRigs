@@ -10,8 +10,11 @@
 #include "Explosions/RRExplosionSubsystem.h"
 #include "Grid/RRBarrelSource.h"
 #include "Projectiles/RRProjectile.h"
+#include "AbilitySystemComponent.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
+#include "Tests/RRTestStatsRows.h"
+#include "Weapons/RRWeaponAttributeSet.h"
 #include "UObject/StrongObjectPtr.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -107,6 +110,12 @@ bool FRRBarrelShotTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("(43, 6) is a barrel"), Grid->GetCellType(ShotBarrelCell), ERRCellType::Barrel);
 	TestEqual(TEXT("(42, 6) is floor"), Grid->GetCellType(ShotFromCell), ERRCellType::Floor);
 	TestNearlyEqual(TEXT("barrel shot health 20"), Grid->GetCellShotHealth(ShotBarrelCell), 20.f);
+	// WeaponStats.csv BurstRifle Damage (task-420: read, never copied): the first shot leaves 20 - Damage, the second one fuses the barrel.
+	const float ShotDamage = RRTestStats::WeaponRow(*this, RRTestStats::BurstRifleRow).Damage;
+	if (!TestTrue(TEXT("scenario: two rifle shots needed (0 < Damage < barrel shot health 20 <= 2 x Damage)"), ShotDamage > 0.f && ShotDamage < 20.f && 2.f * ShotDamage >= 20.f))
+	{
+		return false;
+	}
 	const float DigHealth = Grid->GetCellHealth(ShotBarrelCell);
 
 	ARRWeapon* Rifle = TestWorld.Spawn<ARRWeapon>(RifleClass, FVector::ZeroVector);
@@ -115,6 +124,7 @@ bool FRRBarrelShotTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	Rifle->GetAutoFireComponent()->StopFiring();
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetCritChanceAttribute(), 0.f);
 	// Shot origin on the floor cell west of the barrel at half the block height; aim +X (no miner: the weapon's forward).
 	const FVector Target = Grid->GetCellCenter(ShotFromCell.X, ShotFromCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
 	Rifle->SetActorLocation(Target - (Rifle->GetShotOrigin() - Rifle->GetActorLocation()), false, nullptr, ETeleportType::TeleportPhysics);
@@ -122,7 +132,7 @@ bool FRRBarrelShotTest::RunTest(const FString& Parameters)
 	const int32 FirstFrames = FireOneShotAndWait(*this, TestWorld, Rifle);
 	const float ShotHealthAfterFirst = Grid->GetCellShotHealth(ShotBarrelCell);
 	AddInfo(FString::Printf(TEXT("shot 1: projectile gone after %d frame(s), barrel shot health %.1f"), FirstFrames, ShotHealthAfterFirst));
-	TestNearlyEqual(TEXT("first shot: shot health 20 -> 10"), ShotHealthAfterFirst, 10.f);
+	TestNearlyEqual(TEXT("first shot: shot health 20 - rifle Damage"), ShotHealthAfterFirst, 20.f - ShotDamage);
 	TestEqual(TEXT("first shot: barrel still there"), Grid->GetCellType(ShotBarrelCell), ERRCellType::Barrel);
 	TestNearlyEqual(TEXT("first shot: dig health untouched"), Grid->GetCellHealth(ShotBarrelCell), DigHealth);
 	TestEqual(TEXT("first shot: nothing queued"), Subsystem->GetPendingCount(), 0);
