@@ -1,6 +1,6 @@
 ---
 id: aim-indicator
-description: "Aim indicator: thin white-gold laser from the rifle muzzle along the aim, above the floor, stopping at the first robot or rock. Open for aim feedback."
+description: "Aim indicator: white-gold laser from the rifle muzzle along the aim, above the floor, stopping at the first robot or rock. Open for aim feedback."
 parent: art-audio-index
 kind: spec
 status: provisional
