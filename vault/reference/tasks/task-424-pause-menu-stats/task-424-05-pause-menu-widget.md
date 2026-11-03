@@ -3,7 +3,7 @@ id: task-424-05-pause-menu-widget
 description: "Bp: WBP_PauseMenu on the C++ base, after the validated mockup, Root Canvas and anchors; widget class wired"
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: done
 ---
 # Pause menu: miner stats screen with Resume and Exit: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: WBP_PauseMenu compiles with no warning, uses only Canvas and anchors at the root, binds Resume and Exit to the C++ base, and opens through rr.Debug.PauseMenu open in PIE; committed by path.
 - editor_state: Unreal open with the MCP plugin
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 80, cache write 110287, cache read 2886781, output 38512
+- usage: turns 40, context start 11k peak 114k, resumes 0, 8 min, units 0.62 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-03T06:57:57Z
 - waiting_for: none
-- result: open
+- result: Commit 80137266: WBP_PauseMenu on URRPauseMenuWidget, Root Canvas, compiled no warning, PauseMenuWidgetClass set on BP_RRPlayerController. Opening in PIE not verified (MCP cannot run rr.Debug.PauseMenu); left to task-424-06 -game capture. Font sizes and button size estimated.
 
 ## Relations
 - [[task-424-pause-menu-stats]] — parent global task.

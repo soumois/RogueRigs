@@ -3,7 +3,7 @@ id: task-424-06-pause-menu-capture
 description: "Capture: -game captures of the pause menu at four resolutions against the validated mockup, Resume and Exit by debug command"
 parent: task-424-pause-menu-stats
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T07:06:00Z
 - waiting_for: none
 - result: open
 
