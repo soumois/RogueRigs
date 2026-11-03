@@ -3,7 +3,7 @@ id: task-423-miner-aim-laser-range-fade
 description: "Global task: give the miner aim laser a visible maximum range and a fade-out at its end, at open floor, rock block or robot; before/after captures."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner aim laser: visible maximum range and fade-out at its end
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-03, "ok")
 - milestone: M3
 - next_step: task-423-01-debug-aim-command
-- started: open
+- started: 2026-11-03T02:02:14Z
 - waiting_for: none
 - result: open
 

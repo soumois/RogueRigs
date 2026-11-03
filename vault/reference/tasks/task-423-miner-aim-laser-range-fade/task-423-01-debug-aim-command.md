@@ -3,7 +3,7 @@ id: task-423-01-debug-aim-command
 description: "Cpp: add the rr.Debug.Aim <YawDegrees> console command that fixes the miner aim for visual checks"
 parent: task-423-miner-aim-laser-range-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner aim laser: visible maximum range and fade-out at its end: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T02:02:14Z
 - waiting_for: none
 - result: open
 
