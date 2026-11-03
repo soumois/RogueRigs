@@ -3,7 +3,7 @@ id: task-424-02-pause-menu-elements
 description: "Art: take the elements of the validated mockup: map reuse of existing sprites, make the new PNGs"
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: done
 ---
 # Pause menu: miner stats screen with Resume and Exit: art
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Every element of the validated mockup is mapped to a reused asset or a committed new PNG; credits within the Q5 cap; node updated; lint clean; committed by path.
 - editor_state: any (no editor needed)
 - token_ceiling: 0.15 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 18, cache write 26083, cache read 176340, output 4751
+- usage: turns 9, context start 11k peak 31k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-03T06:37:51Z
 - waiting_for: none
-- result: open
+- result: All elements map to existing sprites (LevelEnd frame/dividers, Shop title bar, Shop continue button); no new PNG, 0 credits (cap 24). Element table in art-prompts-pause-menu-mockup. Button margins estimated, not measured.
 
 ## Relations
 - [[task-424-pause-menu-stats]] — parent global task.

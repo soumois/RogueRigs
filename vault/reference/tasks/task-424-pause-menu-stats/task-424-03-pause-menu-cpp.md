@@ -3,7 +3,7 @@ id: task-424-03-pause-menu-cpp
 description: "Cpp: pause input and flow, stats snapshot (global and per weapon), widget base with Resume and Exit, rr.Debug.PauseMenu"
 parent: task-424-pause-menu-stats
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T06:38:46Z
 - waiting_for: none
 - result: open
 
