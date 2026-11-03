@@ -3,7 +3,7 @@ id: task-423-05-doc
 description: "Doc: update sys-aim-indicator, bp-aim-laser-material and tool-capture for the range, fade and rr.Debug.Aim"
 parent: task-423-miner-aim-laser-range-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner aim laser: visible maximum range and fade-out at its end: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T02:34:33Z
 - waiting_for: none
 - result: open
 
