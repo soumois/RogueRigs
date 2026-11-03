@@ -3,7 +3,7 @@ id: task-424-01-pause-menu-kie-mockup
 description: "Art: Kie.ai image-to-image pause menu mockup from the level-end reference, credit cost reported, owner "je valide" gate."
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Pause menu: miner stats screen with Resume and Exit: art
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M3
 - started: 2026-11-03T06:29:03Z
-- waiting_for: none
+- waiting_for: owner je valide on the mockup
 - result: open
 
 ## Relations
