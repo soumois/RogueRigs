@@ -1,114 +1,84 @@
-# Week 3 — 2026-10-23 to 2026-10-29
+# Week 3 — 2026-10-17 to 2026-10-23
 
 ⬅️ [Week 2](../week-02/) · [Devlog](../)
 
-The run recorded for the course (see below) is the game as it stood on the morning of 2026-10-23: a white cylinder for the console, a yellow cube for the chest, a flat purple void around the arena, a free reroll, a placeholder end screen and a white disc for the extraction shuttle. This week replaced those placeholders with real meshes, effects and screens, and added the missing loop around a level: a main menu, a paid shop between levels, and an extractor that carries the miner out.
+Week 2 ended with a game made of white cubes on a grey floor and primitive robots. Week 3 gave the arena its look: rock slabs, painted floor, dark violet ambience with a pool of light on the miner, crystal deposits, meshed and animated robots, a living drone, and level-up cards that are dealt, flipped and picked. A run now chains four levels with an intermission and a loading screen.
 
 | | |
 |---|---|
-| Commits | 783 |
-| Tasks | 299 to 385 (297 and 298 were finished on Oct 23); 314 (chest lid logo) still `todo`; 333, 354, 384 cancelled; 188 (shared editor lock) cancelled on Oct 26; 386 (miner Mixamo animation) started on Oct 29 and cancelled on Oct 30 |
-| Crew | + `doc` agent (task 325), + `capture` agent (task 360) |
+| Commits | 832 |
+| Tasks | 205 to 313 (297 to 313 landed on Oct 23); no task cancelled in the period |
+| Course recording | `Rogue Rigs Prototype - Multi-Agent AI for Game Development course week 3.mp4`, 4 min 16 s, showing the build of about Oct 23, level 1 to level 15. Timecodes below refer to it |
 
-Oct 17 to Oct 22 (tasks 205 to 298) is not covered by a devlog page: this one starts on Oct 23 as asked.
+The Oct 23 console and chest tasks (301 to 313) are not yet in that recording; their captures are on the [week 4 page](../week-04/).
 
-## How the comparison was made
+## Before and after
 
-- **Before** = the course recording `Rogue Rigs Prototype - Multi-Agent AI for Game Development course week 3.mp4` (4 min 16 s, level 1 to level 15, ending on the stats screen and the loading of level 2). Timecodes below refer to it.
-- **After** = `-game` captures taken by the crew while doing each task (the `capture` agent and the capture subtasks of the task nodes). They are single frames or short sequences, not one continuous run, so the camera and the situation differ from the recording.
+Left: end of week 2 (run of Oct 16, [week 2 captures](../week-02/media/)). Right: the recording of Oct 23.
 
-## Console and hack
-
-**Before** (01:18–01:25). The console is a white cylinder, the zone a dashed circle, the hack a white disc (tasks 301 and later did not exist yet).
-
-![Before: white cylinder console and its zone](media/before-console.gif)
-
-**After.** The cylinder is the owner's C2 uplink mast with a mobile dish head and three material slots (task 301). Its lamp colour and blink, dish rotation and screen colour follow the console state (302). The drone hovers in front of the data socket and the hack link aims at it (313). The zone colour stays on the ground and no longer washes out the console, miner and drone (312). The console is 50 % bigger and lands on a free 3 × 3 footprint (311), only where its zone holds between 10 and 40 markable blocks (304), and the hack takes 10 s instead of 12 s (305). A finished hack throws three big XP chips in every direction with a green ring flash (303).
-
-| Before (01:25) | After, console state and zone (302) | After, drone at the socket (313) |
-|---|---|---|
-| [![Before](media/before-console.png)](media/before-console.png) | [![After](media/after-console.png)](media/after-console.png) | [![Drone at the console socket](media/after-drone-socket.png)](media/after-drone-socket.png) |
-
-| After, hack in progress (302) | After, hack reward (303) |
+| End of week 2 | Recording of Oct 23 |
 |---|---|
-| [![Console hacking](media/after-console-hacking.png)](media/after-console-hacking.png) | [![Reward chips and ring flash](media/after-console-reward.png)](media/after-console-reward.png) |
+| [![Week 2: white cube rock, grey floor](media/before-world.png)](media/before-world.png) | [![Week 3: rock slabs, painted violet floor, crystals, tight light](media/after-world.png)](media/after-world.png) |
+| [![Week 2: combat on white cubes](media/before-combat.png)](media/before-combat.png) | [![Week 3: console hack zone with robots](media/after-hack.png)](media/after-hack.png) |
 
-## Bonus chest
+**Look of the arena** (00:30 and after). Rock is made of dual-grid slabs with a world-UV top texture, cracks and plates (task 230) instead of cubes; ore and heal deposits are single crystal formations, three variants per type, cast no shadow and read as volumes (234, 237, 262); the floor has its first painted cracked texture (273). The lighting went through many iterations: shadows off (261), then a warm player light that is the only caster of rock shadows (263), a dark violet ambient (265), a tight light pool with a fixed exposure (268, 270, 272), a darkening post-process instead of a tint (274), and finally a revert to the Monday Oct 19 look with the owner's own light edits recorded (275, 276). Robot yellow no longer burns and robots separate from the floor (266); XP pickups are small bright cyan dots (269, 271, 277), robot and drone eyes glow (278, 279).
 
-**Before** (03:28). The chest is a yellow cube beside a dashed circle.
+## Level-up cards
 
-![Before: yellow cube chest](media/before-chest.png)
+**Cards are dealt and flipped** (00:49–00:58). They arrive face down in a fan, then flip one by one, with one card back per rarity (task 243). From purple up the best card flips last: its back glows, the others darken, then a punch, flash and rays in the tier colour (244). Hovering tilts a card toward the pointer, scales it and sweeps a sheen across the higher tiers (245). The chosen icon flies to the HUD slot of its weapon, or to the XP bar for a player stat (246).
 
-**After.** The Meshy chest has its puffed faces flattened and is cut into body, lid and latch (306). Its lock light blinks red while waiting, orange and faster with the hack progress, and stays green once open (308). Opening plays a sequence: the latch swings, the lid slams open with an overshoot, a freeze and a shake, an inner light, a ground ring, three popping XP chips and sparks (309). The shake is a shared C++ camera shake that any actor can play (310). The chest gives exactly one upgrade choice (307).
+![Cards dealt face down, flipped, one picked](media/after-cards.gif)
 
-![After: the chest opens, lid slam, light, XP chips](media/after-chest-opening.gif)
+## Damage numbers
 
-| Chest in game (306) |
-|---|
-| [![Meshy chest in game](media/after-chest.png)](media/after-chest.png) |
+**Numbers are thrown in an arc** (00:57–01:03). A number grows with the damage of the hit from ×0.8 to ×1.4 (task 239), rises with its own random speed and angle (240), pops for 0.25 s (241) and follows a gravity arc with a peak of about 60 uu (242). Crits are a lighter orange (238).
 
-Not done: the yellow Kessler-Voss mark on the lid (task 314).
+![Damage numbers of different sizes in an arc](media/after-numbers.gif)
 
-## Space background and main menu
+## Robots
 
-**Before** (00:04). The arena floats on an empty dark void.
+**Horde** (01:36–01:45). The grey-box primitives were replaced by Meshy robots for the heavy, kamikaze, shooter and chaser v2, flattened and cleaned in headless Blender (281 to 283), with walk, knee, run, attack, slam and aim/fire animations (284, 285, 287, 289 to 291). The shield chaser has a textured riot shield with the company emblem, a shield-held run, a bash, and fragments thrown as debris when it breaks (216, 218, 220, 222, 224, 226), plus a v2 on the chaser v2 mesh (286, 296). Packs carry at most one heavy (292), the slam is bigger and slower (293), the kamikaze splits its damage 40 to robots and 30 to the miner (294).
 
-**After.** A layered void with real parallax and procedural stars (332), then bold tileable AI-generated textures at several depths (335), and low-poly asteroids floating nearer the camera (334). A first attempt to retune the procedural nebula was cancelled (333). A main menu with a key-art background, New Run, Options and Exit opens the game (337, 338).
+![Horde incoming: new robot meshes, console zone, company subtitle](media/after-horde.gif)
 
-| Before | After, layered space (335) | After, main menu (337, 338) |
+**Drone.** It no longer circles the miner: it holds an escort slot behind and beside him with a damped spring, never hovers over a block, looks alive (height, turn toward interest points, tilt), then patrols a point in the miner zone (247 to 251). The Meshy drone is split into base, laser and a modelled dish with three animated parts and two thruster particles (252 to 254, 280). One laser beam aims at the middle of the dug blocks, with sparks and chips at the impact (232, 233).
+
+## Pickups
+
+XP and ore land into Chaos physics so they roll and tumble (229, 256); the big XP is now the owner's data cube with the same floaty pop (217, 221, 228); crystals and pickups pulse out of sync (257); deposits release their loot one by one over the dig time (235); ore blocks take 2 s to dig and rock 0.65 s (259, 260); the camera arm is 1400 uu (255).
+
+## Level chain and end screens
+
+**Before.** A run was one level, ending on a single extraction screen.
+
+| End of week 2, extraction | Recording, end of level 1 (04:08) | Recording, loading level 2 (04:13) |
 |---|---|---|
-| [![Before: dark void](media/before-void.png)](media/before-void.png) | [![After: layered space](media/after-space.png)](media/after-space.png) | [![Main menu](media/after-main-menu.png)](media/after-main-menu.png) |
+| [![Week 2 extraction](media/before-extraction.png)](media/before-extraction.png) | [![Level cleared screen](media/after-endscreen.png)](media/after-endscreen.png) | [![Dropping in, loading the map](media/after-loading.png)](media/after-loading.png) |
 
-## Aim chevrons and heal numbers
+**After.** A run chains four levels with an intermission recap, the next layout loads in the background and a loading screen is drawn before the map travel (206, 208); the HUD and subtitles are hidden during intermission and loading, and the end screens show alone (207, 211); level 2 to 4 layouts are written at 240 × 240 (205); the run-won text appears at level 4 (209); the intermission and loading screens are in English (210) and company subtitles carry no speaker prefix (215). The shuttle at extraction is still a disc here (recording, 03:52: [after-extraction](media/after-extraction.png)).
 
-Neither is in the recording: the miner's aim was invisible and a heal pickup showed nothing.
-
-**After.** White-gold chevrons projected on the ground show the aim direction, stop at rock, fade with distance (measured on the final image, task 331) and have sharp outlines (330) (tasks 328 to 331). A heal pickup shows a green floating `+N` on the miner, rendered like the damage numbers (324); the heal pickup is now three modelled red chunk variants chosen at random (336, 339).
-
-| Aim chevrons (328, 331) | Heal numbers (324) |
-|---|---|
-| [![Aim chevrons](media/after-aim-chevrons.png)](media/after-aim-chevrons.png) | [![Green heal numbers](media/after-heal-number.png)](media/after-heal-number.png) |
-
-## Level up, reroll, shop and stats screens
-
-**Before** (00:54 and 04:08). A level-up shows three cards and a free `Reroll`; the end of a level is a grey placeholder screen with two ore lines and a disabled `Shop opens later` button.
-
-| Before, free reroll | Before, end of level (04:08) |
-|---|---|
-| [![Before: free reroll](media/before-reroll.png)](media/before-reroll.png) | [![Before: placeholder end screen](media/before-endscreen.png)](media/before-endscreen.png) |
-
-**After.** Reroll costs Duskite ore: 15, plus 5 for each further reroll without a level-up (315). The end of a level is split into two screens, a stats screen and a shop (317). The shop sells 5 upgrade cards priced by rarity with an escalating reroll (316). The ore is never reset between levels, so the miner spends his whole run total (340). A bought card plays the level-up burn and shows a sold look (344), the Buy button has its own press reaction (343) and ore flies from the counter to the button (342). The next level loads during the shop (318), and after the first intermission level-ups no longer offer cards (319, a bug found by a test). The shop was then rebuilt to the owner's ChatGPT mockup (348, 351 to 357), on a Root Canvas with anchors so it adapts to the screen ratio (356, 357); the stats screen was rebuilt the same way, with frame and divider sprites generated through Kie.ai as 9-slice (378, 380, 381, 383, 385).
-
-| After, paid reroll (315) | After, stats screen (381, 383) | After, shop screen (348, 356) |
-|---|---|---|
-| [![Paid reroll](media/after-reroll.png)](media/after-reroll.png) | [![Rebuilt stats screen](media/after-endscreen.png)](media/after-endscreen.png) | [![Rebuilt shop](media/after-shop.png)](media/after-shop.png) |
-
-## Extractor and level transitions
-
-**Before** (03:52–04:00). The shuttle is a white disc on the ground; walking into it opens the end screen at once.
-
-![Before: white disc shuttle, reach it before the timer](media/before-shuttle.gif)
-
-**After.** The owner's Meshy quadrotor ("Rustwing") is decimated and its flat faces flattened (366), split into body and four rotors (367) and re-baked with a new unwrap (368). In game it shows as the extraction shuttle (369), takes off like a helicopter when the miner touches it (370), and at level start waits beside the miner and leaves after the fade-in (371). Its rotors spin on opposite diagonals, slower on the ground (373), with a rotor-wash effect under each (374). It is scaled ×4 (375), clears the rock under its footprint plus a margin (372, 376), and the level ends when the miner enters a resizable box component instead of a 12-cell radius (377). New Run now shows a loading screen with an animated image until level 1 is ready (365, 379).
-
-| After, re-baked extractor mesh (368) |
-|---|
-| [![Extractor mesh after re-bake](media/after-extractor-mesh.png)](media/after-extractor-mesh.png) |
-
-## What changed, by area
+## Crew and tests
 
 | Area | Tasks | Change |
 |---|---|---|
-| Robots | 297 to 300 | Heavy death puff; shooter charge-up glow at the cannon tip during the 0.6 s targeting laser; kamikaze body shakes during its fuse; dust ring and rock chips when the heavy slam lands (the owner kept the light beige-tan dust as is) |
-| Console | 301 to 305, 311 to 313 | C2 mesh, state visuals, hack reward, marked-rock range, 10 s hack, 50 % bigger, zone colour, drone at the socket |
-| Chest | 306 to 310 | Flat Meshy mesh in three parts, one upgrade choice, lock light, opening sequence, shared camera shake; 314 (lid logo) not done |
-| Shop and economy | 315 to 319, 340 to 344, 348, 351 to 357 | Paid reroll, intermission shop, stats then cards, preload of the next level, ore carried through the run, buy and burn effects, redesign and anchors |
-| Level end screens | 378 to 385 | Prompt and mockup archive, frame and divider sprites, rebuilt `WBP_Intermission`, one `Total Ore` line, caption lines allowed in `screen_texts.json` (384, subtitle lines, cancelled when the owner validated the screen) |
-| Extractor | 366 to 377 | Mesh, rotors, takeoff, arrival, rock clearing, rotor spin and wash, ×4 scale, board box |
-| Turret | 345 to 347, 349, 350 | Meshy turret canon, flat surfaces, cut into fixed base and yaw head, placed turret turns toward its target and shots leave the canon |
-| World and menus | 332 to 339, 365, 379 | Space background, asteroids, main menu, loading screen, packaged-build fix for New Run |
-| HUD and feedback | 324, 328 to 331 | Heal numbers, aim chevrons |
-| Crew and process | 320 to 323, 325 to 327, 358 to 363 | `task-start.js` and a `started` timestamp to flag stale tasks; `cancelled` and `wait-answers` statuses; `doc` agent; units ceiling for the cost alert; short subtask paths; planner cost cut by a script for all-defaults answers; capture tooling and `capture` agent; `bp` cost cut; agents resolve wikilinks with `path-of.js`; shared Blender module `rr_blender.py` |
-| Miner animation | 382, 386 | Rigged Meshy miner saved and measured; the Mixamo animation task went through an idle, run and directions blendspace but showed a T-pose in motion and was cancelled on Oct 30 to be redone |
+| Run logs and tests | 212 to 214, 250 | Run logs; failing and flaky automation tests fixed; barks log excerpt matches T2; `RogueRigs.Ore.HealVein` passes again |
+| Debug | 223 | Console command that empties the shield of living shield chasers, to capture the break |
+| Rock | 230, 231, 233 | Dual-grid slab integration; smaller dug-block shake (8 uu horizontal, 3 uu vertical) |
+
+## What changed, by area
+
+| Area | Tasks |
+|---|---|
+| Level chain and screens | 205 to 211 |
+| Company text | 214, 215 |
+| Shield chaser | 216, 218, 220, 222 to 227, 286, 296 |
+| XP cube and pickups | 217, 221, 228, 229, 256, 257, 235 |
+| Rock, deposits and digging | 219, 230 to 237, 259, 260, 262 |
+| Damage numbers | 238 to 242 |
+| Level-up cards | 243 to 246 |
+| Drone | 232, 233, 247 to 254, 279, 280 |
+| Light and floor | 255, 261, 263 to 278 |
+| Robot meshes and animation | 281 to 291, 292 to 295, 297 to 300 |
+| Console and chest (Oct 23) | 301 to 313, see [week 4](../week-04/) |
 
 Task records: [`vault/reference/tasks/`](../../vault/reference/tasks/).
