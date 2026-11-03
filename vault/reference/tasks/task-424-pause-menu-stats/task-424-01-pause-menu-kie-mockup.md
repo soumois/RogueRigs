@@ -21,8 +21,8 @@ status: wait-answers
 - runs: open
 - milestone: M3
 - started: 2026-11-03T06:29:03Z
-- waiting_for: owner je valide on the mockup
-- result: open
+- waiting_for: owner je valide on the round 2 mockup (four weapons)
+- result: round 1 (6 credits) answered by owner "it proposes the stat only for 2 weapons. We can have 4 weapons."; round 2 (6 credits, total 12) shows Miner + 4 weapon blocks, awaiting je valide
 
 ## Relations
 - [[task-424-pause-menu-stats]] — parent global task.
