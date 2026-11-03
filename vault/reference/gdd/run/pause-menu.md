@@ -1,6 +1,6 @@
 ---
 id: pause-menu
-description: "In-run pause menu: how it opens, the miner stats it shows (global and per weapon), Resume and Exit to main menu, look from a ChatGPT mockup."
+description: "In-run pause menu: how it opens, miner stats shown (global and per weapon), Resume and Exit to main menu, ChatGPT mockup look."
 parent: run-index
 kind: spec
 status: open

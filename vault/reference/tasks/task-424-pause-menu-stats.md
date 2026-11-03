@@ -1,6 +1,6 @@
 ---
 id: task-424-pause-menu-stats
-description: "Global task: In-run pause menu showing the miner stats (global and per weapon) with Resume and Exit to main menu, look from an owner-validated ChatGPT mockup."
+description: "Global task: In-run pause menu with miner stats (global and per weapon), Resume and Exit to main menu, look from an owner-validated ChatGPT mockup."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
