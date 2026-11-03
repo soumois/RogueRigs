@@ -3,7 +3,7 @@ id: task-424-01-pause-menu-chatgpt-mockup
 description: "Art: reference image + French prompt, ChatGPT mockup in the browser, owner validation gate"
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Pause menu: miner stats screen with Resume and Exit: art
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-03T06:07:26Z
-- waiting_for: none
+- waiting_for: Owner: paste Art/Source/pause-menu/prompts/chatgpt-pause-menu.md into ChatGPT with the reference image, bring back the mockup, validate
 - result: open
 
 ## Relations
