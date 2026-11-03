@@ -30,10 +30,27 @@ Content of [[pause-menu]] (task-424 Q3 defaults), style of [[art-prompts-level-e
 
 ## Owner words
 - Round 1: change request, "it proposes the stat only for 2 weapons. We can have 4 weapons."
-- Round 2: pending ("je valide" or change request).
+- Round 2: "Ok je valide."
+
+## Elements (task-424-02)
+Owner validated `Art/Source/pause-menu/20261102-223354-pause-menu-1.png` ("Ok je valide."). Every element maps to an existing sprite: no new PNG, no regeneration, 0 credits (Q5 cap 24, unused). Mockup is the layout reference only.
+
+| Element | Reused asset | Margins (px, UMG fraction) | Credits |
+|---|---|---|---|
+| Main frame | `Art/UI/LevelEnd/T_LevelEnd_Frame.png` 942 x 458 | L, R 90 = 0.0955; T, B 86 = 0.1878 | 0 |
+| Vertical dividers (Miner / weapons, between the two weapon columns) | `T_LevelEnd_DividerV.png` 58 x 984 | top 0.057, bottom 0.058 | 0 |
+| Horizontal divider (between weapon rows, weapons area only) | `T_LevelEnd_DividerH.png` 984 x 62 | left 0.069, right 0.066 | 0 |
+| Title side rails | `Art/UI/Shop/T_Shop_TitleBar.png` 512 x 69, left bar, UMG mirrors it | none (plain image) | 0 |
+| Resume, Exit | `Art/UI/Shop/T_Shop_ButtonContinue.png` 640 x 163 | L, R about 95 to 105 (estimate, untested), T, B 0 | 0 |
+| Title PAUSED, block names, thin lines under headers, stat rows | UMG text and plain UMG lines | none | 0 |
+| Dimmed arena backdrop | UMG dark overlay on the game | none | 0 |
+| Weapon icons, ore icon | not in the mockup, not used | none | 0 |
+
+Gaps: the mockup's dividers carry small bolt plates at the crossing, the reused dividers do not (accepted, same as level-end). The grid is 2x2 inside the frame: place the frame, then three dividers over it.
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[pause-menu]] — the screen this mockup shows.
 - [[art-prompts-level-end-screen-mockup]] — the style reference image.
 - [[task-424-01-pause-menu-kie-mockup]] — the subtask that made it.
+- [[task-424-02-pause-menu-elements]] — maps the mockup elements to reused sprites.
