@@ -3,7 +3,7 @@ id: task-423-03-aim-laser-range-fade
 description: "Cpp: MaxLength 600 uu and a fixed 150 uu tip fade at every end of the aim laser"
 parent: task-423-miner-aim-laser-range-fade
 kind: task
-status: in-progress
+status: done
 ---
 # Miner aim laser: visible maximum range and fade-out at its end: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: C++ builds; GetMaxLength returns 600; for a laser length L the pushed TipFadeFrac is min(150 / L, 0.5) (read from code); the material parameter is not pushed every tick when L is unchanged; existing tests pass (known failures excepted), no new test; committed by path.
 - editor_state: Unreal editor closed (C++ build)
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 26, cache write 41604, cache read 426439, output 8770
+- usage: turns 13, context start 12k peak 48k, resumes 0, 9 min, units 0.14 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-03T02:20:42Z
 - waiting_for: none
-- result: open
+- result: MaxLength 600, TipFadeLength 150 (frac min(150/L,0.5), pushed on change), commit ba913187; build ok, 276 tests pass
 
 ## Relations
 - [[task-423-miner-aim-laser-range-fade]] — parent global task.

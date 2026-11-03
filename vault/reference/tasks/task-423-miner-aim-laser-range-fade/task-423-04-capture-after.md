@@ -3,7 +3,7 @@ id: task-423-04-capture-after
 description: "Capture: after frames of the three owner cases, same setup, before/after pairs"
 parent: task-423-miner-aim-laser-range-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner aim laser: visible maximum range and fade-out at its end: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T02:30:04Z
 - waiting_for: none
 - result: open
 
