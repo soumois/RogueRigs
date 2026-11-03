@@ -1,6 +1,6 @@
 ---
 id: task-422-shooter-laser-range-fade
-description: "Global task: Shooter targeting laser gets a maximum range and fades out at its end, at that range or at the first rock block; before/after captures for three cases."
+description: "Shooter targeting laser: maximum range, fade-out at that range or at the first rock block; before/after captures of three cases."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
