@@ -3,7 +3,7 @@ id: task-424-02-pause-menu-elements
 description: "Art: take the elements of the validated mockup: map reuse of existing sprites, make the new PNGs"
 parent: task-424-pause-menu-stats
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T06:37:51Z
 - waiting_for: none
 - result: open
 
