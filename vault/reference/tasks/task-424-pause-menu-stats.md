@@ -3,7 +3,7 @@ id: task-424-pause-menu-stats
 description: "Global task: in-run pause menu with miner stats (global and per weapon), Resume and Exit, look from an owner-validated Kie.ai mockup."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-11-03, "ok")
 - milestone: M3
 - next_step: task-424-05-pause-menu-widget
-- started: 2026-11-03T06:29:03Z
-- waiting_for: owner launches Unreal Editor (task-424-05)
+- started: 2026-11-03T06:57:57Z
+- waiting_for: none
 - result: open
 
 ## Questions
