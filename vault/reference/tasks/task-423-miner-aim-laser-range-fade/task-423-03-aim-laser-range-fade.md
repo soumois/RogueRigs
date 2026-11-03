@@ -3,7 +3,7 @@ id: task-423-03-aim-laser-range-fade
 description: "Cpp: MaxLength 600 uu and a fixed 150 uu tip fade at every end of the aim laser"
 parent: task-423-miner-aim-laser-range-fade
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner aim laser: visible maximum range and fade-out at its end: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T02:20:42Z
 - waiting_for: none
 - result: open
 
