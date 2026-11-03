@@ -3,7 +3,7 @@ id: task-424-05-pause-menu-widget
 description: "Bp: WBP_PauseMenu on the C++ base, after the validated mockup, Root Canvas and anchors; widget class wired"
 parent: task-424-pause-menu-stats
 kind: task
-status: todo
+status: wait-answers
 ---
 # Pause menu: miner stats screen with Resume and Exit: bp
 
@@ -21,7 +21,7 @@ status: todo
 - runs: open
 - milestone: M3
 - started: open
-- waiting_for: none
+- waiting_for: owner launches Unreal Editor with the MCP plugin (bp subtask)
 - result: open
 
 ## Relations

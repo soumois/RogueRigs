@@ -3,7 +3,7 @@ id: task-424-04-pause-menu-sprites-import
 description: "Bp: import the new T_Pause_* PNGs as UI textures in /Game/RogueRigs/UI/PauseMenu"
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: done
 ---
 # Pause menu: miner stats screen with Resume and Exit: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Each new PNG of the element table has its texture asset with the UI settings; committed by path.
 - editor_state: Unreal open with the MCP plugin
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: none
+- tokens: 0
+- usage: none
+- runs: 0
 - milestone: M3
 - started: 2026-11-03T06:55:24Z
 - waiting_for: none
-- result: open
+- result: Nothing to import: every element of the validated mockup reuses an existing sprite (task-424-02 element table, 0 new PNG). No agent run, no editor.
 
 ## Relations
 - [[task-424-pause-menu-stats]] — parent global task.
