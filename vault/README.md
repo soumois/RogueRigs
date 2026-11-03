@@ -2,7 +2,7 @@
 
 The vault is the single source of truth of *Rogue Rigs*, a top-down roguelite auto-shooter built with Unreal Engine 5.8 (C++ first): game design, technical docs, agent specs, every task the AI crew has run, and the course material. It is plain Markdown with YAML frontmatter, so any Claude account or other AI tool can read and write it. The game itself runs no AI: the vault and its agents are development tools only.
 
-State on 2026-11-03: 436 nodes (per `lint.js`) plus about 1,100 task and subtask files. 426 global tasks have been run (422 archived as done, 1 still open).
+State on 2026-11-03: 1,968 nodes, of which 1,544 are tasks and subtasks (the other 424 are design, tech, agents, production, course and tools). 426 global tasks have been run (422 archived as done, 1 still open).
 
 ## Where to start
 
@@ -28,7 +28,9 @@ The vault is a tree. Each node has one `parent`; indexes (`*-index`) are pure ro
 | Course | [`course-index`](reference/course/course-index.md) | ELVTR course frame, assignments with briefs and plans, instructor feedback, lesson summaries. |
 | External tools | [`external-tools-index`](reference/external-tools/external-tools-index.md) | tools built around the project, outside the game and the crew workflow: the crew board mod. |
 
-A code task reads the `gdd` node first (what), then the `tech` node (how). The map with live node counts is generated in the main README (`node vault/scripts/vault-map.js`).
+A code task reads the `gdd` node first (what), then the `tech` node (how). Node counts per branch and sub-index, as of 2026-11-03:
+
+[![Vault map: root, branches and sub-indexes with their node counts](assets/vault-map.png)](assets/vault-map.png)
 
 Other folders: [`assets/`](assets/) holds the validated reference images (turnarounds, key art, in-game checks), [`templates/`](templates/) the node templates, [`scripts/`](scripts/) the tooling.
 
