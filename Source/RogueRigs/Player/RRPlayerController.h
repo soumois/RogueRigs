@@ -16,6 +16,7 @@ class UInputMappingContext;
 class URRHUDWidget;
 class URRIntermissionWidget;
 class URRLoadingScreenWidget;
+class URRPauseMenuWidget;
 class URRShopScreenWidget;
 class URRScreenFadeWidget;
 struct FInputActionValue;
@@ -25,7 +26,8 @@ struct FInputActionValue;
  * binds the move, aim and place-turret actions and forwards them to the possessed ARRMiner. The place-turret action works
  * without assets: when PlaceTurretAction is unset, a transient action and mapping context are built from PlaceTurretKeys. Shows the mouse cursor;
  * hides it while a stick aims, shows it again on mouse movement. Assets are assigned in the Blueprint
- * subclass. Creates the HUD widget (HUDWidgetClass) for a local player. No gameplay logic here.
+ * subclass. Creates the HUD widget (HUDWidgetClass) for a local player. The pause menu (task-424-03) works the same way: a
+ * transient action that triggers while paused, mapped to PauseMenuKeys, unless PauseMenuAction is set. No gameplay logic here.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRPlayerController : public APlayerController
@@ -56,6 +58,39 @@ public:
 
 	/** True while the HUD widget is hidden by a run transition (intermission or loading, task-207-01). */
 	bool IsHUDHiddenForTransition() const { return bHUDHiddenForTransition; }
+
+	/**
+	 * Pause menu (pause-menu gdd, task-424-03): pauses the game, creates PauseMenuWidgetClass when set (stats snapshot, focus on
+	 * Resume), Game and UI input, cursor shown. Refused (false, reason logged) when CanOpenPauseMenu is false. Source names the
+	 * caller in the log (pause key, rr.Debug.PauseMenu).
+	 */
+	bool OpenPauseMenu(const TCHAR* Source);
+
+	/** Resume: removes the pause menu, unpauses the game and restores the game input mode. False (logged) when it was not open. */
+	bool ClosePauseMenu(const TCHAR* Source);
+
+	/**
+	 * Exit: ends the run like the run won end screen "Main Menu" button (URRRunFlowSubsystem::ReturnToMainMenu: run reset, ore
+	 * back to 0, L_MainMenu opened directly, no loading screen, no fade, no confirmation). False (logged) when the menu is not
+	 * open, an exit is already requested or the run flow refused.
+	 */
+	bool ExitPauseMenuToMainMenu(const TCHAR* Source);
+
+	/** Pause key: ClosePauseMenu when open, else OpenPauseMenu. */
+	bool TogglePauseMenu(const TCHAR* Source);
+
+	/** True between OpenPauseMenu and ClosePauseMenu. */
+	bool IsPauseMenuOpen() const { return bPauseMenuOpen; }
+
+	/**
+	 * True when the pause menu may open: local controller in a game world, not already open, game not paused by another screen
+	 * (level-up cards, end screens), no run transition (stats, shop, loading), run not ended, no game over, miner alive. The
+	 * main menu has its own controller, so it never opens there. OutReason (optional) gets the refusal reason.
+	 */
+	bool CanOpenPauseMenu(FString* OutReason = nullptr) const;
+
+	/** The pause menu widget on screen; null when closed or without PauseMenuWidgetClass. */
+	URRPauseMenuWidget* GetPauseMenuWidget() const { return PauseMenuWidget; }
 
 protected:
 	/**
@@ -156,6 +191,16 @@ protected:
 	 */
 	UInputAction* ResolvePlaceTurretAction(UEnhancedInputLocalPlayerSubsystem* Subsystem);
 
+	/** Pause action handler (Started: once per press, also while paused): TogglePauseMenu. */
+	void HandlePauseMenu(const FInputActionValue& Value);
+
+	/**
+	 * Returns the pause action to bind: PauseMenuAction when set (its keys come from DefaultMappingContext; it must have
+	 * bTriggerWhenPaused, warned otherwise), else a transient Boolean action that triggers while paused, mapped to PauseMenuKeys
+	 * in a transient mapping context added to Subsystem (when given).
+	 */
+	UInputAction* ResolvePauseMenuAction(UEnhancedInputLocalPlayerSubsystem* Subsystem);
+
 	/** Returns the possessed pawn as a miner, or nullptr. */
 	ARRMiner* GetMiner() const;
 
@@ -194,6 +239,40 @@ protected:
 	/** Transient mapping context holding PlaceTurretKeys, added at MappingContextPriority + 1. */
 	UPROPERTY(Transient)
 	TObjectPtr<UInputMappingContext> RuntimePlaceTurretContext;
+
+	/** Boolean pause menu action (asset, optional), bound on Started; must trigger when paused. Unset = a transient action mapped to PauseMenuKeys. */
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> PauseMenuAction;
+
+	/** Keys of the transient pause mapping, used only when PauseMenuAction is unset (pause-menu gdd: Escape, P, gamepad Start). */
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TArray<FKey> PauseMenuKeys;
+
+	/** Transient pause action built when PauseMenuAction is unset (bTriggerWhenPaused true). */
+	UPROPERTY(Transient)
+	TObjectPtr<UInputAction> RuntimePauseMenuAction;
+
+	/** Transient mapping context holding PauseMenuKeys, added at MappingContextPriority + 2. */
+	UPROPERTY(Transient)
+	TObjectPtr<UInputMappingContext> RuntimePauseMenuContext;
+
+	/** Pause menu class (a Blueprint subclass of URRPauseMenuWidget: WBP_PauseMenu). None = the game still pauses, no screen; the pause key or rr.Debug.PauseMenu resume closes it. */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pause Menu")
+	TSubclassOf<URRPauseMenuWidget> PauseMenuWidgetClass;
+
+	/** Viewport Z-order of the pause menu: above the HUD (0), below the run transition widgets (TransitionWidgetZOrder). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Pause Menu")
+	int32 PauseMenuWidgetZOrder = 40;
+
+	/** The pause menu widget on screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRPauseMenuWidget> PauseMenuWidget;
+
+	/** True between OpenPauseMenu and ClosePauseMenu (the game is paused by the menu). */
+	bool bPauseMenuOpen = false;
+
+	/** True once ExitPauseMenuToMainMenu requested the main menu map (a second Exit is refused). */
+	bool bPauseMenuExitRequested = false;
 
 	/** If true, the cursor is hidden while a stick aims and shown again when the mouse moves. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")

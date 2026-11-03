@@ -18,6 +18,7 @@
 #include "UI/RRIntermissionWidget.h"
 #include "Engine/GameViewportClient.h"
 #include "UI/RRLoadingScreenWidget.h"
+#include "UI/RRPauseMenuWidget.h"
 #include "UI/RRScreenFadeWidget.h"
 #include "UI/RRShopScreenWidget.h"
 #include "Weapons/RRWeapon.h"
@@ -28,6 +29,8 @@ ARRPlayerController::ARRPlayerController(const FObjectInitializer& ObjectInitial
 	bShowMouseCursor = true;
 
 	PlaceTurretKeys = { EKeys::E, EKeys::RightMouseButton, EKeys::Gamepad_FaceButton_Bottom };
+	// pause-menu gdd (task-424 Q2): Escape, P (Escape stops a Play In Editor session), gamepad Start.
+	PauseMenuKeys = { EKeys::Escape, EKeys::P, EKeys::Gamepad_Special_Right };
 }
 
 void ARRPlayerController::BeginPlay()
@@ -401,6 +404,10 @@ void ARRPlayerController::SetupInputComponent()
 	{
 		EnhancedInput->BindAction(PlaceTurret, ETriggerEvent::Started, this, &ARRPlayerController::HandlePlaceTurret);
 	}
+	if (UInputAction* PauseMenu = ResolvePauseMenuAction(Subsystem))
+	{
+		EnhancedInput->BindAction(PauseMenu, ETriggerEvent::Started, this, &ARRPlayerController::HandlePauseMenu);
+	}
 	if (!MoveAction || !StickAimAction || !MouseAimAction)
 	{
 		UE_LOG(LogRogueRigs, Warning, TEXT("%s: one or more input actions are not set (Move, StickAim, MouseAim)."), *GetName());
@@ -498,4 +505,202 @@ UInputAction* ARRPlayerController::ResolvePlaceTurretAction(UEnhancedInputLocalP
 		Subsystem->AddMappingContext(RuntimePlaceTurretContext, MappingContextPriority + 1);
 	}
 	return RuntimePlaceTurretAction;
+}
+
+void ARRPlayerController::HandlePauseMenu(const FInputActionValue& Value)
+{
+	TogglePauseMenu(TEXT("pause key"));
+}
+
+UInputAction* ARRPlayerController::ResolvePauseMenuAction(UEnhancedInputLocalPlayerSubsystem* Subsystem)
+{
+	if (PauseMenuAction)
+	{
+		if (!PauseMenuAction->bTriggerWhenPaused)
+		{
+			UE_LOG(LogRogueRigs, Warning, TEXT("%s: PauseMenuAction %s does not trigger when paused; the pause key will not close the pause menu."),
+				*GetName(), *GetNameSafe(PauseMenuAction));
+		}
+		return PauseMenuAction;
+	}
+
+	// No asset (IMC_Miner is untouched): a transient Boolean action that still triggers while the game is paused, so the same key closes the menu.
+	if (!RuntimePauseMenuAction)
+	{
+		RuntimePauseMenuAction = NewObject<UInputAction>(this, TEXT("RuntimePauseMenuAction"), RF_Transient);
+		RuntimePauseMenuAction->bTriggerWhenPaused = true;
+	}
+	if (Subsystem && PauseMenuKeys.Num() > 0)
+	{
+		if (!RuntimePauseMenuContext)
+		{
+			RuntimePauseMenuContext = NewObject<UInputMappingContext>(this, TEXT("RuntimePauseMenuContext"), RF_Transient);
+			for (const FKey& Key : PauseMenuKeys)
+			{
+				if (Key.IsValid())
+				{
+					RuntimePauseMenuContext->MapKey(RuntimePauseMenuAction, Key);
+				}
+			}
+		}
+		Subsystem->AddMappingContext(RuntimePauseMenuContext, MappingContextPriority + 2);
+	}
+	return RuntimePauseMenuAction;
+}
+
+bool ARRPlayerController::CanOpenPauseMenu(FString* OutReason) const
+{
+	auto Refuse = [OutReason](const TCHAR* Reason)
+	{
+		if (OutReason)
+		{
+			*OutReason = Reason;
+		}
+		return false;
+	};
+
+	const UWorld* World = GetWorld();
+	if (!World || !World->IsGameWorld() || !IsLocalPlayerController())
+	{
+		return Refuse(TEXT("no local player in a game world"));
+	}
+	if (bPauseMenuOpen)
+	{
+		return Refuse(TEXT("already open"));
+	}
+	if (bPauseMenuExitRequested)
+	{
+		return Refuse(TEXT("leaving for the main menu"));
+	}
+	if (IsPaused())
+	{
+		return Refuse(TEXT("the game is already paused by another screen"));
+	}
+	if (const URRRunTransitionSubsystem* Transition = BoundTransition.Get())
+	{
+		if (Transition->GetPhase() != ERRRunTransitionPhase::None || Transition->IsLevelLoading())
+		{
+			return Refuse(TEXT("a level transition screen is up"));
+		}
+	}
+	if (const URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>())
+	{
+		if (RunFlow->IsRunEnded())
+		{
+			return Refuse(TEXT("the run has ended"));
+		}
+	}
+	if (const ARRGameMode* GameMode = World->GetAuthGameMode<ARRGameMode>())
+	{
+		if (GameMode->IsGameOver())
+		{
+			return Refuse(TEXT("game over"));
+		}
+	}
+	if (const ARRMiner* Miner = GetMiner())
+	{
+		if (Miner->IsDead())
+		{
+			return Refuse(TEXT("the miner is dead"));
+		}
+	}
+	return true;
+}
+
+bool ARRPlayerController::TogglePauseMenu(const TCHAR* Source)
+{
+	return bPauseMenuOpen ? ClosePauseMenu(Source) : OpenPauseMenu(Source);
+}
+
+bool ARRPlayerController::OpenPauseMenu(const TCHAR* Source)
+{
+	FString Reason;
+	if (!CanOpenPauseMenu(&Reason))
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu open refused (%s): %s."), *GetName(), Source, *Reason);
+		return false;
+	}
+	if (!SetPause(true))
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu open refused (%s): the game mode does not allow pausing."), *GetName(), Source);
+		return false;
+	}
+	bPauseMenuOpen = true;
+
+	const FRRPauseMenuStats Stats = URRPauseMenuWidget::BuildStats(GetMiner());
+	if (PauseMenuWidgetClass && GetLocalPlayer())
+	{
+		PauseMenuWidget = CreateWidget<URRPauseMenuWidget>(this, PauseMenuWidgetClass);
+		if (PauseMenuWidget)
+		{
+			PauseMenuWidget->AddToViewport(PauseMenuWidgetZOrder);
+			PauseMenuWidget->RefreshStats();
+		}
+		else
+		{
+			UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the pause menu widget %s."), *GetName(), *GetNameSafe(PauseMenuWidgetClass));
+		}
+	}
+
+	// Same input setup as the level-up cards: UI clicks and keys, cursor shown, focus on Resume (pause-menu gdd, Opening).
+	FInputModeGameAndUI InputMode;
+	InputMode.SetHideCursorDuringCapture(false);
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	if (PauseMenuWidget)
+	{
+		InputMode.SetWidgetToFocus(PauseMenuWidget->GetResumeFocusWidget()->TakeWidget());
+	}
+	SetInputMode(InputMode);
+	SetShowMouseCursor(true);
+	if (PauseMenuWidget)
+	{
+		PauseMenuWidget->FocusResume();
+	}
+
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu opened (%s), game paused, %s."), *GetName(), Source,
+		PauseMenuWidget ? *FString::Printf(TEXT("widget %s"), *PauseMenuWidget->GetClass()->GetName())
+			: (PauseMenuWidgetClass ? TEXT("widget creation failed") : TEXT("no widget (PauseMenuWidgetClass not set)")));
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu stats: %s."), *GetName(), *URRPauseMenuWidget::DescribeStats(Stats));
+	return true;
+}
+
+bool ARRPlayerController::ClosePauseMenu(const TCHAR* Source)
+{
+	if (!bPauseMenuOpen || bPauseMenuExitRequested)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu Resume refused (%s): %s."), *GetName(), Source,
+			bPauseMenuExitRequested ? TEXT("leaving for the main menu") : TEXT("the pause menu is not open"));
+		return false;
+	}
+	bPauseMenuOpen = false;
+	if (PauseMenuWidget)
+	{
+		PauseMenuWidget->RemoveFromParent();
+		PauseMenuWidget = nullptr;
+	}
+	SetPause(false);
+	RestoreGameInputMode();
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu Resume (%s): menu closed, game resumed."), *GetName(), Source);
+	return true;
+}
+
+bool ARRPlayerController::ExitPauseMenuToMainMenu(const TCHAR* Source)
+{
+	if (!bPauseMenuOpen || bPauseMenuExitRequested)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu Exit refused (%s): %s."), *GetName(), Source,
+			bPauseMenuExitRequested ? TEXT("already leaving for the main menu") : TEXT("the pause menu is not open"));
+		return false;
+	}
+	URRRunFlowSubsystem* RunFlow = GetWorld() ? GetWorld()->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: pause menu Exit (%s): ending the run, back to the main menu."), *GetName(), Source);
+	// The run won "Main Menu" path (main-menu gdd, task-424 Q1): run reset, ore back to 0, menu map opened directly.
+	if (!RunFlow || !RunFlow->ReturnToMainMenu())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: pause menu Exit refused (%s): the run flow could not open the main menu; the menu stays open."),
+			*GetName(), Source);
+		return false;
+	}
+	bPauseMenuExitRequested = true;
+	return true;
 }
