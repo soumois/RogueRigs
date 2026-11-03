@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw), rr.Debug.KillRobots (kills living robots through the normal death path).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw), rr.Debug.Aim (fixed miner aim yaw), rr.Debug.KillRobots (kills living robots through the normal death path).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -590,6 +590,34 @@ namespace RRScreenshotCommands
 			Arm->SetRelativeRotation(FRotator(FCString::Atof(*Args[0]), Yaw, 0.f));
 			Arm->TargetArmLength = FMath::Max(0.f, FCString::Atof(*Args[1]));
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Camera: pitch %s, arm %.0f, yaw %.0f."), *Args[0], Arm->TargetArmLength, Yaw);
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.Aim <YawDegrees|off>: fixes the player miner's aim to the world yaw YawDegrees (0 = +X, 90 = +Y) through
+	 * ARRMiner::SetDebugAimOverride, mouse and stick aim ignored, until rr.Debug.Aim off (or no argument) clears it (task-423-01).
+	 */
+	FAutoConsoleCommand AimCommand(
+		TEXT("rr.Debug.Aim"),
+		TEXT("rr.Debug.Aim <YawDegrees|off>: fixes the player miner's aim to that world yaw (0 = +X, 90 = +Y), ignoring mouse and stick, until rr.Debug.Aim off or no argument (visual checks)."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			ARRMiner* Miner = RRCheats::FindPlayerMiner(RRCheats::FindCheatWorld());
+			if (!Miner)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.Aim <YawDegrees|off>: needs a player miner."));
+				return;
+			}
+			if (Args.Num() < 1 || Args[0].Equals(TEXT("off"), ESearchCase::IgnoreCase))
+			{
+				Miner->ClearDebugAimOverride();
+				UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Aim: override off, mouse or stick aim resumes."));
+				return;
+			}
+			const float Yaw = FCString::Atof(*Args[0]);
+			Miner->SetDebugAimOverride(Yaw);
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Aim: aim fixed to yaw %.1f (direction %s) from %s."), Yaw, *Miner->GetAimDirection().ToCompactString(),
+				*Miner->GetActorLocation().ToCompactString());
 		}),
 		ECVF_Cheat);
 

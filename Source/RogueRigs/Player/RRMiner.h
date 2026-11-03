@@ -210,8 +210,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Miner|Input")
 	ARRTurret* PlaceTurret();
 
-	/** With mouse aim and once the cursor hit the aim plane: true and the cursor point on the plane in OutPoint. False with stick aim. */
+	/** With mouse aim and once the cursor hit the aim plane: true and the cursor point on the plane in OutPoint. False with stick aim or a debug aim override. */
 	bool GetMouseAimPoint(FVector& OutPoint) const;
+
+	/**
+	 * Debug aim override (visual checks, rr.Debug.Aim, task-423-01): fixes the aim to the world yaw YawDegrees (0 = +X) until
+	 * ClearDebugAimOverride; mouse and stick aim are ignored meanwhile. Not for gameplay.
+	 */
+	void SetDebugAimOverride(float YawDegrees);
+
+	/** Ends the debug aim override: mouse or stick aim resumes on the next input or tick. */
+	void ClearDebugAimOverride();
+
+	/** True while a debug aim override (rr.Debug.Aim) fixes the aim. */
+	bool HasDebugAimOverride() const { return bDebugAimOverride; }
 
 	/** Current PickupRadius attribute in uu (collection radius of XP, ore and heal pickups); 0 when the attribute set is missing. */
 	UFUNCTION(BlueprintPure, Category = "Miner|Pickup")
@@ -555,6 +567,12 @@ protected:
 
 	/** True once the cursor ray hit the mouse aim plane. */
 	bool bHasMouseAimPoint = false;
+
+	/** True while rr.Debug.Aim fixes the aim to DebugAimDirection (visual checks only; false in normal play). */
+	bool bDebugAimOverride = false;
+
+	/** Aim direction fixed by rr.Debug.Aim (unit, Z = 0), applied each tick while bDebugAimOverride. */
+	FVector DebugAimDirection = FVector::ForwardVector;
 
 	/** Handle of the MoveSpeed change subscription on the ASC. */
 	FDelegateHandle MoveSpeedChangedHandle;

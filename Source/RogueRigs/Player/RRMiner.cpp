@@ -412,12 +412,24 @@ ARRTurret* ARRMiner::PlaceTurret()
 
 bool ARRMiner::GetMouseAimPoint(FVector& OutPoint) const
 {
-	if (!bUsingMouseAim || !bHasMouseAimPoint)
+	if (!bUsingMouseAim || !bHasMouseAimPoint || bDebugAimOverride)
 	{
 		return false;
 	}
 	OutPoint = MouseAimPoint;
 	return true;
+}
+
+void ARRMiner::SetDebugAimOverride(float YawDegrees)
+{
+	bDebugAimOverride = true;
+	DebugAimDirection = FRotator(0.f, YawDegrees, 0.f).Vector().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
+	AimDirection = DebugAimDirection;
+}
+
+void ARRMiner::ClearDebugAimOverride()
+{
+	bDebugAimOverride = false;
 }
 
 void ARRMiner::PossessedBy(AController* NewController)
@@ -622,7 +634,7 @@ void ARRMiner::ApplyMoveInput(const FVector2D& Input)
 
 void ARRMiner::ApplyStickAimInput(const FVector2D& Input)
 {
-	if (Input.Size() <= StickAimMinInput || IsDead())
+	if (Input.Size() <= StickAimMinInput || IsDead() || bDebugAimOverride)
 	{
 		return;
 	}
@@ -686,7 +698,12 @@ void ARRMiner::Tick(float DeltaSeconds)
 		return;
 	}
 
-	if (bUsingMouseAim)
+	if (bDebugAimOverride)
+	{
+		// rr.Debug.Aim: fixed aim for visual checks, mouse and stick ignored.
+		AimDirection = DebugAimDirection;
+	}
+	else if (bUsingMouseAim)
 	{
 		UpdateMouseAim();
 	}
