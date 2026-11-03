@@ -12,7 +12,7 @@ kind: doc
   - `ARRMainMenuPlayerController`: shows the mouse cursor and click events; at `BeginPlay` (local player) calls the game mode `CreateMainMenuWidget`, then sets `FInputModeUIOnly` focused on the widget. `GetMainMenuWidget`, `GetLoadingScreenWidget`. Task-379-01: binds `URRRunTransitionSubsystem::OnLoadingStarted` at `BeginPlay` (unbound at `EndPlay`); `HandleLoadingStarted` disables the menu widget and sets it HitTestInvisible (no second New Run), creates the loading widget through the game mode, `ShowLoading(Level, Layout)`, UI-only input focused on it; logs `loading screen shown over the main menu for level N (layout L, progress not measured)`, or `New Run loading of level N without a loading screen (...)`.
   - `URRMainMenuWidget` (Abstract `UUserWidget`, focusable): `StartNewRun()` (BlueprintCallable: `StartNewRunInWorld`, which calls `URRRunTransitionSubsystem::StartNewRun(World, NewRunMapName)`: `ResetRun`, Loading phase for level 1, loading screen over the menu, paint wait, `OpenLevel`, arena held until ready, fade in, [[sys-run-transition]]; a second press is refused while a transition runs; without the transition subsystem it falls back to `ResetRun` + `OpenLevel` with a warning), `QuitGame()` (BlueprintCallable), `IsOptionsAvailable()` (BlueprintPure, false: Options is a disabled placeholder). Statics `StartNewRunInWorld(UWorld*)` and `QuitGameInWorld(UWorld*)` are shared with the debug commands. Blueprint child: [[wbp-main-menu]].
   - `RRMainMenuDebugCommands.cpp` (not compiled in shipping): `rr.Menu.NewRun` and `rr.Menu.Exit` (`ECVF_Cheat`), acting on `RRCheats::FindCheatWorld()` ([[sys-cheats]]).
-- reached from the game: the run won end screen "Main Menu" button calls `URRRunFlowSubsystem::ReturnToMainMenu`, which resets the run and opens `URRRunSettings::MainMenuMapName` (default L_MainMenu) with no loading screen; the menu controller then runs its normal BeginPlay (widget, UI-only input, cursor). task-390-01, [[sys-objectives-run-flow]]; debug `rr.Run.MainMenu`.
+- reached from the game: the run won end screen "Main Menu" button calls `URRRunFlowSubsystem::ReturnToMainMenu`, which resets the run and opens `URRRunSettings::MainMenuMapName` (default L_MainMenu) with no loading screen; the menu controller then runs its normal BeginPlay (widget, UI-only input, cursor). task-390-01, [[sys-objectives-run-flow]]; debug `rr.Run.MainMenu`. The pause menu Exit button takes the same path (task-424, [[sys-pause-menu]]).
 - entry_points: `StartNewRun`, `QuitGame` (the WBP buttons call them); `rr.Menu.NewRun`, `rr.Menu.Exit` (console, `-ExecCmds`).
 - data:
   - `URRRunSettings::NewRunMapName` (category `Run|Menu`, default `/Game/RogueRigs/Maps/L_ArenaM1`; override in `[/Script/RogueRigs.RRRunSettings]`, [[sys-run]]).
@@ -36,6 +36,7 @@ kind: doc
 - [[bp-main-menu-game-mode]] — the game mode Blueprint set on L_MainMenu.
 - [[sys-run]] — run reset and the NewRunMapName and MainMenuMapName settings.
 - [[sys-objectives-run-flow]] — ReturnToMainMenu, which opens this menu after a won run.
+- [[sys-pause-menu]] — its Exit reaches this menu.
 - [[sys-cheats]] — rr.Menu.NewRun and rr.Menu.Exit.
 - [[task-338-main-menu-screen]] — the task that built it.
 - [[build-toolchain]] — packaging command and the MapsToCook rule.

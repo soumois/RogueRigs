@@ -14,11 +14,13 @@ Node 18+, no dependencies. Source: task-359 ([[task-359-capture-tooling]]).
 - commands.js: `node Tools/capture/commands.js [filter]`. Filter = case-insensitive regex on name, help text or system folder. Scans `Source/RogueRigs` .cpp and .h for `rr.*` console commands and variables. Output grouped by system folder: `[cmd]` or `[var = default]`, help, file:line, then a summary line (90 entries on 2026-11-03: 35 commands, 55 variables). Cheat list of the game: [[sys-cheats]].
 - ffmpeg.js: shared by capture.js and sheet.js. `findFfmpeg()` tries PATH, then the first WinGet `ffmpeg.exe` under `%LOCALAPPDATA%/Microsoft/WinGet/Packages`, result cached; `imageSize()` reads the size from the PNG header, else from ffmpeg.
 - aim-dependent captures (task-423): the aim follows the mouse or stick, so fix it with `rr.Debug.Aim <YawDegrees>` in the case commands (world yaw 0 = +X, 90 = +Y; `off` clears it; [[sys-aim-indicator]]). The camera command must be in the command list of each case: the camera persists across cases within a run.
+- UI screen captures (task-424): open the screen by debug command, then shoot with the UI: `node Tools/capture/capture.js --map /Game/RogueRigs/Maps/L_ArenaM1 --res WxH --force-res --prefix pm --expect 1 --exec "rr.Cheat.Invulnerable 1,rr.Debug.Delayed 4 rr.Debug.PauseMenu open,rr.Debug.Delayed 6 rr.Debug.Shots 0 1 1 pm 1,rr.Debug.Delayed 9 Quit"`; the command is `rr.Debug.PauseMenu open|resume|exit` ([[sys-pause-menu]]).
 - rules for agents: capture count and image limits are in [[agent-cpp]] (`capture_rules`).
 
 ## Relations
 - [[pipelines-index]] — parent index.
 - [[agent-cpp]] — runs captures through `capture_script`.
 - [[sys-cheats]] — the in-game cheats commands.js lists beside the other rr.* entries.
+- [[sys-pause-menu]] — owner of rr.Debug.PauseMenu.
 - [[sys-aim-indicator]] — owner of `rr.Debug.Aim`.
 - [[task-359-capture-tooling]] — task that added sheet.js, commands.js and ffmpeg.js.

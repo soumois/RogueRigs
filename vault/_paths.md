@@ -357,6 +357,7 @@ sys-objectives-events  reference/tech/systems/world/sys-objectives/sys-objective
 sys-objectives-ore-counter  reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md
 sys-objectives-run-flow  reference/tech/systems/world/sys-objectives/sys-objectives-run-flow.md
 sys-objectives-shuttle  reference/tech/systems/world/sys-objectives/sys-objectives-shuttle.md
+sys-pause-menu  reference/tech/systems/ui/sys-pause-menu.md
 sys-pickups  reference/tech/systems/world/sys-pickups.md
 sys-pickups-lifecycle  reference/tech/systems/world/sys-pickups/sys-pickups-lifecycle.md
 sys-pickups-xp  reference/tech/systems/world/sys-pickups/sys-pickups-xp.md
@@ -438,6 +439,7 @@ wbp-loading  reference/tech/blueprints/ui/wbp-loading.md
 wbp-main-menu  reference/tech/blueprints/ui/wbp-main-menu.md
 wbp-minimap-locator  reference/tech/blueprints/ui/wbp-minimap-locator.md
 wbp-ore-counter  reference/tech/blueprints/ui/wbp-ore-counter.md
+wbp-pause-menu  reference/tech/blueprints/ui/wbp-pause-menu.md
 wbp-shop-card  reference/tech/blueprints/ui/wbp-shop-card.md
 wbp-shop-screen  reference/tech/blueprints/ui/wbp-shop-screen.md
 wbp-shop-screen-indicator  reference/tech/blueprints/ui/wbp-shop-screen-indicator.md
