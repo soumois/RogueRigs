@@ -11,3 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
+- [[task-422-shooter-laser-range-fade]] — Shooter targeting laser: maximum range and fade-out at its end or at the first rock block, before/after captures. Status wait-answers.
