@@ -13,7 +13,7 @@ status: wait-answers
 - gdd_check: Read 2026-11-03: [[pause-menu]] (created by this plan, status open, proposed defaults Q1 to Q7), [[player-stats]] (approved: miner Max health, Move speed, Pickup radius, XP gain, Mining speed, Luck; the sheet shows the sum of global weapon bonuses damage, fire rate, reload speed, crit chance, crit damage), [[main-menu]] (provisional; run-won "Main Menu" resets the run and opens L_MainMenu directly; says "Not in scope: a back to menu button ... in pause": conflict, Q1), [[art-prompts-level-end-screen-mockup]] (reference files exist; reusable sprites T_LevelEnd_Frame, T_LevelEnd_DividerH/V, T_Shop_TitleBar, T_Shop_ButtonContinue, T_Icon_Ore; 3x3 method; its sheet was too small to cut, sprites were regenerated), [[kie-image-workflow]] (about 6 credits per 1K image, --ref switches to image-to-image, webp refs accepted by lib.js), [[umg-layout]] (rule). No pause menu in code or Content today. Open values: opening keys and blocked states (Q2), content and format (Q3), mockup variant count (Q4), element route and budget (Q5), verification (Q6), layout (Q7). Repo 2026-11-03: no task in progress (task-314 todo, unrelated). Scope: M3 UI.
 - confirmed_by_owner: yes (2026-11-03, "ok")
 - milestone: M3
-- next_step: task-424-03-pause-menu-cpp
+- next_step: task-424-04-pause-menu-sprites-import
 - started: 2026-11-03T06:29:03Z
 - waiting_for: owner je valide on the mockup (task-424-01)
 - result: open

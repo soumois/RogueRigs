@@ -3,7 +3,7 @@ id: task-424-03-pause-menu-cpp
 description: "Cpp: pause input and flow, stats snapshot (global and per weapon), widget base with Resume and Exit, rr.Debug.PauseMenu"
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: done
 ---
 # Pause menu: miner stats screen with Resume and Exit: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor and game targets build with no warning; existing automation tests of touched families pass; rr.Debug.PauseMenu open pauses and creates the widget class when set, resume unpauses, exit opens L_MainMenu with the run reset (log lines); committed by path.
 - editor_state: Unreal closed during the build
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 78, cache write 144090, cache read 4239637, output 47644
+- usage: turns 39, context start 13k peak 150k, resumes 0, 16 min, units 0.84 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-03T06:38:46Z
 - waiting_for: none
-- result: open
+- result: Commit 31462564: ARRPlayerController pause flow (Escape/P/Start transient IA), URRPauseMenuWidget + FRRPauseMenuStats, rr.Debug.PauseMenu. Both targets build clean, RogueRigs.Player 4/4. Not verified in -game: rr.Debug.PauseMenu open/resume/exit and real key presses, left to task-424-06 capture. Run-flow log line still says "run won" for pause Exit.
 
 ## Relations
 - [[task-424-pause-menu-stats]] — parent global task.

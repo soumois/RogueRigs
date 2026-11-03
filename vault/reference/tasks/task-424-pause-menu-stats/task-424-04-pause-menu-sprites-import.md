@@ -3,7 +3,7 @@ id: task-424-04-pause-menu-sprites-import
 description: "Bp: import the new T_Pause_* PNGs as UI textures in /Game/RogueRigs/UI/PauseMenu"
 parent: task-424-pause-menu-stats
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T06:55:24Z
 - waiting_for: none
 - result: open
 
