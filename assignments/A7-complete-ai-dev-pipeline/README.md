@@ -2,6 +2,8 @@
 
 ELVTR · Multi-Agent AI for Game Development · Due 3 November 2026, 11:59 PM GMT
 
+**Submission PDF:** [A7-submission.pdf](A7-submission.pdf) (generated from [A7-submission.md](A7-submission.md))
+
 ## Student & game
 
 - **Student:** Soumois Pierre-Emmanuel
