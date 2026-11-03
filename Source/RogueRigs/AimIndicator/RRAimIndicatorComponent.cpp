@@ -143,7 +143,34 @@ void URRAimIndicatorComponent::ApplyParameters()
 	IndicatorMaterialInstance->SetScalarParameterValue(OpacityParameterName, Opacity);
 	IndicatorMaterialInstance->SetScalarParameterValue(CoreFracParameterName, CoreFrac);
 	IndicatorMaterialInstance->SetScalarParameterValue(GlowOpacityParameterName, GlowOpacity);
-	IndicatorMaterialInstance->SetScalarParameterValue(TipFadeFracParameterName, TipFadeFrac);
+	PushedTipFadeFrac = -1.f;
+	UpdateTipFade(LaserLength);
+}
+
+float URRAimIndicatorComponent::ComputeTipFadeFrac(float Length) const
+{
+	// Fixed fade length at the tip (task-423 Q3); a line shorter than twice TipFadeLength fades over its last half.
+	constexpr float MaxTipFadeFrac = 0.5f;
+	if (Length <= KINDA_SMALL_NUMBER)
+	{
+		return MaxTipFadeFrac;
+	}
+	return FMath::Min(FMath::Max(TipFadeLength, 0.f) / Length, MaxTipFadeFrac);
+}
+
+void URRAimIndicatorComponent::UpdateTipFade(float Length)
+{
+	if (!IndicatorMaterialInstance)
+	{
+		return;
+	}
+	const float Frac = ComputeTipFadeFrac(Length);
+	// Written only when the length changed it: no material parameter write per tick while the laser keeps its length.
+	if (Frac != PushedTipFadeFrac)
+	{
+		PushedTipFadeFrac = Frac;
+		IndicatorMaterialInstance->SetScalarParameterValue(TipFadeFracParameterName, Frac);
+	}
 }
 
 ARRMiner* URRAimIndicatorComponent::GetOwnerMiner() const
@@ -255,6 +282,7 @@ void URRAimIndicatorComponent::RefreshIndicator()
 	const FQuat Rotation = FRotationMatrix::MakeFromXZ(Forward, FVector::UpVector).ToQuat();
 	LaserMesh->SetWorldLocationAndRotation(Origin + Forward * (LaserLength * 0.5f), Rotation);
 	LaserMesh->SetWorldScale3D(FVector(LaserLength / LaserMeshSize, Width / LaserMeshSize, 1.f));
+	UpdateTipFade(LaserLength);
 	LaserMesh->SetVisibility(true);
 }
 

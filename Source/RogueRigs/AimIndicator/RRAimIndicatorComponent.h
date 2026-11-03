@@ -25,7 +25,8 @@ class UStaticMeshComponent;
  * ARRMiner::GetAimDirection kept horizontal. Its width is Width; its length (GetLaserLength) is the nearer of the first block
  * cell on the aim line (ARRArenaGrid::GetClearDistance from the Muzzle) and the first living robot hit capsule on the aim line
  * (FindRobotDistance), capped at MaxLength (MaxLength without grid and robot). The plane's UV.x runs from 0 at the Muzzle to
- * 1 at the tip, UV.y across (the M_AimLaser contract).
+ * 1 at the tip, UV.y across (the M_AimLaser contract). Whatever ends it, its last TipFadeLength uu fade to zero (task-423):
+ * the material TipFadeFrac is pushed again only when the length changes it.
  * Visible whenever the owning miner is alive, mouse and stick aim alike; hidden at death (ARRMiner::HandleDeath calls
  * HideIndicator, and the tick hides it while the miner IsDead). A missing mesh or material logs one warning per run and
  * nothing is drawn (tick off).
@@ -81,6 +82,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
 	float GetLaserLength() const { return LaserLength; }
 
+	/** Fixed fade length in uu at the tip (TipFadeLength). */
+	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
+	float GetTipFadeLength() const { return TipFadeLength; }
+
+	/** Material TipFadeFrac for a laser of Length uu: min(TipFadeLength / Length, 0.5); 0.5 for a length of 0 or less. */
+	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
+	float ComputeTipFadeFrac(float Length) const;
+
+	/** TipFadeFrac last pushed to the material (negative before the first push). */
+	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
+	float GetPushedTipFadeFrac() const { return PushedTipFadeFrac; }
+
 	/** World location the laser started from at the last refresh (the hand weapon Muzzle). */
 	UFUNCTION(BlueprintPure, Category = "Aim Indicator")
 	FVector GetLaserOrigin() const { return LaserOrigin; }
@@ -92,7 +105,7 @@ protected:
 	/** Loads Path into Cache, again only when the path changed or the cached asset is gone; a missing asset logs one warning per run naming What. */
 	static UObject* ResolveAsset(const FSoftObjectPath& Path, const TCHAR* What, FSoftObjectPath& CachedPath, TWeakObjectPtr<UObject>& Cache, bool& bWarned);
 
-	/** Writes Color, EmissiveGain, Opacity, CoreFrac, GlowOpacity and TipFadeFrac to the dynamic instance, if any. */
+	/** Writes Color, EmissiveGain, Opacity, CoreFrac, GlowOpacity and the TipFadeFrac of LaserLength to the dynamic instance, if any. */
 	void ApplyParameters();
 
 	/** The owner as a miner (null for any other owner: the laser stays hidden). */
@@ -124,9 +137,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "1", Units = "cm"))
 	float LaserMeshSize = 100.f;
 
-	/** Maximum laser length in uu (task-415 Q3: 1200, provisional). */
+	/** Maximum laser length in uu (task-423 Q2: 600, provisional, owner 2026-11-03). */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
-	float MaxLength = 1200.f;
+	float MaxLength = 600.f;
 
 	/** Full laser width in uu: 3 uu core + 8 uu glow each side (task-415 Q5: 19, provisional). */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
@@ -156,12 +169,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
 	float GlowOpacity = 0.3f;
 
-	/** Share of the length, at the tip, fading to zero (M_AimLaser default 0.15). Material TipFadeFrac. */
-	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", ClampMax = "1"))
-	float TipFadeFrac = 0.15f;
+	/**
+	 * Length in uu, at the tip, fading to zero, whatever ends the laser (maximum range, block, robot) (task-423 Q3: 150,
+	 * provisional, owner 2026-11-03). Pushed as the material TipFadeFrac = min(TipFadeLength / length, 0.5): a laser shorter
+	 * than twice this length fades over its last half.
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
+	float TipFadeLength = 150.f;
+
+	/** Pushes TipFadeFrac for Length to the dynamic instance, only when it differs from the last pushed value. */
+	void UpdateTipFade(float Length);
 
 	/** Laser length in uu at the last refresh. */
 	float LaserLength = 0.f;
+
+	/** TipFadeFrac last written to the dynamic instance (negative before the first write: the next update always pushes). */
+	float PushedTipFadeFrac = -1.f;
 
 	/** Laser start (world) at the last refresh. */
 	FVector LaserOrigin = FVector::ZeroVector;
