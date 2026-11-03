@@ -1,6 +1,6 @@
 ---
 id: art-prompts-pause-menu-mockup
-description: "Pause menu mockup made with Kie.ai image-to-image from the level-end mockup: prompt file, image, log, credits per round, review, owner words. Open before pause menu art."
+description: "Pause menu mockup from Kie.ai image-to-image off the level-end mockup: prompt file, image, log, credits per round, review, owner words."
 parent: art-prompts
 kind: note
 ---
