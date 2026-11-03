@@ -19,7 +19,6 @@ kind: note
 - [[intermission]] — screen between two levels: recap, shop slot, next terrain prepared, loading screen.
 - [[run-shop]] — run-only purchases between levels, paid in ore; content open.
 - [[main-menu]] — screen at game start: background image, New Run, Options placeholder, Exit, start-up map.
-- [[pause-menu]] — in-run pause screen: miner stats global and per weapon, Resume, Exit to main menu.
 
 ## Relations
 - [[gdd-index]] — parent index.

@@ -37,4 +37,3 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 - [[wbp-loading]] — font and colour reference.
 - [[task-337-main-menu-background]] — the task that makes the image.
 - [[task-338-main-menu-screen]] — the task that builds the screen.
-- [[pause-menu]] — the in-run pause menu whose Exit leads here.
