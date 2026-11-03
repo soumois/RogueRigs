@@ -1,0 +1,28 @@
+{
+  "run_id": "20261102-223354-pause-menu",
+  "asset": "pause-menu",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/pause-menu/prompts/02-four-weapons.txt",
+  "prompt": "Keep this exact image (Image 1): same riveted teal and gunmetal frame, same title \"PAUSED\" with riveted side bars, same dimmed arena background with violet crystals, same cream rusty \"Resume\" (highlighted) and \"Exit\" buttons with teal ends, same fonts, rust and flat-shaded low-poly look, same Miner column on the left with its exact rows and values. Image 2 is the original level-end style reference. Change ONE thing: the weapon area. The player can own up to FOUR weapons, so the frame now shows the Miner column on the left (about one third of the frame width) and, to the right of a thin vertical divider line, a 2x2 grid of FOUR weapon blocks that fills all the remaining space of the frame, with a thin horizontal divider between the two rows and a thin vertical divider between the two columns of the grid. Every weapon block has a header under a thin line and exactly these 7 rows, label left and value right, same font size in all four blocks and the same font size as the Miner rows:\n\nTop left block \"Burst rifle\": \"Damage 12\", \"Fire rate 3.0\", \"Reload 1.8s\", \"Crit chance 5%\", \"Crit damage 150%\", \"Magazine 30\", \"Pierce 1\".\nTop right block \"Shotgun\": \"Damage 8\", \"Fire rate 1.2\", \"Reload 2.4s\", \"Crit chance 5%\", \"Crit damage 150%\", \"Magazine 8\", \"Pierce 0\".\nBottom left block \"Turret launcher\": \"Damage 6\", \"Fire rate 2.0\", \"Reload 3.0s\", \"Crit chance 5%\", \"Crit damage 150%\", \"Magazine 4\", \"Pierce 0\".\nBottom right block \"Weapon 4\": \"Damage 10\", \"Fire rate 2.5\", \"Reload 2.0s\", \"Crit chance 5%\", \"Crit damage 150%\", \"Magazine 20\", \"Pierce 1\".\n\nKeep all text crisp, English, readable at 1920x1080, every row aligned, balanced margins, no empty gap in the frame. Do not add anything else: no icons, no ore counter, no subtitle. No yellow, green or blue elements. 16:9.",
+  "refs": [
+    "Art/Source/pause-menu/20261102-222942-pause-menu-1.png",
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "e235f7284fc73672baadb227f6e9e027",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000003b588230a3b75e557905c8ac.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/pause-menu/20261102-223354-pause-menu-1.png"
+  ]
+}
