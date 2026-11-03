@@ -431,3 +431,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-420-single-source-game-values]] — Make the stat CSV tables the only place a game value lives: tests read them, gdd nodes cite the row instead of copying numbers. Status done.
 - [[task-421-fix-two-failing-integration-tests]] — Fix Integration.JuiceKillDropsStreamingCubes and Integration.LevelUpUpgradeLoop: both tests predate owner decisions; the asset and widget are right. Status done.
 - [[task-423-miner-aim-laser-range-fade]] — give the miner aim laser a visible maximum range and a fade-out at its end, at open floor, rock block or robot; before/after captures. Status done.
+- [[task-424-pause-menu-stats]] — in-run pause menu with miner stats (global and per weapon), Resume and Exit, look from an owner-validated Kie.ai mockup. Status done.
