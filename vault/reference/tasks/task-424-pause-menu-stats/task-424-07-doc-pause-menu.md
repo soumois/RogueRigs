@@ -3,7 +3,7 @@ id: task-424-07-doc-pause-menu
 description: "Doc: write sys-pause-menu and wbp-pause-menu, link them in their indexes, update touched docs"
 parent: task-424-pause-menu-stats
 kind: task
-status: in-progress
+status: done
 ---
 # Pause menu: miner stats screen with Resume and Exit: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-pause-menu and wbp-pause-menu exist and describe the code and widget as built; touched docs updated; no gdd node edited; lint clean; committed by path.
 - editor_state: any (no editor needed)
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 22, cache write 51071, cache read 324249, output 15758
+- usage: turns 11, context start 14k peak 55k, resumes 0, 2 min, units 0.18 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-03T07:13:36Z
 - waiting_for: none
-- result: open
+- result: Commit e976bce9: sys-pause-menu and wbp-pause-menu created, indexes, sys-main-menu, sys-cheats, tool-capture, bp-rr-player-controller updated. Doc agent did not git-show the commits (worked from the brief).
 
 ## Relations
 - [[task-424-pause-menu-stats]] — parent global task.
