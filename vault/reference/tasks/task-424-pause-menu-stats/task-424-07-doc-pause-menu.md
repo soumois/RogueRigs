@@ -3,7 +3,7 @@ id: task-424-07-doc-pause-menu
 description: "Doc: write sys-pause-menu and wbp-pause-menu, link them in their indexes, update touched docs"
 parent: task-424-pause-menu-stats
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M3
-- started: open
+- started: 2026-11-03T07:13:36Z
 - waiting_for: none
 - result: open
 
