@@ -1,0 +1,27 @@
+{
+  "run_id": "20261102-222942-pause-menu",
+  "asset": "pause-menu",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/pause-menu/prompts/01-mockup.txt",
+  "prompt": "Same art style as Image 1: the level-end screen mockup. Keep exactly its visual language: the dimmed almost black arena behind with violet ore crystals in the corners, the title with riveted side bars, the riveted teal and gunmetal frame with corner brackets, thin divider lines under column headers, the cream rusty button with teal ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.\n\nMake a new screen: the in-run PAUSE MENU. Do not copy the level-end texts. All text is English, crisp and readable.\n\nLayout:\n- Top: title \"PAUSED\" with the same riveted side bars as \"LEVEL 1 CLEARED\".\n- Centre: one large riveted teal and gunmetal frame (same frame as Image 1) holding three columns separated by thin vertical divider lines, each column with a header under a thin line:\n  1. Column \"Miner\" (global stats), rows with label left and value right: \"Max health 100\", \"Move speed +0%\", \"Pickup radius +0%\", \"XP gain +0%\", \"Mining speed +0%\", \"Luck 0\". Below, a sub-header \"Weapon bonuses\" and rows: \"Damage +10%\", \"Fire rate +5%\", \"Reload speed +0%\", \"Crit chance +2\", \"Crit damage +10\".\n  2. Column \"Burst rifle\" (first weapon block), rows: \"Damage 12\", \"Fire rate 3.0\", \"Reload 1.8s\", \"Crit chance 5%\", \"Crit damage 150%\", \"Magazine 30\", \"Pierce 1\".\n  3. Column \"Shotgun\" (second weapon block), rows: \"Damage 8\", \"Fire rate 1.2\", \"Reload 2.4s\", \"Crit chance 5%\", \"Crit damage 150%\", \"Magazine 8\", \"Pierce 0\".\n- Bottom: two buttons side by side, both in the style of the cream rusty \"NEXT LEVEL\" button with teal ends: \"Resume\" (highlighted, slightly brighter) and \"Exit\".\n\nDo not add anything else: no ore counter, no subtitle, no icons other than a small ore-free clean layout. No yellow, green or blue elements. Keep the text sizes consistent and every row aligned.",
+  "refs": [
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "ee4d3b63b9f6821086d4bc3e8d9ac495",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000b54481f5a4852b57c195f626.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/pause-menu/20261102-222942-pause-menu-1.png"
+  ]
+}
