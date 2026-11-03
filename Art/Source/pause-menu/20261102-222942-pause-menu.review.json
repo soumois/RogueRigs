@@ -1,0 +1,12 @@
+{
+  "run_id": "20261102-222942-pause-menu",
+  "items": [
+    {
+      "file": "Art/Source/pause-menu/20261102-222942-pause-menu-1.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Player-side UI frame and buttons are white + teal + rust with rivets and welded plates (A6, A7, color-code), no enemy colours (red, yellow, acid green, steel blue) on the UI, background is the dimmed violet-magenta floor with Duskite crystals (A13, color-code), all labels are plain English UI text (T7, readability-rules) and the look matches the level-end reference; A14 targets reference art, not a UI mockup, so it does not apply. Non-rule observations: the Miner column is packed to the bottom rail (Weapon bonuses in a smaller font) while the two weapon columns leave about 40 percent empty; design details could not be checked against the entity node because the brief gave no path for it.",
+      "correction": null
+    }
+  ]
+}
