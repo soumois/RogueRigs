@@ -38,7 +38,7 @@ function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) { if (!SKIP_DIRS.has(e.name)) walk(p, out); }
-    else if (e.name.endsWith('.md')) out.push(p);
+    else if (e.name.endsWith('.md') && !(dir === VAULT && e.name === 'README.md')) out.push(p); // vault/README.md is a human entry point, not a node
   }
   return out;
 }
