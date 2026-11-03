@@ -3,7 +3,7 @@ id: task-423-05-doc
 description: "Doc: update sys-aim-indicator, bp-aim-laser-material and tool-capture for the range, fade and rr.Debug.Aim"
 parent: task-423-miner-aim-laser-range-fade
 kind: task
-status: in-progress
+status: done
 ---
 # Miner aim laser: visible maximum range and fade-out at its end: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-aim-indicator, bp-aim-laser-material and tool-capture state the new values and command as built; no gdd node edited; lint clean; committed by path.
 - editor_state: any (no editor needed)
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 30376, cache read 101803, output 4148
+- usage: turns 6, context start 11k peak 30k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M3
 - started: 2026-11-03T02:34:33Z
 - waiting_for: none
-- result: open
+- result: Doc nodes updated (commit d2119732): sys-aim-indicator, bp-aim-laser-material, tool-capture; gdd aim-indicator already carried the values (e572c60c)
 
 ## Relations
 - [[task-423-miner-aim-laser-range-fade]] — parent global task.

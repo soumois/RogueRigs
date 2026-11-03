@@ -1,9 +1,9 @@
 ---
 id: task-423-miner-aim-laser-range-fade
 description: "Global task: give the miner aim laser a visible maximum range and a fade-out at its end, at open floor, rock block or robot; before/after captures."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner aim laser: visible maximum range and fade-out at its end
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read 2026-11-03: [[aim-indicator]] (provisional, M3) already specifies both points (task-415, owner 2026-11-02): length = nearer of the first robot and the first block, at most 1200 uu; look: the last 15 % of the length fades to zero at the tip; the laser is never red; weapon-agnostic; light mask: no compensation, the far part fades with the screen darkening (owner 2026-10-27, "Laisser s'éteindre"). [[sys-aim-indicator]] and [[bp-aim-laser-material]]: implemented (commits 2b0f9193, 33158869, 1700f6ff): MaxLength 1200, GetClearDistance and robot capsule sweep stop, TipFadeFrac 0.15 pushed once at BeginPlay. CONFLICT (Q1): the request restates the existing spec; the task-415 capture (task-415-04) was closed on the owner validation, its point C4 (range and tip fade) never checked on a frame. Likely cause the owner sees neither: [[mpp-player-light-mask]] (Radius 200 uu, Exponent 1.8, FarBrightness 0.06) leaves about 37 % brightness at 300 uu, 17 % at 600 uu and 10 % at 1200 uu, so the laser dims into darkness with no visible end; and 15 % of a 350 uu line is about 50 uu. Open values the work needs: maximum range (Q2), fade length (Q3), light mask treatment (Q4). Capture setup: no console command fixes the aim in a -game run (mouse aim follows the cursor; commands.js lists rr.Debug.Camera, rr.Debug.SpawnNear, BugItGo, none for aim): Q5. Milestone: aim feedback is M3 (juice), done now on the owner request as task-415 was. Captures are requested by the owner (not unrequested work). No representative slice: one effect, values only, no expansion.
 - confirmed_by_owner: yes (2026-11-03, "ok")
 - milestone: M3
-- next_step: task-423-05-doc
+- next_step: none
 - started: 2026-11-03T02:02:14Z
 - waiting_for: none
-- result: open
+- result: Done. Doc nodes updated (commit d2119732): sys-aim-indicator, bp-aim-laser-material, tool-capture; gdd aim-indicator already carried the values (e572c60c)
 
 ## Questions
 Decided 2026-11-03 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-03.
@@ -34,7 +34,7 @@ Decided 2026-11-03 (owner "ok"): every default below is accepted; values provisi
 5. task-423-05-doc (vault/reference/tasks/task-423-miner-aim-laser-range-fade/task-423-05-doc.md) — doc: update sys-aim-indicator, bp-aim-laser-material and tool-capture for the range, fade and rr.Debug.Aim
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-423-01-debug-aim-command]] — step 1, cpp.
 - [[task-423-02-capture-before]] — step 2, capture.
 - [[task-423-03-aim-laser-range-fade]] — step 3, cpp.
