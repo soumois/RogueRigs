@@ -254,6 +254,7 @@ ore-blocks  reference/gdd/terrain/ore-blocks.md
 ore-economy  reference/gdd/run/ore-economy.md
 ore-in-rock-plan  reference/production/ore-in-rock-plan.md
 ore-in-rock-proposal  reference/production/ore-in-rock-proposal.md
+pause-menu  reference/gdd/run/pause-menu.md
 perf-lead-blob-shadow-instancing  reference/tech/performance/perf-leads/perf-lead-blob-shadow-instancing.md
 perf-lead-debris-gpu  reference/tech/performance/perf-leads/perf-lead-debris-gpu.md
 perf-lead-lumen-robots  reference/tech/performance/perf-leads/perf-lead-lumen-robots.md
