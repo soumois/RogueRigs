@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Assignment 7 - Rogue Rigs</title><style>@page{size:A4;margin:14mm 15mm}body{font-family:Calibri,"Segoe UI",Arial,sans-serif;font-size:9.4pt;line-height:1.28;color:#111;margin:0}
+h1{font-size:17pt;margin:0 0 2px}h2{font-size:11.5pt;margin:9px 0 3px;border-bottom:1px solid #888;padding-bottom:1px}h3{font-size:9.8pt;margin:6px 0 1px}
+p,ul{margin:2px 0}ul{padding-left:15px}li{margin:.5px 0}table{border-collapse:collapse;width:100%;margin:3px 0;font-size:8.8pt}
+th,td{border:1px solid #999;padding:1.5px 5px;text-align:left}th{background:#eee}td.n,th.n{text-align:right}.pb{page-break-after:always}a{color:#0645ad}code{font-size:8.8pt}</style></head><body><h1>Assignment 7 — Complete AI Dev Pipeline</h1>
+<p>ELVTR · Multi-Agent AI for Game Development · Due 3 November 2026, 11:59 PM GMT</p>
+<h2>Student &amp; game</h2>
+<ul>
+<li><b>Student:</b> Soumois Pierre-Emmanuel</li>
+<li><b>Game:</b> Rogue Rigs</li>
+<li><b>Concept:</b> a top-down 3D roguelite auto-shooter built in Unreal Engine 5.8 (C++). An independent miner steals ore from a corporate asteroid claim. The player aims by hand, weapons fire automatically, and the destructible rock arena is the main weapon. A run is 4 levels; upgrades carry over. No AI runs inside the game: the agents are development tools only.</li>
+</ul>
+<h2>Deliverable 1 — Playable link</h2>
+<ul>
+<li><b>Playable game:</b> <a href="https://rafale.itch.io/rogue-rigs">https://rafale.itch.io/rogue-rigs</a></li>
+<li>Windows build hosted on itch.io: download, unzip, run <code>RogueRigs.exe</code>. No installer, no setup. (Unreal Engine cannot run in a browser.)</li>
+<li>The build on the page was produced and checked on 2 November 2026.</li>
+</ul>
+<h2>Deliverable 2 — Pipeline source code &amp; engine integration</h2>
+<ul>
+<li><b>Pipeline repository:</b> <a href="https://github.com/soumois/RogueRigs">https://github.com/soumois/RogueRigs</a> (instructor has access)</li>
+<li><b>Pipeline run video:</b> <a href="https://youtu.be/eL8zYgFhCMU">https://youtu.be/eL8zYgFhCMU</a></li>
+<li><b>Target engine:</b> Unreal Engine 5.8 (C++ first, thin Blueprint layer)</li>
+</ul>
+<h3>Automated flow</h3>
+<ul>
+<li>The owner types <code>/task &lt;request&gt;</code>. A Planner agent checks it against the GDD and writes task nodes in the vault (<code>vault/reference/tasks/</code>). One fresh Executor per task delegates each subtask to a specialised agent, then commits and records its cost.</li>
+<li><b>Level-Design agent</b> writes <code>Content/RogueRigs/Data/Levels/*.json</code>; <code>Tools/validate_layout.js</code> rejects invalid layouts; the C++ <code>ARRArenaGrid</code> loads the file at level start, with no reformatting.</li>
+<li><b>Text agent</b> writes <code>Content/RogueRigs/Data/Text/*.json</code> (barks, alerts, upgrade lines). The <b>Style-Guide agent</b> scores each line and the refiner rewrites the failing ones (Assignment 6 loop). <code>Tools/content/validate_text.js</code> gates the files, then the C++ <code>RRTextContentSubsystem</code> loads and displays them in game.</li>
+<li><b>C++ agent</b> writes <code>Source/RogueRigs/</code>, built from the command line and checked by 185 headless automation tests.</li>
+<li><b>BP agent</b> creates Blueprints, materials and maps through the Unreal MCP server. <b>Art</b> and <b>3D</b> agents turn prompts into images and meshes (Meshy, headless Blender) imported through the same MCP.</li>
+</ul>
+<div class="pb"></div>
+<h1>Deliverable 3 — Pipeline audit &amp; cost analysis</h1>
+<p>Rogue Rigs · Soumois Pierre-Emmanuel</p>
+<h2>Pipeline production &amp; functionality</h2>
+<p><b>Produced, present in the playable build:</b> 5 arena layouts (JSON, script-validated); 69 player-facing lines (34 barks, 15 alerts, 13 upgrade lines, 5 screen texts, 2 weapon texts) through the style-guide loop; the C++ gameplay (destructible grid, flow field, GAS weapons, 5 robot types, wave director, XP and rarities, shuttle extraction, shop); Blueprints, UMG widgets and Niagara effects; meshes for 8+ robots and props through the art → 3D chain.</p>
+<p><b>Manual steps left:</b> (1) I validate each generated image before it goes to 3D; (2) visual checks and playtests; (3) zipping the packaged build and uploading it to itch.io. Not manual: building, cooking and packaging the game, which Claude Code does when I ask in a direct conversation (outside the crew workflow: a Planner and agents would cost more than a one-step task with no design question), and the editor switching: C++ builds need the editor closed and Blueprint work needs it open, and the agents close and reopen it themselves when a subtask requires it. This only forces editor work to run one subtask at a time on one machine.</p>
+<p><b>To reach 100% automation:</b> a packaging script or agent that builds, zips and runs <code>butler push</code> to itch.io from one command, instead of a direct request and a manual upload; automated screenshot comparison instead of my visual review; an image-quality evaluator (the style-guide loop applied to images) to replace my image approval.</p>
+<h2>Architectural reflection</h2>
+<p><b>Decision to change:</b> one long-lived Orchestrator session supervised everything. The first main session ran 335 calls with 22 resumes and peaked at 779k tokens of context, re-reading 137 M cache tokens. <b>Alternative:</b> a stateless Executor per global task, fed only by its task node, with state kept in vault files and a short handover note, so context stays under about 100k tokens per run. The project moved this way from 26 October 2026.</p>
+<h2>Cost analysis</h2>
+<p><b>Total actual run cost: about $1,600 at API list prices</b> (3 Oct → 2 Nov 2026), from the project cost log: per-subtask token counts weighted into input-token equivalents (cache write ×1.25, cache read ×0.1, output ×5) and priced at $4 per million input tokens for Opus 5.5 and $2 for Sonnet 5.5. <b>Actual cash spent: about $70</b> (two 20 EUR Claude subscriptions for one month, about 10 EUR Meshy, about 10 EUR ChatGPT; at 1.16 USD/EUR), so the subscriptions made the run about 23 times cheaper than API pricing.</p>
+<table>
+<tr><th>Scope</th><th class="n">Units (M)</th><th class="n">USD</th></tr>
+<tr><td>Opus subtasks (mostly the C++ agent)</td><td class="n">206.5</td><td class="n">826</td></tr>
+<tr><td>Sonnet subtasks (Blueprints, text, docs)</td><td class="n">164.4</td><td class="n">329</td></tr>
+<tr><td>Mixed-model subtasks (priced as Opus, upper bound)</td><td class="n">8.3</td><td class="n">33</td></tr>
+<tr><td>Planning, executors, main sessions</td><td class="n">135.1</td><td class="n">411</td></tr>
+<tr><td><b>Total</b></td><td class="n"><b>514.2</b></td><td class="n"><b>1,599</b></td></tr>
+</table>
+<p>Likely a slight underestimate: transcripts of planners, executors and sessions from before 26 October were deleted, and tasks 000–012 are not counted. Cache write is priced at the 5-minute rate.</p>
+<p><b>Most expensive step:</b> the Opus subtasks, mostly the C++ agent, about $826 (52% of the total). Most expensive single subtask: <code>task-284-01</code> (Sonnet, 3 runs, 5.57 M units, about $11).</p>
+<p><b>Sustainability:</b> yes. Including about 43 hours of my own supervision (about 10 h/week over 30 days, an estimate) valued at 37.5 EUR/h (about $1,860), the total is about $3,460 at API prices and about $1,930 on real spending. My estimate, not a measurement, of the same prototype built by one developer: at least 2 months at 40 h/week at 37.5 EUR/h, about 12,000 to 13,000 EUR (about $14,000 to $15,000), excluding 3D assets, and a real freelance rate would be higher. So the pipeline is about 4 times cheaper at API prices and 7 to 8 times on real spending. Hardware is excluded on both sides (amortised over several projects). Agents also keep working while I do other things, and one machine per project lets several Unreal pipelines run in parallel without shared assets.</p>
+<h2>Mid-project cost-reduction change</h2>
+<p><b>Strategy — Before:</b> Blueprint subtasks bundled many assets (<code>task-014-04</code>, <code>016-03</code>, <code>022-02</code>, <code>024-05</code>). <b>After</b> (rule from 14 October): one main asset per Blueprint subtask.</p>
+<p><b>Cost — Before:</b> 4 subtasks, average 2.46 M units (about $4.93) and 4.5 runs each. <b>After:</b> 57 subtasks (task 203 onward), average 0.28 M units (about $0.57) and 1.02 runs each. Caveat: these are per-subtask averages, and the bundled subtasks each covered more than one asset.</p>
+</body></html>
