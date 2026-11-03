@@ -82,3 +82,7 @@ All in [`scripts/`](scripts/), run from the repository root with Node.
 ## Browse it in Obsidian
 
 Open the `vault/` folder as a vault. The Parent Graph plugin ships in `.obsidian/plugins/parent-graph`: enable community plugins, then click the fork icon in the ribbon to see the tree drawn from each node's `parent` field.
+
+| The whole vault (Parent Graph view) | Zoom on the game design branch |
+|---|---|
+| [![All vault nodes drawn from their parent field](../docs/images/vault-overview.png)](../docs/images/vault-overview.png) | [![gdd-index and its sub-indexes](../docs/images/vault-gdd-zoom.png)](../docs/images/vault-gdd-zoom.png) |
