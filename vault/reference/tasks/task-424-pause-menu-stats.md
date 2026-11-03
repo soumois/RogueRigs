@@ -3,7 +3,7 @@ id: task-424-pause-menu-stats
 description: "Global task: In-run pause menu with miner stats (global and per weapon), Resume and Exit to main menu, look from an owner-validated ChatGPT mockup."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Pause menu: miner stats screen with Resume and Exit
 
@@ -15,7 +15,7 @@ status: wait-answers
 - milestone: M2
 - next_step: task-424-01-pause-menu-chatgpt-mockup
 - started: 2026-11-03T06:07:26Z
-- waiting_for: task-424-01 owner mockup validation
+- waiting_for: none
 - result: open
 
 ## Questions
