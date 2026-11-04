@@ -1002,6 +1002,7 @@ kind: note
 | [[task-427-02-clear-zone-capture]] | sonnet | 1 | 0k | 26k | 177k | 6k | 0.08 | 8 | 0 |
 | [[task-427-03-clear-zone-doc]] | sonnet | 1 | 0k | 19k | 92k | 4k | 0.05 | 6 | 0 |
 | [[task-428-01-glow-from-spawn-cpp]] | opus | 1 | 0k | 71k | 623k | 6k | 0.18 | 12 | 0 |
+| [[task-428-02-glow-from-spawn-capture]] | none | 0 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
