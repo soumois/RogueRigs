@@ -40,6 +40,12 @@ namespace RRPickupPhysics
 	constexpr float LandingVelocityStep = 1.f / 60.f;
 }
 
+namespace RRPickupArc
+{
+	/** task-429-01 safety cap of the drawn deviation (degrees): below 90 every step still closes in on the miner (never orbits). */
+	constexpr float MaxAngleDegrees = 80.f;
+}
+
 float FRRPickupScalePop::Evaluate(float Elapsed) const
 {
 	if (!IsEnabled() || Elapsed >= Duration)
@@ -188,6 +194,7 @@ void ARRPickup::StartLife()
 	PopElapsed = 0.f;
 	RestElapsed = 0.f;
 	MagnetSpeed = 0.f;
+	ResetMagnetArc();
 	Phase = ERRPickupPhase::Pop;
 	TargetMiner = nullptr;
 	// task-229-02: flight spin axis of this life (kinematic until landing; the pool released the body kinematic).
@@ -309,6 +316,7 @@ void ARRPickup::OnPoolReleased_Implementation()
 	PopElapsed = 0.f;
 	RestElapsed = 0.f;
 	MagnetSpeed = 0.f;
+	ResetMagnetArc();
 	ResetGlowFade();
 	ResetPulseDesync();
 	ResetSpawnScalePop();
@@ -458,8 +466,14 @@ bool ARRPickup::TryLatchMagnet(ARRMiner* Miner, float PickupRadiusSquared, float
 	{
 		return false;
 	}
+	// task-429-01: the hop is only for a pickup taken from the ground (Rest), never for a mid-air latch during the pop.
+	const bool bFromGround = Phase == ERRPickupPhase::Rest;
 	// task-229-02: the kinematic fly-in takes over from physics.
 	StopPhysics();
+	if (bArcMagnet)
+	{
+		StartMagnetArc(Miner, bFromGround);
+	}
 	TargetMiner = Miner;
 	Phase = ERRPickupPhase::Magnet;
 	SetGlowFadeTarget(0.f);
@@ -569,6 +583,7 @@ void ARRPickup::ReturnToRest()
 	Phase = ERRPickupPhase::Rest;
 	SetGlowFadeTarget(1.f);
 	MagnetSpeed = 0.f;
+	ResetMagnetArc();
 	// RestElapsed already passed AttractDelay (or the life time passed PopAttractDelay for a mid-air latch): attracted again on the first frame the miner is damaged and in radius.
 	// task-229-02: with physics it falls where it is and settles; without, it snaps to its rest height.
 	if (CanSimulateOnLanding())
@@ -641,6 +656,13 @@ void ARRPickup::FlyToMiner(ARRMiner* Miner, float DeltaSeconds)
 
 	MagnetSpeed = FMath::Min(MagnetSpeed + MagnetAcceleration * DeltaSeconds, MagnetMaxSpeed);
 
+	// task-429-01: curved flight; bArcMagnet false keeps the straight line below unchanged.
+	if (bArcMagnet)
+	{
+		FlyToMinerArc(Miner, MagnetSpeed * DeltaSeconds);
+		return;
+	}
+
 	const FVector Target = Miner->GetActorLocation();
 	const FVector ToTarget = Target - GetActorLocation();
 	const float Distance = ToTarget.Size();
@@ -655,6 +677,96 @@ void ARRPickup::FlyToMiner(ARRMiner* Miner, float DeltaSeconds)
 
 	SetActorLocation(GetActorLocation() + ToTarget / Distance * Step, false, nullptr, ETeleportType::TeleportPhysics);
 	if (Distance - Step <= CollectDistance)
+	{
+		Collect(Miner);
+	}
+}
+
+void ARRPickup::StartMagnetArc(const ARRMiner* Miner, bool bFromGround)
+{
+	ResetMagnetArc();
+	const FVector Start = GetActorLocation();
+	const FVector Target = Miner ? Miner->GetActorLocation() : Start;
+	ArcLatchDistance = FVector::Dist(Start, Target);
+	ArcLatchDistance2D = FVector::Dist2D(Start, Target);
+
+	// Per-latch draws (pool reuse and a new latch after ReturnToRest draw again).
+	const float MinAngle = FMath::Clamp(FMath::Min(ArcAngleMin, ArcAngleMax), 0.f, RRPickupArc::MaxAngleDegrees);
+	const float MaxAngle = FMath::Clamp(FMath::Max(ArcAngleMin, ArcAngleMax), 0.f, RRPickupArc::MaxAngleDegrees);
+	ArcAngleDegrees = FMath::FRandRange(MinAngle, MaxAngle);
+	// A positive yaw turns the heading clockwise seen from above, which swings the pickup counter-clockwise around the miner.
+	switch (ArcSideMode)
+	{
+	case ERRPickupArcSide::Clockwise:
+		ArcSideSign = -1.f;
+		break;
+	case ERRPickupArcSide::CounterClockwise:
+		ArcSideSign = 1.f;
+		break;
+	default:
+		ArcSideSign = FMath::RandBool() ? 1.f : -1.f;
+		break;
+	}
+	bArcHop = bFromGround && bArcHopFromGround && ArcHopHeight > 0.f && ArcLatchDistance > UE_KINDA_SMALL_NUMBER;
+}
+
+void ARRPickup::ResetMagnetArc()
+{
+	ArcLatchDistance = 0.f;
+	ArcLatchDistance2D = 0.f;
+	ArcAngleDegrees = 0.f;
+	ArcSideSign = 1.f;
+	bArcHop = false;
+	ArcProgress = 0.f;
+	ArcHopOffset = 0.f;
+}
+
+void ARRPickup::FlyToMinerArc(ARRMiner* Miner, float Step)
+{
+	const FVector Target = Miner->GetActorLocation();
+	const FVector Location = GetActorLocation();
+	const float Distance = FVector::Dist(Location, Target);
+	if (Distance <= CollectDistance || Distance <= Step)
+	{
+		SetActorLocation(Target, false, nullptr, ETeleportType::TeleportPhysics);
+		Collect(Miner);
+		return;
+	}
+
+	// Straight point: the actor without its hop; it heads at the miner rotated about Z by the straightening deviation.
+	const FVector Base = Location - FVector(0.f, 0.f, ArcHopOffset);
+	const FVector ToTarget = Target - Base;
+	const float BaseDistance = ToTarget.Size();
+	if (BaseDistance <= UE_KINDA_SMALL_NUMBER)
+	{
+		SetActorLocation(Target, false, nullptr, ETeleportType::TeleportPhysics);
+		Collect(Miner);
+		return;
+	}
+	const float Remaining2D = FVector::Dist2D(Base, Target);
+	const float Ratio = ArcLatchDistance2D > UE_KINDA_SMALL_NUMBER ? FMath::Clamp(Remaining2D / ArcLatchDistance2D, 0.f, 1.f) : 0.f;
+	const float Angle = ArcSideSign * ArcAngleDegrees * FMath::Pow(Ratio, FMath::Max(ArcStraighten, 0.1f));
+	const FVector Direction = (ToTarget / BaseDistance).RotateAngleAxis(Angle, FVector::UpVector);
+
+	// Speed along the path stays MagnetSpeed: the straight point advances less while the hop climbs or falls (first-order
+	// hop rate per uu of straight travel = hop derivative x closing rate cos(Angle) / latch distance).
+	float BaseStep = Step;
+	if (bArcHop)
+	{
+		const float HopSlope = ArcHopHeight * 4.f * (1.f - 2.f * ArcProgress) * FMath::Cos(FMath::DegreesToRadians(Angle)) / ArcLatchDistance;
+		BaseStep = Step / FMath::Sqrt(FMath::Max(1.f + 2.f * HopSlope * Direction.Z + FMath::Square(HopSlope), UE_KINDA_SMALL_NUMBER));
+	}
+	const FVector NewBase = Base + Direction * BaseStep;
+	if (bArcHop)
+	{
+		// Progress never decreases (a miner walking away holds the hop instead of dropping it), reaches 1 at the miner.
+		const float Progress = FMath::Clamp(1.f - FVector::Dist(NewBase, Target) / ArcLatchDistance, 0.f, 1.f);
+		ArcProgress = FMath::Max(ArcProgress, Progress);
+		ArcHopOffset = ArcHopHeight * 4.f * ArcProgress * (1.f - ArcProgress);
+	}
+	const FVector NewLocation = NewBase + FVector(0.f, 0.f, ArcHopOffset);
+	SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	if (FVector::Dist(NewLocation, Target) <= CollectDistance)
 	{
 		Collect(Miner);
 	}

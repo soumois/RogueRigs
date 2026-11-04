@@ -56,6 +56,21 @@ enum class ERRPickupRestOrientation : uint8
 };
 
 /**
+ * Side the magnet arc bends to (task-429-01, owner 2026-11-04 provisional), seen from above (the top-down camera): the sense in
+ * which the pickup swings around the miner while it curves in.
+ */
+UENUM(BlueprintType)
+enum class ERRPickupArcSide : uint8
+{
+	/** Clockwise or counter-clockwise drawn at random per latch (a burst comes in from both sides; owner Q2 default). */
+	Random,
+	/** Every pickup swings clockwise around the miner (a swirl). */
+	Clockwise,
+	/** Every pickup swings counter-clockwise around the miner. */
+	CounterClockwise
+};
+
+/**
  * Scale pop of a pickup at the start of its life (task-309-01, bonus chest burst only): the root scale goes from StartScale to
  * PeakScale, then to 1, as factors of the root template scale, over Duration seconds (the peak at PeakTimeFraction x Duration;
  * ease-out up, ease-in-out down). Duration 0 = off (every other drop). Set per request (URRPickupSubsystem::RequestXPCube),
@@ -135,7 +150,12 @@ struct FRRPickupScalePop
  * only as a fallback when the subsystem is missing). Spawned by ARRArenaGrid at a cell center (floor top), and by ARREnemy
  * at its feet on death (XP, split over several cubes). Scale pop (task-309-01): a request may carry an FRRPickupScalePop
  * (SetSpawnScalePop, bonus chest chips only): the root scale runs StartScale -> PeakScale -> 1 times its template scale from
- * the first motion update; cleared at pool release. Subclass in Blueprint: set PickupType and the mesh.
+ * the first motion update; cleared at pool release. Magnet arc (task-429-01, owner 2026-11-04 provisional): with bArcMagnet
+ * the flight to the miner is not the straight line: each latch draws a side and an angle in [ArcAngleMin, ArcAngleMax]; each
+ * step heads at the miner rotated in the ground plane by that angle x (remaining 2D distance / latch 2D distance)^ArcStraighten
+ * (so it straightens on approach and converges on a moving miner), and a latch from Rest (on the ground) adds a vertical hop
+ * of ArcHopHeight x 4p(1 - p) above the straight path (p = flight progress). The speed along the path stays MagnetSpeed.
+ * bArcMagnet false = the straight line exactly. Subclass in Blueprint: set PickupType and the mesh.
  */
 UCLASS(Abstract, Blueprintable)
 class ROGUERIGS_API ARRPickup : public AActor, public IRRPoolable
@@ -348,8 +368,28 @@ protected:
 	/** Life time in seconds (since StartLife) for the spawn-based delay: PopElapsed + RestElapsed (magnet flight not counted). */
 	float GetLifeElapsed() const { return PopElapsed + RestElapsed; }
 
-	/** Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. A refused Heal pickup (IsRefusedByMiner) returns to Rest instead. */
+	/**
+	 * Accelerates toward the miner; collects when within CollectDistance or when the step reaches it. A refused Heal pickup
+	 * (IsRefusedByMiner) returns to Rest instead. With bArcMagnet the step follows the arc (FlyToMinerArc), else the straight line.
+	 */
 	void FlyToMiner(ARRMiner* Miner, float DeltaSeconds);
+
+	/**
+	 * task-429-01: draws the arc of this magnet flight (side per ArcSideMode, angle in [ArcAngleMin, ArcAngleMax]) and stores the
+	 * latch distances to Miner; the hop is enabled when bFromGround (latched in Rest), bArcHopFromGround and ArcHopHeight > 0.
+	 * Called by TryLatchMagnet before the first step, only with bArcMagnet.
+	 */
+	void StartMagnetArc(const ARRMiner* Miner, bool bFromGround);
+
+	/**
+	 * task-429-01: one arc step of Step uu toward Miner: the straight (base) point heads at the miner rotated about Z by the
+	 * straightening deviation, the hop offset is added above it, and the base step is shortened by the hop's vertical rate so
+	 * the actor moves about Step. Collects within CollectDistance or when the step reaches the miner.
+	 */
+	void FlyToMinerArc(ARRMiner* Miner, float Step);
+
+	/** Clears the arc state of a flight (latch distances, draws, hop): life start, pool release and ReturnToRest. */
+	void ResetMagnetArc();
 
 	/**
 	 * Heal pickup: applies HealEffectClass with SetByCaller Data.Heal = HealAmount to Miner (skipped when 0, dead or no ASC),
@@ -478,6 +518,40 @@ protected:
 	/** Distance to the miner's location at which a flying pickup is collected. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "cm"))
 	float CollectDistance = 50.f;
+
+	/**
+	 * task-429-01 (owner 2026-11-04, provisional): the magnet flight curves into the miner instead of the straight 3D line (see
+	 * the class comment). True by default on every pickup type (owner Q4); untick in a Blueprint to restore the straight line.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect")
+	bool bArcMagnet = true;
+
+	/** task-429-01 (owner 2026-11-04, provisional, Q3): smallest start deviation off the direct line, drawn per latch. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, ClampMax = 80, Units = "Degrees", EditCondition = "bArcMagnet"))
+	float ArcAngleMin = 25.f;
+
+	/** task-429-01 (owner 2026-11-04, provisional, Q3): largest start deviation off the direct line, drawn per latch. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, ClampMax = 80, Units = "Degrees", EditCondition = "bArcMagnet"))
+	float ArcAngleMax = 50.f;
+
+	/**
+	 * task-429-01 (owner 2026-11-04, provisional): exponent of the straightening; deviation = drawn angle x (remaining 2D
+	 * distance / latch 2D distance)^ArcStraighten. 1 = linear; higher straightens sooner, lower keeps the bend longer.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0.1, UIMax = 4, EditCondition = "bArcMagnet"))
+	float ArcStraighten = 1.f;
+
+	/** task-429-01 (owner 2026-11-04, provisional, Q2): side the arc bends to; Random = drawn per latch. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (EditCondition = "bArcMagnet"))
+	ERRPickupArcSide ArcSideMode = ERRPickupArcSide::Random;
+
+	/** task-429-01 (owner 2026-11-04, provisional, Q1): a pickup latched on the ground (Rest) also hops up then lands on the miner; a mid-air latch never hops. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (EditCondition = "bArcMagnet"))
+	bool bArcHopFromGround = true;
+
+	/** task-429-01 (owner 2026-11-04, provisional): peak height of the hop above the straight path, reached at mid-flight (0 = no hop). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Collect", meta = (ClampMin = 0, Units = "cm", EditCondition = "bArcMagnet && bArcHopFromGround"))
+	float ArcHopHeight = 80.f;
 
 	/**
 	 * task-148-01 (owner 2026-10-13, provisional): drives a glow fade value 0..1 written to PickupMesh as Custom Primitive
@@ -632,6 +706,27 @@ protected:
 
 	/** Current speed toward the miner (Magnet phase). */
 	float MagnetSpeed = 0.f;
+
+	/** 3D distance from the pickup to the miner at the latch (arc progress and hop scale; task-429-01). */
+	float ArcLatchDistance = 0.f;
+
+	/** 2D distance from the pickup to the miner at the latch (deviation straightening; task-429-01). */
+	float ArcLatchDistance2D = 0.f;
+
+	/** Start deviation in degrees drawn at the latch (task-429-01). */
+	float ArcAngleDegrees = 0.f;
+
+	/** +1 or -1: yaw sense of the deviation drawn at the latch (-1 = clockwise swing around the miner seen from above). */
+	float ArcSideSign = 1.f;
+
+	/** True when this flight hops (latched in Rest with bArcHopFromGround and ArcHopHeight > 0). */
+	bool bArcHop = false;
+
+	/** Flight progress 0..1 of the hop (1 - remaining 3D / latch distance of the straight point), never decreasing. */
+	float ArcProgress = 0.f;
+
+	/** Hop height currently added above the straight point (the actor location minus this is the straight point). */
+	float ArcHopOffset = 0.f;
 
 	/** Ejection yaw in degrees, used when bHasPopYaw. */
 	float PopYawDegrees = 0.f;
