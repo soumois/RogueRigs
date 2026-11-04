@@ -7,7 +7,7 @@ status: todo
 ---
 # Darkener shader: clear zone around the screen centre with a transition radius: bp
 
-- goal: Add ClearRadius and FadeRadius scalars to MPC_PlayerLight with the decided defaults (Q13; default 0.15 and 0.35) and extend the Custom HLSL of M_PP_PlayerLightMask exactly as the global goal says, with the choices of Q11, Q12, Q14, Q15 (defaults: share unit, no remap, smoothstep). Keep every existing parameter, PlayerPosition included, and the blendable in PPV_XPGlow. Compile, save, read the defaults back; record the task-426 HLSL for revert.
+- goal: Add ClearRadius and FadeRadius scalars to MPC_PlayerLight with the decided defaults (Q13; default 0.15 and 0.35) and extend the Custom HLSL of M_PP_PlayerLightMask exactly as the global goal says, with the choices of Q11, Q12, Q14, Q15 (defaults: share unit, no remap, smoothstep). Keep every existing parameter, PlayerPosition included, and the blendable in PPV_XPGlow. Start from the current MPC_PlayerLight file, which may hold uncommitted owner edits: keep his values, change only what this goal adds. Do not touch lights or other assets the owner changed by hand. Compile, save, read the defaults back; record the task-426 HLSL for revert.
 - agent: bp
 - depends_on: none
 - inputs: mpp-player-light-mask (vault/reference/tech/blueprints/world/mpp-player-light-mask.md), ppv-xp-glow (vault/reference/tech/blueprints/world/ppv-xp-glow.md), agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), vault/reference/tasks/task-427-darkener-clear-zone.md (goal, Questions)
