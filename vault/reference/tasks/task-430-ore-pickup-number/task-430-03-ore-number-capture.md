@@ -3,7 +3,7 @@ id: task-430-03-ore-number-capture
 description: "Capture: `-game` capture of the ore number on Duskite collection"
 parent: task-430-ore-pickup-number
 kind: task
-status: in-progress
+status: done
 ---
 # Ore pickup number on the miner: capture
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: checklist reported: C1 collecting a Duskite chunk shows the violet Duskite icon followed by "+1" above the miner; C2 the icon is readable and does not overlap the "+"; C3 "+1" is white; C4 four chunks collected together give four separate stacked numbers; C5 a heal pickup still shows a green "+N" without icon; C6 robot damage numbers still white (critical light orange), no icon. Ambiguous points go to the owner.
 - editor_state: closed
 - token_ceiling: 0.4 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 79473, cache read 744519, output 13062
+- usage: turns 27, context start 13k peak 50k, resumes 1 (message x1), 6 min, units 0.24 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T21:13:28Z
 - waiting_for: none
-- result: open
+- result: C1-C5 seen, C6 seen on contact sheet (crit colour unverified); icon violet after bp fix f092bfb7, no OreIconAdvance change; 4th stacked number partly under HUD bar (camera/stack height); frames in Art/Source/damage-digits/task-430-ore-captures/final_*
 
 ## Relations
 - [[task-430-ore-pickup-number]] — parent global task.

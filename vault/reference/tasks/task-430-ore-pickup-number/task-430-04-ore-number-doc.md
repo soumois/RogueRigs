@@ -3,7 +3,7 @@ id: task-430-04-ore-number-doc
 description: "Doc: document the ore number in the damage number, Niagara contract, atlas and pickup docs"
 parent: task-430-ore-pickup-number
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore pickup number on the miner: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T21:22:38Z
 - waiting_for: none
 - result: open
 
