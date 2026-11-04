@@ -3,7 +3,7 @@ id: task-430-ore-pickup-number
 description: "Global task: floating Duskite icon plus "+1" above the miner when he collects a Duskite chunk, rendered like the damage numbers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore pickup number on the miner
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "Ok par défaut")
 - milestone: M2
 - next_step: task-430-01-ore-icon-glyph
-- started: open
+- started: 2026-11-04T20:59:22Z
 - waiting_for: none
 - result: open
 

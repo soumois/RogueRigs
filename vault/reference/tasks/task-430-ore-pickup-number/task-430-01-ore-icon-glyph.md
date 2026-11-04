@@ -3,7 +3,7 @@ id: task-430-01-ore-icon-glyph
 description: "Bp: add the Duskite icon glyph in cell 11 of the damage digit atlas"
 parent: task-430-ore-pickup-number
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore pickup number on the miner: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T20:59:22Z
 - waiting_for: none
 - result: open
 
