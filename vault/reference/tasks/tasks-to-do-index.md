@@ -11,4 +11,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-428-xp-glow-from-spawn]] — the XP pickup camera-facing glow disc shows from spawn, during the pop arc, instead of fading in only on landing. Status in-progress.

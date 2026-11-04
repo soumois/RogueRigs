@@ -1,9 +1,9 @@
 ---
 id: task-428-xp-glow-from-spawn
 description: "Global task: the XP pickup camera-facing glow disc shows from spawn, during the pop arc, instead of fading in only on landing."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup glow disc on from spawn
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: xp-level-up (approved spec): no rule about when the glow shows; the Look line gets the provisional sentence on confirmation (edit in the defaults file). Rules versus rendering: rendering only, pop, magnet, collection and XP values unchanged. color-code: colours unchanged. No open gdd value blocks. Milestone M2. Tech: bp-pickup-xp glow_disc_fade (task-148-02) and sys-pickups describe the current fade and are updated by the doc subtask.
 - confirmed_by_owner: yes (2026-11-04, "ok pour tout sauf le point 5, je vérifie par moi même")
 - milestone: M2
-- next_step: task-428-03-glow-from-spawn-doc
+- next_step: none
 - started: 2026-11-04T18:58:53Z
 - waiting_for: none
-- result: open
+- result: Done. bGlowDuringPop documented in sys-pickups, sys-pickups-lifecycle, bp-pickup-xp; xp-level-up Look line already had the sentence; commit 2ddada627
 
 ## Questions
 Decided 2026-11-04 (owner "ok pour tout sauf le point 5, je vérifie par moi même"): the defaults of Q1 to Q4 are accepted; Q5 takes the other choice (no capture, the owner judges in game); values provisional, owner 2026-11-04.
@@ -32,7 +32,7 @@ Decided 2026-11-04 (owner "ok pour tout sauf le point 5, je vérifie par moi mê
 3. task-428-03-glow-from-spawn-doc (vault/reference/tasks/task-428-xp-glow-from-spawn/task-428-03-glow-from-spawn-doc.md) — doc: document bGlowDuringPop in sys-pickups and bp-pickup-xp
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-428-01-glow-from-spawn-cpp]] — step 1, cpp.
 - [[task-428-02-glow-from-spawn-capture]] — step 2, capture.
 - [[task-428-03-glow-from-spawn-doc]] — step 3, doc.

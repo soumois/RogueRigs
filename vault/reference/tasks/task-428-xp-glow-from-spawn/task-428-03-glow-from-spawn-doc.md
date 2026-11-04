@@ -3,7 +3,7 @@ id: task-428-03-glow-from-spawn-doc
 description: "Doc: document bGlowDuringPop in sys-pickups and bp-pickup-xp"
 parent: task-428-xp-glow-from-spawn
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup glow disc on from spawn: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-pickups (or sys-pickups-lifecycle, wherever the fade is described) and bp-pickup-xp state that the XP glow disc shows from spawn when bGlowDuringPop, its default and the revert; no fact duplicated; lint clean; committed.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 16, cache write 28747, cache read 144986, output 3433
+- usage: turns 8, context start 10k peak 29k, resumes 0, 1 min, units 0.07 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T18:58:53Z
 - waiting_for: none
-- result: open
+- result: bGlowDuringPop documented in sys-pickups, sys-pickups-lifecycle, bp-pickup-xp; xp-level-up Look line already had the sentence; commit 2ddada627
 
 ## Relations
 - [[task-428-xp-glow-from-spawn]] — parent global task.
