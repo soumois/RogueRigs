@@ -3,7 +3,7 @@ id: task-426-03-radial-mask-doc
 description: "Doc: document the new darkener"
 parent: task-426-screen-radial-darkener
 kind: task
-status: in-progress
+status: done
 ---
 # Darkener shader: circles around the screen centre, min at centre, max at corners: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: mpp-player-light-mask states the new parameters, formula and revert; sys-player notes the unused PlayerPosition; lint clean; committed.
 - editor_state: none
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 22139, cache read 101807, output 4075
+- usage: turns 6, context start 11k peak 27k, resumes 0, 1 min, units 0.06 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T17:10:09Z
 - waiting_for: none
-- result: open
+- result: mpp-player-light-mask rewritten (parameters, formula, revert, verification state), sys-player notes unused PlayerPosition; lint clean, commit 7aa33a16.
 
 ## Relations
 - [[task-426-screen-radial-darkener]] — parent global task.

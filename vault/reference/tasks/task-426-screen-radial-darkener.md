@@ -1,9 +1,9 @@
 ---
 id: task-426-screen-radial-darkener
 description: "Global task: Step 2: rework M_PP_PlayerLightMask into a screen-space radial darkener (min black at centre, max at corners, linear fade), no miner position."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Darkener shader: circles around the screen centre, min at centre, max at corners
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: visual-style void sentence (task-335 far gain for the void, provisional) is rewritten in screen terms; Q9 asks whether to keep the void exception. The current world-space mask (mpp-player-light-mask) is replaced, not extended. No open gdd value blocks; start values are Q7. Milestone M2.
 - confirmed_by_owner: yes (2026-11-04, "Tout par défaut")
 - milestone: M2
-- next_step: task-426-03-radial-mask-doc
+- next_step: none
 - started: 2026-11-04T17:03:55Z
 - waiting_for: none
-- result: open
+- result: Done. mpp-player-light-mask rewritten (parameters, formula, revert, verification state), sys-player notes unused PlayerPosition; lint clean, commit 7aa33a16.
 
 ## Questions
 Decided 2026-11-04 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-04.
@@ -32,7 +32,7 @@ Decided 2026-11-04 (owner "Tout par défaut"): every default below is accepted; 
 3. task-426-03-radial-mask-doc (vault/reference/tasks/task-426-screen-radial-darkener/task-426-03-radial-mask-doc.md) — doc: document the new darkener
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-426-01-radial-mask-material]] — step 1, bp.
 - [[task-426-02-radial-mask-capture]] — step 2, capture.
 - [[task-426-03-radial-mask-doc]] — step 3, doc.
