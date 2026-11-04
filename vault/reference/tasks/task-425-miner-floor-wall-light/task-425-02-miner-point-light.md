@@ -1,0 +1,28 @@
+---
+id: task-425-02-miner-point-light
+description: "Bp: point light on BP_Miner, lighting channel 1 only"
+parent: task-425-miner-floor-wall-light
+kind: task
+status: todo
+---
+# Miner light that lights only the floor and the walls: bp
+
+- goal: Add a PointLightComponent `FloorWallLight` to BP_Miner under the capsule: LightingChannels channel0 false, channel1 true; castShadows per Q1 (default false); colour per Q2 (default 255/194/158); mobility Movable; attenuation radius and intensity chosen for Q3 (start from the bp-miner task-272-02 recipe, height about 450 uu, adjust so the pool is about 400 uu radius and the centre floor stays below about 205/255). Compile, save, read the values back.
+- agent: bp
+- depends_on: task-425-01-grid-lighting-channels
+- inputs: bp-miner (vault/reference/tech/blueprints/player/bp-miner.md), lights-dark-ambient (vault/reference/tech/blueprints/world/lights-dark-ambient.md), agent-bp (vault/reference/agents/agent-bp.md), bp-mcp-lessons (vault/reference/agents/bp-mcp-lessons.md), vault/reference/tasks/task-425-miner-floor-wall-light.md (request, Questions, acceptance)
+- expected_output: BP_Miner.uasset with the light, values read back, change summary (before and after values) for the doc subtask, commit.
+- done_when: Component present on BP_Miner with channel0 false, channel1 true and the decided colour and shadow flag, read back after compile and save; committed.
+- editor_state: Unreal editor open with the MCP server.
+- token_ceiling: 1.0 M units
+- model: open
+- tokens: open
+- usage: open
+- runs: open
+- milestone: M2
+- started: open
+- waiting_for: none
+- result: open
+
+## Relations
+- [[task-425-miner-floor-wall-light]] — parent global task.
