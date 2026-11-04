@@ -3,7 +3,7 @@ id: task-425-01-grid-lighting-channels
 description: "Cpp: floor and terrain block render components on lighting channels 0 and 1"
 parent: task-425-miner-floor-wall-light
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Miner light that lights only the floor and the walls: cpp
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-11-04T16:49:28Z
-- waiting_for: Owner: close the UnrealEditor (Live Coding blocks Build.bat) so the cpp build and Grid tests can run; code edit in RRArenaGrid.cpp/.h is uncommitted
+- started: 2026-11-04T16:52:35Z
+- waiting_for: none
 - result: open
 
 ## Relations
