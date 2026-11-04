@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: visual-style (approved spec, provisional screen darkener sentence, task-426): no conflict; the clear zone is added to that sentence (edit applied on confirmation). No open gdd value blocks; unit, start values, remap and fade shape are Q11 to Q15. task-426 open point (corner measured 0.27 to 0.60 of the undarkened frame instead of 0.15) is Q16; task-425 capture was waived until after task-426 (Q17). Milestone M2.
 - confirmed_by_owner: yes (2026-11-04, "Ok pour tout, fait juste une capture avant après. Car j'ai pas mal changé les lights manuellement (sinon tu n'as pas une comparaison correcte)")
 - milestone: M2
-- next_step: task-427-02-clear-zone-capture
+- next_step: task-427-03-clear-zone-doc
 - started: 2026-11-04T17:41:06Z
 - waiting_for: none
 - result: open

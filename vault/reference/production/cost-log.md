@@ -999,18 +999,19 @@ kind: note
 | [[task-426-02-radial-mask-capture]] | sonnet | 1 | 0k | 61k | 875k | 15k | 0.24 | 23 | 0 |
 | [[task-426-03-radial-mask-doc]] | sonnet | 1 | 0k | 22k | 102k | 4k | 0.06 | 6 | 0 |
 | [[task-427-01-clear-zone-material]] | sonnet | 1 | 0k | 61k | 961k | 17k | 0.26 | 23 | 0 |
+| [[task-427-02-clear-zone-capture]] | sonnet | 1 | 0k | 26k | 177k | 6k | 0.08 | 8 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 383.99 | 0k | 90.34 M | 1884.55 M | 16538k |
+| All subtask rows above | 384.07 | 0k | 90.36 M | 1884.72 M | 16544k |
 | model mixed | 8.97 | 0k | 3.17 M | 26.83 M | 463k |
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 207.71 | 0k | 46.12 M | 1044.09 M | 9134k |
-| model sonnet | 167.31 | 0k | 41.05 M | 813.63 M | 6941k |
-| Executors and legacy orchestrators that ran a task (pilot) | 30.23 | 5k | 12.92 M | 88.41 M | 1045k |
+| model sonnet | 167.39 | 0k | 41.07 M | 813.81 M | 6947k |
+| Executors and legacy orchestrators that ran a task (pilot) | 30.26 | 5k | 12.93 M | 88.56 M | 1047k |
 | Planning runs (planners and legacy planning passes) | 37.66 | 4k | 11.53 M | 136.79 M | 1913k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 72.80 | 7k | 11.54 M | 491.08 M | 1852k |
