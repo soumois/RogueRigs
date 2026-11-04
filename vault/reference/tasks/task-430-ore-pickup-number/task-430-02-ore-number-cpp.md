@@ -3,7 +3,7 @@ id: task-430-02-ore-number-cpp
 description: "Cpp: ore number path in the damage number subsystem, fired on Ore pickup collection"
 parent: task-430-ore-pickup-number
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore pickup number on the miner: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T21:03:10Z
 - waiting_for: none
 - result: open
 

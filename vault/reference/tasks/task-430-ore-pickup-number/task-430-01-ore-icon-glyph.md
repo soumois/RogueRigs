@@ -3,7 +3,7 @@ id: task-430-01-ore-icon-glyph
 description: "Bp: add the Duskite icon glyph in cell 11 of the damage digit atlas"
 parent: task-430-ore-pickup-number
 kind: task
-status: in-progress
+status: done
 ---
 # Ore pickup number on the miner: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: cell 11 shows the icon with outline and transparent background (pixel check of corners alpha 0); a pixel diff shows cells 0-10 and 12-15 unchanged; the asset is saved and M_DamageNumber compiles; `RogueRigs.DamageNumbers.NiagaraIntegration` passes in the editor; committed by path.
 - editor_state: open
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 34, cache write 39404, cache read 439943, output 9927
+- usage: turns 17, context start 10k peak 43k, resumes 0, 3 min, units 0.14 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T20:59:22Z
 - waiting_for: none
-- result: open
+- result: Cell 11 holds Duskite icon (56 px long side, 3 px outline), cells 0-10/12-15 unchanged, NiagaraIntegration passes; commit 6a1ca762; render not visually checked
 
 ## Relations
 - [[task-430-ore-pickup-number]] — parent global task.
