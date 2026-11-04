@@ -3,7 +3,7 @@ id: task-426-01-radial-mask-material
 description: "Bp: M_PP_PlayerLightMask and MPC_PlayerLight: screen radial darkener"
 parent: task-426-screen-radial-darkener
 kind: task
-status: in-progress
+status: done
 ---
 # Darkener shader: circles around the screen centre, min at centre, max at corners: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Material compiles without error; MPC holds Enable, VoidZ, PlayerPosition, CenterDarkness, CornerDarkness, VoidMaxDarkness with the decided defaults and no FarBrightness, VoidFarBrightness, Radius, Exponent; the HLSL no longer reads PlayerPosition; committed.
 - editor_state: Unreal editor open with the MCP server.
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 56, cache write 59554, cache read 1311688, output 16428
+- usage: turns 28, context start 11k peak 65k, resumes 0, 2 min, units 0.29 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T17:03:55Z
 - waiting_for: none
-- result: open
+- result: M_PP_PlayerLightMask rewritten as screen radial darkener, MPC_PlayerLight reduced to Enable, VoidZ, PlayerPosition, CenterDarkness 0, CornerDarkness 0.85, VoidMaxDarkness 0.5; compiled, commit 41c3dca9. Render unverified until capture.
 
 ## Relations
 - [[task-426-screen-radial-darkener]] — parent global task.
