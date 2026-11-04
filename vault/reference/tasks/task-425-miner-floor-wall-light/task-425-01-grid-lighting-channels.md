@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-11-04T16:52:35Z
 - waiting_for: none
-- result: Done: CreateChunkComponent sets lighting channels 0+1 on Floor/Rock/Ore/HealOre/SpecialOre templates; build OK; RogueRigs.Dig+Ore 22/22 pass (no RogueRigs.Grid family exists); commit 978c15ca
+- result: Done: CreateChunkComponent sets lighting channels 0+1 on Floor/Rock/Ore/HealOre/SpecialOre templates; build OK; RogueRigs.Dig+Ore 22/22 pass (no RogueRigs.Grid family exists); commit 978c15ca. ALERT resume x1: first run blocked by the owner's open editor (Live Coding), resumed after he closed it.
 
 ## Relations
 - [[task-425-miner-floor-wall-light]] — parent global task.

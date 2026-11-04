@@ -1,9 +1,9 @@
 ---
 id: task-425-miner-floor-wall-light
 description: "Global task: Step 1 of the darkener rework: a point light on the miner that lights only floor and terrain blocks, through lighting channels."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner light that lights only the floor and the walls
 
@@ -16,7 +16,7 @@ status: in-progress
 - next_step: task-425-04-light-doc
 - started: 2026-11-04T16:52:35Z
 - waiting_for: none
-- result: open
+- result: Steps 01 cpp, 02 bp, 04 doc done; capture 03 waived on the owner's word (visual check after task-426). Light intensity 4 is a first guess, not render-checked.
 
 ## Questions
 Decided 2026-11-04 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-04.
@@ -33,7 +33,7 @@ Decided 2026-11-04 (owner "Tout par défaut"): every default below is accepted; 
 4. task-425-04-light-doc (vault/reference/tasks/task-425-miner-floor-wall-light/task-425-04-light-doc.md) — doc: document the light and the grid lighting channels
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-425-01-grid-lighting-channels]] — step 1, cpp.
 - [[task-425-02-miner-point-light]] — step 2, bp.
 - [[task-425-03-light-capture]] — step 3, capture.

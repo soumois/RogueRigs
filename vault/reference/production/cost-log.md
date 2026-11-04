@@ -991,20 +991,25 @@ kind: note
 | [[task-424-05-pause-menu-widget]] | sonnet | 1 | 0k | 110k | 2887k | 39k | 0.62 | 40 | 0 |
 | [[task-424-06-pause-menu-capture]] | sonnet | 2 | 0k | 61k | 309k | 8k | 0.15 | 14 | 1 |
 | [[task-424-07-doc-pause-menu]] | sonnet | 1 | 0k | 51k | 324k | 16k | 0.18 | 11 | 0 |
+| [[task-425-01-grid-lighting-channels]] | sonnet+opus | 2 | 0k | 128k | 1944k | 30k | 0.51 | 46 | 1 |
+| [[task-425-03-light-capture]] | none | 0 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-425-02-miner-point-light]] | sonnet | 1 | 0k | 92k | 848k | 14k | 0.27 | 25 | 0 |
+| [[task-425-04-light-doc]] | sonnet | 1 | 0k | 140k | 983k | 18k | 0.36 | 39 | 2 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 382.00 | 0k | 89.77 M | 1877.52 M | 16424k |
-| model mixed | 8.46 | 0k | 3.04 M | 24.88 M | 433k |
+| All subtask rows above | 383.14 | 0k | 90.13 M | 1881.30 M | 16486k |
+| model mixed | 8.97 | 0k | 3.17 M | 26.83 M | 463k |
+| model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 207.71 | 0k | 46.12 M | 1044.09 M | 9134k |
-| model sonnet | 165.83 | 0k | 40.61 M | 808.55 M | 6857k |
-| Executors and legacy orchestrators that ran a task (pilot) | 29.25 | 5k | 12.70 M | 83.76 M | 999k |
-| Planning runs (planners and legacy planning passes) | 36.73 | 4k | 11.29 M | 133.49 M | 1851k |
+| model sonnet | 166.46 | 0k | 40.84 M | 810.38 M | 6889k |
+| Executors and legacy orchestrators that ran a task (pilot) | 29.97 | 5k | 12.85 M | 87.32 M | 1033k |
+| Planning runs (planners and legacy planning passes) | 37.39 | 4k | 11.46 M | 135.87 M | 1894k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
-| Main sessions (all of them, also chat outside tasks) | 71.90 | 7k | 11.39 M | 485.24 M | 1828k |
+| Main sessions (all of them, also chat outside tasks) | 72.43 | 7k | 11.49 M | 488.52 M | 1843k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.
