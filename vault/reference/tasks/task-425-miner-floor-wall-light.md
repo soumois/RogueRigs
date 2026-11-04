@@ -3,7 +3,7 @@ id: task-425-miner-floor-wall-light
 description: "Global task: Step 1 of the darkener rework: a point light on the miner that lights only floor and terrain blocks, through lighting channels."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Miner light that lights only the floor and the walls
 
@@ -15,7 +15,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-425-01-grid-lighting-channels
 - started: 2026-11-04T16:49:28Z
-- waiting_for: none
+- waiting_for: Owner: close the UnrealEditor (Live Coding blocks Build.bat) so the cpp build and Grid tests can run; code edit in RRArenaGrid.cpp/.h is uncommitted
 - result: open
 
 ## Questions
