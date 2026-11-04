@@ -13,8 +13,8 @@ status: in-progress
 - gdd_check: xp-level-up (approved spec): no rule about when the glow shows; the Look line gets the provisional sentence on confirmation (edit in the defaults file). Rules versus rendering: rendering only, pop, magnet, collection and XP values unchanged. color-code: colours unchanged. No open gdd value blocks. Milestone M2. Tech: bp-pickup-xp glow_disc_fade (task-148-02) and sys-pickups describe the current fade and are updated by the doc subtask.
 - confirmed_by_owner: yes (2026-11-04, "ok pour tout sauf le point 5, je vérifie par moi même")
 - milestone: M2
-- next_step: task-428-02-glow-from-spawn-capture
-- started: 2026-11-04T18:53:53Z
+- next_step: task-428-03-glow-from-spawn-doc
+- started: 2026-11-04T18:58:53Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-428-03-glow-from-spawn-doc
 description: "Doc: document bGlowDuringPop in sys-pickups and bp-pickup-xp"
 parent: task-428-xp-glow-from-spawn
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickup glow disc on from spawn: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T18:58:53Z
 - waiting_for: none
 - result: open
 
