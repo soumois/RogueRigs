@@ -3,7 +3,7 @@ id: task-428-xp-glow-from-spawn
 description: "Global task: the XP pickup camera-facing glow disc shows from spawn, during the pop arc, instead of fading in only on landing."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickup glow disc on from spawn
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "ok pour tout sauf le point 5, je vérifie par moi même")
 - milestone: M2
 - next_step: task-428-01-glow-from-spawn-cpp
-- started: open
+- started: 2026-11-04T18:53:53Z
 - waiting_for: none
 - result: open
 

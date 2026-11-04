@@ -3,7 +3,7 @@ id: task-428-01-glow-from-spawn-cpp
 description: "Cpp: ARRPickup bGlowDuringPop: glow target 1 from life start"
 parent: task-428-xp-glow-from-spawn
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickup glow disc on from spawn: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T18:53:53Z
 - waiting_for: none
 - result: open
 
