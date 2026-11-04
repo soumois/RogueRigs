@@ -23,6 +23,8 @@ status: provisional
 
 - Heal numbers (owner 2026-10-27, provisional, [[task-324-heal-numbers]]): each heal pickup that heals the miner shows "+N" above him, N = HP actually gained (health after minus before), green ([[color-code]]); same size rule, arc, pop and fade as a normal damage number of that value, never critical; one number per pickup, no merge, same vertical stacking; spawned at the top of the miner capsule + 40 uu within the 30 uu disc; hidden by the same toggle.
 
+- Ore numbers (owner 2026-11-04, provisional, [[task-430-ore-pickup-number]]): each collected Duskite chunk (Ore pickup) shows the Duskite icon (the HUD ore icon, own colours) followed by "+N" above the miner, N = the chunk ore value (`OreTypes.csv` row `Duskite`, column `ChunkValue`); "+N" white like a normal damage number; same size rule (by value), arc, pop and fade as a damage number of that value, never critical; one number per chunk, no merge, same vertical stacking; spawned at the top of the miner capsule + 40 uu within the 30 uu disc; hidden by the same toggle. Heal pickups keep their green "+N", XP pickups show nothing.
+
 ## Relations
 - [[weapons-index]] — parent index.
 - [[color-code]] — damage and heal number colours.

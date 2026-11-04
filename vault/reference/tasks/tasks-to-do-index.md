@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-430-ore-pickup-number]] — floating Duskite icon plus "+1" above the miner when he collects a Duskite chunk, rendered like the damage numbers. Status wait-answers.
+- [[task-430-ore-pickup-number]] — floating Duskite icon plus "+1" above the miner when he collects a Duskite chunk, rendered like the damage numbers. Status todo.
