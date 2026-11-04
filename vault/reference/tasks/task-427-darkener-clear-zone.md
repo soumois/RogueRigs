@@ -3,7 +3,7 @@ id: task-427-darkener-clear-zone
 description: "Global task: Step 3 of the darkener rework: ClearRadius cancels the screen darkener near the centre, FadeRadius blends back to the current circles."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener shader: clear zone around the screen centre with a transition radius
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "Ok pour tout, fait juste une capture avant après. Car j'ai pas mal changé les lights manuellement (sinon tu n'as pas une comparaison correcte)")
 - milestone: M2
 - next_step: task-427-01-clear-zone-material
-- started: open
+- started: 2026-11-04T17:41:06Z
 - waiting_for: none
 - result: open
 
