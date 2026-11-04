@@ -3,7 +3,7 @@ id: task-425-02-miner-point-light
 description: "Bp: point light on BP_Miner, lighting channel 1 only"
 parent: task-425-miner-floor-wall-light
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light that lights only the floor and the walls: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T16:58:08Z
 - waiting_for: none
 - result: open
 

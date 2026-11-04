@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: visual-style (approved spec, provisional lines): no conflict; handover-2026-10-21-lighting-floor already records the owner wish "later a light on the player that only touches floor and walls". Former PlayerLight revert recipe in bp-miner (task-272-02) and tuning history in lights-dark-ambient; this one differs (lighting channel 1 only). Light colour, shadows, pool size and which blocks count as walls were not decided: Q1 to Q4. No open gdd value blocks. Grid render components are built in C++ (ARRArenaGrid chunk HISMs from templates, rock piece ISMs), so the channels are set in C++. Milestone M2.
 - confirmed_by_owner: yes (2026-11-04, "Tout par défaut")
 - milestone: M2
-- next_step: task-425-01-grid-lighting-channels
+- next_step: task-425-02-miner-point-light
 - started: 2026-11-04T16:52:35Z
 - waiting_for: none
 - result: open

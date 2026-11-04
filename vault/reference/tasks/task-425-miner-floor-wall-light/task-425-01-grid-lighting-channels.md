@@ -3,7 +3,7 @@ id: task-425-01-grid-lighting-channels
 description: "Cpp: floor and terrain block render components on lighting channels 0 and 1"
 parent: task-425-miner-floor-wall-light
 kind: task
-status: in-progress
+status: done
 ---
 # Miner light that lights only the floor and the walls: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Editor build succeeds; existing RogueRigs grid automation tests pass; code sets channel1 on floor and block render chunk components only (barrel and collision components excluded); committed.
 - editor_state: Unreal editor closed for the build.
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 94, cache write 128042, cache read 1943990, output 30424
+- usage: turns 46, context start 11k peak 74k, resumes 1 (message x1), 13 min, units 0.51 M
+- runs: 2
 - milestone: M2
 - started: 2026-11-04T16:52:35Z
 - waiting_for: none
-- result: open
+- result: Done: CreateChunkComponent sets lighting channels 0+1 on Floor/Rock/Ore/HealOre/SpecialOre templates; build OK; RogueRigs.Dig+Ore 22/22 pass (no RogueRigs.Grid family exists); commit 978c15ca
 
 ## Relations
 - [[task-425-miner-floor-wall-light]] — parent global task.
