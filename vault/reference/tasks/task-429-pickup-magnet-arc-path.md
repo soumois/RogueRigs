@@ -3,7 +3,7 @@ id: task-429-pickup-magnet-arc-path
 description: "Global task: a pickup taken by the magnet flies to the miner along a curved arc instead of the straight 3D line."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup magnet flight along an arc
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "Q1 - Les deux combinés, mais le saut ne se ferait que si le pickup est au sol / Q3 - Fait que ça soit réglable et je prends tes valeurs par défaut pour l'instant / Défaut pour les autres questions")
 - milestone: M2
 - next_step: task-429-01-magnet-arc-cpp
-- started: open
+- started: 2026-11-04T20:36:53Z
 - waiting_for: none
 - result: open
 

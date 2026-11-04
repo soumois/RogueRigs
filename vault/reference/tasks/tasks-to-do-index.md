@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-429-pickup-magnet-arc-path]] — a pickup taken by the magnet flies to the miner along a curved arc instead of the straight 3D line. Status todo.
+- [[task-429-pickup-magnet-arc-path]] — a pickup taken by the magnet flies to the miner along a curved arc instead of the straight 3D line. Status in-progress.

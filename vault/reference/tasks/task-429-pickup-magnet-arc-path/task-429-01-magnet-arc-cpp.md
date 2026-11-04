@@ -3,7 +3,7 @@ id: task-429-01-magnet-arc-cpp
 description: "Cpp: ARRPickup magnet flight along an arc (bArcMagnet and arc tunables)"
 parent: task-429-pickup-magnet-arc-path
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup magnet flight along an arc: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T20:36:53Z
 - waiting_for: none
 - result: open
 
