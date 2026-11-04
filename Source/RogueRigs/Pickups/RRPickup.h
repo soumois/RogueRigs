@@ -116,7 +116,8 @@ struct FRRPickupScalePop
  * to the class defaults, pop yaw cleared); OnPoolAcquired starts a new life (pop from the new location, registration) after
  * the caller set the values, and re-activates auto-activate FX components. The pool resets the rotation (BP_PickupXP faces
  * the miner on magnet start). Glow fade (bGlowFade, task-148-01): a 0..1 value written to PickupMesh Custom Primitive Data
- * at GlowFadeDataIndex, 0 in the air, fading to 1 over GlowFadeDuration on landing and back to 0 on magnet; advanced in
+ * at GlowFadeDataIndex, 0 in the air, fading to 1 over GlowFadeDuration on landing and back to 0 on magnet (task-428-01:
+ * with bGlowDuringPop the fade to 1 starts at life start, so the disc shows during the pop arc too); advanced in
  * UpdateMotion only while it moves, reset to 0 at each life start and pool release. Look per life (task-192-01): StartLife
  * picks one mesh of MeshVariants for PickupMesh (empty = keep the Blueprint mesh) and sets the actor rotation from
  * RestOrientation (None = unchanged); the PickupMesh override materials are kept across a mesh swap. Pulse desync
@@ -481,10 +482,20 @@ protected:
 	/**
 	 * task-148-01 (owner 2026-10-13, provisional): drives a glow fade value 0..1 written to PickupMesh as Custom Primitive
 	 * Data at GlowFadeDataIndex (the glow disc material of BP_PickupXP and BP_PickupXPBig reads it): 0 during Pop, fades to
-	 * 1 when the pickup lands (start of Rest), back to 0 at the start of Magnet and Collected. False = no fade, no cost (ore, heal).
+	 * 1 when the pickup lands (start of Rest), back to 0 at the start of Magnet and Collected. With bGlowDuringPop (task-428-01)
+	 * the fade to 1 starts at life start instead, during Pop. False = no fade, no cost (ore, heal).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow")
 	bool bGlowFade = false;
+
+	/**
+	 * task-428-01 (owner 2026-11-04, provisional experiment): the glow disc is camera-facing, so it may show in the air. True
+	 * (default) = StartLife still writes 0 (no flash from a reused pickup) then targets 1: the disc fades in over
+	 * GlowFadeDuration from spawn and stays on through Pop and Rest; Magnet, Collected and pool release still go back to 0.
+	 * False = task-148 behaviour (0 during Pop, fade-in on landing). Untick in BP_PickupXP / BP_PickupXPBig to compare.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (EditCondition = "bGlowFade"))
+	bool bGlowDuringPop = true;
 
 	/** Seconds the glow fade takes from 0 to 1 or from 1 to 0 (0 = instant). Provisional 0.2 s, owner 2026-10-13. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Glow", meta = (ClampMin = 0, Units = "s", EditCondition = "bGlowFade"))
@@ -637,7 +648,7 @@ protected:
 	/** Current glow fade value 0..1, last written to PickupMesh (bGlowFade only). */
 	float GlowFade = 0.f;
 
-	/** Glow fade value GlowFade moves toward: 0 in Pop, Magnet and Collected, 1 in Rest (bGlowFade only). */
+	/** Glow fade value GlowFade moves toward: 0 in Pop (1 with bGlowDuringPop), Magnet and Collected, 1 in Rest (bGlowFade only). */
 	float GlowFadeTarget = 0.f;
 
 	/** Unit axis of the flight spin, drawn each life in StartLife (task-229-02). */

@@ -192,8 +192,14 @@ void ARRPickup::StartLife()
 	TargetMiner = nullptr;
 	// task-229-02: flight spin axis of this life (kinematic until landing; the pool released the body kinematic).
 	SpinAxis = FMath::VRand();
-	// Glow off in the air; written explicitly so a fresh mesh never shows the material default.
+	// Glow written to 0 explicitly so a fresh or reused mesh never shows the material default or an old value.
 	ResetGlowFade();
+	// task-428-01: with bGlowDuringPop the disc fades in over GlowFadeDuration from spawn (camera-facing, shows in the air);
+	// otherwise it stays off in the air until landing (task-148-01).
+	if (bGlowDuringPop)
+	{
+		SetGlowFadeTarget(1.f);
+	}
 	// task-257-02: seeded pulse phase and rate of this life (Ore and Heal only).
 	ApplyPulseDesync();
 	// task-309-01: the requested scale pop starts at the first motion update, after the pool read the root template scale.
