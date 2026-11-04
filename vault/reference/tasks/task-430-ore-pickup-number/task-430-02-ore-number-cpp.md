@@ -3,7 +3,7 @@ id: task-430-02-ore-number-cpp
 description: "Cpp: ore number path in the damage number subsystem, fired on Ore pickup collection"
 parent: task-430-ore-pickup-number
 kind: task
-status: in-progress
+status: done
 ---
 # Ore pickup number on the miner: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Development Editor build succeeds; `RogueRigs.DamageNumbers.*` and `RogueRigs.Pickups.*` automation tests pass; a headless check (log or `GetLastDigits`) shows an Ore collection pushes digits [11, 10, 1] with the icon white and "+1" in `OreColor`; committed by path.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 68, cache write 92855, cache read 2417690, output 28748
+- usage: turns 34, context start 12k peak 99k, resumes 0, 10 min, units 0.50 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T21:03:10Z
 - waiting_for: none
-- result: open
+- result: AddOre + OreGlyph 11, OreColor white, OreIconAdvance 0.8 (agent value, provisional); called in ARRPickup::Collect; build + DamageNumbers/Pickups 16/16 pass incl. new OreNumber test digits [11,10,1]; commit 34fc1643; render unverified
 
 ## Relations
 - [[task-430-ore-pickup-number]] — parent global task.

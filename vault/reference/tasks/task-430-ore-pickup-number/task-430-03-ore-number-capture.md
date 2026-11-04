@@ -3,7 +3,7 @@ id: task-430-03-ore-number-capture
 description: "Capture: `-game` capture of the ore number on Duskite collection"
 parent: task-430-ore-pickup-number
 kind: task
-status: todo
+status: in-progress
 ---
 # Ore pickup number on the miner: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T21:13:28Z
 - waiting_for: none
 - result: open
 
