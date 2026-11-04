@@ -3,7 +3,7 @@ id: task-429-01-magnet-arc-cpp
 description: "Cpp: ARRPickup magnet flight along an arc (bArcMagnet and arc tunables)"
 parent: task-429-pickup-magnet-arc-path
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup magnet flight along an arc: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The editor target builds without error; the existing pickup automation tests (RogueRigs.Pickups, RogueRigs.PickupPool, RogueRigs.PulseDesync) pass; a latch from Rest adds the hop (peak about ArcHopHeight at mid-flight), a mid-air latch has none; with bArcMagnet true the magnet step deviates from the direct line by the drawn angle scaled by remaining / latch distance and still reaches CollectDistance of a moving miner; with bArcMagnet false the code path equals the straight-line magnet.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 34, cache write 114536, cache read 1279065, output 26941
+- usage: turns 17, context start 12k peak 115k, resumes 0, 7 min, units 0.41 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T20:36:53Z
 - waiting_for: none
-- result: open
+- result: Done, commit de1882b2: ARRPickup arc magnet (bArcMagnet, ArcAngleMin/Max 25-50, ArcStraighten 1, ArcSideMode, bArcHopFromGround, ArcHopHeight 80); build OK, 15/15 pickup tests pass, none adjusted. Path length +30 percent only estimated, not measured.
 
 ## Relations
 - [[task-429-pickup-magnet-arc-path]] — parent global task.

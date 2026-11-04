@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: xp-level-up (approved spec) says pickups inside the radius accelerate toward the miner and form a stream; no rule fixes a straight path, so no conflict; with random sides (Q2 default) the stream comes in from both sides. The values the work needs are not in the GDD (shape, side, bend, pickup types): asked as Q1-Q4, the xp-level-up sentence is added on confirmation (defaults-file edit). Rules versus rendering: magnet speeds, radius, collection and values unchanged. Milestone M2. Tech: sys-pickups and sys-pickups-lifecycle describe the straight-line magnet and are updated by the doc subtask; BP_PickupXP and BP_PickupXPBig turn to face the miner in OnMagnetStart (bp-pickup-xp), kept as is. Capture: the lesson "a change on screen ends with a capture" is asked as Q5 (the owner declined one on task-428).
 - confirmed_by_owner: yes (2026-11-04, "Q1 - Les deux combinés, mais le saut ne se ferait que si le pickup est au sol / Q3 - Fait que ça soit réglable et je prends tes valeurs par défaut pour l'instant / Défaut pour les autres questions")
 - milestone: M2
-- next_step: task-429-01-magnet-arc-cpp
+- next_step: task-429-02-magnet-arc-doc
 - started: 2026-11-04T20:36:53Z
 - waiting_for: none
 - result: open

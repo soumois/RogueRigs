@@ -3,7 +3,7 @@ id: task-429-02-magnet-arc-doc
 description: "Doc: document the arc magnet in sys-pickups and sys-pickups-lifecycle"
 parent: task-429-pickup-magnet-arc-path
 kind: task
-status: todo
+status: in-progress
 ---
 # Pickup magnet flight along an arc: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T20:44:06Z
 - waiting_for: none
 - result: open
 
