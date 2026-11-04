@@ -3,7 +3,7 @@ id: task-426-01-radial-mask-material
 description: "Bp: M_PP_PlayerLightMask and MPC_PlayerLight: screen radial darkener"
 parent: task-426-screen-radial-darkener
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener shader: circles around the screen centre, min at centre, max at corners: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T17:03:55Z
 - waiting_for: none
 - result: open
 

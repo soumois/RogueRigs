@@ -3,7 +3,7 @@ id: task-426-screen-radial-darkener
 description: "Global task: Step 2: rework M_PP_PlayerLightMask into a screen-space radial darkener (min black at centre, max at corners, linear fade), no miner position."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener shader: circles around the screen centre, min at centre, max at corners
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "Tout par défaut")
 - milestone: M2
 - next_step: task-426-01-radial-mask-material
-- started: open
+- started: 2026-11-04T17:03:55Z
 - waiting_for: none
 - result: open
 
