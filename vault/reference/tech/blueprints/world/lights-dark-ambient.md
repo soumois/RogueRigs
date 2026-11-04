@@ -57,6 +57,8 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 
 - Miner brightness (task-393-01): the Meshy miner is darkened by the material instance MI_Miner (`BaseColorScale` 0.6), not by these lights; see [[bp-miner]].
 
+- Miner floor-and-wall light (task-425, owner 2026-11-04, provisional): BP_Miner gets a new channel 1 point light `FloorWallLight` (no shadow, colour 255/194/158, intensity 4 unitless, radius 650), and the grid floor and terrain block components join lighting channel 1; it is not the removed PlayerLight. Sun, sky and exposure unchanged. Values in [[bp-miner]], channels in [[sys-grid]]; visual check pending after task-426.
+
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.
 - The sky light captures the scene (SLS_CapturedScene, real-time capture off): it uses the capture baked in the editor, and its colour multiplies it. It contributes only what that capture holds; it was not recaptured here. If the ambient stays too black, recapture the sky light in the editor (Recapture) or give it a cubemap/specified colour. Not verified by eye.
@@ -83,3 +85,5 @@ Set DirectionalLight_0 intensity 6 and lightColor (1, 1, 1); SkyLight_0 intensit
 - [[bp-miner]] — the PlayerLight whose radius and intensity changed (removed in task-272-15, revert values there).
 - [[mpp-player-light-mask]] — the post-process mask that gives the centre-brighter effect since task-272-15.
 - [[visual-style]] — the look statement.
+- [[sys-grid]] — lighting channels 0 and 1 on floor and terrain blocks (task-425).
+- [[task-425-miner-floor-wall-light]] — added the miner floor-and-wall light.

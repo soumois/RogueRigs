@@ -78,7 +78,16 @@ Owner request 2026-10-30: the Meshy miner looked burnt out in the arena. Lever c
 Removed on 2026-10-21 by owner direction ("repars d une lumiere flat"): the centre-brighter effect now comes only from the post-process mask ([[mpp-player-light-mask]]). Removed with `ActorTools.remove_component`, compiled and saved; the graphs hold no reference to it. History of the tuning rounds (task-263-02 to task-272-04): [[lights-dark-ambient]], [[lights-no-shadows]].
 - Revert: add a PointLightComponent named `PlayerLight` under the capsule (CollisionCylinder), not under the mesh, with the last values (task-272-02): relativeLocation (0, 0, -15), attenuationRadius 3000, intensity 400, intensityUnits Candelas, lightColor (1.0, 0.7608, 0.6196) (8-bit 255/194/158), sourceRadius 20, castShadows true, bUseInverseSquaredFalloff true, mobility Movable; rest default. Then compile and save. Cost of that light: [[perf-risks]].
 
+## FloorWallLight (task-425-02, f2c79f4c, provisional)
+Owner 2026-11-04 "Tout par défaut" ([[task-425-miner-floor-wall-light]]): a light that touches only floor and walls (no shadow, colour 255/194/158, pool about 400 uu, floor under the miner below 205/255). Not render-checked: the visual check is pending after task-426 (the owner waived the capture); intensity is a first guess.
+- Component: PointLightComponent `FloorWallLight`, parent CollisionCylinder, relativeLocation (0, 0, 360) (about 450 uu above the floor).
+- Lighting channels: ch0 false, ch1 true, ch2 false, so it lights only components on channel 1 (floor and terrain blocks, [[sys-grid]]); the miner, enemies and barrels stay on channel 0 and are not lit by it.
+- Light: castShadows false, lightColor (1.0, 0.7608, 0.6196) (8-bit 255/194/158), Movable, bUseInverseSquaredFalloff false, lightFalloffExponent 4, intensityUnits Unitless, intensity 4 (provisional), attenuationRadius 650, sourceRadius 0, indirectLightingIntensity 0, volumetric scattering off.
+- Differs from the removed PlayerLight recipe above (shadowed, channel 0, Candelas, inverse squared falloff).
+- Tune: change `intensity` (and `attenuationRadius` for the pool size) on the component in BP_Miner. Revert: remove the component.
+
 ## Relations
+- [[task-425-miner-floor-wall-light]] — added FloorWallLight.
 - [[task-410-right-hand-offset-live]] — added the right arm IK and hand rotation nodes.
 - [[task-411-right-hand-offset-rifle-stays]] — made the rifle stay in place under the offset.
 - [[task-400-burst-rifle-in-hand]] — added WeaponSocket_R.
