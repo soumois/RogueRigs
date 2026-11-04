@@ -11,4 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-431-barrel-green-square-packaged]] — no green default-decal square at any barrel fuse or explosion in a packaged build, second and later runs of one process included. Status wait-answers.
+- [[task-431-barrel-green-square-packaged]] — no green default-decal square at any barrel fuse or explosion in a packaged build, second and later runs of one process included. Status todo.
