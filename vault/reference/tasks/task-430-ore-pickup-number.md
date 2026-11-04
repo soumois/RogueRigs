@@ -1,9 +1,9 @@
 ---
 id: task-430-ore-pickup-number
 description: "Global task: floating Duskite icon plus "+1" above the miner when he collects a Duskite chunk, rendered like the damage numbers."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ore pickup number on the miner
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: read [[ore-blocks]] (Duskite = violet crystals, the only ore type; chunk value `OreTypes.csv` row `Duskite` column `ChunkValue`, 1 today; on screen the ore is called "Duskite"), [[color-code]] (Duskite violet; heal ore and heal pickups red; heal number green), [[damage-numbers]] (look, size by value, arc, pop, stacking, no merge, toggle; heal numbers line = the precedent), tech [[sys-damage-numbers]] (`AddHeal`, `AppendDigits`, `PlusGlyph` 10, `DigitAdvance` 0.62), [[sys-damage-numbers-niagara]] (glyph index = atlas cell), [[bp-damage-numbers]] (T_DamageDigitsOutline 16 cells of 64 px, cells 0-10 used, 11-15 free; material emissive = ParticleColor x texture RGB, so a coloured glyph drawn with white particle colour keeps its colours), [[sys-pickups]] (Ore pickups add `OreValue` on collection; heal number call in `ARRPickup::ApplyHeal`), [[wbp-ore-counter]] (HUD ore icon T_Icon_Ore, source `Art/UI/Icons/T_Icon_Ore.png`, owner-chosen). "Seulement le mauve" read as: Ore pickups only (Duskite); heal (red) keeps its green number, XP nothing. Conflicts: none. Open values: none in the gdd; the new values are the Q1-Q8 defaults, written provisional into [[damage-numbers]] (ore numbers line) and [[color-code]] (ore number row) on the owner answer. Milestone: M2 feature already built, no scope issue. Not a representative-slice case (same path as task-324 heal numbers).
 - confirmed_by_owner: yes (2026-11-04, "Ok par défaut")
 - milestone: M2
-- next_step: task-430-04-ore-number-doc
+- next_step: none
 - started: 2026-11-04T20:59:22Z
 - waiting_for: none
-- result: open
+- result: Done. Four nodes updated (sys-damage-numbers, -niagara, bp-damage-numbers, sys-pickups); gdd and lifecycle/tests nodes untouched; commit 637656d1
 
 ## Questions
 Decided 2026-11-04 (owner "Ok par défaut"): every default below is accepted; values provisional, owner 2026-11-04.
@@ -36,7 +36,7 @@ Decided 2026-11-04 (owner "Ok par défaut"): every default below is accepted; va
 4. task-430-04-ore-number-doc (vault/reference/tasks/task-430-ore-pickup-number/task-430-04-ore-number-doc.md) — doc: document the ore number in the damage number, Niagara contract, atlas and pickup docs
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-430-01-ore-icon-glyph]] — step 1, bp.
 - [[task-430-02-ore-number-cpp]] — step 2, cpp.
 - [[task-430-03-ore-number-capture]] — step 3, capture.
