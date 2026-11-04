@@ -561,6 +561,15 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UI
 		Component->bCastStaticShadow = false;
 		Component->bCastContactShadow = false;
 	}
+	// Lighting channels (task-425-01, owner 2026-11-04 Q4): the floor and every terrain block render component (floor chunks,
+	// ore and heal ore crystal chunks, rock and special ore pieces and deposit crystals, all built from these templates) are on
+	// channels 0 and 1, so the miner's channel 1 light touches only the floor and the walls. Barrels and collision ISMs keep
+	// the template's channels (channel 0 only); channel 2 always follows the template.
+	if (Template == FloorInstances || Template == RockInstances || Template == OreInstances || Template == HealOreInstances
+		|| Template == SpecialOreInstances)
+	{
+		Component->SetLightingChannels(true, true, Template->LightingChannels.bChannel2);
+	}
 	Component->SetStaticMesh(Template->GetStaticMesh());
 	for (int32 MaterialIndex = 0; MaterialIndex < Template->GetNumOverrideMaterials(); ++MaterialIndex)
 	{

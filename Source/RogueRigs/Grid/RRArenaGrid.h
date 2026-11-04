@@ -757,7 +757,7 @@ protected:
 	/** Chunk visual of type MapKey for the chunk holding Cell, its components created on first use; nullptr for an invalid type or cell. */
 	FRRGridChunkVisual* GetOrCreateVisual(ERRCellType MapKey, FIntPoint Cell);
 
-	/** Creates one chunk component of Class, copying the settings of Template, attached to the root (not navigation relevant); registers it when bRegister (callers that change settings first register it themselves). */
+	/** Creates one chunk component of Class, copying the settings of Template, attached to the root (not navigation relevant); floor and terrain block render components (floor, rock, ore, heal ore, special ore templates) go on lighting channels 0 and 1 for the miner's floor-and-walls light, barrels and collision ISMs keep the template's channels; registers it when bRegister (callers that change settings first register it themselves). */
 	UInstancedStaticMeshComponent* CreateChunkComponent(TSubclassOf<UInstancedStaticMeshComponent> Class, const UInstancedStaticMeshComponent* Template, FIntPoint Chunk, bool bRegister = true);
 
 	/** Starting health of a block type in dig-seconds; 0 for non-block types. */
