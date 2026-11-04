@@ -3,7 +3,7 @@ id: task-425-02-miner-point-light
 description: "Bp: point light on BP_Miner, lighting channel 1 only"
 parent: task-425-miner-floor-wall-light
 kind: task
-status: in-progress
+status: done
 ---
 # Miner light that lights only the floor and the walls: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Component present on BP_Miner with channel0 false, channel1 true and the decided colour and shadow flag, read back after compile and save; committed.
 - editor_state: Unreal editor open with the MCP server.
 - token_ceiling: 1.0 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 50, cache write 91776, cache read 847902, output 13737
+- usage: turns 25, context start 11k peak 55k, resumes 0, 3 min, units 0.27 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T16:58:08Z
 - waiting_for: none
-- result: open
+- result: Done: FloorWallLight PointLight on BP_Miner (channel 1 only, no shadow, 255/194/158, Movable, intensity 4 unitless, radius 650, falloff exp 4, z+360); values read back; commit f2c79f4c. Intensity is a first guess, render unverified.
 
 ## Relations
 - [[task-425-miner-floor-wall-light]] — parent global task.

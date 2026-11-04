@@ -3,7 +3,7 @@ id: task-425-04-light-doc
 description: "Doc: document the light and the grid lighting channels"
 parent: task-425-miner-floor-wall-light
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light that lights only the floor and the walls: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T17:00:36Z
 - waiting_for: none
 - result: open
 
