@@ -3,7 +3,7 @@ id: task-429-02-magnet-arc-doc
 description: "Doc: document the arc magnet in sys-pickups and sys-pickups-lifecycle"
 parent: task-429-pickup-magnet-arc-path
 kind: task
-status: in-progress
+status: done
 ---
 # Pickup magnet flight along an arc: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: sys-pickups-lifecycle describes the arc magnet with every new property and default; sys-pickups summary mentions it; no doc still says the magnet flies a straight line except as the bArcMagnet false behaviour; lint clean.
 - editor_state: any
 - token_ceiling: 0.3 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 12, cache write 38393, cache read 141899, output 3218
+- usage: turns 6, context start 11k peak 38k, resumes 0, 1 min, units 0.08 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T20:44:06Z
 - waiting_for: none
-- result: open
+- result: Done, commit 130b1f9d: sys-pickups-lifecycle and sys-pickups document the arc magnet; bp nodes had no straight-line text; lint OK.
 
 ## Relations
 - [[task-429-pickup-magnet-arc-path]] — parent global task.

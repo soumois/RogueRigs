@@ -436,3 +436,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-426-screen-radial-darkener]] — Step 2: rework M_PP_PlayerLightMask into a screen-space radial darkener (min black at centre, max at corners, linear fade), no miner position. Status done.
 - [[task-427-darkener-clear-zone]] — Step 3 of the darkener rework: ClearRadius cancels the screen darkener near the centre, FadeRadius blends back to the current circles. Status done.
 - [[task-428-xp-glow-from-spawn]] — the XP pickup camera-facing glow disc shows from spawn, during the pop arc, instead of fading in only on landing. Status done.
+- [[task-429-pickup-magnet-arc-path]] — a pickup taken by the magnet flies to the miner along a curved arc instead of the straight 3D line. Status done.

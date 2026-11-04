@@ -1005,18 +1005,19 @@ kind: note
 | [[task-428-02-glow-from-spawn-capture]] | none | 0 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-428-03-glow-from-spawn-doc]] | sonnet | 1 | 0k | 29k | 145k | 3k | 0.07 | 8 | 0 |
 | [[task-429-01-magnet-arc-cpp]] | opus | 1 | 0k | 115k | 1279k | 27k | 0.41 | 17 | 0 |
+| [[task-429-02-magnet-arc-doc]] | sonnet | 1 | 0k | 38k | 142k | 3k | 0.08 | 6 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 384.78 | 0k | 90.60 M | 1886.86 M | 16584k |
+| All subtask rows above | 384.86 | 0k | 90.64 M | 1887.01 M | 16587k |
 | model mixed | 8.97 | 0k | 3.17 M | 26.83 M | 463k |
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 208.30 | 0k | 46.31 M | 1045.99 M | 9167k |
-| model sonnet | 167.51 | 0k | 41.12 M | 814.05 M | 6954k |
-| Executors and legacy orchestrators that ran a task (pilot) | 30.51 | 5k | 13.02 M | 89.42 M | 1057k |
+| model sonnet | 167.59 | 0k | 41.16 M | 814.19 M | 6957k |
+| Executors and legacy orchestrators that ran a task (pilot) | 30.54 | 5k | 13.03 M | 89.54 M | 1059k |
 | Planning runs (planners and legacy planning passes) | 38.35 | 4k | 11.70 M | 139.81 M | 1947k |
 | Agents without a subtask id (other) | 0.97 | 0k | 0.37 M | 3.96 M | 24k |
 | Main sessions (all of them, also chat outside tasks) | 73.20 | 7k | 11.62 M | 493.62 M | 1862k |
