@@ -434,3 +434,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-424-pause-menu-stats]] — in-run pause menu with miner stats (global and per weapon), Resume and Exit, look from an owner-validated Kie.ai mockup. Status done.
 - [[task-425-miner-floor-wall-light]] — Step 1 of the darkener rework: a point light on the miner that lights only floor and terrain blocks, through lighting channels. Status done.
 - [[task-426-screen-radial-darkener]] — Step 2: rework M_PP_PlayerLightMask into a screen-space radial darkener (min black at centre, max at corners, linear fade), no miner position. Status done.
+- [[task-427-darkener-clear-zone]] — Step 3 of the darkener rework: ClearRadius cancels the screen darkener near the centre, FadeRadius blends back to the current circles. Status done.

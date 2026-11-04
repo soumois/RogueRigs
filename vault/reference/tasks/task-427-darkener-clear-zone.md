@@ -1,9 +1,9 @@
 ---
 id: task-427-darkener-clear-zone
 description: "Global task: Step 3 of the darkener rework: ClearRadius cancels the screen darkener near the centre, FadeRadius blends back to the current circles."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Darkener shader: clear zone around the screen centre with a transition radius
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: visual-style (approved spec, provisional screen darkener sentence, task-426): no conflict; the clear zone is added to that sentence (edit applied on confirmation). No open gdd value blocks; unit, start values, remap and fade shape are Q11 to Q15. task-426 open point (corner measured 0.27 to 0.60 of the undarkened frame instead of 0.15) is Q16; task-425 capture was waived until after task-426 (Q17). Milestone M2.
 - confirmed_by_owner: yes (2026-11-04, "Ok pour tout, fait juste une capture avant après. Car j'ai pas mal changé les lights manuellement (sinon tu n'as pas une comparaison correcte)")
 - milestone: M2
-- next_step: task-427-03-clear-zone-doc
+- next_step: none
 - started: 2026-11-04T17:41:06Z
 - waiting_for: none
-- result: open
+- result: Done. mpp-player-light-mask documented (a3ac37c8); gdd visual-style sentence already had clear zone, still says CornerDarkness 0.85 vs owner 1
 
 ## Questions
 Decided 2026-11-04 (owner "Ok pour tout, fait juste une capture avant après. Car j'ai pas mal changé les lights manuellement (sinon tu n'as pas une comparaison correcte)"): the defaults of Q11, Q12, Q13, Q14, Q15 are accepted; values provisional, owner 2026-11-04.
@@ -34,7 +34,7 @@ Decided 2026-11-04 (owner "Ok pour tout, fait juste une capture avant après. Ca
 3. task-427-03-clear-zone-doc (vault/reference/tasks/task-427-darkener-clear-zone/task-427-03-clear-zone-doc.md) — doc: document ClearRadius and FadeRadius
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-427-01-clear-zone-material]] — step 1, bp.
 - [[task-427-02-clear-zone-capture]] — step 2, capture.
 - [[task-427-03-clear-zone-doc]] — step 3, doc.
