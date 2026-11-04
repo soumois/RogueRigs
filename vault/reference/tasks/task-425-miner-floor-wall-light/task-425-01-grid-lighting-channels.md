@@ -3,7 +3,7 @@ id: task-425-01-grid-lighting-channels
 description: "Cpp: floor and terrain block render components on lighting channels 0 and 1"
 parent: task-425-miner-floor-wall-light
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light that lights only the floor and the walls: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T16:49:28Z
 - waiting_for: none
 - result: open
 

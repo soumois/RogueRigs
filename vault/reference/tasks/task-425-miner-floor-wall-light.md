@@ -3,7 +3,7 @@ id: task-425-miner-floor-wall-light
 description: "Global task: Step 1 of the darkener rework: a point light on the miner that lights only floor and terrain blocks, through lighting channels."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light that lights only the floor and the walls
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "Tout par défaut")
 - milestone: M2
 - next_step: task-425-01-grid-lighting-channels
-- started: open
+- started: 2026-11-04T16:49:28Z
 - waiting_for: none
 - result: open
 
