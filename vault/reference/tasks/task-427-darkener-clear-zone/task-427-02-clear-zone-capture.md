@@ -3,7 +3,7 @@ id: task-427-02-clear-zone-capture
 description: "Capture: one before/after pair, check the clear zone"
 parent: task-427-darkener-clear-zone
 kind: task
-status: todo
+status: in-progress
 ---
 # Darkener shader: clear zone around the screen centre with a transition radius: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T17:45:37Z
 - waiting_for: none
 - result: open
 

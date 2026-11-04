@@ -3,7 +3,7 @@ id: task-427-01-clear-zone-material
 description: "Bp: M_PP_PlayerLightMask and MPC_PlayerLight: ClearRadius and FadeRadius"
 parent: task-427-darkener-clear-zone
 kind: task
-status: in-progress
+status: done
 ---
 # Darkener shader: clear zone around the screen centre with a transition radius: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Material compiles without error; MPC holds Enable, VoidZ, PlayerPosition, CenterDarkness, CornerDarkness, VoidMaxDarkness unchanged plus ClearRadius and FadeRadius with the decided defaults; the HLSL applies the clear-zone mask before the void cap; committed.
 - editor_state: Unreal editor open with the MCP server.
 - token_ceiling: 0.8 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: sonnet
+- tokens: input 46, cache write 60790, cache read 960530, output 17365
+- usage: turns 23, context start 11k peak 66k, resumes 0, 3 min, units 0.26 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T17:41:06Z
 - waiting_for: none
-- result: open
+- result: ClearRadius 0.15 and FadeRadius 0.35 added to MPC_PlayerLight, HLSL clear-zone mask before void cap, compiled; owner values kept (CenterDarkness 0.2, CornerDarkness 1); commit cb27e12f
 
 ## Relations
 - [[task-427-darkener-clear-zone]] — parent global task.
