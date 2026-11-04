@@ -1,32 +1,34 @@
 ---
 id: task-431-barrel-green-square-packaged
-description: "Global task: no green default-decal square at any barrel fuse or explosion in the packaged build, later explosions and later levels included."
+description: "Global task: no green default-decal square at any barrel fuse or explosion in a packaged build, second and later runs of one process included."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
 ---
 # Barrel explosion green square in the packaged build
 
-- request: Owner 2026-11-04, verbatim: "J'ai eu le bug du carré vert lors de l'explosion du baril, mais je ne l'ai pas eu la première fois et j'étais en build." (I got the green square bug at the barrel explosion, but not the first time, and I was in a build.) Context: [[task-201-decal-first-frame-green]] removed the one-frame green default-decal box in `-game` runs by warming the decal materials at level start (ARRDecalWarmUp, 2 s); its result says "cooked build and cold cache unverified". The owner now sees the square in a build, not on the first explosion: the warm-up does not cover this case. Bug fix only: no new test, no new effect, game rules unchanged.
-- goal: No green default-decal square at the barrel fuse start (danger zone) or at the explosion (shockwave ring) in the packaged build, on every barrel explosion of a run, the first, later ones and those of later levels.
-- acceptance: The defect is first reproduced in the staged packaged build (frames and log lines) before any change, or reported not reproduced after 2 runs (then stop, owner wait); the cause is named with evidence; packaged Development build (BuildCookRun of [[build-toolchain]]) exits 0 after the fix; in the staged RogueRigs.exe, frames at fuse start and explosion of at least 5 successive barrel explosions in level 1 (a chain included) and, if a debug command reaches level 2 ([[sys-cheats]]), 2 explosions there, show no green square, otherwise the level 2 check is listed unverified; the task-201 `-game` check stays clean; existing explosion, barrel and telegraph tests pass (only broken expectations updated, no new test); game rules unchanged; committed by path.
+- request: Owner 2026-11-04, verbatim: "J'ai eu le bug du carré vert lors de l'explosion du baril, mais je ne l'ai pas eu la première fois et j'étais en build." (I got the green square bug at the barrel explosion, but not the first time, and I was in a build.) Context: [[task-201-decal-first-frame-green]] removed the one-frame green default-decal box in `-game` runs by warming the decal materials at level start (ARRDecalWarmUp, 2 s); its result says "cooked build and cold cache unverified". The owner now sees the square in a build, not on the first explosion: the warm-up does not cover this case. Bug fix only: no new test, no new effect, game rules unchanged. Owner answers 2026-11-04, verbatim: "J'ai relancé le build, je n'avais plus le souci. Le souci vient quand je meurs une fois. Une fois le carré vert là, il revient tout le temps. Pas dans l'éditeur, un vrai build (et pas en développement)." (I relaunched the build, no problem any more. The problem comes when I die once. Once the green square is there, it comes back all the time. Not in the editor, a real build, not Development.) Read: a packaged non-Development (Shipping) build; clean on a fresh launch; after one miner death (and the restart that follows) the green square shows on every barrel explosion. Q1 to Q4 settled by this answer (Q4: no video given, the agent reproduces). Owner extra detail 2026-11-04 (relayed paraphrase): quitting a run through the pause menu and starting a new game without closing the application also keeps the green square; only a full relaunch of the build clears it. Read: the defect starts with the second run (any run end, death or pause-menu exit) in the same process and survives every later level or run load; something kept across worlds (static, subsystem, cached material, PSO or pooled object) is not valid for the new world. This answers Q5.
+- goal: No green default-decal square at the barrel fuse start (danger zone) or at the explosion (shockwave ring) in a packaged build, in the first run and in every later run of the same process (after a death and restart, or a pause-menu exit and New Run).
+- acceptance: The defect is first reproduced in a staged package in the second run of one process (frames and log lines) before any change, or reported not reproduced after 2 runs per configuration (Development, then Test; then stop, owner wait); the cause is named with evidence; after the fix, in the same package configuration, frames at fuse start and explosion of barrel explosions in the first run, after a death and restart, after a pause-menu exit and New Run, and in a third run show no green square; a Shipping package (BuildCookRun of [[build-toolchain]], `-clientconfig=Shipping`) builds with exit 0 and is staged for the owner's check (Q6); the task-201 `-game` check stays clean; existing explosion, barrel and telegraph tests pass (only broken expectations updated, no new test); game rules unchanged; committed by path.
 - gdd_check: [[barrel]] and [[explosions]] read 2026-11-04: a render defect, no rule change, no `open` value needed, no conflict. Earlier work: [[task-200-decal-green-square-check]] (diagnosis in -game) and [[task-201-decal-first-frame-green]] (warm-up fix, uncooked cause: incomplete shader map, fallback to the engine default deferred decal; cooked build unverified). The packaged-build frames are taken by the cpp subtask itself, as in task-201: capture.js and [[agent-capture]] only launch `-game` from the editor, and the defect is seen in a build.
 - confirmed_by_owner: no (plan and questions handed back 2026-11-04)
 - milestone: M2
 - next_step: task-431-01-packaged-green-square-fix
 - started: open
-- waiting_for: owner answers Q1 to Q4 (build kind, when the square appeared, its look, a video)
+- waiting_for: owner answer to Q6 (Shipping check) and plan confirmation
 - result: open
 
 ## Questions
-Asked 2026-11-04, each with a default; open until the owner answers.
-- Q1 "En build": the packaged game (RogueRigs.exe from a package or Saved/StagedBuilds), not the editor, PIE or a -game launch. Default: yes, the packaged game.
-- Q2 When it appeared: which explosion (the second barrel of the level, a barrel in a chain, a barrel in level 2 to 4 of the run) and at which moment (orange danger zone at fuse start, or shockwave ring at the explosion). Default: not known; the agent reproduces with at least 5 successive explosions in level 1, a chain included, and 2 in level 2 if a debug command reaches it, at fuse start and at the explosion.
-- Q3 Its look: like the earlier bug (a pale green box over the zone for one frame, then gone), or it stayed on screen. Default: the same one-frame flash.
-- Q4 A video or screenshot of it (C:\Users\soumo\Videos). Default: none; the agent reproduces it itself.
+Q6 asked 2026-11-04 with a default; open until the owner answers.
+- Q1 (answered 2026-11-04, see request) Build kind: a real packaged build, not Development, not the editor.
+- Q2 (answered 2026-11-04) When: only after the miner died once; from then on on every barrel explosion; a fresh launch is clean.
+- Q3 (answered 2026-11-04) Look: it comes back each time once present; one flash per explosion assumed, the agent describes it on its frames.
+- Q4 (answered 2026-11-04) Video: none given; the agent reproduces it.
+- Q5 (answered 2026-11-04, see request) Run end path: both a death then restart and a pause-menu exit then New Run keep the square; only a full relaunch clears it.
+- Q6 Final check: debug commands do not exist in a Shipping build, so the agent reproduces and checks in a Development or Test package (Test is close to Shipping), builds a Shipping package after the fix and leaves it for you to play (die once, then blow barrels). Default: yes.
 
 ## Subtasks
-1. task-431-01-packaged-green-square-fix (vault/reference/tasks/task-431-barrel-green-square-packaged/task-431-01-packaged-green-square-fix.md) — cpp: reproduce the green square in the packaged build, find the cause, fix it, verify in packaged frames
+1. task-431-01-packaged-green-square-fix (vault/reference/tasks/task-431-barrel-green-square-packaged/task-431-01-packaged-green-square-fix.md) — cpp: reproduce the green square from the second run of one packaged process, find the cause, fix it, verify in packaged frames
 2. task-431-02-packaged-green-square-doc (vault/reference/tasks/task-431-barrel-green-square-packaged/task-431-02-packaged-green-square-doc.md) — doc: record the packaged-build cause and fix in the decal warm-up docs
 
 ## Relations
