@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: visual-style void sentence (task-335 far gain for the void, provisional) is rewritten in screen terms; Q9 asks whether to keep the void exception. The current world-space mask (mpp-player-light-mask) is replaced, not extended. No open gdd value blocks; start values are Q7. Milestone M2.
 - confirmed_by_owner: yes (2026-11-04, "Tout par défaut")
 - milestone: M2
-- next_step: task-426-02-radial-mask-capture
+- next_step: task-426-03-radial-mask-doc
 - started: 2026-11-04T17:03:55Z
 - waiting_for: none
 - result: open
