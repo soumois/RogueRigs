@@ -32,11 +32,15 @@ struct ROGUERIGS_API FRRDamageNumber
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	bool bHeal = false;
 
+	/** True for an ore number (URRDamageNumberSubsystem::AddOre): OreGlyph icon (white) then "+" before the digits, OreColor. */
+	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
+	bool bOre = false;
+
 	/** World size of the glyphs (NumberSize x the damage factor SizeMin..SizeMax, x CriticalScale on a crit; URRDamageNumberSubsystem::GetHitSize). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float Size = 0.f;
 
-	/** Color of the number (NormalColor, CriticalColor or HealColor). */
+	/** Color of the number (NormalColor, CriticalColor, HealColor or OreColor; the ore icon glyph is always drawn white). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	FLinearColor Color = FLinearColor::White;
 
@@ -59,7 +63,7 @@ struct ROGUERIGS_API FRRDamageDigit
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	FVector Location = FVector::ZeroVector;
 
-	/** Atlas cell of the glyph: digit 0-9, or URRDamageNumberSubsystem::PlusGlyph (10, "+") before the digits of a heal number. */
+	/** Atlas cell of the glyph: digit 0-9, URRDamageNumberSubsystem::PlusGlyph (10, "+") before the digits of a heal or ore number, or OreGlyph (11, Duskite icon) first in an ore number. */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	int32 Digit = 0;
 
@@ -67,7 +71,7 @@ struct ROGUERIGS_API FRRDamageDigit
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	float Size = 0.f;
 
-	/** Color (the number's color). */
+	/** Color (the number's color; white for the ore icon glyph so it keeps its texture colours). */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage Numbers")
 	FLinearColor Color = FLinearColor::White;
 
@@ -102,7 +106,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FRROnDamageNumbersPushed, const TArray<FRRDa
  * [/Script/RogueRigs.RRDamageNumberSubsystem]); unset or missing = no rendering, the numbers and OnNumbersPushed still run.
  * Heal numbers (task-324-02): AddHeal records a green "+N" through the same path (size by value, never critical, same
  * stacking with the "+" counted in the footprint); ARRPickup calls it when a heal pickup heals the miner.
- * The player toggle is URRGameUserSettings::bShowDamageNumbers: off = hits and heals ignored and pending numbers dropped.
+ * Ore numbers (task-430-02): AddOre records "<Duskite icon> +N" the same way (icon glyph OreGlyph in white, then "+N" in
+ * OreColor, icon cell counted in the footprint); ARRPickup calls it when the miner collects an Ore pickup.
+ * The player toggle is URRGameUserSettings::bShowDamageNumbers: off = hits, heals and ore numbers ignored and pending numbers dropped.
  * Ticks with the world (stops while the game is paused, like the Niagara component).
  */
 UCLASS(Config = Game)
@@ -113,10 +119,12 @@ class ROGUERIGS_API URRDamageNumberSubsystem : public UTickableWorldSubsystem
 public:
 	/** Niagara user parameter (Niagara Position Array): world position of each digit of the batch. */
 	static const FName DigitPositionsParameter;
-	/** Niagara user parameter (Niagara Int32 Array): atlas cell of each glyph (0-9 digits, PlusGlyph 10 = "+"). */
+	/** Niagara user parameter (Niagara Int32 Array): atlas cell of each glyph (0-9 digits, PlusGlyph 10 = "+", OreGlyph 11 = Duskite icon). */
 	static const FName DigitIndicesParameter;
 	/** Atlas cell of the "+" glyph of T_DamageDigitsOutline (task-324-01), drawn before the digits of a heal number. */
 	static constexpr int32 PlusGlyph = 10;
+	/** Atlas cell of the Duskite icon glyph of T_DamageDigitsOutline (task-430-01), drawn first (white) in an ore number. */
+	static constexpr int32 OreGlyph = 11;
 	/** Niagara user parameter (Niagara Float Array): glyph world size of each digit (its number's GetHitSize). */
 	static const FName DigitSizesParameter;
 	/** Niagara user parameter (Niagara Color Array): color of each digit. */
@@ -152,6 +160,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Damage Numbers")
 	void AddHeal(FVector Location, float Amount, float InSpawnRadius = -1.f);
 
+	/**
+	 * Records an ore gain of Amount shown at Location (world, e.g. miner capsule top + 40 uu): one "<icon> +N" number, the
+	 * OreGlyph icon drawn white (own texture colours) then "+N" in OreColor, size by value like a hit, never critical, same
+	 * spawn disc (InSpawnRadius, negative = SpawnRadius), stacking and push as AddHit. Ignored when Amount <= 0 or the player
+	 * turned damage numbers off (damage-numbers, ore numbers line).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Damage Numbers")
+	void AddOre(FVector Location, float Amount, float InSpawnRadius = -1.f);
+
 	/** True when the player setting shows damage numbers (true when the game user settings are not URRGameUserSettings). */
 	UFUNCTION(BlueprintPure, Category = "Damage Numbers")
 	bool AreNumbersShown() const;
@@ -179,7 +196,8 @@ public:
 	/**
 	 * Lays out Number into digits appended to OutDigits: the value rounded (at least 1, at most MaxDigits nines), most
 	 * significant digit first, placed left to right along DigitDirection, DigitAdvance x Size apart, centred on Location.
-	 * A heal number gets a PlusGlyph glyph before its digits, counted in the centring.
+	 * A heal number gets a PlusGlyph glyph before its digits; an ore number gets an OreGlyph icon (white, OreIconAdvance x Size
+	 * before the "+") then a PlusGlyph glyph; the whole is centred (midpoint of the first and last glyph centres).
 	 */
 	void AppendDigits(const FRRDamageNumber& Number, TArray<FRRDamageDigit>& OutDigits) const;
 
@@ -247,6 +265,8 @@ protected:
 		bool bCritical = false;
 		/** Heal number ("+" glyph, HealColor). */
 		bool bHeal = false;
+		/** Ore number (OreGlyph icon and "+" glyph, OreColor). */
+		bool bOre = false;
 	};
 
 	/** One pushed number still on screen: avoided by the stacking until it expires. */
@@ -269,17 +289,17 @@ protected:
 	/** Drops pending entries and the component. */
 	virtual void Deinitialize() override;
 
-	/** Records one pending number (AddHit, AddHeal): spawn disc point, stack offset, style. Callers check World, Value and the toggle. */
-	void AddPendingNumber(float Value, bool bCritical, bool bHeal, const FVector& Location, float InSpawnRadius, double Now);
+	/** Records one pending number (AddHit, AddHeal, AddOre): spawn disc point, stack offset, style. Callers check World, Value and the toggle. */
+	void AddPendingNumber(float Value, bool bCritical, bool bHeal, const FVector& Location, float InSpawnRadius, double Now, bool bOre = false);
 
-	/** Screen footprint of a number (width along DigitDirection, height along StackDirection), from its value and style; a heal number counts its "+" glyph. */
-	FVector2D GetFootprint(float Value, bool bCritical, bool bHeal = false) const;
+	/** Screen footprint of a number (width along DigitDirection, height along StackDirection), from its value and style; a heal number counts its "+" glyph, an ore number its icon and "+". */
+	FVector2D GetFootprint(float Value, bool bCritical, bool bHeal = false, bool bOre = false) const;
 
 	/**
 	 * Stack offset for a new number at Location recorded at Now: lifted along StackDirection above each pending number or
 	 * displayed number (risen by RiseVelocity since its push) whose footprint it would overlap, MaxStackSteps lifts at most.
 	 */
-	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical, bool bHeal, double Now) const;
+	FVector ComputeStackOffset(const FVector& Location, float Value, bool bCritical, bool bHeal, double Now, bool bOre = false) const;
 
 	/** Sends LastDigits and DigitBatchId to the Niagara component, when there is one (parameters the asset lacks are skipped). */
 	void PushToNiagara();
@@ -328,6 +348,17 @@ protected:
 	/** Color of a heal number "+N" (damage-numbers and color-code: the heal ring green, linear (0.1, 1, 0.2), provisional, owner 2026-10-27). */
 	UPROPERTY(Config)
 	FLinearColor HealColor = FLinearColor(0.1f, 1.f, 0.2f);
+
+	/** Color of the "+N" of an ore number (damage-numbers and color-code: white, the icon carries the Duskite violet; provisional, owner 2026-11-04). */
+	UPROPERTY(Config)
+	FLinearColor OreColor = FLinearColor::White;
+
+	/**
+	 * Distance between the ore icon centre and the "+" centre, as a fraction of the glyph size: wider than DigitAdvance so the
+	 * icon (about 0.73 x Size wide, task-430-01) does not overlap the "+" (provisional, task-430-02).
+	 */
+	UPROPERTY(Config)
+	float OreIconAdvance = 0.8f;
 
 	/** Distance between two digit centres, as a fraction of the glyph size (matches the atlas glyph width). */
 	UPROPERTY(Config)

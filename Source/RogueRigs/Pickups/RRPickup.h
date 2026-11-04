@@ -397,7 +397,7 @@ protected:
 	 */
 	void ApplyHeal(ARRMiner* Miner) const;
 
-	/** Logs the type, adds XPAmount XP to the miner for an XP pickup (OreValue carried ore to the run flow for an Ore pickup), notifies the miner (type, location), then releases this pickup to the pool (destroys it outside the pool). */
+	/** Logs the type, adds XPAmount XP to the miner for an XP pickup (OreValue carried ore to the run flow and an ore number "<icon> +OreValue" via URRDamageNumberSubsystem::AddOre at capsule top + HealNumberHeight for an Ore pickup), notifies the miner (type, location), then releases this pickup to the pool (destroys it outside the pool). */
 	void Collect(ARRMiner* Miner);
 
 	/** Called once when the magnet latches (start the trail). */
@@ -444,7 +444,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal")
 	TSubclassOf<UGameplayEffect> HealEffectClass;
 
-	/** Height (uu) of the heal number above the miner capsule top (damage-numbers: 40, like ARREnemy::DamageNumberHeight). */
+	/** Height (uu) of the heal number, and of the ore number of an Ore pickup (task-430-02), above the miner capsule top (damage-numbers: 40, like ARREnemy::DamageNumberHeight). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal", meta = (Units = "cm"))
 	float HealNumberHeight = 40.f;
 

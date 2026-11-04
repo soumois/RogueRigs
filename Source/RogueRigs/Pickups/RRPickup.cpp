@@ -801,6 +801,13 @@ void ARRPickup::Collect(ARRMiner* Miner)
 			{
 				RunFlow->AddCarriedOre(OreValue);
 			}
+			// Ore number (task-430-02): "<Duskite icon> +OreValue" above the capsule top, one per chunk.
+			URRDamageNumberSubsystem* Numbers = GetWorld() ? GetWorld()->GetSubsystem<URRDamageNumberSubsystem>() : nullptr;
+			if (Numbers && Miner->GetCapsuleComponent())
+			{
+				const float CapsuleTop = Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				Numbers->AddOre(Miner->GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + HealNumberHeight), static_cast<float>(OreValue));
+			}
 		}
 		Miner->NotifyPickupCollected(PickupType, Location);
 	}
