@@ -3,7 +3,7 @@ id: task-428-02-glow-from-spawn-capture
 description: "Capture subtask waived by the owner (Q5): no run, closed on his word; lists the unseen in-game glow checks C1 to C4."
 parent: task-428-xp-glow-from-spawn
 kind: task
-status: todo
+status: in-progress
 ---
 # XP pickup glow disc on from spawn: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-04T18:58:14Z
 - waiting_for: none
 - result: open
 

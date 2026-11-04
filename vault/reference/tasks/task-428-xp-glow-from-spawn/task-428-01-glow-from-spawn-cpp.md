@@ -3,7 +3,7 @@ id: task-428-01-glow-from-spawn-cpp
 description: "Cpp: ARRPickup bGlowDuringPop: glow target 1 from life start"
 parent: task-428-xp-glow-from-spawn
 kind: task
-status: in-progress
+status: done
 ---
 # XP pickup glow disc on from spawn: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The editor target builds without error; the existing pickup automation tests (RogueRigs.PulseDesync and any RogueRigs pickup tests) pass; with bGlowFade and bGlowDuringPop the glow target is 1 from StartLife; with bGlowDuringPop false the code path equals task-148.
 - editor_state: closed
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: input 24, cache write 71008, cache read 623463, output 6462
+- usage: turns 12, context start 12k peak 71k, resumes 0, 4 min, units 0.18 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-04T18:53:53Z
 - waiting_for: none
-- result: open
+- result: ARRPickup bGlowDuringPop (default true) added, StartLife sets glow target 1 after ResetGlowFade; build ok, RogueRigs.Pickups + PickupPool 14 tests pass; commit 2d3942d6
 
 ## Relations
 - [[task-428-xp-glow-from-spawn]] — parent global task.
