@@ -1,9 +1,9 @@
 ---
 id: task-447-swirls-alpha-fix
 description: "Global task: The rotor wash swirls of task-442 read alpha 0 in the simulation: make them actually show, look values unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Fix the invisible extractor swirls
 
@@ -13,16 +13,16 @@ status: in-progress
 - gdd_check: Correction of task-442, no design decision and no gdd edit. The suspected cause is the trap recorded in unreal-mcp-quirks (the last stack edit stays out of the compiled script while the state says UpToDate); not diagnosed here. Nothing open.
 - confirmed_by_owner: yes (2026-11-05, "Oui, corrige")
 - milestone: M2
-- next_step: task-447-02-doc
+- next_step: none
 - started: 2026-11-05T22:22:52Z
 - waiting_for: none
-- result: open
+- result: Done. Done. bp-extractor-rotor-wash gains swirls_alpha_fix (cause, fix, PIE figures after editor restart: Swirls A 0.003-0.084 at Intensity 0.6, 0.1396 at 1, error 0.00000; GroundBlast unchanged) and an updated unverified line; unreal-mcp-quirks notes the stale compiled script is saved with the asset and the plain-then-expression fix. Lint clean.
 
 ## Subtasks
 1. task-447-01-swirls-compiled (vault/reference/tasks/task-447-swirls-alpha-fix/task-447-01-swirls-compiled.md) — bp: The compiled Swirls emitter gives particles the alpha the asset declares.
 2. task-447-02-doc (vault/reference/tasks/task-447-swirls-alpha-fix/task-447-02-doc.md) — doc: Record the corrected state and how it was proved.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-447-01-swirls-compiled]] — step 1, bp.
 - [[task-447-02-doc]] — step 2, doc.

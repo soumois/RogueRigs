@@ -454,3 +454,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-444-rotors-no-shadow]] — The whole extractor, hull and rotors, casts no shadow. Status done.
 - [[task-445-miner-light-wall-shadows]] — The miner floor and wall light casts the shadows of rock walls, and of nothing else. Status done.
 - [[task-446-explosions-red]] — The whole barrel and kamikaze explosion, sphere, burst and ring, is redone in the cartoon style of the owner reference. Status done.
+- [[task-447-swirls-alpha-fix]] — The rotor wash swirls of task-442 read alpha 0 in the simulation: make them actually show, look values unchanged. Status done.
