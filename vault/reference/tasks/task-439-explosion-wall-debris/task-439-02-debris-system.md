@@ -3,7 +3,7 @@ id: task-439-02-debris-system
 description: "Bp: The wall debris Niagara system exists, flies outward from the centre it is given, and is the one the game plays."
 parent: task-439-explosion-wall-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall debris thrown away from explosions: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:30:19Z
 - waiting_for: none
 - result: open
 
