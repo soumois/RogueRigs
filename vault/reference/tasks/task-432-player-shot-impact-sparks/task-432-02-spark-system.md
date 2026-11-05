@@ -3,7 +3,7 @@ id: task-432-02-spark-system
 description: "Bp: The white-gold impact spark Niagara system exists and is the one the game spawns."
 parent: task-432-player-shot-impact-sparks
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact sparks: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T15:56:21Z
 - waiting_for: none
 - result: open
 

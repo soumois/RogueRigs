@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read art-style-guide (A8), color-code, readability-rules, destruction-rules, perf-lead-debris-gpu, milestones. In scope: M3 juice (VFX). No conflict with the GDD. Not stated: which targets and which shots count (Q1, Q2), size (Q3), cost measure (Q4). Destruction-rules: shots never break blocks and rock stops them, and NS_DigImpact already means digging, which is why the default leaves rock without sparks. Perf lead: an active GPU system cost about 68 µs against 16 to 24 µs for CPU, hence A4. No code read by the Planner; the main session's read-only findings are in its brief, not relied on here beyond the request.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-432-01-spawn-on-hit
+- next_step: task-432-02-spark-system
 - started: 2026-11-05T15:45:57Z
 - waiting_for: none
 - result: open
