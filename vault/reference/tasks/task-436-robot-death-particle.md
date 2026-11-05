@@ -1,9 +1,9 @@
 ---
 id: task-436-robot-death-particle
 description: "Global task: A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Better robot death particle
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read enemy-death, color-code, readability-rules, bp-robot-death-puff. "Améliorer" states no direction: Q3, answered with reference Art/Source/robot-death-fx/20261105-owner-ref-cartoon-explosion.png. Conflict: the sheet has red-orange outer bands and dark red puffs, against readability-rules (red = enemy fire or healing): Q18, the owner refused the no-red default; readability-rules gets his explosion rule at confirmation. Q4 not answered, default kept. enemy-death puff line edited at confirmation. Values provisional.
 - confirmed_by_owner: yes (2026-11-05, "Q18 : Il ne faut être si rigide sur le code couleur, une explosion dans l'esprit collective a aussi du rouge. Le code couleur ne peut pas non plus aller à l'encontre de ce qu'attend un joueur de l'explosion")
 - milestone: M2
-- next_step: task-436-03-doc
+- next_step: none
 - started: 2026-11-05T17:37:13Z
 - waiting_for: none
-- result: open
+- result: Done. bp-robot-death-puff and bp-heavy-death-puff state the new values; bp-kamikaze-death-puff created, bp-kamikaze and blueprints-fx-index updated (56596513); lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner, relayed by the main session): Q3 and Q18 by his words written in them, Q4 by its default, kept when he left it unanswered; values provisional, owner 2026-11-05.
@@ -30,7 +30,7 @@ Decided 2026-11-05 (owner, relayed by the main session): Q3 and Q18 by his words
 3. task-436-03-doc (vault/reference/tasks/task-436-robot-death-particle/task-436-03-doc.md) — doc: Document the new values of both puffs.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-436-01-robot-puff]] — step 1, bp.
 - [[task-436-02-heavy-puff]] — step 2, bp.
 - [[task-436-03-doc]] — step 3, doc.

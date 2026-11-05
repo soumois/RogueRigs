@@ -443,3 +443,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-433-robot-hit-flash]] — A robot that takes a hit turns plain white for a brief moment, at low cost, every class. Awaiting owner answers. Status done.
 - [[task-434-kamikaze-burst-and-ring]] — The kamikaze explosion gets the Niagara burst and the ground ring of the barrel, scaled to its own radius. Awaiting owner answer. Status done.
 - [[task-435-remove-robot-hit-flash]] — A robot that takes a hit no longer flashes: the feature of task-433 is removed for good. Status done.
+- [[task-436-robot-death-particle]] — A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde. Status done.
