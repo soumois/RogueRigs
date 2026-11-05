@@ -3,7 +3,7 @@ id: task-448-03-doc
 description: "Doc: Record what the simulation showed for both puffs."
 parent: task-448-death-puffs-sim-check
 kind: task
-status: todo
+status: in-progress
 ---
 # Check the robot death puffs in the simulation: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:40:52Z
 - waiting_for: none
 - result: open
 

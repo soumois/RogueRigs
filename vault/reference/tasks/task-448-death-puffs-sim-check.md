@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Correction check of task-436, no design decision and no gdd edit. Suspected trap in unreal-mcp-quirks; not diagnosed here. Runs before task-446, which reuses this look. Nothing open.
 - confirmed_by_owner: yes (2026-11-05, "Oui, corrige")
 - milestone: M2
-- next_step: task-448-02-heavy-puff-check
+- next_step: task-448-03-doc
 - started: 2026-11-05T22:33:16Z
 - waiting_for: none
 - result: open
