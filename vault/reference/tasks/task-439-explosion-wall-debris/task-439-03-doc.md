@@ -3,7 +3,7 @@ id: task-439-03-doc
 description: "Doc: Document the debris effect and its bound."
 parent: task-439-explosion-wall-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall debris thrown away from explosions: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:37:28Z
 - waiting_for: none
 - result: open
 

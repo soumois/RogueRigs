@@ -1033,6 +1033,7 @@ kind: note
 | [[task-438-02-debris-system]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-438-03-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-439-01-debris-request]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-439-02-debris-system]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
@@ -1044,7 +1045,7 @@ Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token 
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 208.80 | 0k | 46.40 M | 1048.41 M | 9196k |
 | model sonnet | 168.10 | 0k | 41.33 M | 815.69 M | 6987k |
-| Executors and legacy orchestrators that ran a task (pilot) | 38.44 | 6k | 14.56 M | 128.26 M | 1481k |
+| Executors and legacy orchestrators that ran a task (pilot) | 38.96 | 6k | 14.62 M | 131.60 M | 1505k |
 | Planning runs (planners and legacy planning passes) | 40.80 | 4k | 12.27 M | 148.39 M | 2125k |
 | Agents without a subtask id (other) | 5.67 | 1k | 1.17 M | 32.83 M | 185k |
 | Main sessions (all of them, also chat outside tasks) | 84.90 | 8k | 13.65 M | 561.85 M | 2329k |
