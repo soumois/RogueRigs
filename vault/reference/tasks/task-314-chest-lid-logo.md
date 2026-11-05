@@ -3,7 +3,7 @@ id: task-314-chest-lid-logo
 description: "Global task: Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Yellow logo on the chest lid
 
@@ -14,8 +14,8 @@ status: wait-answers
 - confirmed_by_owner: yes (owner 2026-10-24: "ok : je garde la commande debug, j'accepte les 3864 tris, le pivot et la pose ouverte se règlent dans 309, et ok pour tous les défauts de la tâche 314." Defaults Q1 to Q5 apply; not launched yet)
 - milestone: M2
 - next_step: task-314-01-chest-lid-logo
-- started: 2026-11-05T22:56:10Z
-- waiting_for: owner go on the lid logo renders (Art/Source/chest/clean/renders/logo_vs_sheet_q.png, logo_vs_sheet_top.png, logo_close_top.png): mark 22 x 9.7 cm (flat band 11.3 cm deep caps Q3 12 cm), +40 tris
+- started: 2026-11-05T23:11:43Z
+- waiting_for: none
 - result: open
 - note: task-314-01 runs after task-309-07, which re-cuts the same lid (pivot on the hinge pins); the mark is cut into that lid.
 
