@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-11-05T19:39:46Z
 - waiting_for: none
-- result: M_MuzzleFlash (procedural, 4 shapes, core, streak, white-gold fixed in the material), NS_MuzzleFlash 3 + 3 sprites at most 0.1 s, NS_MuzzleFlashShotgun 3 + 5 sprites at 1.5x on BP_Shotgun, no light. Compile 0 errors, values read back; RogueRigs.Weapons.MuzzleFlashAsset passes under -RenderOffScreen (6 and 8 sprites, 4 of 4 shapes over 16 shots, shape up to 199 and 295 uu, gone within 0.1 s); Weapons, Shotgun, Turret 29 tests pass. Critic: one fail on the flame fixed, second pass clean. Look in game unverified, owner validates.
+- result: M_MuzzleFlash (procedural, 4 shapes, core, streak, white-gold fixed in the material), NS_MuzzleFlash 3 + 3 sprites at most 0.1 s, NS_MuzzleFlashShotgun 3 + 5 sprites at 1.5x on BP_Shotgun, no light. Compile 0 errors, values read back; RogueRigs.Weapons.MuzzleFlashAsset passes under -RenderOffScreen (6 and 8 sprites, 4 of 4 shapes over 16 shots, shape up to 199 and 295 uu, gone within 0.1 s); Weapons, Shotgun, Turret 29 tests pass. Critic: one fail on the flame fixed, second pass clean. ALERT resume x1: cause, the second style-guide review after that correction is counted as a message resume; the row holds the critic figures only. Look in game unverified, owner validates.
 
 ## Relations
 - [[task-440-muzzle-flash-rework]] — parent global task.

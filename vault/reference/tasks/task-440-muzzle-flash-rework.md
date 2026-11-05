@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T19:39:46Z
 - waiting_for: none
-- result: Done. bp-muzzle-flash rewritten (emitters, sizes, material, shapes, verified, unverified); sys-weapons, bp-shotgun, blueprints-fx-index, sys-automation-tests, unreal-mcp-quirks updated; lint clean.
+- result: Done, look unverified until the owner has seen it in game. Stylised white-gold flash on M_MuzzleFlash: forward flame, side wings, crossed blades or star at random per shot, bright core, long thin streak, at most 0.1 s, no light. Rifle 6 sprites, shape up to 200 uu; shotgun NS_MuzzleFlashShotgun 8 sprites, 1.5x. Same spawn rule; Weapons, Shotgun, Turret 29 tests pass, RogueRigs.Weapons.MuzzleFlashAsset added.
 
 ## Questions
 Decided 2026-11-05 (owner "oui (réponse à : « Q19 : tu valides la version par défaut, c'est-à-dire les flashs chauds de la vidéo en blanc-or, ou tu préfères un flash précis, avec sa position dans la vidéo ? »)"): every default below is accepted; values provisional, owner 2026-11-05.
