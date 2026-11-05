@@ -327,17 +327,34 @@ bool FRRExtractionTakeoffTest::RunTest(const FString& Parameters)
 	}
 	const TWeakObjectPtr<ARRShuttle> WeakShuttle(Shuttle);
 	const FVector Start = Shuttle->GetActorLocation();
+	TestEqual(TEXT("height 0 when landed"), Shuttle->GetHeightAboveFloor(), 0.f);
 	Shuttle->StartTakeoff();
 	TestTrue(TEXT("taking off"), Shuttle->IsTakingOff());
 
 	// Spin-up 0.5 s: still on the ground; end of the rise (2.0 s): 400 uu up, level; then the nose goes down and it flies forward.
 	TickFrames(TestWorld, 15);
 	TestTrue(TEXT("still on the ground during the spin-up"), Shuttle->GetActorLocation().Equals(Start, 1.f));
-	TickFrames(TestWorld, 105);
+	TestEqual(TEXT("height 0 during the spin-up"), Shuttle->GetHeightAboveFloor(), 0.f);
+
+	// The end screen pauses the world: the height follows the rise all the same.
+	APlayerState* Pauser = TestWorld.Get()->SpawnActor<APlayerState>();
+	if (!TestNotNull(TEXT("pauser"), Pauser))
+	{
+		return false;
+	}
+	TestWorld.Get()->GetWorldSettings()->SetPauserPlayerState(Pauser);
+	TestTrue(TEXT("world paused"), TestWorld.Get()->IsPaused());
+	TickFrames(TestWorld, 45);
+	TestTrue(TEXT("height follows the rise while paused"), FMath::IsNearlyEqual(Shuttle->GetHeightAboveFloor(), static_cast<float>(Shuttle->GetActorLocation().Z - Start.Z), 0.01f)
+		&& Shuttle->GetHeightAboveFloor() > 0.f && Shuttle->GetHeightAboveFloor() < 400.f);
+	TickFrames(TestWorld, 60);
 	TestTrue(TEXT("risen 400 uu"), FMath::IsNearlyEqual(Shuttle->GetActorLocation().Z - Start.Z, 400.f, 5.f));
+	TestNearlyEqual(TEXT("height 400 at the end of the rise, paused"), Shuttle->GetHeightAboveFloor(), 400.f, 5.f);
+	TestWorld.Get()->GetWorldSettings()->SetPauserPlayerState(nullptr);
 	TickFrames(TestWorld, 60);
 	TestTrue(TEXT("nose down"), Shuttle->GetActorRotation().Pitch < -19.f);
 	TestTrue(TEXT("flying forward"), Shuttle->GetActorLocation().X - Start.X > 100.f);
+	TestNearlyEqual(TEXT("height holds during the flight"), Shuttle->GetHeightAboveFloor(), 400.f, 5.f);
 
 	// No viewport in a test world: removed by the safety time.
 	TickFrames(TestWorld, 700);

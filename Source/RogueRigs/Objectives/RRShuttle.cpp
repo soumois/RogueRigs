@@ -12,6 +12,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Grid/RRArenaGrid.h"
+#include "NiagaraComponent.h"
 #include "Objectives/RRLandingFootprint.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
@@ -145,6 +146,7 @@ void ARRShuttle::BeginPlay()
 	Super::BeginPlay();
 	RotorRevPerSecond = bTakingOff ? FlightRevPerSecond : GroundRevPerSecond;
 	OnRotorSpeedChanged(GetRotorSpeedAlpha());
+	OnHeightAboveFloorChanged(HeightAboveFloor);
 }
 
 float ARRShuttle::GetRotorSpeedAlpha() const
@@ -263,6 +265,13 @@ void ARRShuttle::StartTakeoff()
 	// The run end pauses the world: the takeoff must keep ticking behind the end screen.
 	SetActorTickEnabled(true);
 	SetTickableWhenPaused(true);
+	// Niagara's batched tick stops with the world: solo, each rotor effect ticks on its own component, so it plays behind the end screen too (task-443).
+	TInlineComponentArray<UNiagaraComponent*> Effects(this);
+	for (UNiagaraComponent* Effect : Effects)
+	{
+		Effect->SetTickableWhenPaused(true);
+		Effect->SetForceSolo(true);
+	}
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: takeoff started (spin-up %.2f s, rise %.0f uu in %.2f s, pitch %.0f deg, acceleration %.0f uu/s2), world paused: %s."),
 		*GetName(), SpinUpSeconds, RiseHeight, RiseSeconds, PitchDegrees, ForwardAcceleration, GetWorld() && GetWorld()->IsPaused() ? TEXT("yes") : TEXT("no"));
 	OnTakeoffStarted();
@@ -286,6 +295,13 @@ void ARRShuttle::TickTakeoff(float DeltaSeconds)
 		Location += Rotation.Vector() * ForwardSpeed * DeltaSeconds;
 	}
 	SetActorLocationAndRotation(Location, Rotation);
+
+	const float Height = FMath::Max(HeightAboveFloor, static_cast<float>(Location.Z - TakeoffStartLocation.Z));
+	if (Height != HeightAboveFloor)
+	{
+		HeightAboveFloor = Height;
+		OnHeightAboveFloorChanged(HeightAboveFloor);
+	}
 
 	if (TakeoffElapsed >= RiseEnd + TiltSeconds && IsOutOfPlayerView())
 	{

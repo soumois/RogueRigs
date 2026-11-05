@@ -128,6 +128,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Shuttle|Takeoff")
 	float GetTakeoffSeconds() const { return TakeoffElapsed; }
 
+	/**
+	 * Height of the extractor base above the floor (uu), for the rotor blast (task-443): 0 when landed, RiseHeight at the end of the
+	 * rise. Holds its highest value during the forward flight: the nose-down flight loses altitude and must not bring the blast back.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Shuttle|Takeoff")
+	float GetHeightAboveFloor() const { return HeightAboveFloor; }
+
 	/** Broadcast once at the end of the takeoff, just before the removal. */
 	UPROPERTY(BlueprintAssignable, Category = "Shuttle|Takeoff")
 	FRROnShuttleTakeoffFinishedSignature OnShuttleTakeoffFinished;
@@ -169,7 +176,11 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle|Rotors")
 	void OnRotorSpeedChanged(float Alpha);
 
-	/** Sets the starting rotor speed (GroundRevPerSecond) and fires the first OnRotorSpeedChanged. */
+	/** Display event: GetHeightAboveFloor() changed (each frame of the rise, also while paused) and once at BeginPlay with 0. Implement in Blueprint (rotor blast). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Shuttle|Takeoff")
+	void OnHeightAboveFloorChanged(float Height);
+
+	/** Sets the starting rotor speed (GroundRevPerSecond), fires the first OnRotorSpeedChanged and the first OnHeightAboveFloorChanged. */
 	virtual void BeginPlay() override;
 
 	/** Rotor step, every tick (also while paused once taking off): ramps the speed toward the ground or flight target, then turns each rotor about its local Z. */
@@ -332,6 +343,9 @@ protected:
 	/** Actor location and rotation at StartTakeoff (the rise and the tilt are relative to them). */
 	FVector TakeoffStartLocation = FVector::ZeroVector;
 	FRotator TakeoffStartRotation = FRotator::ZeroRotator;
+
+	/** See GetHeightAboveFloor. */
+	float HeightAboveFloor = 0.f;
 
 	/** Along-the-nose speed during the forward phase (uu/s). */
 	float ForwardSpeed = 0.f;
