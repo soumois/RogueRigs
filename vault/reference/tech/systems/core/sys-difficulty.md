@@ -10,7 +10,7 @@ kind: doc
 - main_classes: `URRGE_EnemyDifficulty`; alert counter owner: `URRRunFlowSubsystem` ([[sys-objectives]]); threat counter: not built.
 
 ## Rules
-- Alert: grows with time and kills, pauses while a mandatory objective is pending, fires tier events.
+- Alert: grows with time and kills (kills only once the first horde front is over, task-454-01, [[sys-objectives-run-flow]]), pauses while a mandatory objective is pending, fires tier events.
 - Threat: grows with time and kills, never pauses.
 - At spawn, `URRGE_EnemyDifficulty` applies `MultiplyAdditive` bonuses on `MaxHealth` and `AttackPower`; magnitudes come from a table indexed by (run level, threat). Robots already alive are not updated.
 - Enemy attack damage = `AttackDamage` (CSV) × `AttackPower`.
