@@ -1,9 +1,9 @@
 ---
 id: task-451-hud-mockups
 description: "Global task: Image proposals of one unified in-game HUD, made with Kie.ai GPT Image from the current screenshot; the owner retains one before any build."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Unified in-game HUD: visual proposals
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read run-index, difficulty, level-flow, xp-level-up, enemies-spawn-rules, art-audio-index, art-prompts-shop-screen-mockup, kie-image-workflow (tool runs GPT Image 2, so "api chatgpt" maps to it per the owner's clarification), umg-layout, sys-hud-pressure, sys-hud-health-bar. No gdd node holds the HUD layout; no conflict with the request. Split per owner rule: one global per point (451 proposals, 452 health, 453 alert bar, 454 swarm rule, 455 XP ticks, 456 XP ghost, 457 radar and ore, 458 weapon slots if Q34 yes). Captures: the owner validates in game himself (recent practice, tasks 449-450), asked as Q26.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-451-01-mockups
+- next_step: none
 - started: 2026-11-05T23:36:53Z
 - waiting_for: none
-- result: open
+- result: Done. 9 mockups in 3 directions (Kie.ai GPT Image 2, 54 credits: 36 first round + 18 one correction round), style-guide reviewed twice (no A-rule fail; remaining brief gap: XP tick spacing, set in UMG). Owner 2026-11-05: "A, plaques rivetées"; retained Art/Source/hud-unified/20261105-152627-hud-unified-1.png with its log; others temporary in Saved/Scratch/hud-unified; art-prompts-hud-unified-mockup records prompts, runs, credits, choice and what 452-458 take.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -38,5 +38,5 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 1. task-451-01-mockups (vault/reference/tasks/task-451-hud-mockups/task-451-01-mockups.md) — art: Generate the unified HUD proposals from the current screenshot, show them, record the owner's choice.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-451-01-mockups]] — step 1, art.
