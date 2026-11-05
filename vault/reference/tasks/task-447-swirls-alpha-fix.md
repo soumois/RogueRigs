@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Correction of task-442, no design decision and no gdd edit. The suspected cause is the trap recorded in unreal-mcp-quirks (the last stack edit stays out of the compiled script while the state says UpToDate); not diagnosed here. Nothing open.
 - confirmed_by_owner: yes (2026-11-05, "Oui, corrige")
 - milestone: M2
-- next_step: task-447-01-swirls-compiled
+- next_step: task-447-02-doc
 - started: 2026-11-05T22:22:52Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-447-02-doc
 description: "Doc: Record the corrected state and how it was proved."
 parent: task-447-swirls-alpha-fix
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the invisible extractor swirls: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:31:22Z
 - waiting_for: none
 - result: open
 
