@@ -3,7 +3,7 @@ id: task-433-01-flash-trigger
 description: "Cpp: A robot taking damage from any source raises and clears its flash value at low cost."
 parent: task-433-robot-hit-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot hit flash: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T16:05:27Z
 - waiting_for: none
 - result: open
 

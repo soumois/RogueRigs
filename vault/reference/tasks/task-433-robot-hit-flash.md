@@ -3,7 +3,7 @@ id: task-433-robot-hit-flash
 description: "Global task: A robot that takes a hit turns plain white for a brief moment, at low cost, every class. Awaiting owner answers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot hit flash
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-433-01-flash-trigger
-- started: open
+- started: 2026-11-05T16:05:27Z
 - waiting_for: none
 - result: open
 
