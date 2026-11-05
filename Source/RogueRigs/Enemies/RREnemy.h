@@ -208,6 +208,9 @@ public:
 	/** Start (world seconds) of the clip last written to the animated mesh (Custom Primitive Data 1). Tests and debug. */
 	double GetAnimClipStart() const { return CurrentAnimClipStart; }
 
+	/** Hit flash value last written to the animated mesh (Custom Primitive Data 2): 1 while flashing, else 0. Tests and debug. */
+	float GetHitFlashValue() const { return bHitFlashOn ? 1.f : 0.f; }
+
 protected:
 	/**
 	 * Per-life reset of a robot reused from the actor pool (called by OnPoolAcquired from the second life on). Base: every
@@ -272,8 +275,14 @@ protected:
 	/** Requests XPCubeCount pickups of XPPickupClass at DropLocation (no owner) from URRPickupSubsystem::RequestXPCube (actor pool, created within 3 frames; direct spawn without the subsystem), each worth Stats.XPValue / XPCubeCount, ejected in spread directions. Overridden to suppress the drop (kamikaze fuse). */
 	virtual void DropXP();
 
-	/** Health set hit callback (runs inside the GE execution): sends the hit to URRDamageNumberSubsystem (capsule top + DamageNumberHeight, disc DamageNumberSpawnRadius). */
+	/** Health set hit callback (runs inside the GE execution): sends the hit to URRDamageNumberSubsystem (capsule top + DamageNumberHeight, disc DamageNumberSpawnRadius) and starts the hit flash. */
 	void HandleDamageReceived(float Damage, bool bIsCritical, float HealthLeft);
+
+	/** Sets the flash value to 1 on the animated mesh and (re)starts HitFlashTimer: a new hit restarts the flash. Nothing without animated mesh. */
+	void StartHitFlash();
+
+	/** Sets the flash value back to 0 and stops HitFlashTimer. */
+	void EndHitFlash();
 
 	/**
 	 * Makes the attached parts cheap to move (bLightAttachedParts): an inherited CharacterMesh0 without skeletal mesh and
@@ -568,6 +577,19 @@ protected:
 
 	/** Custom Primitive Data index of the clip start time (world seconds) on the animated mesh (MF_RobotAnimWPO AnimStart). */
 	static constexpr int32 AnimStartDataIndex = 1;
+
+	/** Custom Primitive Data index of the hit flash on the animated mesh (MF_RobotHitFlash): 1 = plain white, 0 = normal look. */
+	static constexpr int32 HitFlashDataIndex = 2;
+
+	/** Seconds a hit keeps the robot white (provisional, owner 2026-11-05, inside his 0.05 to 0.1 s). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Hit Flash", meta = (ClampMin = 0, Units = "s"))
+	float HitFlashDuration = 0.08f;
+
+	/** Fires EndHitFlash; active only while the robot flashes (no tick). */
+	FTimerHandle HitFlashTimer;
+
+	/** True while the flash value on the animated mesh is 1 (repeated hits restart the timer without a new render update). */
+	bool bHitFlashOn = false;
 
 	/** Age (s) given to a held clip by HoldClipEnd: far beyond any clamped clip (15 frames at 30 fps = 0.5 s). */
 	static constexpr double AnimHoldLead = 10.0;

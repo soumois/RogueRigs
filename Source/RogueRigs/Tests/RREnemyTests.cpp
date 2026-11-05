@@ -519,6 +519,99 @@ bool FRREnemyDamageNumberTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyHitFlashTest, "RogueRigs.Enemies.HitFlash",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRREnemyHitFlashTest::RunTest(const FString& Parameters)
+{
+	RRTestHarness::FTestWorld TestWorld(TEXT("RREnemyHitFlash"));
+	UClass* ChaserClass = RRTestHarness::LoadTestClass<ARREnemy>(*this, TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_ChaserV2.BP_ChaserV2_C"));
+	UClass* ShieldClass = RRTestHarness::LoadTestClass<ARREnemy>(*this, TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_ShieldChaserV2.BP_ShieldChaserV2_C"));
+	UClass* KamikazeClass = RRTestHarness::LoadTestClass<ARREnemy>(*this, TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Kamikaze.BP_Kamikaze_C"));
+	if (!ChaserClass || !ShieldClass || !KamikazeClass)
+	{
+		return false;
+	}
+	ARREnemy* Chaser = TestWorld.Spawn<ARREnemy>(ChaserClass, FVector(0.f, 0.f, 2000.f));
+	ARREnemy* Shielded = TestWorld.Spawn<ARREnemy>(ShieldClass, FVector(1000.f, 0.f, 2000.f));
+	ARREnemy* Kamikaze = TestWorld.Spawn<ARREnemy>(KamikazeClass, FVector(2000.f, 0.f, 2000.f));
+	ARREnemy* Source = TestWorld.Spawn<ARREnemy>(ChaserClass, FVector(3000.f, 0.f, 2000.f));
+	if (!TestNotNull(TEXT("chaser"), Chaser) || !TestNotNull(TEXT("shield chaser"), Shielded) || !TestNotNull(TEXT("kamikaze"), Kamikaze) || !TestNotNull(TEXT("source"), Source))
+	{
+		return false;
+	}
+	const auto FindMesh = [](const ARREnemy* Robot, FName Name) -> UStaticMeshComponent*
+	{
+		TArray<UStaticMeshComponent*> Meshes;
+		Robot->GetComponents(Meshes);
+		UStaticMeshComponent* const* Found = Meshes.FindByPredicate([Name](const UStaticMeshComponent* Mesh) { return Mesh->GetFName() == Name; });
+		return Found ? *Found : nullptr;
+	};
+	const auto Slot = [](const UStaticMeshComponent* Mesh, int32 Index)
+	{
+		const TArray<float>& Data = Mesh->GetCustomPrimitiveData().Data;
+		return Data.IsValidIndex(Index) ? Data[Index] : 0.f;
+	};
+	const auto Hit = [Source](ARREnemy* Target)
+	{
+		UAbilitySystemComponent* SourceASC = Source->GetAbilitySystemComponent();
+		FGameplayEffectSpecHandle Spec = SourceASC->MakeOutgoingSpec(URRGE_DamageFlat::StaticClass(), 1.f, SourceASC->MakeEffectContext());
+		Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, 0.01f);
+		SourceASC->ApplyGameplayEffectSpecToTarget(*Spec.Data, Target->GetAbilitySystemComponent());
+	};
+	UStaticMeshComponent* Body = FindMesh(Chaser, TEXT("BodyMesh"));
+	UStaticMeshComponent* Core = FindMesh(Kamikaze, TEXT("CoreMesh"));
+	if (!TestNotNull(TEXT("chaser BodyMesh"), Body) || !TestNotNull(TEXT("kamikaze CoreMesh"), Core))
+	{
+		return false;
+	}
+	UWorld* World = TestWorld.Get();
+	constexpr double FlashSeconds = 0.08;
+	const auto TickFor = [&TestWorld, World](double Seconds)
+	{
+		const double End = World->GetTimeSeconds() + Seconds;
+		while (World->GetTimeSeconds() < End)
+		{
+			TestWorld.Tick();
+		}
+	};
+
+	TestEqual(TEXT("no flash before a hit"), Chaser->GetHitFlashValue(), 0.f);
+	const float ClipBefore = Slot(Body, 0);
+	const float StartBefore = Slot(Body, 1);
+	const float HealthBefore = Chaser->GetHealthSet()->GetHealth();
+	Hit(Chaser);
+	TestEqual(TEXT("a hit raises the flash"), Chaser->GetHitFlashValue(), 1.f);
+	TestEqual(TEXT("the value reaches Custom Primitive Data 2"), Slot(Body, 2), 1.f);
+	TestEqual(TEXT("clip id slot untouched"), Slot(Body, 0), ClipBefore);
+	TestEqual(TEXT("clip start slot untouched"), Slot(Body, 1), StartBefore);
+	TestTrue(TEXT("the hit still deals its damage"), Chaser->GetHealthSet()->GetHealth() < HealthBefore);
+
+	// A new hit restarts the flash: still on past 0.08 s after the first hit, off 0.08 s after the second.
+	TickFor(0.05);
+	TestEqual(TEXT("still on at 0.05 s"), Chaser->GetHitFlashValue(), 1.f);
+	Hit(Chaser);
+	TickFor(0.05);
+	TestEqual(TEXT("restarted: on 0.1 s after the first hit"), Chaser->GetHitFlashValue(), 1.f);
+	TickFor(FlashSeconds);
+	TestEqual(TEXT("off after 0.08 s without a hit"), Chaser->GetHitFlashValue(), 0.f);
+	TestEqual(TEXT("slot back to 0"), Slot(Body, 2), 0.f);
+
+	// Shield-only hit: flash, no health loss.
+	const float ShieldBefore = Shielded->GetHealthSet()->GetShield();
+	const float ShieldedHealth = Shielded->GetHealthSet()->GetHealth();
+	Hit(Shielded);
+	TestEqual(TEXT("a hit on the shield flashes"), Shielded->GetHitFlashValue(), 1.f);
+	TestTrue(TEXT("the shield took it"), Shielded->GetHealthSet()->GetShield() < ShieldBefore);
+	TestEqual(TEXT("health untouched"), Shielded->GetHealthSet()->GetHealth(), ShieldedHealth);
+
+	// Kamikaze: the body flashes, the core component never gets the value.
+	Hit(Kamikaze);
+	TestEqual(TEXT("the kamikaze flashes"), Kamikaze->GetHitFlashValue(), 1.f);
+	TestEqual(TEXT("the core keeps slot 2 at 0"), Slot(Core, 2), 0.f);
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRREnemyCrowdOverlapTest, "RogueRigs.Enemies.RobotsOverlapRobots",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
