@@ -1,9 +1,9 @@
 ---
 id: task-452-health-above-weapons
 description: "Global task: The health bar leaves the top left and sits just above the weapon slots, in the retained unified look."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Health bar just above the weapon slots
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read sys-hud-health-bar (effects to preserve), umg-layout. No gdd node places the health bar; nothing conflicts.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-452-04-doc
+- next_step: none
 - started: 2026-11-05T23:43:51Z
 - waiting_for: none
-- result: open
+- result: Done. Commit 1d8ad8f6. Updated wbp-health-status (layout bullet: HealthPanel anchors 0.5,1, alignment 0.5,1, offsets 0/-148, 652 x 44, children and slots, plate brush, end-screen target, verified), wbp-hud (Subtitles -240, task-452 layout check), wbp-weapons (TurretBox bottom padding 52), sys-hud-health-bar (placement, punch overlap), blueprints-ui-index gloss. Lint clean (warnings only, pre-existing).
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -39,7 +39,7 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 4. task-452-04-doc (vault/reference/tasks/task-452-health-above-weapons/task-452-04-doc.md) — doc: Docs describe the new place and look.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-452-01-art]] — step 1, art.
 - [[task-452-02-health-panel]] — step 2, bp.
 - [[task-452-03-hud-placement]] — step 3, bp.

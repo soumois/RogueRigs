@@ -3,7 +3,7 @@ id: task-452-04-doc
 description: "Doc: Docs describe the new place and look."
 parent: task-452-health-above-weapons
 kind: task
-status: in-progress
+status: done
 ---
 # Health bar just above the weapon slots: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Anchors listed per umg-layout; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-452
+- usage: included in the executor run of task-452
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T23:52:00Z
 - waiting_for: none
-- result: open
+- result: Commit 1d8ad8f6. Updated wbp-health-status (layout bullet: HealthPanel anchors 0.5,1, alignment 0.5,1, offsets 0/-148, 652 x 44, children and slots, plate brush, end-screen target, verified), wbp-hud (Subtitles -240, task-452 layout check), wbp-weapons (TurretBox bottom padding 52), sys-hud-health-bar (placement, punch overlap), blueprints-ui-index gloss. Lint clean (warnings only, pre-existing).
 
 ## Relations
 - [[task-452-health-above-weapons]] — parent global task.
