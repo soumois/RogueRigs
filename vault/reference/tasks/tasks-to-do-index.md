@@ -11,5 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-450-remove-hud-level-up-text]] — The cyan LEVEL UP text of the HUD is removed; the gold text in the world stays the only one. Status todo.
+- [[task-450-remove-hud-level-up-text]] — The cyan LEVEL UP text of the HUD is removed; the gold text in the world stays the only one. Status in-progress.
 

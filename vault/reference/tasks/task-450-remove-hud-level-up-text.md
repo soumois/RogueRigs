@@ -3,7 +3,7 @@ id: task-450-remove-hud-level-up-text
 description: "Global task: The cyan LEVEL UP text of the HUD is removed; the gold text in the world stays the only one."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the cyan LEVEL UP text from the HUD
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-450-01-remove-text
-- started: open
+- started: 2026-11-05T22:51:16Z
 - waiting_for: none
 - result: open
 
