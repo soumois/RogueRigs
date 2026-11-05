@@ -3,7 +3,7 @@ id: task-440-01-flash-system
 description: "Bp: The muzzle flash system and its soft material have the new look, larger on the shotgun."
 parent: task-440-muzzle-flash-rework
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash rework: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:39:46Z
 - waiting_for: none
 - result: open
 

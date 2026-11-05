@@ -3,7 +3,7 @@ id: task-440-muzzle-flash-rework
 description: "Global task: A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash rework
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "oui (réponse à : « Q19 : tu valides la version par défaut, c'est-à-dire les flashs chauds de la vidéo en blanc-or, ou tu préfères un flash précis, avec sa position dans la vidéo ? »)")
 - milestone: M2
 - next_step: task-440-01-flash-system
-- started: open
+- started: 2026-11-05T19:39:46Z
 - waiting_for: none
 - result: open
 
