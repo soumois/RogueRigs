@@ -16,7 +16,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-437-shot-impact-on-walls]] — The player shot impact sparks also play when the shot is stopped by a wall. Status todo.
 - [[task-438-dig-debris]] — A block broken by the drone throws a short burst of debris of the block colour that falls and disappears. Status todo.
 - [[task-439-explosion-wall-debris]] — Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count. Status todo.
-- [[task-440-muzzle-flash-rework]] — A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video. Status wait-answers.
+- [[task-440-muzzle-flash-rework]] — A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video. Status todo.
 - [[task-441-level-up-effect]] — Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little. Status todo.
 - [[task-442-extractor-wash-no-rain]] — The thin downward streaks under the extractor rotors, read as rain, become soft faint air swirls. Status todo.
 - [[task-443-extractor-ground-blast]] — A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m. Status todo.
