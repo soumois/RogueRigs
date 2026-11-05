@@ -273,4 +273,131 @@ bool FRRHUDPressureHordeTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRHUDPressureKillsWaitFirstHordeTest, "RogueRigs.HUD.PressureKillsWaitFirstHorde",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRHUDPressureKillsWaitFirstHordeTest::RunTest(const FString& Parameters)
+{
+	using namespace RRHUDPressureTests;
+	using namespace RRTestAccess;
+
+	// Alert fills in 20 s (console at 8 s, never reached); run-time hordes: front 0 at 2 s spread 1 s (over at 3 s), front 1 at 6 s.
+	FRRRunFlowConfig RunConfig;
+	RunConfig.AlertFillSeconds = 20.f;
+	TestTrue(TEXT("kills wait for the first horde by default"), RunConfig.bKillsWaitForFirstHorde);
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRHUDPressureKillsWaitFirstHorde"));
+	FPressureSetup Setup;
+	if (!MakePressureSetup(*this, TestWorld, RunConfig, Setup))
+	{
+		return false;
+	}
+	TStrongObjectPtr<URRTestHUDWidget> HUDRoot(Setup.HUD);
+	URRRunFlowSubsystem* RunFlow = Setup.RunFlow;
+
+	// No spawner yet: kills add alert as before.
+	TestTrue(TEXT("no spawner: kills add alert"), RunFlow->DoKillsAddAlert());
+
+	ARREnemySpawner* Spawner = TestWorld.Spawn<ARREnemySpawner>(ARREnemySpawner::StaticClass(), FVector::ZeroVector);
+	if (!TestNotNull(TEXT("spawner spawned"), Spawner))
+	{
+		return false;
+	}
+	Spawner->SetSpawningEnabled(false);
+	const FVector MinerLocation = Setup.Miner->GetActorLocation();
+	const FVector2D Center(MinerLocation.X, MinerLocation.Y);
+	Spawner->SetViewRectangleOverride(FBox2D(Center - FVector2D(1600.f, 1000.f), Center + FVector2D(1600.f, 1000.f)));
+	Spawner->SeedRandomStream(20261105);
+	FRRWaveDirectorConfig& Director = FSpawnerAccess::DirectorOf(Spawner);
+	Director = FRRWaveDirectorConfig::MakeDefault();
+	Director.Phases.Reset();
+	Director.HordeTrigger = ERRHordeTrigger::RunTime;
+	Director.Hordes.SetNum(2);
+	Director.Hordes[0].TriggerTime = 2.f;
+	Director.Hordes[0].LullSeconds = 1.f;
+	Director.Hordes[0].WarningSeconds = 0.5f;
+	Director.Hordes[0].SpreadSeconds = 1.f;
+	Director.Hordes[1] = Director.Hordes[0];
+	Director.Hordes[1].TriggerTime = 6.f;
+	RunFlow->RegisterSpawner(Spawner);
+	if (!TestTrue(TEXT("spawner registered with the run flow"), RunFlow->GetSpawner() == Spawner))
+	{
+		return false;
+	}
+	Setup.HUD->BindToRunFlow(RunFlow);
+	Setup.HUD->BindToSpawner(Spawner);
+	TestFalse(TEXT("first horde pending: kills add no alert"), RunFlow->DoKillsAddAlert());
+
+	const auto HordePosition = [&Setup](int32 Index)
+	{
+		const FRRAlertBarEvent* Icon = FindPressureIcon(Setup.HUD->GetAlertBarEvents(), ERRAlertBarEventType::Horde, Index);
+		return Icon ? Icon->Position : -1.f;
+	};
+	const float Start0 = HordePosition(0);
+	const float Start1 = HordePosition(1);
+	TestNearlyEqual(TEXT("horde 0 mark at 2 s / 20 s"), Start0, 0.1f, PressureBarTolerance);
+	TestNearlyEqual(TEXT("horde 1 mark at 6 s / 20 s"), Start1, 0.3f, PressureBarTolerance);
+
+	// Until the first front is over: a kill every 10 frames leaves the bar on time alone and both marks in place.
+	Spawner->SetSpawningEnabled(true);
+	bool bTimeAlone = true;
+	float Min0 = 1.f, Max0 = 0.f, Min1 = 1.f, Max1 = 0.f;
+	int32 KillsBefore = 0;
+	int32 OverFrame = INDEX_NONE;
+	for (int32 Frame = 1; Frame <= 300 && OverFrame == INDEX_NONE; ++Frame)
+	{
+		TestWorld.Tick();
+		if (Spawner->GetHordeState(0) == ERRHordeState::Done)
+		{
+			OverFrame = Frame;
+			break;
+		}
+		if (Frame % 10 == 0)
+		{
+			const float AlertBefore = RunFlow->GetAlertSeconds();
+			RunFlow->NotifyEnemyKilled(nullptr, nullptr);
+			++KillsBefore;
+			bTimeAlone &= RunFlow->GetAlertSeconds() == AlertBefore;
+		}
+		bTimeAlone &= FMath::IsNearlyEqual(RunFlow->GetAlertSeconds(), Frame / 60.f, 1e-3f);
+		if (Spawner->GetHordeState(0) != ERRHordeState::Spawning)
+		{
+			Min0 = FMath::Min(Min0, HordePosition(0));
+			Max0 = FMath::Max(Max0, HordePosition(0));
+		}
+		Min1 = FMath::Min(Min1, HordePosition(1));
+		Max1 = FMath::Max(Max1, HordePosition(1));
+	}
+	const float AlertAtOver = RunFlow->GetAlertSeconds();
+	AddInfo(FString::Printf(TEXT("before the end of front 0: %d kills, %d counted, alert %.3f s at frame %d; horde 0 mark %.4f-%.4f, horde 1 mark %.4f-%.4f"),
+		KillsBefore, RunFlow->GetKillCount(), AlertAtOver, OverFrame, Min0, Max0, Min1, Max1));
+	TestTrue(*FString::Printf(TEXT("first front over around 3 s (frame %d)"), OverFrame), OverFrame != INDEX_NONE && FMath::Abs(OverFrame - 180) <= 2);
+	TestTrue(TEXT("kills before the end of the first front: bar on time alone"), bTimeAlone);
+	TestEqual(TEXT("every kill still counted (threat)"), RunFlow->GetKillCount(), KillsBefore);
+	TestTrue(TEXT("horde 0 mark still while pending"), Max0 - Min0 <= PressureBarTolerance);
+	TestTrue(TEXT("horde 1 mark still until the first front is over"), Max1 - Min1 <= PressureBarTolerance);
+
+	// After: kills add alert again and move the second mark forward.
+	TestTrue(TEXT("first front over: kills add alert"), RunFlow->DoKillsAddAlert());
+	const float Mark1Before = HordePosition(1);
+	for (int32 Kill = 0; Kill < 4; ++Kill)
+	{
+		RunFlow->NotifyEnemyKilled(nullptr, nullptr);
+	}
+	TestNearlyEqual(TEXT("4 kills after the front add 2 s"), RunFlow->GetAlertSeconds() - AlertAtOver, 4.f * RunConfig.KillAlertSeconds, 1e-4f);
+	TestWorld.Tick();
+	const float Mark1After = HordePosition(1);
+	AddInfo(FString::Printf(TEXT("after the front: alert %.3f s, horde 1 mark %.4f -> %.4f"), RunFlow->GetAlertSeconds(), Mark1Before, Mark1After));
+	TestNearlyEqual(TEXT("horde 1 mark moved forward by the kill time"), Mark1After - Mark1Before, 2.f / RunConfig.AlertFillSeconds, PressureBarTolerance);
+
+	// The switch off: kills add alert even before the first front.
+	FRRRunFlowConfig OffConfig = RunConfig;
+	OffConfig.bKillsWaitForFirstHorde = false;
+	RunFlow->SetConfig(OffConfig);
+	TestTrue(TEXT("switch off: kills add alert"), RunFlow->DoKillsAddAlert());
+
+	Setup.HUD->BindToSpawner(nullptr);
+	Setup.HUD->BindToRunFlow(nullptr);
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS

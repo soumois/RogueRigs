@@ -82,7 +82,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnSpawnerRegisteredSignature, ARR
  * Run flow of one level (level-flow M1, difficulty alert counter). Game and PIE worlds; active once the world has an
  * ARRArenaGrid and a living ARRMiner (player 0's pawn, else the first one).
  * Alert: AlertSeconds grows by DeltaSeconds x the cheat AlertSpeedMultiplier (URRCheatSettings) each tick and by
- * KillAlertSeconds x the multiplier per robot kill (NotifyEnemyKilled, from ARREnemy::HandleDeath; a kamikaze's own fuse is not
+ * KillAlertSeconds x the multiplier per robot kill once the first horde front is over (DoKillsAddAlert, bKillsWaitForFirstHorde;
+ * NotifyEnemyKilled, from ARREnemy::HandleDeath; a kamikaze's own fuse is not
  * a kill); Alert = AlertSeconds / AlertFillSeconds, clamped to [0, 1]. Nothing grows while an objective is pending or while the
  * game is paused (the subsystem does not tick when paused).
  * Console: when Alert reaches ConsoleAlertThreshold the alert is clamped there and the console drops (ConsoleClass) on a random
@@ -191,7 +192,15 @@ public:
 	int32 GetKillCount() const { return KillCount; }
 
 	/**
-	 * A robot died: adds KillAlertSeconds (x the cheat multiplier) unless an objective is pending or extraction is ready. A death
+	 * True when a kill adds alert time now (pending objective and extraction aside): always when bKillsWaitForFirstHorde is off or
+	 * the run has no spawner, no enabled director or no horde; otherwise once the first horde (index 0) is Done.
+	 */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	bool DoKillsAddAlert() const;
+
+	/**
+	 * A robot died: counts it, and adds KillAlertSeconds (x the cheat multiplier) unless an objective is pending, extraction is
+	 * ready or the first horde front is not over yet (DoKillsAddAlert). A death
 	 * whose instigator is the robot itself (kamikaze fuse) is not a kill. Called by ARREnemy::HandleDeath.
 	 */
 	void NotifyEnemyKilled(AActor* Enemy, AActor* DeathInstigator);

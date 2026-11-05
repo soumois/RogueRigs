@@ -151,6 +151,10 @@ void URRRunFlowSubsystem::NotifyEnemyKilled(AActor* Enemy, AActor* DeathInstigat
 		return;
 	}
 	ResolveConfig();
+	if (!DoKillsAddAlert())
+	{
+		return;
+	}
 	const float FillSeconds = FMath::Max(Config.AlertFillSeconds, 1.f);
 	AlertSeconds = FMath::Min(AlertSeconds + Config.KillAlertSeconds * GetAlertGainMultiplier(), FillSeconds);
 	// A kill never jumps over the console threshold: the drop happens on the next tick.
@@ -159,6 +163,20 @@ void URRRunFlowSubsystem::NotifyEnemyKilled(AActor* Enemy, AActor* DeathInstigat
 		AlertSeconds = FMath::Min(AlertSeconds, Config.ConsoleAlertThreshold * FillSeconds);
 	}
 	BroadcastAlertIfChanged();
+}
+
+bool URRRunFlowSubsystem::DoKillsAddAlert() const
+{
+	if (!Config.bKillsWaitForFirstHorde)
+	{
+		return true;
+	}
+	const ARREnemySpawner* RunSpawner = Spawner.Get();
+	if (!RunSpawner || !RunSpawner->IsDirectorEnabled() || RunSpawner->GetHordeCount() <= 0)
+	{
+		return true;
+	}
+	return RunSpawner->GetHordeState(0) == ERRHordeState::Done;
 }
 
 //~ Begin cheats: bodies compiled out of shipping builds.

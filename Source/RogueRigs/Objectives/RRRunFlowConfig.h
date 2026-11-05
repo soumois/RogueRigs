@@ -28,6 +28,14 @@ struct ROGUERIGS_API FRRRunFlowConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow", meta = (ClampMin = 0, Units = "s"))
 	float KillAlertSeconds = 0.5f;
 
+	/**
+	 * When true, kills add no alert until the front of the first horde of the run's spawner has finished spawning (its state is
+	 * Done), so the bar follows time alone and the horde icons stay still; afterwards each kill adds KillAlertSeconds again. No
+	 * spawner, director off or no horde = kills add alert from the start (level-flow M1, owner 2026-11-05, provisional, task-454).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow")
+	bool bKillsWaitForFirstHorde = true;
+
 	/** Alert value (0..1) at which the console drops; the bar pauses there until it is hacked (M1: 0.4). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run Flow", meta = (ClampMin = 0, ClampMax = 1))
 	float ConsoleAlertThreshold = 0.4f;
