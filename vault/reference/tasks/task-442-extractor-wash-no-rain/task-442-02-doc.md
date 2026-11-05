@@ -3,7 +3,7 @@ id: task-442-02-doc
 description: "Doc: Document the new emitter."
 parent: task-442-extractor-wash-no-rain
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotor wash that does not read as rain: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:43:00Z
 - waiting_for: none
 - result: open
 
