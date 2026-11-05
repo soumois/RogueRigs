@@ -3,7 +3,7 @@ id: task-441-05-miner-wiring
 description: "Bp: BP_Miner plays the wave on level-up and no longer has the cyan disc; the heal ring stays."
 parent: task-441-level-up-effect
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up effect rework: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:25:29Z
 - waiting_for: none
 - result: open
 

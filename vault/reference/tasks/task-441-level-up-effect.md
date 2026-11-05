@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read xp-level-up, damage-numbers, color-code, readability-rules, ground-telegraph, sys-level-up, bp-miner. Replaces the cyan ring and disc of xp-level-up, edited at confirmation, with a color-code row. Ambiguity: real push or look only, Q11, a game rule if real. Gold: rarity colours stay interface only and this is a brief event, not a rarity; gold ground circles of ground-telegraph mean a waiting zone but are static and dotted, this is a one-shot wave. On-screen text stays English (readability-rules). Radius 300 uu and colour provisional.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-441-04-floor-wave
+- next_step: task-441-05-miner-wiring
 - started: 2026-11-05T20:02:13Z
 - waiting_for: none
 - result: open
