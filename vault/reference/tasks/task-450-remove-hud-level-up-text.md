@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:51:16Z
 - waiting_for: none
-- result: Done. Commit fd80fe7c. wbp-xp-status rewritten (two widgets, OnXPChanged only, removed list, task-450-01 verification, relation to sys-level-up); LEVEL UP flash dropped from the wbp-hud gloss, the blueprints-ui-index entry and the sys-hud OnLevelUp line. Lint clean.
+- result: Done. A1: the cyan LevelUpText of WBP_XPStatus is removed (commit 00dd6187), so a level-up no longer shows it; look unverified until the owner sees it in game (A5, no capture). A2: XPBar, LevelText and the gold world text (NS_LevelUpText in BP_Miner, untouched) unchanged. A3: OnLevelUp binding, handler, HideLevelUp timer and function, Destruct timer clear and OnLevelUp unbind removed; compiled with no error; PIE level-ups (1 to 9 to 13) logged no runtime error. A4: asset-only change, no C++ or test touched, no test references LevelUpText; no test run. Docs updated (fd80fe7c). Cost: included in the executor run.
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
