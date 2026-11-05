@@ -3,7 +3,7 @@ id: task-438-01-trigger-on-break
 description: "Cpp: A block broken by the drone requests one debris burst at the block with the block colour, bounded."
 parent: task-438-dig-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris when digging: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T18:01:17Z
 - waiting_for: none
 - result: open
 
