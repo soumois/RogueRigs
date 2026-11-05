@@ -3,7 +3,7 @@ id: task-443-01-height-signal
 description: "Cpp: The extractor gives its current height above the floor to the Blueprint when it changes, event driven."
 parent: task-443-extractor-ground-blast
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotor blast on the ground: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:44:47Z
 - waiting_for: none
 - result: open
 
