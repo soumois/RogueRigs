@@ -3,7 +3,7 @@ id: task-451-hud-mockups
 description: "Global task: Image proposals of one unified in-game HUD, made with Kie.ai GPT Image from the current screenshot; the owner retains one before any build."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Unified in-game HUD: visual proposals
 
@@ -24,8 +24,8 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-451-01-mockups
-- started: 2026-11-05T23:16:22Z
-- waiting_for: owner picks one HUD mockup (A, B or C, which image) or asks one correction; candidates listed in art-prompts-hud-unified-mockup
+- started: 2026-11-05T23:36:53Z
+- waiting_for: none
 - result: open
 
 ## Questions

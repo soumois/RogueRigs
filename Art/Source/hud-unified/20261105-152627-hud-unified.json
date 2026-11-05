@@ -1,0 +1,28 @@
+{
+  "run_id": "20261105-152627-hud-unified",
+  "asset": "hud-unified",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/hud-unified/prompts/04-direction-a-correction.txt",
+  "prompt": "Keep this exact image (Image 1): same game scene, same HUD frames, same materials, same layout, same radar with its ore plate, same health bar on the weapon slots. Image 2 is the original game screenshot, for reference only.\n\nOnly change two HUD details, keep everything else exactly as it is:\n1. Alert bar: the three markers \"C\" (cyan), \"B\" (yellow) and \"S\" (white) are placed ON the gauge track itself, as small badges set into the bar at their positions, like the two red \"!\" marks; nothing hangs under the gauge anymore. Exactly three letters, C, B and S, no other letter.\n2. XP bar along the bottom edge: exactly 4 thin light tick marks, at 20%, 40%, 60% and 80% of the bar length, dividing it into 5 equal segments.\nThe HUD is drawn over the scene: no crystal or scene element overlaps any HUD frame. No mouse cursor. No other text than \"0\", \"!\", \"C\", \"B\", \"S\", \"100 / 100\", \"Lv 1\".",
+  "refs": [
+    "Art/Source/hud-unified/20261105-151729-hud-unified-2.png",
+    "Art/Source/hud-unified/reference/owner-hud-current-2026-11-05.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "fbe58590b8ce074a049f2e1b986462a9",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000ae1481f694c9ab9009e7a93e.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/hud-unified/20261105-152627-hud-unified-1.png"
+  ]
+}

@@ -27,7 +27,7 @@ Request and decided content: [[task-451-hud-mockups]] (`request`, Q24, Q33). Met
 
 Credits: 36 (round 1) + 18 (correction) = 54, over the "about 36" of Q24 by the one correction round of the executor rule.
 
-Labels: all nine are candidates, untracked until the owner chooses. The retained image becomes keep (committed with its log); the others become temporary and move to `Saved/Scratch/hud-unified/`.
+Labels (2026-11-05, after the owner's choice): keep = `20261105-152627-hud-unified-1.png` and its log `20261105-152627-hud-unified.json`, committed in `Art/Source/hud-unified/`; temporary = the eight others and their logs, moved to `Saved/Scratch/hud-unified/` (git-ignored), including its source image A-2 (`20261105-151729-hud-unified-2.png`) that the kept log names as Image 1.
 
 ## Critic review (style-guide)
 - No A rule or color-code fail on any image; green health fill noted only (player expectation, colour rules not rigid).
@@ -36,10 +36,17 @@ Labels: all nine are candidates, untracked until the owner chooses. The retained
 - Gaps left: the image model does not place ticks exactly; UMG will place them at 20/40/60/80 %.
 
 ## Owner choice
-- open (waiting for the owner, 2026-11-05).
+- Owner 2026-11-05 (verbatim, shown the three corrected images): "A, plaques rivetées". Retained: `Art/Source/hud-unified/20261105-152627-hud-unified-1.png` (direction A, corrected). No correction requested.
 
 ## What tasks 452-458 take
-- open: written from the retained image.
+The retained image is the layout and look reference; every piece uses one frame family: riveted gunmetal plates, worn teal trims, rust chips, chamfered corners, dark insides. Exact sizes and ticks are set in UMG ([[umg-layout]]), not measured on the image.
+- 452 health: green bar with "100 / 100" in a riveted plate the width of the weapon row, sitting directly on the weapon block, one bolted base.
+- 453 alert bar: riveted gauge top centre, orange fill; the two red "!" and C (cyan), B (yellow), S (white) set on the track itself, nothing hanging under it.
+- 454 swarm rule: nothing (gameplay rule, no visual).
+- 455 XP ticks: bottom-edge riveted bar with a "Lv 1" plate at its left; 4 light ticks at 20/40/60/80 % (the image spaces them unevenly, about 18/37/57/75 %: do not copy).
+- 456 XP ghost: same XP bar frame; the image shows no ghost effect.
+- 457 radar and ore: riveted ring around the round minimap, the frame running right into an attached plate with the crystal icon and the count.
+- 458 weapon slots: 4 slots in one bolted frame, rifle with its cream reload bar, teal padlocks on locked slots.
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
