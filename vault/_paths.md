@@ -103,6 +103,7 @@ bp-chaser-v2  reference/tech/blueprints/enemies/bp-chaser-v2.md
 bp-console-hack-complete  reference/tech/blueprints/fx/bp-console-hack-complete.md
 bp-damage-numbers  reference/tech/blueprints/fx/bp-damage-numbers.md
 bp-deposit-crystal-material  reference/tech/blueprints/fx/bp-deposit-crystal-material.md
+bp-dig-debris  reference/tech/blueprints/fx/bp-dig-debris.md
 bp-dig-impact  reference/tech/blueprints/fx/bp-dig-impact.md
 bp-drone  reference/tech/blueprints/player/bp-drone.md
 bp-drone-materials  reference/tech/blueprints/player/bp-drone-materials.md

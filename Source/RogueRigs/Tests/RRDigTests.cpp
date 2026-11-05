@@ -2501,4 +2501,50 @@ bool FRRDigDebrisBurstTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigDebrisAssetTest, "RogueRigs.Dig.DigDebrisAsset",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigDebrisAssetTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	FTestWorld TestWorld;
+	ARRArenaGrid* Grid = nullptr;
+	ARRMiner* Miner = nullptr;
+	ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+	URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+	UNiagaraSystem* Shipped = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/Dig/NS_DigDebris.NS_DigDebris"));
+	if (!Drone || !TestNotNull(TEXT("Niagara pool"), FXPool) || !TestNotNull(TEXT("NS_DigDebris exists"), Shipped))
+	{
+		return false;
+	}
+	TestEqual(TEXT("the drone plays it"), FDroneAccess::DigDebrisSystemOf(Drone).Get(), Shipped);
+	TestEqual(TEXT("SetOwnerMiner prewarmed the pool"), FXPool->GetComponentCount(Shipped), FDroneAccess::DigDebrisPoolSizeOf(Drone));
+
+	const TArray<FIntPoint> Arc = { FineRockCell, FIntPoint(129, 114), FIntPoint(129, 116), FIntPoint(130, 115), FIntPoint(130, 114), FIntPoint(130, 113) };
+	const int32 CreatedAfterPrewarm = FXPool->GetCreatedCount(Shipped);
+	TArray<int32> Frames;
+	TestTrue(TEXT("arc broken"), TickUntilDestroyed(TestWorld, Grid, Arc, 60, Frames) != INDEX_NONE);
+	TestEqual(TEXT("one burst per broken block"), FXPool->GetRequestedCount(Shipped), Arc.Num());
+	TestEqual(TEXT("no component created at the break"), FXPool->GetCreatedCount(Shipped), CreatedAfterPrewarm);
+
+	// Niagara only runs under a real RHI (-RenderOffScreen): each burst plays and comes back to the pool within 0.8 s (one-shot).
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("play check SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+	TestEqual(TEXT("every burst played"), FXPool->GetPlayedCount(Shipped), Arc.Num());
+	int32 Frame = 0;
+	while (FXPool->GetInUseCount(Shipped) > 0 && Frame < 600)
+	{
+		TestWorld.Tick();
+		++Frame;
+	}
+	AddInfo(FString::Printf(TEXT("bursts back in the pool after %d frame(s) of %.4f s"), Frame, FrameSeconds));
+	TestEqual(TEXT("one-shot: back in the pool"), FXPool->GetInUseCount(Shipped), 0);
+	TestTrue(TEXT("gone within 0.8 s (two frames of margin for the pool callback)"), Frame * FrameSeconds <= 0.8f + 2.f * FrameSeconds);
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS
