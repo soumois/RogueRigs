@@ -26,7 +26,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-05T23:32:49Z
 - waiting_for: none
-- result: Done. Commit 2b43ff02. Updated sys-hud-pressure (horde icon still until the first front is over), sys-objectives-run-flow (kill rule, DoKillsAddAlert, bKillsWaitForFirstHorde), sys-objectives (entry point), sys-difficulty (alert rule), sys-tests-hud-text (new test and figures). Lint clean.
+- result: Done. A1-A3: until horde 0 front has finished spawning (Q30), kills add no alert so the bar follows time and both swarm marks stay still; afterwards kills add 0.5 s as before (e04554fb, FRRRunFlowConfig::bKillsWaitForFirstHorde, URRRunFlowSubsystem::DoKillsAddAlert). A4: KillCount still counts every kill; console 0.4, pause, extraction and horde run times unchanged. A5: test RogueRigs.HUD.PressureKillsWaitFirstHorde (18 kills before the end of front 0: alert 3.017 s at frame 181 = time alone, marks 0.1000 and 0.2992-0.3000; after, 4 kills add 2 s and move mark 2 to 0.4000); HUD.Pressure, Integration.Pressure, RunFlow, Console, Extraction, Spawner 43/43 passed, no expectation changed. Docs 2b43ff02. A6: no capture run, look unverified in game. Cost: subtask rows 0 (included in the executor run of task-454).
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
