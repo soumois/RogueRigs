@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: [[barrel]] and [[explosions]] read 2026-11-04: a render defect, no rule change, no `open` value needed, no conflict. Earlier work: [[task-200-decal-green-square-check]] (diagnosis in -game) and [[task-201-decal-first-frame-green]] (warm-up fix, uncooked cause: incomplete shader map, fallback to the engine default deferred decal; cooked build unverified). The packaged-build frames are taken by the cpp subtask itself, as in task-201: capture.js and [[agent-capture]] only launch `-game` from the editor, and the defect is seen in a build.
 - confirmed_by_owner: yes (2026-11-04, "Oui mais prépare la tâche seulement.")
 - milestone: M2
-- next_step: task-431-01-packaged-green-square-fix
+- next_step: task-431-02-packaged-green-square-doc
 - started: 2026-11-05T14:41:52Z
 - waiting_for: none
 - result: open

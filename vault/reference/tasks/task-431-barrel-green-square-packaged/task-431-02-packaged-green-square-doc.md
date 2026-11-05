@@ -3,7 +3,7 @@ id: task-431-02-packaged-green-square-doc
 description: "Doc: record the packaged-build cause and fix in the decal warm-up docs"
 parent: task-431-barrel-green-square-packaged
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel explosion green square in the packaged build: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T15:13:33Z
 - waiting_for: none
 - result: open
 
