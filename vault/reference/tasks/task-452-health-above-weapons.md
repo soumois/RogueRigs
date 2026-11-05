@@ -26,7 +26,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-05T23:43:51Z
 - waiting_for: none
-- result: Done. Commit 1d8ad8f6. Updated wbp-health-status (layout bullet: HealthPanel anchors 0.5,1, alignment 0.5,1, offsets 0/-148, 652 x 44, children and slots, plate brush, end-screen target, verified), wbp-hud (Subtitles -240, task-452 layout check), wbp-weapons (TurretBox bottom padding 52), sys-hud-health-bar (placement, punch overlap), blueprints-ui-index gloss. Lint clean (warnings only, pre-existing).
+- result: Done, look unverified on screen (Q26). Health bar and its 100 / 100 text now sit in a riveted plate (reused owner-retained T_Shop_ButtonReroll as 9-slice, no new art) centred just above the 4 weapon slots, 652 x 44, anchored bottom centre (0.5,1, offset -148); drain, chunk, flash, shake, punch and colour still driven by C++ on the same widgets; vignette and GAME OVER unchanged; game over hides the whole panel. Turret line moved above the panel, subtitles up to -240. PIE: hits and deaths ran with no script error. Commits d6be3f29, f9221733, 1d8ad8f6.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
