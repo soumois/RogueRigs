@@ -3,7 +3,7 @@ id: task-452-health-above-weapons
 description: "Global task: The health bar leaves the top left and sits just above the weapon slots, in the retained unified look."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Health bar just above the weapon slots
 
@@ -24,7 +24,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-452-01-art
-- started: open
+- started: 2026-11-05T23:43:51Z
 - waiting_for: none
 - result: open
 

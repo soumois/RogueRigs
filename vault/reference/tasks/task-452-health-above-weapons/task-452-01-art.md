@@ -3,7 +3,7 @@ id: task-452-01-art
 description: "Art: Cut the health bar pieces of the retained mockup as UI sprites, or report that none is needed."
 parent: task-452-health-above-weapons
 kind: task
-status: todo
+status: in-progress
 ---
 # Health bar just above the weapon slots: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T23:43:51Z
 - waiting_for: none
 - result: open
 
