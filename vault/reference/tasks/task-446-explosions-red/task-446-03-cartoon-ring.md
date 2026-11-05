@@ -3,7 +3,7 @@ id: task-446-03-cartoon-ring
 description: "Bp: The ground ring has the cartoon look and still grows to the radius; the telegraphs do not change."
 parent: task-446-explosions-red
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel and kamikaze explosions in cartoon style: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:16:57Z
 - waiting_for: none
 - result: open
 
