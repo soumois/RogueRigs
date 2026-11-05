@@ -3,7 +3,7 @@ id: task-435-02-remove-materials
 description: "Bp: The robot materials and instances no longer read the flash and the flash function is deleted."
 parent: task-435-remove-robot-hit-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the robot hit flash: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:32:23Z
 - waiting_for: none
 - result: open
 
