@@ -20,7 +20,7 @@ const FName URRGroundTelegraphComponent::OpacityParameterName(TEXT("Opacity"));
 
 namespace RRGroundTelegraph
 {
-	/** Default material resolved once per run (the path it was resolved for, the result, whether it was missing). */
+	/** Default material resolved once per process, and again once collected (the path it was resolved for, the result, whether it was missing). */
 	FSoftObjectPath ResolvedPath;
 	TWeakObjectPtr<UMaterialInterface> ResolvedMaterial;
 	bool bResolved = false;
@@ -66,7 +66,9 @@ void URRGroundTelegraphComponent::BeginPlay()
 UMaterialInterface* URRGroundTelegraphComponent::ResolveDefaultMaterial() const
 {
 	using namespace RRGroundTelegraph;
-	if (!bResolved || ResolvedPath != DefaultMaterialPath)
+	// Stale: a package build collects the material with the first world (nothing keeps it between two maps). A null DecalMaterial
+	// would draw the engine default decal (the green square) for every later run of the process (task-431-01).
+	if (!bResolved || ResolvedPath != DefaultMaterialPath || ResolvedMaterial.IsStale())
 	{
 		bResolved = true;
 		ResolvedPath = DefaultMaterialPath;
