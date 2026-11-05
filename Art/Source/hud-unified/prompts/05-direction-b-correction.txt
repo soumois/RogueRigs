@@ -1,0 +1,6 @@
+Keep this exact image (Image 1): same game scene, same HUD frames, same materials, same layout, same radar with its ore plate, same health bar on the weapon slots. Image 2 is the original game screenshot, for reference only.
+
+Only change two HUD details, keep everything else exactly as it is:
+1. Alert bar: the three markers "C" (cyan), "B" (yellow) and "S" (white) are placed ON the gauge track itself, as small badges set into the bar at their positions, like the two red "!" marks; nothing hangs under the gauge anymore. Exactly three letters, C, B and S, no other letter.
+2. XP bar along the bottom edge: exactly 4 thin light tick marks, at 20%, 40%, 60% and 80% of the bar length, dividing it into 5 equal segments.
+The HUD is drawn over the scene: no crystal or scene element overlaps any HUD frame. No mouse cursor. No other text than "0", "!", "C", "B", "S", "100 / 100", "Lv 1".

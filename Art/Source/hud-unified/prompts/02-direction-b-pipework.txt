@@ -1,0 +1,16 @@
+Image 1 is a screenshot of the in-game HUD of a top-down roguelite shooter. Image 2 is the shop screen of the same game: use it ONLY for the material style of the UI frames (dark gunmetal plates, worn teal metal trims, rust chips, rivets and bolts, dark smoked-glass insides). Do not copy any element, card, title, icon or text from Image 2.
+
+Keep from Image 1, unchanged: the game scene (the miner robot and drone at the centre, the dark violet-magenta cracked floor plates, the grey-violet rock blocks with glowing violet crystals, the aim laser), the camera, the 16:9 framing. Remove the editor window title bar at the top: the result is a full-screen game frame.
+
+Redesign the HUD as ONE unified interface: every piece uses the same frame family (same metal, same trims, same bolts, same corner shapes), so the pieces read as one designed system and not as separate floating widgets. The HUD stays thin, at the screen edges, and leaves the arena centre fully clear.
+
+The HUD pieces, all required:
+1. Radar, top left: the circular minimap (dark disc, small grey-violet blob, cyan dot for the player) sits inside a metal ring frame. The frame does not stop at the circle: it runs on to the right into an attached plate that holds the ore counter, the violet crystal icon followed by the number "0". The ore counter is outside the radar circle, inside the extension of its frame.
+2. Alert bar, top centre: a horizontal progress gauge (thin orange fill at the start) set into a frame of the same family, with two red "!" swarm warning marks on it and the letters "C" (cyan), "B" (yellow) and "S" (white) as markers along it. The marks and letters are part of the gauge (notches, tabs or small badges fixed to it), not floating letters under it.
+3. Weapons, bottom centre: a row of 4 weapon slots in matching frames; slot 1 holds the white and teal rifle with a small cream reload bar under it, slots 2 to 4 hold a teal padlock (locked).
+4. Health, directly above the weapon slots: a green health bar with the text "100 / 100", the same width as the row of 4 slots and attached to it, so health and weapons form one block.
+5. XP bar, along the bottom edge of the screen: "Lv 1" at its left, an empty bar divided into 5 equal parts by 4 light thin tick marks.
+
+Text allowed in the image, and only this text: "0", "!", "C", "B", "S", "100 / 100", "Lv 1". No other words, no titles, no logos, no labels, no numbers other than these. Flat readable game UI, crisp edges, readable at 1080p.
+
+Direction B, "Pipework": the pieces are linked into one system by thin metal pipes and cable conduits running along the screen edges: a pipe leaves the radar frame and runs along the top edge to the alert gauge, and the bottom block (health, weapons) is joined to the XP bar by short brackets. Frames are slimmer than heavy plates, with pipe elbows, valves and bolted clamps as joints.

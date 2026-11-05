@@ -3,7 +3,7 @@ id: task-451-hud-mockups
 description: "Global task: Image proposals of one unified in-game HUD, made with Kie.ai GPT Image from the current screenshot; the owner retains one before any build."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Unified in-game HUD: visual proposals
 
@@ -25,7 +25,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - milestone: M2
 - next_step: task-451-01-mockups
 - started: 2026-11-05T23:16:22Z
-- waiting_for: none
+- waiting_for: owner picks one HUD mockup (A, B or C, which image) or asks one correction; candidates listed in art-prompts-hud-unified-mockup
 - result: open
 
 ## Questions

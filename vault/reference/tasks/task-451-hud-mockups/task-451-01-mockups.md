@@ -3,7 +3,7 @@ id: task-451-01-mockups
 description: "Art: Generate the unified HUD proposals from the current screenshot, show them, record the owner's choice."
 parent: task-451-hud-mockups
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Unified in-game HUD: visual proposals: art
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-05T23:16:23Z
-- waiting_for: none
+- waiting_for: owner picks one HUD mockup (A, B or C, which image) or asks one correction; candidates listed in art-prompts-hud-unified-mockup
 - result: open
 
 ## Relations
