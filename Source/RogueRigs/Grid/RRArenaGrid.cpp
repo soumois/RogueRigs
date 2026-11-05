@@ -2764,12 +2764,33 @@ int32 ARRArenaGrid::DestroyCellsInRadius(FVector Center, float Radius, ERRTerrai
 	return DestroyedBlockCount - CountBefore;
 }
 
-int32 ARRArenaGrid::QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source)
+int32 ARRArenaGrid::QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source, TArray<FRRExplosionBrokenBlock>* OutBrokenBlocks)
 {
 	const UWorld* World = GetWorld();
 	if (CellDestructionBudgetMs <= 0.f || !World || !World->IsGameWorld())
 	{
-		return DestroyCellsInRadius(Center, Radius, Source);
+		if (!OutBrokenBlocks)
+		{
+			return DestroyCellsInRadius(Center, Radius, Source);
+		}
+		// Types read before the destruction; a cell still standing after it was a barrel whose fuse was lit.
+		TArray<FIntPoint> Standing;
+		CollectBlocksInRadius(Center, Radius, Standing);
+		TArray<ERRCellType> Types;
+		Types.Reserve(Standing.Num());
+		for (const FIntPoint& Cell : Standing)
+		{
+			Types.Add(GetCellType(Cell));
+		}
+		const int32 Destroyed = DestroyCellsInRadius(Center, Radius, Source);
+		for (int32 Index = 0; Index < Standing.Num(); ++Index)
+		{
+			if (!IsBlockCell(Standing[Index]))
+			{
+				OutBrokenBlocks->Add({ Standing[Index], Types[Index] });
+			}
+		}
+		return Destroyed;
 	}
 
 	TArray<FIntPoint> Targets;
@@ -2792,6 +2813,10 @@ int32 ARRArenaGrid::QueueDestroyCellsInRadius(FVector Center, float Radius, ERRT
 			Barrels.Add(Cell);
 			continue;
 		}
+		if (OutBrokenBlocks)
+		{
+			OutBrokenBlocks->Add({ Cell, GetCellType(Cell) });
+		}
 		FPendingCellDestruction& Pending = PendingCellDestructions.AddDefaulted_GetRef();
 		Pending.Cell = Cell;
 		Pending.Source = Source;
@@ -2800,6 +2825,11 @@ int32 ARRArenaGrid::QueueDestroyCellsInRadius(FVector Center, float Radius, ERRT
 	for (const FIntPoint& Cell : Barrels)
 	{
 		Handled += DestroyCell(Cell, Source) ? 1 : 0;
+		// A barrel still standing has only had its fuse lit: it breaks later, in its own explosion.
+		if (OutBrokenBlocks && !IsBlockCell(Cell))
+		{
+			OutBrokenBlocks->Add({ Cell, ERRCellType::Barrel });
+		}
 	}
 
 	UpdateTickEnabled();

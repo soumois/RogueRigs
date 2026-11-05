@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Grid/RRBlockColors.h"
 #include "Grid/RRCellType.h"
 #include "RRDrone.generated.h"
 
@@ -516,19 +517,19 @@ protected:
 
 	/** Chip colour for rock blocks: light grey tinted violet (color-code), the NS_DigImpact default lavender. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
-	FLinearColor RockChipColor = FLinearColor(0.35f, 0.28f, 0.5f, 1.f);
+	FLinearColor RockChipColor = RRBlockColors::Rock;
 
 	/** Chip colour for Duskite ore blocks (Ore and SpecialOre): glowing violet (color-code; value provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
-	FLinearColor OreChipColor = FLinearColor(0.6f, 0.15f, 1.f, 1.f);
+	FLinearColor OreChipColor = RRBlockColors::Ore;
 
 	/** Chip colour for heal ore blocks: red (color-code; value provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
-	FLinearColor HealOreChipColor = FLinearColor(0.9f, 0.06f, 0.05f, 1.f);
+	FLinearColor HealOreChipColor = RRBlockColors::HealOre;
 
 	/** Chip colour for barrel blocks: orange (color-code; value provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
-	FLinearColor BarrelChipColor = FLinearColor(1.f, 0.35f, 0.05f, 1.f);
+	FLinearColor BarrelChipColor = RRBlockColors::Barrel;
 
 	/** One-shot burst played per block the drone breaks (PlayDigDebris). Default /Game/RogueRigs/FX/Dig/NS_DigDebris (constructor reference). None = no burst. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Debris")

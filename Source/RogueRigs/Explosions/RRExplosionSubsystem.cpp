@@ -18,9 +18,14 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Misc/App.h"
+#include "Grid/RRBlockColors.h"
 #include "Misc/PackageName.h"
+#include "NiagaraComponent.h"
+#include "NiagaraDataInterfaceArrayFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "Player/RRMiner.h"
 #include "Pool/RRActorPoolSubsystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "RogueRigs.h"
 #include "Telegraph/RRDecalWarmUp.h"
 #include "World/RRWorld.h"
@@ -29,9 +34,15 @@
 
 const TCHAR* URRExplosionSubsystem::ExplosionStatsPath = TEXT("RogueRigs/Data/Tables/ExplosionStats.csv");
 
+const FName URRExplosionSubsystem::WallDebrisCenterParameter(TEXT("User.ExplosionCenter"));
+const FName URRExplosionSubsystem::WallDebrisPositionsParameter(TEXT("User.DebrisPositions"));
+const FName URRExplosionSubsystem::WallDebrisColorsParameter(TEXT("User.DebrisColors"));
+const FName URRExplosionSubsystem::WallDebrisCountParameter(TEXT("User.DebrisCount"));
+
 URRExplosionSubsystem::URRExplosionSubsystem()
 {
 	ExplosionShakeClass = URRExplosionCameraShake::StaticClass();
+	WallDebrisSystem = TSoftObjectPtr<UNiagaraSystem>(FSoftObjectPath(TEXT("/Game/RogueRigs/FX/NS_ExplosionWallDebris.NS_ExplosionWallDebris")));
 }
 
 void URRExplosionSubsystem::Tick(float DeltaTime)
@@ -67,6 +78,13 @@ void URRExplosionSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	if (!InWorld.IsGameWorld() || !FApp::CanEverRender())
 	{
 		return;
+	}
+	if (UNiagaraSystem* WallDebris = ResolveWallDebrisSystem())
+	{
+		if (URRNiagaraPoolSubsystem* FXPool = InWorld.GetSubsystem<URRNiagaraPoolSubsystem>())
+		{
+			FXPool->Prewarm(WallDebris, WallDebrisPoolSize, WallDebrisPoolSize);
+		}
 	}
 	const UDataTable* Table = FRRBaseStatsLoader::GetCachedTable(ExplosionStatsPath, FRRExplosionStatsRow::StaticStruct());
 	if (!Table)
@@ -153,12 +171,18 @@ bool URRExplosionSubsystem::ForgetSource(const UObject* SourceObject)
 
 void URRExplosionSubsystem::Explode(const FPendingExplosion& Explosion)
 {
-	if (ARRArenaGrid* CurrentGrid = ResolveGrid())
+	ARRArenaGrid* CurrentGrid = ResolveGrid();
+	TArray<FRRExplosionBrokenBlock> BrokenBlocks;
+	if (CurrentGrid)
 	{
-		CurrentGrid->QueueDestroyCellsInRadius(Explosion.Center, Explosion.Stats.Radius, Explosion.Stats.TerrainSource);
+		CurrentGrid->QueueDestroyCellsInRadius(Explosion.Center, Explosion.Stats.Radius, Explosion.Stats.TerrainSource, &BrokenBlocks);
 	}
 	DamageCharacters(Explosion);
 	SpawnFX(Explosion);
+	if (CurrentGrid)
+	{
+		PlayWallDebris(Explosion, *CurrentGrid, BrokenBlocks);
+	}
 	PlayShake(Explosion);
 	UE_LOG(LogRogueRigs, Verbose, TEXT("Explosion '%s' at %s (radius %.0f, damage %.0f, miner damage %.0f)"), *Explosion.RowName.ToString(), *Explosion.Center.ToString(), Explosion.Stats.Radius, Explosion.Stats.Damage, Explosion.Stats.MinerDamage);
 	OnExplosion.Broadcast(Explosion.Center, Explosion.RowName);
@@ -277,6 +301,63 @@ void URRExplosionSubsystem::SpawnFX(const FPendingExplosion& Explosion)
 		FX->SetHoldSeconds(VisualHoldSeconds);
 		FX->FinishSpawning(SpawnTransform);
 	}
+}
+
+void URRExplosionSubsystem::PlayWallDebris(const FPendingExplosion& Explosion, const ARRArenaGrid& CurrentGrid, const TArray<FRRExplosionBrokenBlock>& Blocks)
+{
+	UWorld* World = GetWorld();
+	URRNiagaraPoolSubsystem* FXPool = World ? World->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	UNiagaraSystem* System = Blocks.IsEmpty() ? nullptr : ResolveWallDebrisSystem();
+	const int32 Count = int32(FMath::Min<int64>(WallDebrisMaxParticles, int64(Blocks.Num()) * WallDebrisParticlesPerBlock));
+	if (!FXPool || !System || Count <= 0)
+	{
+		return;
+	}
+
+	FRRWallDebrisRequest& Request = LastWallDebrisRequest;
+	Request.Center = Explosion.Center;
+	Request.Positions.Reset(Count);
+	Request.Colors.Reset(Count);
+	// Blocks are sorted nearest first: an even stride keeps debris from every distance when the maximum thins them.
+	const float Jitter = CurrentGrid.GetCellSize() * WallDebrisCellJitter;
+	for (int32 Index = 0; Index < Count; ++Index)
+	{
+		const FRRExplosionBrokenBlock& Block = Blocks[int32(int64(Index) * Blocks.Num() / Count)];
+		const FVector Offset(FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(WallDebrisMinHeight, WallDebrisMaxHeight));
+		Request.Positions.Add(CurrentGrid.GetCellCenter(Block.Cell.X, Block.Cell.Y) + Offset);
+		Request.Colors.Add(RRBlockColors::ForType(Block.Type));
+	}
+
+	// Null = pool full: this link of the chain shows no debris.
+	FXPool->Spawn(System, Explosion.Center, FRotator::ZeroRotator, WallDebrisPoolSize, [&Request, Count](UNiagaraComponent& Component)
+	{
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayPosition(&Component, WallDebrisPositionsParameter, Request.Positions);
+		UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayColor(&Component, WallDebrisColorsParameter, Request.Colors);
+		Component.SetVariablePosition(WallDebrisCenterParameter, Request.Center);
+		Component.SetVariableInt(WallDebrisCountParameter, Count);
+	});
+}
+
+UNiagaraSystem* URRExplosionSubsystem::ResolveWallDebrisSystem()
+{
+	if (ResolvedWallDebrisSystem || bWallDebrisSystemMissing || WallDebrisSystem.IsNull())
+	{
+		return ResolvedWallDebrisSystem;
+	}
+	UNiagaraSystem* System = WallDebrisSystem.Get();
+	// Check the package first: loading a missing asset logs a warning.
+	if (!System && FPackageName::DoesPackageExist(WallDebrisSystem.ToSoftObjectPath().GetLongPackageName()))
+	{
+		System = WallDebrisSystem.LoadSynchronous();
+	}
+	if (!System)
+	{
+		bWallDebrisSystemMissing = true;
+		UE_LOG(LogRogueRigs, Log, TEXT("URRExplosionSubsystem: wall debris system %s missing, explosions throw no wall debris"), *WallDebrisSystem.ToString());
+		return nullptr;
+	}
+	ResolvedWallDebrisSystem = System;
+	return System;
 }
 
 UClass* URRExplosionSubsystem::ResolveFXClass(const TSoftClassPtr<ARRExplosionFX>& FXClass)

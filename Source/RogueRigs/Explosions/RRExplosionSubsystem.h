@@ -14,6 +14,22 @@ class ARRArenaGrid;
 class ARRExplosionFX;
 class UAbilitySystemComponent;
 class UCameraShakeBase;
+class UNiagaraSystem;
+struct FRRExplosionBrokenBlock;
+
+/**
+ * What one explosion hands the wall debris effect (task-439-01): one entry per particle, sampled over the blocks it broke.
+ * Positions and Colors have the same length, bounded by WallDebrisMaxParticles.
+ */
+struct FRRWallDebrisRequest
+{
+	/** Explosion centre, world: the effect throws each particle straight away from it. */
+	FVector Center = FVector::ZeroVector;
+	/** Start point of each particle, world, inside the cell of a broken block. */
+	TArray<FVector> Positions;
+	/** Colour of each particle: the colour of its block type (RRBlockColors). */
+	TArray<FLinearColor> Colors;
+};
 
 /** Broadcast by URRExplosionSubsystem after each explosion resolved (terrain, characters and FX done). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, Center, FName, RowName);
@@ -32,6 +48,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnExplosionSignature, FVector, C
  * is not capped. I-frames are respected: the GE is refused while the miner has State.Invulnerable.
  * Visual (explosions gdd, owner 2026-10-10): the FX radius is the collision radius x VisualRadiusScale (1.05) and the FX holds its
  * final state VisualHoldSeconds (0.1 s) before fading; the collision radius and the damage are not changed.
+ * Wall debris (task-439-01, explosions gdd): an explosion that breaks blocks plays WallDebrisSystem once through
+ * URRNiagaraPoolSubsystem, at its centre, with at most WallDebrisMaxParticles particles sampled over those blocks; none when no block
+ * broke, none when the pool (WallDebrisPoolSize) has no free slot, so a chain stays bounded. Never one effect per block.
  * Stats come from ExplosionStats.csv (FRRExplosionStatsRow). ChainDelay, MinerHealthLeftAtFullHealth, VisualRadiusScale,
  * VisualHoldSeconds and ExplosionShakeClass are config
  * properties (DefaultGame.ini, section [/Script/RogueRigs.RRExplosionSubsystem]) with runtime setters.
@@ -122,6 +141,24 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Explosions")
 	TSubclassOf<UCameraShakeBase> GetExplosionShakeClass() const { return ExplosionShakeClass; }
 
+	/** Uses System as the wall debris effect of this world instead of WallDebrisSystem (null = back to it); for tests. */
+	void SetWallDebrisSystem(UNiagaraSystem* System) { ResolvedWallDebrisSystem = System; }
+
+	/** Most wall debris effects playing at once (a chain beyond it shows no more of them). */
+	int32 GetWallDebrisPoolSize() const { return WallDebrisPoolSize; }
+
+	/** Particles per broken block while the total stays under WallDebrisMaxParticles. */
+	int32 GetWallDebrisParticlesPerBlock() const { return WallDebrisParticlesPerBlock; }
+
+	/** The last wall debris request sent to the effect in this world (tests, debug). */
+	const FRRWallDebrisRequest& GetLastWallDebrisRequest() const { return LastWallDebrisRequest; }
+
+	/** User parameter names of the wall debris effect (bp-explosion-wall-debris). */
+	static const FName WallDebrisCenterParameter;
+	static const FName WallDebrisPositionsParameter;
+	static const FName WallDebrisColorsParameter;
+	static const FName WallDebrisCountParameter;
+
 	/** Uses Grid as the terrain (instead of the first ARRArenaGrid of the world). */
 	UFUNCTION(BlueprintCallable, Category = "Explosions")
 	void SetGrid(ARRArenaGrid* InGrid) { Grid = InGrid; }
@@ -161,6 +198,12 @@ protected:
 	/** Spawns the row's FX class at the center, sized to GetVisualRadius(radius) with VisualHoldSeconds; nothing when the class is empty or missing. */
 	void SpawnFX(const FPendingExplosion& Explosion);
 
+	/** One wall debris effect for Blocks (nothing when empty or without a system). */
+	void PlayWallDebris(const FPendingExplosion& Explosion, const ARRArenaGrid& CurrentGrid, const TArray<FRRExplosionBrokenBlock>& Blocks);
+
+	/** The system set by SetWallDebrisSystem, else WallDebrisSystem loaded once; null when unset or missing (logged once). */
+	UNiagaraSystem* ResolveWallDebrisSystem();
+
 	/** Loads (once) and returns a concrete FX class; null when empty, missing or abstract (logged once per path). */
 	UClass* ResolveFXClass(const TSoftClassPtr<ARRExplosionFX>& FXClass);
 
@@ -189,6 +232,44 @@ protected:
 	 */
 	UPROPERTY(Config, EditAnywhere, Category = "Explosions")
 	TSubclassOf<UCameraShakeBase> ExplosionShakeClass;
+
+	/** Effect of the blocks an explosion breaks (bp-explosion-wall-debris). Empty = no wall debris. */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris")
+	TSoftObjectPtr<UNiagaraSystem> WallDebrisSystem;
+
+	/** Most particles of one explosion, however many blocks it breaks (explosions gdd: 60, provisional). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris", meta = (ClampMin = "0"))
+	int32 WallDebrisMaxParticles = 60;
+
+	/** Particles per broken block, so that a few blocks still read; the blocks are thinned evenly once the maximum is reached (provisional). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris", meta = (ClampMin = "1"))
+	int32 WallDebrisParticlesPerBlock = 4;
+
+	/** Most wall debris effects playing at once: at the maximum, 480 particles over a chain (provisional; a later link mostly finds its blocks already gone). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris", meta = (ClampMin = "0"))
+	int32 WallDebrisPoolSize = 8;
+
+	/** Random offset of a particle start around its cell centre, per axis, as a fraction of the cell size; below 0.5 it stays in the cell (provisional). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris", meta = (ClampMin = "0", ClampMax = "0.5"))
+	float WallDebrisCellJitter = 0.4f;
+
+	/** Lowest start height of a particle above the floor, in uu (provisional; blocks are 100 uu high). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris", meta = (ClampMin = "0"))
+	float WallDebrisMinHeight = 20.f;
+
+	/** Highest start height of a particle above the floor, in uu (provisional). */
+	UPROPERTY(Config, EditAnywhere, Category = "Explosions|Wall Debris", meta = (ClampMin = "0"))
+	float WallDebrisMaxHeight = 90.f;
+
+	/** WallDebrisSystem once loaded, or the system of SetWallDebrisSystem. */
+	UPROPERTY(Transient)
+	TObjectPtr<UNiagaraSystem> ResolvedWallDebrisSystem;
+
+	/** True once WallDebrisSystem was found missing (logged once). */
+	bool bWallDebrisSystemMissing = false;
+
+	/** See GetLastWallDebrisRequest; its arrays are reused from one explosion to the next. */
+	FRRWallDebrisRequest LastWallDebrisRequest;
 
 	/** Terrain of the explosions. */
 	TWeakObjectPtr<ARRArenaGrid> Grid;

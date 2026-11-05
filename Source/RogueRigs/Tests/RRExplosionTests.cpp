@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (CSV radius), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row, blocks destroyed over frames nearest first (task-121-01).
+// Rogue Rigs - automation tests of the explosion system (RogueRigs.Explosions.*): blocks in the radius, characters hit once, kamikaze reach (CSV radius), chain delay, single explosion per source, miner no-one-shot, visual radius (x 1.05) and hold (0.1 s) per row, blocks destroyed over frames nearest first (task-121-01), wall debris request (task-439-01).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -13,6 +13,10 @@
 #include "Explosions/RRExplosionSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "Grid/RRBlockColors.h"
+#include "Misc/App.h"
+#include "NiagaraSystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
@@ -613,6 +617,130 @@ bool FRRExplosionBlocksSpreadTest::RunTest(const FString& Parameters)
 			TestWorld.Tick();
 		}
 	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExplosionWallDebrisRequestTest, "RogueRigs.Explosions.WallDebrisRequest",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExplosionWallDebrisRequestTest::RunTest(const FString& Parameters)
+{
+	using namespace RRExplosionTests;
+
+	// The private empty system below cannot run under a real RHI (engine crash on tick).
+	if (FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED under a real RHI: run with -nullrhi."));
+		return true;
+	}
+
+	FTestWorld TestWorld(TEXT("RRExplosionWallDebrisRequest"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	URRExplosionSubsystem* Subsystem = Grid ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
+	URRNiagaraPoolSubsystem* FXPool = Subsystem ? TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	FRRExplosionStatsRow Stats;
+	if (!FXPool || !TestTrue(TEXT("Barrel row loads"), Subsystem->GetExplosionStats(TEXT("Barrel"), Stats)))
+	{
+		return false;
+	}
+	TStrongObjectPtr<UNiagaraSystem> Debris(NewObject<UNiagaraSystem>());
+	Subsystem->SetWallDebrisSystem(Debris.Get());
+	Subsystem->SetChainDelay(0.f);
+	Stats.Damage = 0.f;
+	Stats.MinerDamage = 0.f;
+	Stats.FXClass.Reset();
+
+	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
+	const auto Explode = [&](const FVector& At, float Radius)
+	{
+		Stats.Radius = Radius;
+		TestTrue(TEXT("explosion queued"), Subsystem->QueueExplosionWithStats(At, TEXT("Test"), Stats, nullptr, nullptr));
+		TickUntilIdle(TestWorld, Subsystem);
+		TickUntilGridIdle(TestWorld, Grid);
+	};
+	// Standing blocks in the radius by type; barrels only light a fuse, so they give no debris.
+	const auto StandingBlocks = [&](const FVector& At, float Radius)
+	{
+		TMap<FIntPoint, ERRCellType> Blocks;
+		const int32 Reach = FMath::CeilToInt32(Radius / Grid->GetCellSize()) + 1;
+		const FIntPoint AtCell = Grid->GetCellAtWorld(At);
+		for (int32 Y = AtCell.Y - Reach; Y <= AtCell.Y + Reach; ++Y)
+		{
+			for (int32 X = AtCell.X - Reach; X <= AtCell.X + Reach; ++X)
+			{
+				const FIntPoint Cell(X, Y);
+				if (Grid->IsBlockCell(Cell) && Grid->GetCellType(Cell) != ERRCellType::Barrel && FVector::Dist2D(Grid->GetCellCenter(X, Y), At) <= Radius)
+				{
+					Blocks.Add(Cell, Grid->GetCellType(Cell));
+				}
+			}
+		}
+		return Blocks;
+	};
+	const FRRWallDebrisRequest& Request = Subsystem->GetLastWallDebrisRequest();
+	const auto CheckRequest = [&](const TMap<FIntPoint, ERRCellType>& Blocks, const FVector& At, TSet<FIntPoint>& OutCells)
+	{
+		TestEqual(TEXT("request carries the centre"), Request.Center, At);
+		TestEqual(TEXT("one colour per position"), Request.Colors.Num(), Request.Positions.Num());
+		for (int32 Index = 0; Index < Request.Positions.Num() && Index < Request.Colors.Num(); ++Index)
+		{
+			const FIntPoint Cell = Grid->GetCellAtWorld(Request.Positions[Index]);
+			const ERRCellType* Type = Blocks.Find(Cell);
+			if (TestNotNull(*FString::Printf(TEXT("particle %d starts on a broken block"), Index), Type))
+			{
+				TestTrue(TEXT("colour of its block"), Request.Colors[Index].Equals(RRBlockColors::ForType(*Type)));
+				OutCells.Add(Cell);
+			}
+		}
+	};
+
+	// No block in the radius: no request.
+	TestEqual(TEXT("the centre cell is floor"), Grid->IsBlockCell(RockWestFloorCell), false);
+	Explode(Center, 1.f);
+	TestEqual(TEXT("no block broken: no request"), FXPool->GetRequestedCount(Debris.Get()), 0);
+
+	// A few blocks: one request, every block shows, ParticlesPerBlock each.
+	const float SmallRadius = Grid->GetCellSize() * 1.5f;
+	const TMap<FIntPoint, ERRCellType> FewBlocks = StandingBlocks(Center, SmallRadius);
+	const int32 PerBlock = Subsystem->GetWallDebrisParticlesPerBlock();
+	if (TestTrue(TEXT("a few blocks in the small radius"), FewBlocks.Num() > 0 && FewBlocks.Num() * PerBlock <= 60))
+	{
+		Explode(Center, SmallRadius);
+		TestEqual(TEXT("one request"), FXPool->GetRequestedCount(Debris.Get()), 1);
+		TestEqual(TEXT("particles per block"), Request.Positions.Num(), FewBlocks.Num() * PerBlock);
+		TSet<FIntPoint> Cells;
+		CheckRequest(FewBlocks, Center, Cells);
+		TestEqual(TEXT("every block throws debris"), Cells.Num(), FewBlocks.Num());
+		for (const TPair<FIntPoint, ERRCellType>& Block : FewBlocks)
+		{
+			TestFalse(TEXT("block broken"), Grid->IsBlockCell(Block.Key));
+		}
+	}
+
+	// Very many blocks: one request, at most 60 particles, spread over the blocks.
+	const float LargeRadius = 3000.f;
+	const FVector FarCenter = Grid->GetCellCenter(RockCell.X + 3, RockCell.Y);
+	const TMap<FIntPoint, ERRCellType> ManyBlocks = StandingBlocks(FarCenter, LargeRadius);
+	if (TestTrue(TEXT("more blocks than the bound"), ManyBlocks.Num() > 60))
+	{
+		const int32 RequestedBefore = FXPool->GetRequestedCount(Debris.Get());
+		Explode(FarCenter, LargeRadius);
+		TestEqual(TEXT("one request however many blocks break"), FXPool->GetRequestedCount(Debris.Get()), RequestedBefore + 1);
+		TestEqual(TEXT("bounded at 60 particles"), Request.Positions.Num(), 60);
+		TSet<FIntPoint> Cells;
+		CheckRequest(ManyBlocks, FarCenter, Cells);
+		TestTrue(TEXT("spread over many blocks"), Cells.Num() >= 30);
+	}
+
+	// A chain: the pool never grows past its cap, whatever the number of links.
+	for (int32 Link = 0; Link < 24; ++Link)
+	{
+		Stats.Radius = 400.f;
+		const FVector At = FarCenter + FVector(4000.0 + Link * 60.0, 3000.0, 0.0);
+		TestTrue(TEXT("link queued"), Subsystem->QueueExplosionWithStats(At, TEXT("Test"), Stats, nullptr, nullptr));
+	}
+	TickUntilIdle(TestWorld, Subsystem);
+	TestTrue(TEXT("chain bounded by the pool"), FXPool->GetComponentCount(Debris.Get()) <= Subsystem->GetWallDebrisPoolSize());
 	return true;
 }
 

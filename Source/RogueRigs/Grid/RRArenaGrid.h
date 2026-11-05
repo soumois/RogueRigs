@@ -311,6 +311,15 @@ struct FRRGridDeposit
 	int32 BrokenBlocks = 0;
 };
 
+/** One block an explosion broke or queued for breaking (QueueDestroyCellsInRadius): a barrel whose fuse it only lit is not one. */
+struct FRRExplosionBrokenBlock
+{
+	/** Cell of the block. */
+	FIntPoint Cell = FIntPoint::ZeroValue;
+	/** What the cell held before the explosion. */
+	ERRCellType Type = ERRCellType::Rock;
+};
+
 /** Fired when a block takes terrain damage without necessarily being destroyed: cell, block type, damage applied (dig-seconds), source. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FRROnCellDamagedSignature, FIntPoint, Cell, ERRCellType, Type, float, Amount, ERRTerrainDamageSource, Source);
 
@@ -507,9 +516,11 @@ public:
 	 * timing; the other blocks are queued nearest to Center first and destroyed under CellDestructionBudgetMs of game-thread
 	 * time per frame (at least one block per frame), starting in this call. A queued block stays a block for every reader
 	 * until its frame. Budget 0 or outside a game world: destroyed at once (DestroyCellsInRadius). Returns the number of
-	 * blocks handled at once or queued.
+	 * blocks handled at once or queued. OutBrokenBlocks, when given, receives the blocks of the radius that break by this call
+	 * or by the queue, nearest first, barrels last; a barrel whose fuse this only lights stays out (it still stands), and so do
+	 * the blocks outside the radius of a deposit broken whole.
 	 */
-	int32 QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source);
+	int32 QueueDestroyCellsInRadius(FVector Center, float Radius, ERRTerrainDamageSource Source, TArray<FRRExplosionBrokenBlock>* OutBrokenBlocks = nullptr);
 
 	/**
 	 * Extractor ground placement (task-372-01, destruction-rules item 4): destroys at once every block of the Size footprint
