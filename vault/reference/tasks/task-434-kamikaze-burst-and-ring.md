@@ -1,9 +1,9 @@
 ---
 id: task-434-kamikaze-burst-and-ring
 description: "Global task: The kamikaze explosion gets the Niagara burst and the ground ring of the barrel, scaled to its own radius. Awaiting owner answer."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Kamikaze explosion plays the barrel burst and ring
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read explosions, enemy-kamikaze, sys-explosions, bp-explosion-fx-barrel, bp-barrel-explosion, color-code, readability-rules, milestones. In scope: M3 juice; A10 and orange = explodes agree. Decision recorded: reuse accepted, owner 2026-11-05, "Oui, lot 1" (bp-explosion-fx-barrel said not decided). Second child or row change is the Executor's choice. Per sys-explosions the CSV is read directly at runtime, no DataTable asset to reimport. Cost: the burst is not pooled (95 CPU sprites, 1.5 s), but explosions resolve one per 0.08 s at most and a horde holds 1 or 2 kamikazes, so it stays bounded; Q4 of task-432 covers any measure.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-434-02-doc
+- next_step: none
 - started: 2026-11-05T16:24:11Z
 - waiting_for: none
-- result: open
+- result: Done. Updated bp-explosion-fx-barrel (decision replaces the not decided line), sys-explosions (row, lifetime, warm-up, kamikaze mentions), bp-barrel-explosion, bp-explosion-fx. Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -27,6 +27,6 @@ Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accept
 2. task-434-02-doc (vault/reference/tasks/task-434-kamikaze-burst-and-ring/task-434-02-doc.md) — doc: Record the decision and what the Kamikaze row now plays.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-434-01-row-fx]] — step 1, bp.
 - [[task-434-02-doc]] — step 2, doc.
