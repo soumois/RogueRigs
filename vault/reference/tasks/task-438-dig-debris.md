@@ -1,9 +1,9 @@
 ---
 id: task-438-dig-debris
 description: "Global task: A block broken by the drone throws a short burst of debris of the block colour that falls and disappears."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Debris when digging
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read drone, bp-dig-impact, color-code, art-style-guide A14, explosions. NS_DigImpact already plays Chips (2.5 to 4.5 uu sprites, very small at a 1400 uu camera arm) and Dust at the laser point, so the point has two readings: Q6. "Terre" against the code colour of blocks: Q7. A14 forbids rubble on the floor, hence the disappearance. Targeted read of Source (Grep, because Q6 depends on it): no class holding a Niagara system for a broken block was found; Blueprints not checked. drone edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-438-03-doc
+- next_step: none
 - started: 2026-11-05T18:01:17Z
 - waiting_for: none
-- result: open
+- result: Done. New bp-dig-debris linked from blueprints-fx-index; sys-drone-dig, sys-actor-pool, sys-grid and sys-tests-dig-ore updated. Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -29,7 +29,7 @@ Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du co
 3. task-438-03-doc (vault/reference/tasks/task-438-dig-debris/task-438-03-doc.md) — doc: Document the burst and its bound.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-438-01-trigger-on-break]] — step 1, cpp.
 - [[task-438-02-debris-system]] — step 2, bp.
 - [[task-438-03-doc]] — step 3, doc.

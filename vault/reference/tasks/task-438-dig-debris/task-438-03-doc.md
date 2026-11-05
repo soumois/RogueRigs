@@ -3,7 +3,7 @@ id: task-438-03-doc
 description: "Doc: Document the burst and its bound."
 parent: task-438-dig-debris
 kind: task
-status: in-progress
+status: done
 ---
 # Debris when digging: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: New bp node linked from the FX index, code doc updated; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-438
+- usage: included in the executor run of task-438
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T19:17:19Z
 - waiting_for: none
-- result: open
+- result: New bp-dig-debris linked from blueprints-fx-index; sys-drone-dig, sys-actor-pool, sys-grid and sys-tests-dig-ore updated. Lint clean.
 
 ## Relations
 - [[task-438-dig-debris]] — parent global task.
