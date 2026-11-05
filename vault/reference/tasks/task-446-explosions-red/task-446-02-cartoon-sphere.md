@@ -3,7 +3,7 @@ id: task-446-02-cartoon-sphere
 description: "Bp: The expanding sphere of the explosion has the cartoon look and still shows the radius."
 parent: task-446-explosions-red
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel and kamikaze explosions in cartoon style: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:13:59Z
 - waiting_for: none
 - result: open
 
