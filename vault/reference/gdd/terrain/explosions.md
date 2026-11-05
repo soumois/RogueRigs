@@ -16,6 +16,8 @@ status: approved
 - Camera shake (provisional, owner 2026-11-02, [[task-418-camera-shake-on-explosions]]): every explosion (barrel, kamikaze) shakes the camera when it goes off, not during a fuse; strength at the centre barrel 10 uu, kamikaze 7 uu, 0.35 s; full at the centre, 50 % at the max distance, 0 beyond; max distance `ShakeMaxDistanceFactor` × the explosion radius (`ExplosionStats.csv` rows `Barrel`, `Kamikaze`, columns `ShakeMaxDistanceFactor`, `Radius`). Mixed with the hit shake ([[visual-style]]).
 - Radius and damage per source: [[barrel]], [[enemy-kamikaze]]. Grey-box look (M1): an orange sphere that grows to the radius and fades in 0.25 s.
 
+- Kamikaze explosion look (owner 2026-11-05, "Oui, lot 1", [[task-434-kamikaze-burst-and-ring]]): it plays the barrel's Niagara burst and ground ring on top of the orange sphere, same particle counts, every size following its own visual radius.
+
 - Visible explosion (owner 2026-10-10): the visible part is about 5 % larger than the collision radius, so the player is never hit outside what is shown, and it stays 0.1 s at its final state before fading, so it can be seen.
 
 - Barrel fuse (owner 2026-10-12): a barrel explodes 1.5 s after its health reaches 0, so the 0.08 s link delay of a chain becomes the barrel fuse for barrels; the kamikaze rules are unchanged ([[barrel]], [[enemy-kamikaze]]).

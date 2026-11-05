@@ -20,7 +20,7 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 - A7. Anything on the player side never uses enemy colors; anything corporate is never rusty. Exception "console state lamps" (owner 2026-10-23, provisional): the command console lamps and screen may glow red or green as a small state detail ([[objective-console]], [[color-code]]).
 
 ## Effects
-- A8. Player fire: white-gold bolts, bright muzzle flash, small impact sparks on the hit target.
+- A8. Player fire: white-gold bolts, bright muzzle flash, small impact sparks on the hit target. Hit target (provisional, owner 2026-11-05, [[task-432-player-shot-impact-sparks]]): a robot or a barrel hit by a miner or turret shot; at most 8 sprites for at most 0.25 s per impact; a shot stopped by rock or ore shows none, so it is not read as digging; the drone laser keeps its own dig sparks.
 - A9. Enemy fire and targeting: thin red lines.
 - A10. Explosions: orange core with debris; the kamikaze core must read as "about to explode".
 - A11. Nobody fires over a block: shooters and targets are positioned with a clear line.
