@@ -132,7 +132,6 @@ bp-projectile  reference/tech/blueprints/player/bp-projectile.md
 bp-robot-death-puff  reference/tech/blueprints/fx/bp-robot-death-puff.md
 bp-robot-debris  reference/tech/blueprints/fx/bp-robot-debris.md
 bp-robot-eye-material  reference/tech/blueprints/enemies/bp-robot-eye-material.md
-bp-robot-hit-flash  reference/tech/blueprints/enemies/bp-robot-hit-flash.md
 bp-robot-meshy-material  reference/tech/blueprints/enemies/bp-robot-meshy-material.md
 bp-robot-readability  reference/tech/blueprints/enemies/bp-robot-readability.md
 bp-rock-slab-material  reference/tech/blueprints/world/bp-rock-slab-material.md

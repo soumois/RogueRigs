@@ -19,7 +19,6 @@ The robot Blueprints: chaser, shield chaser, kamikaze, shooter, heavy.
 - [[bp-robot-readability]] — brightness, saturation, roughness and rim parameters that stop the robots burning.
 - [[bp-robot-eye-material]] — M_RobotEye, MF_RobotAnimWPO and four instances for the robot eye slot.
 - [[bp-robot-meshy-material]] — M_RobotMeshy, body and eye instances for the heavy, kamikaze, shooter and chaser v2 meshes.
-- [[bp-robot-hit-flash]] — MF_RobotHitFlash, the white hit flash the robot masters read from Custom Primitive Data 2.
 
 ## Relations
 - [[blueprints-index]] — parent index.
