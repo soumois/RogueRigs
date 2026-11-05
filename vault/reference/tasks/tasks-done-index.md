@@ -457,3 +457,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-447-swirls-alpha-fix]] — The rotor wash swirls of task-442 read alpha 0 in the simulation: make them actually show, look values unchanged. Status done.
 - [[task-448-death-puffs-sim-check]] — Read the robot and heavy death puffs in the simulation on real kills, and fix them only if the compiled values are wrong. Status done.
 - [[task-449-level-up-wave-follows]] — The gold level-up floor wave follows the miner while it plays, instead of staying where he levelled up. Status done.
+- [[task-450-remove-hud-level-up-text]] — The cyan LEVEL UP text of the HUD is removed; the gold text in the world stays the only one. Status done.

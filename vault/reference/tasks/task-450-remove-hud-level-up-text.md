@@ -1,9 +1,9 @@
 ---
 id: task-450-remove-hud-level-up-text
 description: "Global task: The cyan LEVEL UP text of the HUD is removed; the gold text in the world stays the only one."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the cyan LEVEL UP text from the HUD
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read xp-level-up (already gives the gold text only), wbp-xp-status: the cyan text is the LevelUpText TextBlock of WBP_XPStatus, Roboto Bold 56, cyan, shown 1 s on OnLevelUp, per its doc. No gdd edit. Does not touch the assets of tasks 446, 447, 448.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-450-02-doc
+- next_step: none
 - started: 2026-11-05T22:51:16Z
 - waiting_for: none
-- result: open
+- result: Done. Commit fd80fe7c. wbp-xp-status rewritten (two widgets, OnXPChanged only, removed list, task-450-01 verification, relation to sys-level-up); LEVEL UP flash dropped from the wbp-hud gloss, the blueprints-ui-index entry and the sys-hud OnLevelUp line. Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -27,6 +27,6 @@ Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accept
 2. task-450-02-doc (vault/reference/tasks/task-450-remove-hud-level-up-text/task-450-02-doc.md) — doc: Remove the cyan text from the docs that describe it as current.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-450-01-remove-text]] — step 1, bp.
 - [[task-450-02-doc]] — step 2, doc.

@@ -3,7 +3,7 @@ id: task-450-02-doc
 description: "Doc: Remove the cyan text from the docs that describe it as current."
 parent: task-450-remove-hud-level-up-text
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the cyan LEVEL UP text from the HUD: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: No current doc describes it; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-450
+- usage: included in the executor run of task-450
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T22:54:12Z
 - waiting_for: none
-- result: open
+- result: Commit fd80fe7c. wbp-xp-status rewritten (two widgets, OnXPChanged only, removed list, task-450-01 verification, relation to sys-level-up); LEVEL UP flash dropped from the wbp-hud gloss, the blueprints-ui-index entry and the sys-hud OnLevelUp line. Lint clean.
 
 ## Relations
 - [[task-450-remove-hud-level-up-text]] — parent global task.
