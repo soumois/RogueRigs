@@ -142,6 +142,7 @@ bp-shield-chaser-v2  reference/tech/blueprints/enemies/bp-shield-chaser-v2.md
 bp-shield-debris  reference/tech/blueprints/fx/bp-shield-debris.md
 bp-shooter  reference/tech/blueprints/enemies/bp-shooter.md
 bp-shooter-charge  reference/tech/blueprints/fx/bp-shooter-charge.md
+bp-shot-impact-spark  reference/tech/blueprints/fx/bp-shot-impact-spark.md
 bp-shotgun  reference/tech/blueprints/player/bp-shotgun.md
 bp-space-background  reference/tech/blueprints/world/bp-space-background.md
 bp-space-background-material  reference/tech/blueprints/world/bp-space-background-material.md
