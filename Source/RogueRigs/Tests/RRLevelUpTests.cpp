@@ -11,6 +11,7 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Settings/RRGameUserSettings.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
 #include "Tests/RRTestStatsRows.h"
@@ -159,6 +160,48 @@ bool FRRLevelUpHealTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("two heals: 40 + 2 x 20 % of max"), MinerAttr(S.Miner, Health), FMath::Min(40.f + 2.f * 0.2f * Max, Max), 1e-4f);
 	TestEqual(TEXT("four effect events"), Recorder->GetLevelUpEffects().Num(), 4);
 	TestEqual(TEXT("four choices owed"), S.LevelUp->GetPendingChoices(), 4);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRLevelUpBurstOncePerMomentTest, "RogueRigs.LevelUp.BurstOncePerMoment",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRLevelUpBurstOncePerMomentTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld;
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FLevelUpSetup S;
+	if (!SpawnLevelUpSetup(*this, TestWorld, Recorder.Get(), S))
+	{
+		return false;
+	}
+	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
+	if (!TestNotNull(TEXT("game user settings"), Settings))
+	{
+		return false;
+	}
+	const bool bWasShown = Settings->GetShowDamageNumbers();
+	Settings->SetShowDamageNumbers(false);
+
+	// Three levels in one call: one effect event per level, one burst, damage numbers off.
+	TestEqual(TEXT("no burst at start"), S.LevelUp->GetLevelUpBurstCount(), 0);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 3));
+	TestEqual(TEXT("level 4"), S.Progression->GetLevel(), 4);
+	TestEqual(TEXT("three effect events"), Recorder->GetLevelUpEffects().Num(), 3);
+	TestEqual(TEXT("one burst for three levels, damage numbers off"), S.LevelUp->GetLevelUpBurstCount(), 1);
+
+	// Next level inside the same moment (20 frames, 0.33 s): no second burst.
+	TickFrames(TestWorld, 20);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
+	TestEqual(TEXT("one effect event more"), Recorder->GetLevelUpEffects().Num(), 4);
+	TestEqual(TEXT("still one burst 0.33 s later"), S.LevelUp->GetLevelUpBurstCount(), 1);
+
+	// Past the moment, before the 0.8 s delay ends (25 frames more, 0.75 s from the first level): a second burst.
+	TickFrames(TestWorld, 25);
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
+	TestEqual(TEXT("a second burst after 0.75 s"), S.LevelUp->GetLevelUpBurstCount(), 2);
+
+	Settings->SetShowDamageNumbers(bWasShown);
 	return true;
 }
 

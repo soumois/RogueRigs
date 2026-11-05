@@ -4,7 +4,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/World.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Objectives/RRRunFlowSubsystem.h"
@@ -12,6 +14,7 @@
 #include "GAS/RRGE_Heal.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Player/RRMiner.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Progression/RRProgressionComponent.h"
 #include "RogueRigs.h"
 #include "TimerManager.h"
@@ -42,6 +45,11 @@ void URRLevelUpComponent::BeginPlay()
 		UE_LOG(LogRogueRigs, Warning, TEXT("URRLevelUpComponent: %s has no progression component; no level-up flow."), *GetNameSafe(Owner));
 	}
 	UpgradeComponent = Owner ? Owner->FindComponentByClass<URRUpgradeComponent>() : nullptr;
+
+	if (URRNiagaraPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr)
+	{
+		Pool->Prewarm(LevelUpTextSystem, BurstPoolSize, BurstPoolSize);
+	}
 }
 
 void URRLevelUpComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -100,12 +108,40 @@ void URRLevelUpComponent::HandleLevelUp(int32 NewLevel)
 {
 	ApplyLevelUpHeal();
 	OnLevelUpEffect.Broadcast(NewLevel);
+	PlayLevelUpBurst();
 
 	if (bChoicesBlocked)
 	{
 		return;
 	}
 	QueueChoice(NewLevel, 0.f);
+}
+
+void URRLevelUpComponent::PlayLevelUpBurst()
+{
+	const AActor* Owner = GetOwner();
+	UWorld* World = GetWorld();
+	if (!Owner || !World || bChoicesBlocked || IsOwnerDead())
+	{
+		return;
+	}
+	const double Now = World->GetTimeSeconds();
+	if (LastBurstTime >= 0.0 && Now - LastBurstTime < BurstMinInterval)
+	{
+		return;
+	}
+	LastBurstTime = Now;
+	++LevelUpBurstCount;
+
+	URRNiagaraPoolSubsystem* Pool = World->GetSubsystem<URRNiagaraPoolSubsystem>();
+	if (!Pool)
+	{
+		return;
+	}
+	const ACharacter* Character = Cast<ACharacter>(Owner);
+	const UCapsuleComponent* Capsule = Character ? Character->GetCapsuleComponent() : nullptr;
+	const float HalfHeight = Capsule ? Capsule->GetScaledCapsuleHalfHeight() : 0.f;
+	Pool->Spawn(LevelUpTextSystem, Owner->GetActorLocation() + FVector(0.f, 0.f, HalfHeight + LevelUpTextHeight), FRotator::ZeroRotator, BurstPoolSize);
 }
 
 bool URRLevelUpComponent::QueueBonusChoice(float BonusLuck)

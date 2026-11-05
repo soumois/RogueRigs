@@ -10,6 +10,7 @@
 
 class APlayerController;
 class UGameplayEffect;
+class UNiagaraSystem;
 class URRProgressionComponent;
 class URRRunFlowSubsystem;
 class URRUpgradeComponent;
@@ -38,6 +39,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnUpgradeOfferClosedSignature);
  * cost from URRRerollCostLibrary: 15, 20, 25... per reroll count) and forwards to the offer builder; the count returns to 0
  * when a level-up screen opens (chained ones included) and is kept by a bonus chest screen. Levels gained during the delay or while a
  * screen is open join the queue. No pause when the miner died before the delay ended.
+ * Level-up burst (xp-level-up, task-441): once per level-up moment, whatever the levels gained in it (BurstMinInterval), the gold
+ * LevelUpTextSystem plays above the miner. It does not go through URRDamageNumberSubsystem: the player toggle does not hide it.
  */
 UCLASS(ClassGroup = (RogueRigs), meta = (BlueprintSpawnableComponent))
 class ROGUERIGS_API URRLevelUpComponent : public UActorComponent
@@ -45,6 +48,9 @@ class ROGUERIGS_API URRLevelUpComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	/** Components each burst effect may hold in its pool: bursts are at least BurstMinInterval apart, so few play at once. */
+	static constexpr int32 BurstPoolSize = 2;
+
 	/** No tick. */
 	URRLevelUpComponent();
 
@@ -118,6 +124,10 @@ public:
 	/** Fraction of MaxHealth restored per level gained. */
 	float GetHealFraction() const { return HealFraction; }
 
+	/** Level-up bursts played since BeginPlay: one per level-up moment, several levels gained at once count once. */
+	UFUNCTION(BlueprintPure, Category = "LevelUp")
+	int32 GetLevelUpBurstCount() const { return LevelUpBurstCount; }
+
 	/** Broadcast once per level gained, after the heal. Bind for the ring, the sound and any world-space feedback. */
 	UPROPERTY(BlueprintAssignable, Category = "LevelUp")
 	FRROnLevelUpEffectSignature OnLevelUpEffect;
@@ -146,6 +156,9 @@ protected:
 
 	/** Applies HealEffectClass with SetByCaller Data.Heal = HealFraction x MaxHealth to the owner's ASC (skipped when dead). */
 	void ApplyLevelUpHeal();
+
+	/** One level-up moment (skipped inside BurstMinInterval of the last one, when dead or once the run is over): plays the text. */
+	void PlayLevelUpBurst();
 
 	/** Delay timer callback: pauses and shows the first queued choice (drops the queue when the owner died). */
 	void HandleChoiceDelayElapsed();
@@ -187,6 +200,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp")
 	TSubclassOf<UGameplayEffect> HealEffectClass;
 
+	/** One-shot gold "LEVEL UP" text (NS_LevelUpText, set in BP_Miner): null = no text. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst")
+	TObjectPtr<UNiagaraSystem> LevelUpTextSystem;
+
+	/** Height (uu) of the text above the capsule top (as the heal and ore numbers: 40, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (Units = "cm"))
+	float LevelUpTextHeight = 40.f;
+
+	/** Level-ups closer than this to the last burst belong to the same moment: no second burst (the text life, 0.7 s, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (ClampMin = 0, Units = "s"))
+	float BurstMinInterval = 0.7f;
+
 	/** Progression whose OnLevelUp is bound. */
 	TWeakObjectPtr<URRProgressionComponent> BoundProgression;
 
@@ -198,6 +223,12 @@ protected:
 
 	/** ChoiceDelay timer. */
 	FTimerHandle ChoiceDelayTimer;
+
+	/** World time of the last burst; negative before the first one. */
+	double LastBurstTime = -1.0;
+
+	/** Bursts played (GetLevelUpBurstCount). */
+	int32 LevelUpBurstCount = 0;
 
 	/** Choices still owed, the open screen included. */
 	int32 PendingChoices = 0;
