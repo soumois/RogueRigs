@@ -37,6 +37,7 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-bonus-chest-open]] — NS_BonusChestOpen, the one-shot yellow turning rays and floating sparks at the bonus chest lid opening.
 - [[bp-extractor-rotor-wash]] — NS_ExtractorRotorWash, the rotor-wash streaks and floor dust ring under the four extractor rotors, driven by User.Intensity.
 - [[bp-muzzle-flash]] — NS_MuzzleFlash, NS_MuzzleFlashShotgun and M_MuzzleFlash, the stylised white-gold flash that changes shape on each miner shot.
+- [[bp-level-up-burst]] — NS_LevelUpText and NS_LevelUpWave, the gold level-up text and floor wave.
 - [[bp-shot-impact-spark]] — NS_ShotImpactSpark, the one-shot white-gold sparks where a player shot hits a robot or a barrel.
 
 ## Relations
