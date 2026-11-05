@@ -3,7 +3,7 @@ id: task-436-robot-death-particle
 description: "Global task: A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Better robot death particle
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Q18 : Il ne faut être si rigide sur le code couleur, une explosion dans l'esprit collective a aussi du rouge. Le code couleur ne peut pas non plus aller à l'encontre de ce qu'attend un joueur de l'explosion")
 - milestone: M2
 - next_step: task-436-01-robot-puff
-- started: open
+- started: 2026-11-05T17:37:13Z
 - waiting_for: none
 - result: open
 

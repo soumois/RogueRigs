@@ -3,7 +3,7 @@ id: task-436-01-robot-puff
 description: "Bp: Representative slice: the robot death puff has its new look."
 parent: task-436-robot-death-particle
 kind: task
-status: todo
+status: in-progress
 ---
 # Better robot death particle: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:37:13Z
 - waiting_for: none
 - result: open
 
