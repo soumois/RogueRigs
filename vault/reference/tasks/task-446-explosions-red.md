@@ -1,9 +1,9 @@
 ---
 id: task-446-explosions-red
 description: "Global task: The whole barrel and kamikaze explosion, sphere, burst and ring, is redone in the cartoon style of the owner reference."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel and kamikaze explosions in cartoon style
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read bp-barrel-explosion, bp-explosion-fx-barrel, bp-explosion-fx, bp-explosion-shockwave, explosions, ground-telegraph, readability-rules, color-code, task-434. No conflict since the owner softened the colour rules (readability-rules, 2026-11-05). Q20: his "tout" replaces the recolour default. Both rows play BP_ExplosionFX_Barrel. The ring material is a copy of the telegraph material with its own instance, so restyling it need not touch the telegraphs; the ring is read as part of "tout", its orange staying inside the reference palette, nothing open. The "Visible explosion" rule is a game rule and stays (rules versus rendering). A10 and explosions edited at confirmation. Task-434 A4 "no red" stays as a closed record.
 - confirmed_by_owner: yes (2026-11-05, "Q20- refaire tout l'explosion en style cartoon")
 - milestone: M2
-- next_step: task-446-04-doc
+- next_step: none
 - started: 2026-11-05T22:07:12Z
 - waiting_for: none
-- result: open
+- result: Done. Updated bp-barrel-explosion (new copy of the robot flash, 51 sprites, timings, sort priority, deleted M_BarrelExplosionSprite), bp-explosion-fx-barrel (cartoon sphere material M_CartoonExplosionSphere and its bands and fade), bp-explosion-fx (child overrides the sphere material), bp-explosion-shockwave (cel ring, parameters left, removed ZoneColor, ProgressColor, FillOpacity), sys-explosions (cartoon look line, no C++ change, relations). Task-434 record untouched. Lint clean (0 problems). Commit e41525d6.
 
 ## Questions
 Decided 2026-11-05 (owner "Q20- refaire tout l'explosion en style cartoon"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -29,7 +29,7 @@ Decided 2026-11-05 (owner "Q20- refaire tout l'explosion en style cartoon"): eve
 4. task-446-04-doc (vault/reference/tasks/task-446-explosions-red/task-446-04-doc.md) — doc: Document the new look and remove the statements that no longer hold.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-446-01-cartoon-burst]] — step 1, bp.
 - [[task-446-02-cartoon-sphere]] — step 2, bp.
 - [[task-446-03-cartoon-ring]] — step 3, bp.
