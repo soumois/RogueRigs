@@ -3,7 +3,7 @@ id: task-434-01-row-fx
 description: "Bp: The Kamikaze row plays the burst and the ring."
 parent: task-434-kamikaze-burst-and-ring
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze explosion plays the barrel burst and ring: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T16:24:11Z
 - waiting_for: none
 - result: open
 

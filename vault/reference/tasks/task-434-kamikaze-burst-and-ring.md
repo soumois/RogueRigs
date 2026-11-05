@@ -3,7 +3,7 @@ id: task-434-kamikaze-burst-and-ring
 description: "Global task: The kamikaze explosion gets the Niagara burst and the ground ring of the barrel, scaled to its own radius. Awaiting owner answer."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze explosion plays the barrel burst and ring
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-434-01-row-fx
-- started: open
+- started: 2026-11-05T16:24:11Z
 - waiting_for: none
 - result: open
 
