@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T17:53:42Z
 - waiting_for: none
-- result: Done. Done. bp-shot-impact-spark and sys-projectiles state that a stop on any block the drone can dig plays the spark; commit 2780395a; lint clean.
+- result: Done, look unverified until the owner has seen it (A5, no capture). A miner or turret shot stopped by any grid block (`IsBlockCell`, the test the drone digs by: rock, ore, heal ore, special ore, barrel) plays NS_ShotImpactSpark at the hit point, same system and pool, a full pool skips it. The code holds no block the drone cannot dig. Robots and barrels keep theirs, robot shots show none, the drone laser unchanged. RogueRigs.Weapons passes, only the rock expectation changed.
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
