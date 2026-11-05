@@ -3,7 +3,7 @@ id: task-437-01-spark-on-block
 description: "Cpp: A qualifying shot stopped by a wall the drone can dig requests the same impact spark at the hit point."
 parent: task-437-shot-impact-on-walls
 kind: task
-status: todo
+status: in-progress
 ---
 # Shot impact sparks on walls: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:53:42Z
 - waiting_for: none
 - result: open
 
