@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read explosions, enemy-kamikaze, sys-explosions, bp-explosion-fx-barrel, bp-barrel-explosion, color-code, readability-rules, milestones. In scope: M3 juice; A10 and orange = explodes agree. Decision recorded: reuse accepted, owner 2026-11-05, "Oui, lot 1" (bp-explosion-fx-barrel said not decided). Second child or row change is the Executor's choice. Per sys-explosions the CSV is read directly at runtime, no DataTable asset to reimport. Cost: the burst is not pooled (95 CPU sprites, 1.5 s), but explosions resolve one per 0.08 s at most and a horde holds 1 or 2 kamikazes, so it stays bounded; Q4 of task-432 covers any measure.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-434-01-row-fx
+- next_step: task-434-02-doc
 - started: 2026-11-05T16:24:11Z
 - waiting_for: none
 - result: open

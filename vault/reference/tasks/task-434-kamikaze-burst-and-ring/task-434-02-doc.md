@@ -3,7 +3,7 @@ id: task-434-02-doc
 description: "Doc: Record the decision and what the Kamikaze row now plays."
 parent: task-434-kamikaze-burst-and-ring
 kind: task
-status: todo
+status: in-progress
 ---
 # Kamikaze explosion plays the barrel burst and ring: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T16:27:24Z
 - waiting_for: none
 - result: open
 
