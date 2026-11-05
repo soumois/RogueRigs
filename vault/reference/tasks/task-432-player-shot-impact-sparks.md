@@ -3,7 +3,7 @@ id: task-432-player-shot-impact-sparks
 description: "Global task: Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8). Awaiting owner answers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact sparks
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-432-01-spawn-on-hit
-- started: open
+- started: 2026-11-05T15:45:57Z
 - waiting_for: none
 - result: open
 

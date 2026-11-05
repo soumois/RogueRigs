@@ -11,7 +11,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-432-player-shot-impact-sparks]] — Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8). Awaiting owner answers. Status todo.
+- [[task-432-player-shot-impact-sparks]] — Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8). Awaiting owner answers. Status in-progress.
 - [[task-433-robot-hit-flash]] — A robot that takes a hit turns plain white for a brief moment, at low cost, every class. Awaiting owner answers. Status todo.
 - [[task-434-kamikaze-burst-and-ring]] — The kamikaze explosion gets the Niagara burst and the ground ring of the barrel, scaled to its own radius. Awaiting owner answer. Status todo.
 

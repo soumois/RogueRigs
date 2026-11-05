@@ -3,7 +3,7 @@ id: task-432-01-spawn-on-hit
 description: "Cpp: A qualifying shot hit requests one impact spark at the hit point through the pool or a shared system, nothing when none is free."
 parent: task-432-player-shot-impact-sparks
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact sparks: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T15:45:58Z
 - waiting_for: none
 - result: open
 
