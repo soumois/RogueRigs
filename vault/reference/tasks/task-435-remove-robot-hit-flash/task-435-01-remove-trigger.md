@@ -3,7 +3,7 @@ id: task-435-01-remove-trigger
 description: "Cpp: Taking damage no longer raises any flash value on a robot, and the flash test is gone."
 parent: task-435-remove-robot-hit-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the robot hit flash: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:27:42Z
 - waiting_for: none
 - result: open
 
