@@ -3,7 +3,7 @@ id: task-441-03-robot-push
 description: "Cpp: A level-up pushes robots inside the radius a little, with no damage, following their resistance."
 parent: task-441-level-up-effect
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up effect rework: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:14:02Z
 - waiting_for: none
 - result: open
 
