@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:33:16Z
 - waiting_for: none
-- result: Done. Done (8dd1eeba): bp-robot-death-puff and bp-heavy-death-puff carry a simulation_check line with the task-448 per-emitter figures, no fix, and the probe traps (level-up pause, background throttle); the former 'Not verified' text kept as not_verified. Lint clean (warnings only, none on these nodes).
+- result: Done, no asset changed (A2): both puffs read alive in PIE on real kills play the task-436 values. NS_RobotDeathPuff (5 kills) and NS_HeavyDeathPuff (1 heavy kill): every emitter spawns (Lines 6, Core 1, Blobs 6, Puffs 5) at t 0, 0.03, 0.06, 0.17, lifetimes, sizes and colours as built, heavy at 3x, alpha = NormalizedAge on every row, no LogNiagara warning. The compiled-script trap of the swirls is absent here. Look in game still the owner's to judge (A5, no capture). Docs: bp-robot-death-puff, bp-heavy-death-puff.
 
 ## Subtasks
 1. task-448-01-robot-puff-check (vault/reference/tasks/task-448-death-puffs-sim-check/task-448-01-robot-puff-check.md) — bp: The robot death puff is read in the simulation on a real kill, and fixed only if its compiled values are wrong.
