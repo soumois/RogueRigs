@@ -3,7 +3,7 @@ id: task-437-02-doc
 description: "Doc: Document the new targets of the spark."
 parent: task-437-shot-impact-on-walls
 kind: task
-status: todo
+status: in-progress
 ---
 # Shot impact sparks on walls: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:59:52Z
 - waiting_for: none
 - result: open
 
