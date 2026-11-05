@@ -3,7 +3,7 @@ id: task-442-01-swirls-emitter
 description: "Bp: The streaks emitter of the rotor wash is replaced by soft faint swirls."
 parent: task-442-extractor-wash-no-rain
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotor wash that does not read as rain: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:35:50Z
 - waiting_for: none
 - result: open
 
