@@ -1,6 +1,6 @@
 ---
 id: task-456-xp-gain-ghost
-description: "Global task: On an XP gain a pale ghost fill shows the new XP at once and the cyan fill catches up, the mirror of the health damage chunk."
+description: "Global task: on an XP gain a pale ghost fill shows the new XP at once; the cyan fill then catches up."
 parent: tasks-to-do-index
 kind: task
 status: wait-answers
