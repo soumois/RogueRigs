@@ -3,7 +3,7 @@ id: task-441-01-level-up-text
 description: "Cpp: A level-up requests the gold straight-rising text, independent of the damage number toggle."
 parent: task-441-level-up-effect
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up effect rework: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:02:13Z
 - waiting_for: none
 - result: open
 
