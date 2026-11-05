@@ -18,6 +18,7 @@ kind: doc
 
 ## Relations
 - [[sys-grid]] — parent hub.
+- [[lights-no-shadows]] — these pieces are the casters of the miner light (task-445).
 - [[sys-grid-rock-damage]] — custom data layout, broken swap and crystals on top of these pieces.
 - [[rock-render-piece-set]] — the design built here.
 - [[rock-render-rebuild]] — destruction design and the batching lead.

@@ -58,6 +58,7 @@ Values picked from real -game captures (Saved/LookTune/r1, variant close to v6),
 - Miner brightness (task-393-01): the Meshy miner is darkened by the material instance MI_Miner (`BaseColorScale` 0.6), not by these lights; see [[bp-miner]].
 
 - Miner floor-and-wall light (task-425, owner 2026-11-04, provisional): BP_Miner gets a new channel 1 point light `FloorWallLight` (no shadow, colour 255/194/158, intensity 4 unitless, radius 650), and the grid floor and terrain block components join lighting channel 1; it is not the removed PlayerLight. Sun, sky and exposure unchanged. Values in [[bp-miner]], channels in [[sys-grid]]; visual check pending after task-426.
+- Miner light wall shadows (task-445, owner 2026-11-05, provisional): `FloorWallLight` now casts shadows, from rock pieces only ([[lights-no-shadows]]); its current values replace those of the previous line ([[bp-miner]]). Sun, sky, exposure and mask unchanged.
 
 ## Notes and risks
 - The sun has `bAtmosphereSunLight` true, but the level has no SkyAtmosphere actor, so the flag has no visible effect.

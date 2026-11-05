@@ -86,9 +86,14 @@ Owner 2026-11-04 "Tout par défaut" ([[task-425-miner-floor-wall-light]]): a lig
 - Differs from the removed PlayerLight recipe above (shadowed, channel 0, Candelas, inverse squared falloff).
 - Owner retouch: read back 2026-11-05 (task-441, untouched by it): relative location (0, 0, 0), attenuation radius 800, intensity 4; they replace the first values above.
 - Tune: change `intensity` (and `attenuationRadius` for the pool size) on the component in BP_Miner. Revert: remove the component.
+- Wall shadows (task-445-01, d7feeaf0, owner 2026-11-05, provisional; reverses Q1 of task-425): `castShadows` false -> true. Current values, read back before and after, unchanged: relative location (0, 0, 0), intensity 4, attenuation radius 800, falloff exponent 4, channel 1 only, Movable. Who casts: [[lights-no-shadows]].
+- Shadow length: location 0 puts the light at the capsule centre, world Z 90.15 in PIE, under the block top at Z 100 ([[sys-grid]] `BlockHeight`). A floor point behind a wall is always hidden, so the shadow has no end of its own: it runs from the wall foot to the edge of the light (800 uu, about 12 cells). Block tops get none of this light. With the light above the block top, at height h, a wall at distance d casts a shadow d x 100 / (h - 100) long.
+- Shadow off: untick Cast Shadows on `FloorWallLight` in BP_Miner, compile, save. The pool stays.
+- Unverified: no capture (the owner looks in game, A6); GPU cost not measured (Q17, [[perf-risks]]).
 
 ## Relations
 - [[task-425-miner-floor-wall-light]] — added FloorWallLight.
+- [[task-445-miner-light-wall-shadows]] — turned on its wall shadows.
 - [[task-410-right-hand-offset-live]] — added the right arm IK and hand rotation nodes.
 - [[task-411-right-hand-offset-rifle-stays]] — made the rifle stay in place under the offset.
 - [[task-400-burst-rifle-in-hand]] — added WeaponSocket_R.

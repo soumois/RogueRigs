@@ -1,12 +1,19 @@
 ---
 id: lights-no-shadows
-description: "Shadow suspension of the sun and sky light of L_ArenaM1, lifted by task-275-01 (shadows back as on Monday); history, per-actor flags kept."
+description: "Who casts shadows from which light: miner wall shadows (task-445), sun and sky suspension lifted by task-275-01; per-actor flags and history."
 parent: blueprints-world-index
 kind: doc
 ---
 # Lights without shadows (L_ArenaM1)
 
 Lifted by task-275-01 (owner 2026-10-21): the sun and sky light cast shadows again, as on Monday (packages restored from 75610b21, read back in the editor by task-275-04, values in [[lights-dark-ambient]]). The per-actor flags of task-263-01 are NOT reverted (pending owner question, since the blob shadows of task-264 stay): with the sun shadows back, rocks and barrels cast, robots, miner and drone do not (blob discs only). The text below is history.
+
+## Miner light casters (task-445, owner 2026-11-05, provisional)
+`FloorWallLight` ([[bp-miner]]) casts shadows on lighting channel 1. A caster needs its own shadow flag and a channel shared with the light: the engine drops any other (`FLightSceneInfoCompact::AffectsPrimitive`, Nanite shadow channel mask).
+- Cast from this light: rock pieces, which also draw ore and heal ore cells ([[sys-grid-rock-pieces]]); cast on, channels 0 and 1. PIE read on L_ArenaM1: 634 components.
+- Not from this light, channels 0 and 1 but cast off: floor, ore and heal ore crystals.
+- Not from this light, channel 0 only: barrels (cast on, so they keep the sun shadow); robots, miner, drone, pickups, rifle (cast off). Chest, console and shuttle: no asset but BP_Miner serializes lighting channels, and only the grid sets them in C++; the chest was not spawned at the PIE read.
+- Sun and sky unchanged. No code changed. Off switch: [[bp-miner]].
 
 Provisional, temporary (owner 2026-10-20, task-261: "aucun objet ne doit avoir une ombre pour l'instant"). Method: shadow casting is off on the lights, never on the objects, so the per-object CastShadow flags are untouched and the change reverts from the lights alone.
 
@@ -56,3 +63,5 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - [[perf-risks]] — cost of the moving shadowed light.
 - [[sys-blob-shadow]] — the fake blob shadows under actors (task-264).
 - [[bp-extraction-shuttle]] — the extractor, no shadow on hull and rotors (task-444).
+- [[sys-grid-rock-pieces]] — the rock pieces that cast from the miner light.
+- [[task-445-miner-light-wall-shadows]] — the miner light casts wall shadows only.
