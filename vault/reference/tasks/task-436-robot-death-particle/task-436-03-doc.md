@@ -3,7 +3,7 @@ id: task-436-03-doc
 description: "Doc: Document the new values of both puffs."
 parent: task-436-robot-death-particle
 kind: task
-status: todo
+status: in-progress
 ---
 # Better robot death particle: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:50:21Z
 - waiting_for: none
 - result: open
 

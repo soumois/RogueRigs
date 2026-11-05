@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read enemy-death, color-code, readability-rules, bp-robot-death-puff. "Améliorer" states no direction: Q3, answered with reference Art/Source/robot-death-fx/20261105-owner-ref-cartoon-explosion.png. Conflict: the sheet has red-orange outer bands and dark red puffs, against readability-rules (red = enemy fire or healing): Q18, the owner refused the no-red default; readability-rules gets his explosion rule at confirmation. Q4 not answered, default kept. enemy-death puff line edited at confirmation. Values provisional.
 - confirmed_by_owner: yes (2026-11-05, "Q18 : Il ne faut être si rigide sur le code couleur, une explosion dans l'esprit collective a aussi du rouge. Le code couleur ne peut pas non plus aller à l'encontre de ce qu'attend un joueur de l'explosion")
 - milestone: M2
-- next_step: task-436-02-heavy-puff
+- next_step: task-436-03-doc
 - started: 2026-11-05T17:37:13Z
 - waiting_for: none
 - result: open
