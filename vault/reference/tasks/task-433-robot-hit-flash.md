@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T16:05:27Z
 - waiting_for: none
-- result: Done. New bp-robot-hit-flash; updated sys-enemies-base (slot use 0 clip, 1 start, 2 flash), sys-damage, sys-tests-enemies, bp-robot-meshy-material, bp-robot-eye-material, bp-shield-chaser-v2, blueprints-enemies-index. Lint clean.
+- result: Hit flash built: C++ writes Custom Primitive Data 2 on BodyMesh for 0.08 s through a timer, no tick and no dynamic material; MF_RobotHitFlash is in M_RobotMeshy, M_ShieldChaserV2_Anim and M_RobotEye; shield, emblem and kamikaze core do not flash. A2 to A6 checked by value and test; A1 and the look of A2 to A4 unverified until the owner has seen them in game (A7).
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
