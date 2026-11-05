@@ -17,9 +17,11 @@ kind: doc
 - sync_rule: an eye instance's RunRate and ClipOffset equal those of its body instance, or the eye drifts from the head.
 - revert: delete the six assets above (and the folder if empty); nothing references them until the slot assignment subtasks.
 - verified: all four instances read back (switches, scalars, vector, textures); M_RobotEye compile without error, saved. The MF alone logs a preview-material compile warning on save (no preview texture on its AnimTex input); the materials using it compile. Not verified: any render, PIE.
+- hit_flash_433 (task-433-03, 2026-11-05): M_RobotEye base colour and emissive now go through MF_RobotHitFlash ([[bp-robot-hit-flash]]), so the eye turns white with the body; WPO untouched, instances not rewritten.
 - owner_agent: agent-bp
 
 ## Relations
+- [[bp-robot-hit-flash]] — the flash function in this master.
 - [[blueprints-enemies-index]] — parent index.
 - [[bp-chaser]] — body whose animation code this function shares.
 - [[bp-shield-chaser]] — body whose code (ClipOffset) the function holds.
