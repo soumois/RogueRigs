@@ -10,6 +10,8 @@
 #include "Enemies/RRChaser.h"
 #include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MaterialShared.h"
+#include "Materials/Material.h"
 #include "Misc/App.h"
 #include "NiagaraComponent.h"
 #include "NiagaraDataSetAccessor.h"
@@ -22,8 +24,10 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Objectives/RRRunFlowSubsystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "SceneInterface.h"
 #include "Settings/RRGameUserSettings.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestHarness.h"
@@ -352,6 +356,136 @@ bool FRRLevelUpTextAssetTest::RunTest(const FString& Parameters)
 	// A straight constant rise: the second half climbs as much as the first (a thrown arc would fall back).
 	TestTrue(TEXT("no arc: still climbing at the end"), Last.Z > Mid + 20.f);
 	TestTrue(TEXT("gold"), Color.Equals(FLinearColor(1.f, 0.72f, 0.15f, 1.f), 0.02f));
+	Component->DestroyComponent();
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRLevelUpWaveAssetTest, "RogueRigs.LevelUp.WaveAsset",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+/**
+ * task-441: BP_Miner plays NS_LevelUpWave and has no disc left; a level-up requests the text and the wave once. Under -RenderOffScreen the wave holds
+ * one ring and 24 shards, at most 25 sprites: the ring grows to about 2 x User.WaveRadius, the shards run out on the floor plane up to about that radius, all gone within 0.55 s.
+ */
+bool FRRLevelUpWaveAssetTest::RunTest(const FString& Parameters)
+{
+	UNiagaraSystem* Wave = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_LevelUpWave.NS_LevelUpWave"));
+	UNiagaraSystem* Text = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_LevelUpText.NS_LevelUpText"));
+	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Game/RogueRigs/FX/M_LevelUpWave.M_LevelUpWave"));
+	UClass* MinerClass = LoadTestClass<ARRMiner>(*this, MinerClassPath);
+	if (!TestNotNull(TEXT("NS_LevelUpWave"), Wave) || !TestNotNull(TEXT("NS_LevelUpText"), Text) || !TestNotNull(TEXT("M_LevelUpWave"), Material) || !MinerClass)
+	{
+		return false;
+	}
+	const URRLevelUpComponent* Defaults = MinerClass->GetDefaultObject<ARRMiner>()->GetLevelUp();
+	const FObjectPropertyBase* Property = FindFProperty<FObjectPropertyBase>(URRLevelUpComponent::StaticClass(), TEXT("LevelUpWaveSystem"));
+	TestTrue(TEXT("BP_Miner plays NS_LevelUpWave"), Defaults && Property && Property->GetObjectPropertyValue_InContainer(Defaults) == Wave);
+	TestNull(TEXT("no disc component left"), FindFProperty<FObjectProperty>(MinerClass, TEXT("LevelUpDisc")));
+	TestNull(TEXT("no disc step left"), FindFProperty<FIntProperty>(MinerClass, TEXT("DiscStep")));
+	TestNull(TEXT("no disc timer function left"), MinerClass->FindFunctionByName(TEXT("DiscStep_Tick")));
+
+	FTestWorld TestWorld(TEXT("RRLevelUpWaveAsset"));
+	{
+		TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+		FLevelUpSetup S;
+		if (!SpawnLevelUpSetup(*this, TestWorld, Recorder.Get(), S))
+		{
+			return false;
+		}
+		const URRNiagaraPoolSubsystem* Pool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+		if (!TestNotNull(TEXT("Niagara pool"), Pool))
+		{
+			return false;
+		}
+		S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 2));
+		TestEqual(TEXT("one text requested for two levels"), Pool->GetRequestedCount(Text), 1);
+		TestEqual(TEXT("one wave requested for two levels"), Pool->GetRequestedCount(Wave), 1);
+	}
+
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+	if (FMaterialResource* Resource = Material->GetMaterialResource(TestWorld.Get()->Scene->GetShaderPlatform()))
+	{
+		Resource->FinishCompilation();
+		TestEqual(TEXT("M_LevelUpWave compile errors"), Resource->GetCompileErrors().Num(), 0);
+		for (const FString& Error : Resource->GetCompileErrors())
+		{
+			AddError(Error);
+		}
+	}
+
+	const FVector Center(0.f, 0.f, 100.f);
+	constexpr float Radius = 300.f;
+	UNiagaraComponent* Component = UNiagaraFunctionLibrary::SpawnSystemAtLocation(TestWorld.Get(), Wave, Center, FRotator::ZeroRotator,
+		FVector::OneVector, /*bAutoDestroy*/ false, /*bAutoActivate*/ false, ENCPoolMethod::None, /*bPreCullCheck*/ false);
+	if (!TestNotNull(TEXT("wave component"), Component))
+	{
+		return false;
+	}
+	Component->SetVariableFloat(URRLevelUpComponent::WaveRadiusParameter, Radius);
+	Component->Activate(true);
+	FNiagaraEmitterInstance* Ring = nullptr;
+	FNiagaraEmitterInstance* Shards = nullptr;
+	const auto Refresh = [&]()
+	{
+		Ring = nullptr;
+		Shards = nullptr;
+		FNiagaraSystemInstanceControllerPtr Controller = Component->GetSystemInstanceController();
+		FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+		if (Instance)
+		{
+			Controller->WaitForConcurrentTickAndFinalize();
+			for (const FNiagaraEmitterInstanceRef& Emitter : Instance->GetEmitters())
+			{
+				(Emitter->GetEmitterHandle().GetName() == FName(TEXT("Core")) ? Ring : Shards) = &Emitter.Get();
+			}
+		}
+		return (Ring ? Ring->GetNumParticles() : 0) + (Shards ? Shards->GetNumParticles() : 0);
+	};
+	int32 Start = 0;
+	while (Refresh() == 0 && Start < 120)
+	{
+		TestWorld.Tick();
+		++Start;
+	}
+	int32 Largest = 0;
+	int32 Frames = 0;
+	float RingSize = 0.f;
+	double ShardReach = 0.0;
+	double ShardHeight = 0.0;
+	for (; Frames < 60; ++Frames)
+	{
+		const int32 Count = Refresh();
+		if (Count == 0)
+		{
+			break;
+		}
+		Largest = FMath::Max(Largest, Count);
+		if (Ring && Ring->GetNumParticles() > 0)
+		{
+			const auto Sizes = FNiagaraDataSetAccessor<FVector2f>::CreateReader(Ring->GetParticleData(), TEXT("SpriteSize"));
+			RingSize = Sizes.IsValid() ? FMath::Max(RingSize, Sizes[0].X) : RingSize;
+		}
+		if (Shards && Shards->GetNumParticles() > 0)
+		{
+			const auto Positions = FNiagaraDataSetAccessor<FNiagaraPosition>::CreateReader(Shards->GetParticleData(), TEXT("Position"));
+			for (int32 Index = 0; Positions.IsValid() && Index < Shards->GetNumParticles(); ++Index)
+			{
+				const FVector3f Position(Positions[Index]);
+				ShardReach = FMath::Max(ShardReach, FMath::Sqrt(static_cast<double>(Position.X * Position.X + Position.Y * Position.Y)));
+				ShardHeight = FMath::Max(ShardHeight, FMath::Abs(static_cast<double>(Position.Z)));
+			}
+		}
+		TestWorld.Tick();
+	}
+	AddInfo(FString::Printf(TEXT("level-up wave: largest %d sprites, %d frames, ring up to %.0f uu, shards reach %.0f uu, height %.1f"), Largest, Frames, RingSize, ShardReach, ShardHeight));
+	TestEqual(TEXT("one ring and 24 shards"), Largest, 25);
+	TestTrue(TEXT("the ring grows to about the radius"), RingSize > 2.f * Radius * 0.9f && RingSize <= 2.f * Radius + 1.f);
+	TestTrue(TEXT("the shards reach about the radius"), ShardReach > Radius * 0.7 && ShardReach < Radius * 1.2);
+	TestTrue(TEXT("one-shot, gone within 0.55 s"), Frames > 0 && Frames <= 34);
 	Component->DestroyComponent();
 	return true;
 }

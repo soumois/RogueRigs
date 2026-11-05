@@ -58,15 +58,6 @@ namespace RRWeaponsIntegrationTests
 	/** Seed of the upgrade draws of the card test. */
 	constexpr int32 IntegrationCardSeed = 20261005;
 
-	/** Last step of the BP_Miner level-up disc (bp-miner, kept behaviour): DiscStep_Tick hides the disc and stops re-arming on the tick that sets step 5, pause or not. */
-	constexpr int32 DiscLastStep = 5;
-
-	/** Frame of the third level-up of the disc test: restarts the animation 0.5 s into the 0.8 s choice delay, so its 0.1 s timer is mid-run when the screens pause the world. */
-	constexpr int32 ThirdLevelFrame = 30;
-
-	/** Name of the BP_Miner function the disc timer runs (set by function name). */
-	const TCHAR* const DiscTimerFunction = TEXT("DiscStep_Tick");
-
 	// Protected-member accessors: Tests/RRTestAccess.h.
 	using namespace RRTestAccess;
 
@@ -619,117 +610,6 @@ bool FRRIntegrationPlaceTurretKillsRobotTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("the turret fired"), Turret->GetShotCount() > 0);
 	TestTrue(TEXT("the robot took hits"), Hits > 0);
 	TestEqual(TEXT("one turret placed"), Launcher->GetTurretsPlaced(), 1);
-	return true;
-}
-
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationLevelUpDiscTest, "RogueRigs.Integration.LevelUpDiscEndsHidden",
-	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
-
-bool FRRIntegrationLevelUpDiscTest::RunTest(const FString& Parameters)
-{
-	using namespace RRWeaponsIntegrationTests;
-
-	// Declared before the world: released after it.
-	FTestGameInstance GameInstance;
-	FTestWorld TestWorld(TEXT("RRIntegrationDisc"));
-	UWorld* World = TestWorld.Get();
-	if (!StartGameMode(*this, TestWorld, GameInstance))
-	{
-		return false;
-	}
-	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
-	ARRMiner* Miner = Grid ? SpawnMiner(*this, TestWorld, Grid, OpenMinerCell, DisableWeaponCards) : nullptr;
-	if (!Miner || !PossessMiner(*this, TestWorld, Miner))
-	{
-		return false;
-	}
-	StopMinerWeapons(Miner);
-	URRProgressionComponent* Progression = Miner->GetProgression();
-	URRLevelUpComponent* LevelUp = Miner->GetLevelUp();
-	Miner->GetUpgrades()->SetRandomSeed(IntegrationCardSeed);
-
-	// The Blueprint disc: component LevelUpDisc and int variable DiscStep of BP_Miner, read by reflection.
-	const FIntProperty* StepProperty = FindFProperty<FIntProperty>(Miner->GetClass(), TEXT("DiscStep"));
-	const FObjectProperty* DiscProperty = FindFProperty<FObjectProperty>(Miner->GetClass(), TEXT("LevelUpDisc"));
-	if (!TestNotNull(TEXT("BP_Miner has DiscStep"), StepProperty) || !TestNotNull(TEXT("BP_Miner has LevelUpDisc"), DiscProperty))
-	{
-		return false;
-	}
-	const USceneComponent* Disc = Cast<USceneComponent>(DiscProperty->GetObjectPropertyValue_InContainer(Miner));
-	if (!TestNotNull(TEXT("LevelUpDisc is a scene component"), Disc))
-	{
-		return false;
-	}
-	auto IsShown = [Disc]() { return Disc->IsVisible() && !Disc->bHiddenInGame; };
-	auto Step = [StepProperty, Miner]() { return StepProperty->GetPropertyValue_InContainer(Miner); };
-	TestFalse(TEXT("disc hidden at start"), IsShown());
-
-	// Chained level-ups: two levels in one call, then a third gained ThirdLevelFrame frames into the choice delay; each screen picked at once.
-	Progression->AddXP((Progression->GetXPToNextLevelAt(1) + Progression->GetXPToNextLevelAt(2) + 2.f - Progression->GetXP()) / GetXPGain(Progression));
-	TestEqual(TEXT("level 3 after two levels of XP"), Progression->GetLevel(), 3);
-	FString Trace;
-	int32 LastStep = Step();
-	bool bLastShown = IsShown();
-	bool bEverShown = bLastShown;
-	int32 MaxStep = LastStep;
-	int32 Picks = 0;
-	int32 LastPickFrame = -1;
-	auto Sample = [&](int32 Frame)
-	{
-		const int32 Now = Step();
-		const bool bShown = IsShown();
-		if (Now != LastStep || bShown != bLastShown)
-		{
-			Trace += FString::Printf(TEXT(" f%d:%d%s%s"), Frame, Now, bShown ? TEXT("V") : TEXT("h"), World->IsPaused() ? TEXT("P") : TEXT(""));
-			LastStep = Now;
-			bLastShown = bShown;
-		}
-		bEverShown |= bShown;
-		MaxStep = FMath::Max(MaxStep, Now);
-	};
-	Sample(0);
-	int32 Frame = 1;
-	for (; Frame <= 600; ++Frame)
-	{
-		if (Frame == ThirdLevelFrame)
-		{
-			GrantOneLevel(Progression);
-		}
-		TestWorld.Tick();
-		Sample(Frame);
-		if (LevelUp->IsAwaitingChoice())
-		{
-			if (Picks == 0)
-			{
-				// The screens open while the restarted animation runs: the disc stays shown and its timer survives the pause.
-				TestTrue(TEXT("disc shown when the first screen opens"), IsShown());
-				TestTrue(TEXT("disc timer pending when the first screen opens"), UKismetSystemLibrary::K2_TimerExists(Miner, DiscTimerFunction));
-			}
-			TestTrue(FString::Printf(TEXT("pick %d accepted"), Picks + 1), LevelUp->ChooseUpgrade(0));
-			++Picks;
-			LastPickFrame = Frame;
-			Sample(Frame);
-		}
-		else if (Frame > ThirdLevelFrame && LevelUp->GetPendingChoices() == 0 && !LevelUp->IsChoiceDelayActive())
-		{
-			break;
-		}
-	}
-	TestEqual(TEXT("level 4"), Progression->GetLevel(), 4);
-	TestEqual(TEXT("three picks"), Picks, 3);
-	TestFalse(TEXT("world resumed after the last pick"), World->IsPaused());
-
-	// After the last pick: one second of running world for the animation (documented 0.6 s) to finish.
-	for (int32 After = 1; After <= 60; ++After)
-	{
-		TestWorld.Tick();
-		Sample(Frame + After);
-	}
-	AddInfo(FString::Printf(TEXT("WEAPONS disc: last pick at frame %d; step/visibility changes (P = paused):%s"), LastPickFrame, *Trace));
-	TestTrue(TEXT("the disc was shown"), bEverShown);
-	TestFalse(TEXT("the disc ends hidden"), IsShown());
-	TestFalse(TEXT("the disc animation finished (no DiscStep_Tick timer left)"), UKismetSystemLibrary::K2_TimerExists(Miner, DiscTimerFunction));
-	TestEqual(TEXT("DiscStep ends on the last step (5, bp-miner)"), Step(), DiscLastStep);
 	return true;
 }
 
