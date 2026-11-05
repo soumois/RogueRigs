@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T16:24:11Z
 - waiting_for: none
-- result: Done. Updated bp-explosion-fx-barrel (decision replaces the not decided line), sys-explosions (row, lifetime, warm-up, kamikaze mentions), bp-barrel-explosion, bp-explosion-fx. Lint clean.
+- result: Done. The Kamikaze row of ExplosionStats.csv now plays BP_ExplosionFX_Barrel (FXClass only, 7d8dd6a5): sphere, Niagara burst and ground ring at its visual radius of 327.6 uu on every explosion path, since all queue the same row. Barrel row, radius, damage, miner damage, terrain, chain delay and shake unchanged. Defaults read back, 18 tests pass, task-431 cause does not apply to the ring (read in the code). Look unverified: the owner validates in game, no capture run.
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
