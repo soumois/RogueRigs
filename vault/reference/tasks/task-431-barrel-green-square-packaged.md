@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T14:41:52Z
 - waiting_for: none
-- result: Done. sys-ground-telegraph holds cause, fix and packaged verification, its null-material gotcha corrected; sys-cheats lists rr.Debug.FuseBarrel; sys-explosions and build-toolchain unchanged (warm-up call and packaging untouched); lint clean.
+- result: Done. The green square was the engine default decal over the barrel fuse zone from the second run of a package: the telegraph default material, cached in a static weak pointer, was collected at the first map change and resolved to null. Fixed by resolving it again when stale (1939e428). Development package, three runs: before 44 of 205 frames green, after 0 of 194. Shipping package staged in Saved/StagedBuilds/Windows for the owner's check, only launched by the agent.
 
 ## Questions
 Decided 2026-11-04 (owner "Oui mais prépare la tâche seulement."): the defaults of Q6 are accepted; values provisional, owner 2026-11-04.
