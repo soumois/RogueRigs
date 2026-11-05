@@ -446,3 +446,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-436-robot-death-particle]] — A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde. Status done.
 - [[task-437-shot-impact-on-walls]] — The player shot impact sparks also play when the shot is stopped by a wall. Status done.
 - [[task-438-dig-debris]] — A block broken by the drone throws a short burst of debris of the block colour that falls and disappears. Status done.
+- [[task-439-explosion-wall-debris]] — Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-439-explosion-wall-debris
 description: "Global task: Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Wall debris thrown away from explosions
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read explosions, destruction-rules, sys-explosions, bp-barrel-explosion, art-style-guide A10 and A14, enemy-death (no Chaos Destruction). Targeted read of Source (Grep, because Q8 depends on it): no wall debris system found; the classes holding Niagara systems are projectile, explosion FX burst, weapon, damage numbers, drone, enemy. Blueprints not checked; NS_BarrelExplosion has no block debris, only sparks that fall. So this task builds debris, it does not redirect existing ones. Radius 735 uu can destroy very many blocks, hence the count bound. explosions edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-439-03-doc
+- next_step: none
 - started: 2026-11-05T19:19:14Z
 - waiting_for: none
-- result: open
+- result: Done. bp-explosion-wall-debris created and linked from the FX index; sys-explosions and sys-actor-pool updated; lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -28,7 +28,7 @@ Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du co
 3. task-439-03-doc (vault/reference/tasks/task-439-explosion-wall-debris/task-439-03-doc.md) — doc: Document the debris effect and its bound.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-439-01-debris-request]] — step 1, cpp.
 - [[task-439-02-debris-system]] — step 2, bp.
 - [[task-439-03-doc]] — step 3, doc.
