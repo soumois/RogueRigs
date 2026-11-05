@@ -3,7 +3,7 @@ id: task-449-level-up-wave-follows
 description: "Global task: The gold level-up floor wave follows the miner while it plays, instead of staying where he levelled up."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up floor wave follows the miner
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-449-01-wave-follows
-- started: open
+- started: 2026-11-05T22:42:52Z
 - waiting_for: none
 - result: open
 

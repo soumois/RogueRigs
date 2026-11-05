@@ -3,7 +3,7 @@ id: task-449-01-wave-follows
 description: "Cpp: The level-up wave stays on the miner while it plays, the push staying one blow."
 parent: task-449-level-up-wave-follows
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up floor wave follows the miner: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:42:52Z
 - waiting_for: none
 - result: open
 
