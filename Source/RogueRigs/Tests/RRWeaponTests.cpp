@@ -16,13 +16,22 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "MaterialShared.h"
+#include "Materials/Material.h"
+#include "Misc/App.h"
 #include "NiagaraComponent.h"
+#include "NiagaraDataSetAccessor.h"
+#include "NiagaraEmitterInstance.h"
+#include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "NiagaraSystemInstance.h"
+#include "NiagaraSystemInstanceController.h"
 #include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "Projectiles/RREnemyProjectile.h"
 #include "Projectiles/RRProjectile.h"
 #include "Projectiles/RRTurretBullet.h"
+#include "SceneInterface.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
@@ -1631,6 +1640,145 @@ bool FRRWeaponImpactSparkAssetTest::RunTest(const FString& Parameters)
 	}
 	AddInfo(FString::Printf(TEXT("spark back in the pool after %d frame(s) of %.4f s"), Frames, FrameSeconds));
 	TestEqual(TEXT("one-shot: back in the pool"), FXPool->GetInUseCount(Shipped), 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponMuzzleFlashAssetTest, "RogueRigs.Weapons.MuzzleFlashAsset",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+/**
+ * task-440: both muzzle flash systems, read from the simulation under -RenderOffScreen: at most 10 sprites, gone within 0.1 s, the Core
+ * emitter holds one streak, one shape and one core, the shape changes from shot to shot, the shotgun flash is larger; BP_Shotgun plays
+ * its own system, the rifle the default one; the material compiles.
+ */
+bool FRRWeaponMuzzleFlashAssetTest::RunTest(const FString& Parameters)
+{
+	using namespace RRTestHarness;
+
+	UNiagaraSystem* Rifle = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_MuzzleFlash.NS_MuzzleFlash"));
+	UNiagaraSystem* Shotgun = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_MuzzleFlashShotgun.NS_MuzzleFlashShotgun"));
+	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Game/RogueRigs/FX/M_MuzzleFlash.M_MuzzleFlash"));
+	UClass* RifleClass = LoadClass<ARRWeapon>(nullptr, TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_BurstRifle.BP_BurstRifle_C"));
+	UClass* ShotgunClass = LoadClass<ARRWeapon>(nullptr, TEXT("/Game/RogueRigs/Blueprints/Weapons/BP_Shotgun.BP_Shotgun_C"));
+	if (!TestNotNull(TEXT("NS_MuzzleFlash"), Rifle) || !TestNotNull(TEXT("NS_MuzzleFlashShotgun"), Shotgun) || !TestNotNull(TEXT("M_MuzzleFlash"), Material)
+		|| !TestNotNull(TEXT("BP_BurstRifle"), RifleClass) || !TestNotNull(TEXT("BP_Shotgun"), ShotgunClass))
+	{
+		return false;
+	}
+	const auto SystemOf = [](UClass* Class) -> UObject*
+	{
+		const FObjectPropertyBase* Property = FindFProperty<FObjectPropertyBase>(Class, TEXT("MuzzleFlashSystem"));
+		return Property ? Property->GetObjectPropertyValue_InContainer(Class->GetDefaultObject()) : nullptr;
+	};
+	TestTrue(TEXT("the rifle plays NS_MuzzleFlash"), SystemOf(RifleClass) == Rifle);
+	TestTrue(TEXT("the shotgun plays NS_MuzzleFlashShotgun"), SystemOf(ShotgunClass) == Shotgun);
+
+	// Niagara only runs under a real RHI (-RenderOffScreen).
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+
+	FTestWorld TestWorld(TEXT("RRMuzzleFlashAsset"));
+	if (FMaterialResource* Resource = Material->GetMaterialResource(TestWorld.Get()->Scene->GetShaderPlatform()))
+	{
+		Resource->FinishCompilation();
+		TestEqual(TEXT("M_MuzzleFlash compile errors"), Resource->GetCompileErrors().Num(), 0);
+		for (const FString& Error : Resource->GetCompileErrors())
+		{
+			AddError(Error);
+		}
+	}
+
+	double ShapeSize[2] = {0.0, 0.0};
+	for (int32 SystemIndex = 0; SystemIndex < 2; ++SystemIndex)
+	{
+		UNiagaraSystem* System = SystemIndex == 0 ? Rifle : Shotgun;
+		constexpr int32 Shots = 16;
+		TArray<UNiagaraComponent*> Components;
+		for (int32 Shot = 0; Shot < Shots; ++Shot)
+		{
+			Components.Add(UNiagaraFunctionLibrary::SpawnSystemAtLocation(TestWorld.Get(), System, FVector(0.f, 200.f * Shot, 100.f), FRotator::ZeroRotator,
+				FVector::OneVector, /*bAutoDestroy*/ false, /*bAutoActivate*/ true, ENCPoolMethod::None, /*bPreCullCheck*/ false));
+		}
+		const auto ParticlesOf = [](UNiagaraComponent* Component, FNiagaraEmitterInstance*& OutCore)
+		{
+			int32 Count = 0;
+			OutCore = nullptr;
+			FNiagaraSystemInstanceControllerPtr Controller = Component ? Component->GetSystemInstanceController() : nullptr;
+			FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+			if (Instance)
+			{
+				Controller->WaitForConcurrentTickAndFinalize();
+				for (const FNiagaraEmitterInstanceRef& Emitter : Instance->GetEmitters())
+				{
+					Count += Emitter->GetNumParticles();
+					if (Emitter->GetEmitterHandle().GetName() == FName(TEXT("Core")))
+					{
+						OutCore = &Emitter.Get();
+					}
+				}
+			}
+			return Count;
+		};
+		FNiagaraEmitterInstance* Core = nullptr;
+		int32 Frame = 0;
+		while (ParticlesOf(Components[0], Core) == 0 && Frame < 60)
+		{
+			TestWorld.Tick();
+			++Frame;
+		}
+		TSet<int32> Variants;
+		int32 Largest = 0;
+		for (UNiagaraComponent* Component : Components)
+		{
+			const int32 Count = ParticlesOf(Component, Core);
+			Largest = FMath::Max(Largest, Count);
+			if (!TestNotNull(TEXT("Core emitter"), Core) || !TestEqual(TEXT("Core holds 3 sprites"), Core->GetNumParticles(), 3))
+			{
+				return false;
+			}
+			const FNiagaraDataSet& Data = Core->GetParticleData();
+			const auto Colors = FNiagaraDataSetAccessor<FLinearColor>::CreateReader(Data, TEXT("Color"));
+			const auto Sizes = FNiagaraDataSetAccessor<FVector2f>::CreateReader(Data, TEXT("SpriteSize"));
+			const auto Lifetimes = FNiagaraDataSetAccessor<float>::CreateReader(Data, TEXT("Lifetime"));
+			const auto Velocities = FNiagaraDataSetAccessor<FVector3f>::CreateReader(Data, TEXT("Velocity"));
+			if (!TestTrue(TEXT("particle attributes readable"), Colors.IsValid() && Sizes.IsValid() && Lifetimes.IsValid() && Velocities.IsValid()))
+			{
+				return false;
+			}
+			TSet<int32> Kinds;
+			for (int32 Index = 0; Index < 3; ++Index)
+			{
+				const FLinearColor Color = Colors[Index];
+				Kinds.Add(FMath::RoundToInt(Color.B * 2.f));
+				TestTrue(TEXT("at most 0.1 s"), Lifetimes[Index] <= 0.1f + UE_KINDA_SMALL_NUMBER);
+				TestTrue(TEXT("aligned forward"), Velocities[Index].X > 0.f && FMath::IsNearlyZero(Velocities[Index].Y) && FMath::IsNearlyZero(Velocities[Index].Z));
+				if (FMath::IsNearlyZero(Color.B))
+				{
+					Variants.Add(FMath::FloorToInt(FMath::Clamp(Color.R, 0.f, 1.f) * 3.999f));
+					ShapeSize[SystemIndex] = FMath::Max<double>(ShapeSize[SystemIndex], Sizes[Index].X);
+				}
+			}
+			TestEqual(TEXT("one streak, one shape, one core"), Kinds.Num(), 3);
+		}
+		AddInfo(FString::Printf(TEXT("%s: largest %d sprites, %d of 4 shapes over %d shots, shape size up to %.0f uu"), *System->GetName(), Largest, Variants.Num(), Shots, ShapeSize[SystemIndex]));
+		TestTrue(TEXT("at most 10 sprites"), Largest > 0 && Largest <= 10);
+		TestTrue(TEXT("the shape changes from shot to shot"), Variants.Num() >= 2);
+
+		// Gone within 0.1 s, two frames of margin.
+		for (int32 Tick = 0; Tick < 8; ++Tick)
+		{
+			TestWorld.Tick();
+		}
+		for (UNiagaraComponent* Component : Components)
+		{
+			TestEqual(TEXT("gone within 0.1 s"), ParticlesOf(Component, Core), 0);
+			Component->DestroyComponent();
+		}
+	}
+	TestTrue(TEXT("the shotgun flash is larger"), ShapeSize[1] >= ShapeSize[0] * 1.3);
 	return true;
 }
 
