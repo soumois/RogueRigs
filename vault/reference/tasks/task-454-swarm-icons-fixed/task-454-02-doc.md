@@ -3,7 +3,7 @@ id: task-454-02-doc
 description: "Doc: Docs state the new rule."
 parent: task-454-swarm-icons-fixed
 kind: task
-status: todo
+status: in-progress
 ---
 # First swarms ignore kills until the first front is over: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T23:42:16Z
 - waiting_for: none
 - result: open
 
