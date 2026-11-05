@@ -334,15 +334,19 @@ float ARRProjectile::GetCarriedDamage() const
 
 void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 {
-	// Barrels are grid cells without an ASC: the grid takes the carried damage as shot damage (other blocks ignore it).
-	if (!bSpent && bDamagesTerrain)
+	if (!bSpent)
 	{
 		if (ARRArenaGrid* Grid = Cast<ARRArenaGrid>(ImpactResult.GetActor()))
 		{
 			const FIntPoint Cell = Grid->GetCellFromHit(ImpactResult);
-			if (Grid->GetCellType(Cell) == ERRCellType::Barrel)
+			// Sparks on every block, the cells the drone can dig (task-437); robot shots have no system.
+			if (Grid->IsBlockCell(Cell))
 			{
 				PlayImpactSpark(&ImpactResult);
+			}
+			// Barrels are grid cells without an ASC: the grid takes the carried damage as shot damage (other blocks ignore it).
+			if (bDamagesTerrain && Grid->GetCellType(Cell) == ERRCellType::Barrel)
+			{
 				Grid->ApplyShotDamage(Cell, GetCarriedDamage());
 			}
 		}

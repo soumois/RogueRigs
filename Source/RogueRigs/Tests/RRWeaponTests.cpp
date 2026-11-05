@@ -1497,16 +1497,69 @@ bool FRRWeaponImpactSparksTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("turret bullet on a robot: one more spark"), Requests(), 2);
 	}
 
-	// Rifle shot stopped by rock: no spark.
+	// Rifle shot stopped by rock: one spark on the rock's face, at the shot's height; the rock is untouched.
 	TestEqual(TEXT("(43, 38) is rock"), Grid->GetCellType(RockCell), ERRCellType::Rock);
+	const float RockHealthBefore = Grid->GetCellHealth(RockCell);
 	FlyOut(FireRifleFrom(RockWestFloorCell));
-	TestEqual(TEXT("rifle on rock: no spark"), Requests(), 2);
+	TestEqual(TEXT("rifle on rock: one spark"), Requests(), 3);
+	TestNearlyEqual(TEXT("rifle on rock: rock health unchanged"), Grid->GetCellHealth(RockCell), RockHealthBefore);
+	if (TestNotNull(TEXT("spark pool"), SparkPool))
+	{
+		const FVector RockCenter = Grid->GetCellCenter(RockCell.X, RockCell.Y);
+		const FVector ExpectedSpark(RockCenter.X - 0.5f * Grid->GetCellSize(), RockCenter.Y, RockCenter.Z + ShotZ);
+		bool bSparkOnFace = false;
+		const auto CheckComponents = [&](const auto& Components)
+		{
+			for (const auto& Component : Components)
+			{
+				bSparkOnFace |= Component && FVector::Dist(Component->GetComponentLocation(), ExpectedSpark) < 30.0;
+			}
+		};
+		CheckComponents(SparkPool->Free);
+		CheckComponents(SparkPool->InUse);
+		TestTrue(TEXT("rifle on rock: spark on the rock's face at the shot's height"), bSparkOnFace);
+	}
+
+	// Turret bullet stopped by rock: one spark.
+	ARRProjectile* TurretOnRock = ARRProjectile::SpawnProjectile(TestWorld.Get(), ARRTurretBullet::StaticClass(), FTransform(Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y) + FVector(0.f, 0.f, ShotZ)), Rifle, nullptr, FGameplayEffectSpecHandle(), 3000.f, 1.f);
+	if (TestNotNull(TEXT("turret bullet on rock"), TurretOnRock))
+	{
+		FProjectileAccess::ImpactSparkSystemOf(TurretOnRock) = Sparks.Get();
+		FlyOut(TurretOnRock);
+		TestEqual(TEXT("turret bullet on rock: one spark"), Requests(), 4);
+	}
 
 	// Rifle shot on a barrel: one spark.
 	const FIntPoint BarrelCell(43, 6);
 	TestEqual(TEXT("(43, 6) is a barrel"), Grid->GetCellType(BarrelCell), ERRCellType::Barrel);
 	FlyOut(FireRifleFrom(BarrelCell - FIntPoint(1, 0)));
-	TestEqual(TEXT("rifle on a barrel: one spark"), Requests(), 3);
+	TestEqual(TEXT("rifle on a barrel: one spark"), Requests(), 5);
+
+	// Every ore type of the layout, reached from the open cell on its west: one spark each.
+	for (const ERRCellType OreType : { ERRCellType::Ore, ERRCellType::HealOre, ERRCellType::SpecialOre })
+	{
+		FIntPoint OreCell(INDEX_NONE, INDEX_NONE);
+		for (int32 Y = 0; Y < 128 && OreCell.X == INDEX_NONE; ++Y)
+		{
+			for (int32 X = 1; X < 128 && OreCell.X == INDEX_NONE; ++X)
+			{
+				if (Grid->GetCellType(FIntPoint(X, Y)) == OreType && Grid->GetCellType(FIntPoint(X - 1, Y)) == ERRCellType::Floor)
+				{
+					OreCell = FIntPoint(X, Y);
+				}
+			}
+		}
+		const FString OreName = UEnum::GetValueAsString(OreType);
+		if (OreCell.X == INDEX_NONE)
+		{
+			AddInfo(FString::Printf(TEXT("%s: no cell with open floor on its west in this layout, not fired at"), *OreName));
+			continue;
+		}
+		AddInfo(FString::Printf(TEXT("%s: fired at (%d, %d)"), *OreName, OreCell.X, OreCell.Y));
+		const int32 RequestsBefore = Requests();
+		FlyOut(FireRifleFrom(OreCell - FIntPoint(1, 0)));
+		TestEqual(FString::Printf(TEXT("rifle on %s: one spark"), *OreName), Requests(), RequestsBefore + 1);
+	}
 
 	// Robot shots have no system at all.
 	TestNull(TEXT("robot shots have no spark system"), FProjectileAccess::ImpactSparkSystemOf(GetMutableDefault<ARREnemyProjectile>()).Get());

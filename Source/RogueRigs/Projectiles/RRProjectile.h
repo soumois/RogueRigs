@@ -34,9 +34,9 @@ struct FHitResult;
  * HoldFirstMove keeps it at the Muzzle for its first drawn frame (task-413). Robot
  * shots: HitActorClass = the miner class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint for the mesh
  * (its collision is turned off at spawn: only the capsule collides) and the capsule radius.
- * Impact sparks (task-432, art rule A8): a hit on a robot or a barrel plays ImpactSparkSystem once at the impact, through
- * URRNiagaraPoolSubsystem (cap ImpactSparkPoolSize; skipped when no slot is free). A stop on anything else shows nothing;
- * robot shots have no system.
+ * Impact sparks (task-432, task-437, art rule A8): a hit on a robot or a stop on a grid block (ARRArenaGrid::IsBlockCell, the cells
+ * the drone can dig: rock, every ore, barrel) plays ImpactSparkSystem once at the impact, through URRNiagaraPoolSubsystem (cap
+ * ImpactSparkPoolSize; skipped when no slot is free). A stop on anything else shows nothing; robot shots have no system.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRProjectile : public AActor
@@ -148,7 +148,10 @@ protected:
 	UFUNCTION()
 	void OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	/** Blocking hit (rock, wall): when bDamagesTerrain, applies the carried damage once to a barrel of the arena grid (ARRArenaGrid::ApplyShotDamage); then destroys this projectile. */
+	/**
+	 * Blocking hit (rock, wall): plays the impact spark on a block of the arena grid; when bDamagesTerrain, applies the carried damage
+	 * once to a barrel (ARRArenaGrid::ApplyShotDamage); then destroys this projectile.
+	 */
 	UFUNCTION()
 	void OnProjectileStop(const FHitResult& ImpactResult);
 
@@ -187,7 +190,7 @@ protected:
 	bool bDamagesTerrain = true;
 
 	/**
-	 * One-shot system played at each hit on a robot or a barrel (task-432, art rule A8). Default
+	 * One-shot system played at each hit on a robot or a grid block (task-432, task-437, art rule A8). Default
 	 * /Game/RogueRigs/FX/NS_ShotImpactSpark (constructor reference); None = no sparks (robot shots).
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact")
