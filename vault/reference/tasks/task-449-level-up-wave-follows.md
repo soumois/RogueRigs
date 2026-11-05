@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:42:52Z
 - waiting_for: none
-- result: Done. Commit 5e984eb5. sys-level-up (burst entry, GetWaveLocation, GetFollowedWave, tick only while the wave plays, test figures) and bp-level-up-burst (purpose, verified, unverified) state that the wave follows the miner, the text stays and the push is one blow. Lint clean.
+- result: Done. Code 6e31c55a: URRLevelUpComponent ticks (TG_PostPhysics) only while its pooled NS_LevelUpWave plays and moves it under the miner's feet each frame; the local-space ring and shards follow; text spawn and push unchanged, no asset changed (A3). A2: RogueRigs.LevelUp under -RenderOffScreen 9/9 pass; new WaveFollowsMiner, miner running 600 uu/s (300 uu during the 29-frame wave): ring 0.00 uu off his feet, shard centroid within 31.5 uu, shards reach 321 uu around him, height error 0.00 uu, 25 sprites, push once and none while following (A4). A5/A6: other LevelUp tests unchanged and passing, no expectation edited. Doc 5e984eb5 (sys-level-up, bp-level-up-burst). A1 look in game unverified (owner, A7); whether the ring of the owner's screenshot was this wave or the kamikaze explosion ring is not settled from one frame (sizes fit both).
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
