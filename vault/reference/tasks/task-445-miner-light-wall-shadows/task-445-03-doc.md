@@ -3,7 +3,7 @@ id: task-445-03-doc
 description: "Doc: Document the shadow, the values and how to turn it off."
 parent: task-445-miner-light-wall-shadows
 kind: task
-status: in-progress
+status: done
 ---
 # Miner light casts wall shadows only: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Nodes state the current state and the off switch; perf-risks row updated; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-445
+- usage: included in the executor run of task-445
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T21:30:14Z
 - waiting_for: none
-- result: open
+- result: bp-miner, lights-no-shadows, lights-dark-ambient and perf-risks state the shadow, current values, casters, shadow length and off switch; sys-grid-rock-pieces cross-linked. Lint clean.
 
 ## Relations
 - [[task-445-miner-light-wall-shadows]] — parent global task.
