@@ -32,7 +32,7 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - Cast: grid rock piece ISMs, barrel HISMs and special ore (`ARRArenaGrid::bBlocksCastShadows`, default true, [[sys-grid]]). Ore and heal ore crystals stay off (`bDepositCrystalsCastShadow` false, task-237-01).
 - Never cast: grid floor chunks; every primitive of robots (`ARREnemy`), pickups (`ARRPickup`), the drone (`ARRDrone`), the miner (`ARRMiner`), weapons and turrets (`ARRWeapon`) and projectiles (`ARRProjectile`), through `RRShadows::DisableCastShadows` in their `PostInitializeComponents` (C++ and Blueprint components, kept across pool reuse). Robots get a fake blob shadow instead (task-264).
 - Blob shadows under actors (task-264): `URRBlobShadowComponent`, a flat translucent dark disc (MI_BlobShadow) under every robot, the miner and the drone, no cast shadow ([[sys-blob-shadow]]).
-- Not covered (no C++ rule, flags as authored): objectives (console, shuttle, bonus chest), Niagara debris and effects, explosion FX (already off in C++).
+- Not covered (no C++ rule, flags as authored): objectives (console, bonus chest), Niagara debris and effects, explosion FX (already off in C++). The shuttle is covered in its Blueprint since task-444-01: hull and rotors cast nothing ([[bp-extraction-shuttle]]).
 - The light itself now exists (task-263-02, provisional, owner 2026-10-20, owner tunes by eye): PointLightComponent `PlayerLight` on BP_Miner, Movable, warm, Candelas, cast shadows on (first values 60 cd, radius 1400, height 300; current values since task-272-02: Z -15, radius 3000, 400 cd); values and tuning in [[bp-miner]]. DirectionalLight_0 and SkyLight_0 still cast no shadow (unchanged). Cost: a moving shadowed local light invalidates virtual shadow map pages each frame ([[perf-risks]]); reduce with a smaller AttenuationRadius or castShadows off.
 
 ## Revert (bring the shadows back)
@@ -55,3 +55,4 @@ Owner 2026-10-20 (reference game video): the only cast shadows are those of the 
 - [[bp-miner]] — carries the player light (task-263-02).
 - [[perf-risks]] — cost of the moving shadowed light.
 - [[sys-blob-shadow]] — the fake blob shadows under actors (task-264).
+- [[bp-extraction-shuttle]] — the extractor, no shadow on hull and rotors (task-444).
