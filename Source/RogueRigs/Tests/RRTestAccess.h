@@ -23,6 +23,7 @@
 #include "InputActionValue.h"
 #include "Player/RRMiner.h"
 #include "Player/RRPlayerController.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Projectiles/RRProjectile.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRWeapon.h"
@@ -348,10 +349,19 @@ namespace RRTestAccess
 		static float& SpreadDegOf(ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::SpreadDeg); }
 	};
 
-	/** ARRProjectile: the hit filter class. */
+	/** URRNiagaraPoolSubsystem: the pool of one system. */
+	struct FNiagaraPoolAccess : public URRNiagaraPoolSubsystem
+	{
+		static FRRNiagaraSystemPool* PoolOf(URRNiagaraPoolSubsystem* FXPool, UNiagaraSystem* System) { return (FXPool->*(&FNiagaraPoolAccess::Pools)).Find(System); }
+	};
+
+	/** ARRProjectile: the hit filter class, the impact spark system and cap. */
 	struct FProjectileAccess : public ARRProjectile
 	{
 		static TSubclassOf<AActor>& HitActorClassOf(ARRProjectile* Projectile) { return Projectile->*(&FProjectileAccess::HitActorClass); }
+		static TObjectPtr<UNiagaraSystem>& ImpactSparkSystemOf(ARRProjectile* Projectile) { return Projectile->*(&FProjectileAccess::ImpactSparkSystem); }
+		static int32& ImpactSparkPoolSizeOf(ARRProjectile* Projectile) { return Projectile->*(&FProjectileAccess::ImpactSparkPoolSize); }
+		static void PlayImpactSparkOf(ARRProjectile* Projectile, const FHitResult* Impact) { (Projectile->*(&FProjectileAccess::PlayImpactSpark))(Impact); }
 	};
 
 	/** UUserWidget: its native tick (latent actions, then the Blueprint Event Tick), which headless tests never get from Slate. */

@@ -11,6 +11,8 @@ class APawn;
 class UPrimitiveComponent;
 class UCapsuleComponent;
 class UProjectileMovementComponent;
+class UNiagaraSystem;
+class UWorld;
 struct FHitResult;
 
 /**
@@ -32,6 +34,9 @@ struct FHitResult;
  * HoldFirstMove keeps it at the Muzzle for its first drawn frame (task-413). Robot
  * shots: HitActorClass = the miner class (robots are passed through) and bDamagesTerrain off. Subclass in Blueprint for the mesh
  * (its collision is turned off at spawn: only the capsule collides) and the capsule radius.
+ * Impact sparks (task-432, art rule A8): a hit on a robot or a barrel plays ImpactSparkSystem once at the impact, through
+ * URRNiagaraPoolSubsystem (cap ImpactSparkPoolSize; skipped when no slot is free). A stop on anything else shows nothing;
+ * robot shots have no system.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API ARRProjectile : public AActor
@@ -112,6 +117,9 @@ public:
 	/** Radius in uu of the collision capsule of Class's default object (its Blueprint value); 0 when Class is unset. */
 	static float GetDefaultCollisionRadius(TSubclassOf<ARRProjectile> Class);
 
+	/** Creates the pooled impact spark components of Class's default system, so the first hits create none (ARRWeapon::Acquire). No system: nothing. */
+	static void PrewarmImpactSparks(UWorld* World, TSubclassOf<ARRProjectile> Class);
+
 	/** The movement component. */
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 
@@ -154,6 +162,12 @@ protected:
 	bool IsIgnoredActor(const AActor* OtherActor) const;
 
 	/**
+	 * Plays ImpactSparkSystem once through the Niagara pool, at the shot's height: on the horizontal impact point of Impact, or at
+	 * this projectile when Impact is null or started inside the target (no impact point). Skipped when no slot is free.
+	 */
+	void PlayImpactSpark(const FHitResult* Impact);
+
+	/**
 	 * Collision capsule on the Projectile channel; root component (the sphere CollisionSphere before task-412). Radius editable in
 	 * the Blueprint subclass; half height = radius by default, set per shot by SpawnProjectile (miner shots from the Muzzle).
 	 */
@@ -171,6 +185,17 @@ protected:
 	/** A blocking hit on a barrel cell damages it (miner shots). Off for shots that must not touch the terrain (robot shots). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	bool bDamagesTerrain = true;
+
+	/**
+	 * One-shot system played at each hit on a robot or a barrel (task-432, art rule A8). Default
+	 * /Game/RogueRigs/FX/NS_ShotImpactSpark (constructor reference); None = no sparks (robot shots).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact")
+	TObjectPtr<UNiagaraSystem> ImpactSparkSystem;
+
+	/** Most impact sparks playing at once, all projectile classes (cap of the Niagara pool, 24 x at most 8 sprites); a hit beyond it shows none. Provisional, owner 2026-11-05. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact", meta = (ClampMin = "0"))
+	int32 ImpactSparkPoolSize = 24;
 
 	/** Damage spec made by the weapon's ASC at fire time; applied on impact (the target ASC works on its own copy). */
 	FGameplayEffectSpecHandle DamageSpec;

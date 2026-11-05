@@ -100,6 +100,9 @@ bool ARRWeapon::Acquire(ARRMiner* InOwnerMiner)
 	AutoFire->RefillAmmo();
 	AutoFire->SetShotHandler(FSimpleDelegate::CreateUObject(this, &ARRWeapon::FireOnce));
 
+	// Impact spark components are created here (once per pool, up to its cap), never at a hit (task-432).
+	ARRProjectile::PrewarmImpactSparks(GetWorld(), ProjectileClass);
+
 	// Read the aim after the miner updated it this frame.
 	if (OwnerMiner)
 	{

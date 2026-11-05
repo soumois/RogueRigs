@@ -12,6 +12,8 @@ ARREnemyProjectile::ARREnemyProjectile(const FObjectInitializer& ObjectInitializ
 {
 	HitActorClass = ARRMiner::StaticClass();
 	bDamagesTerrain = false;
+	// Impact sparks are for player shots only (task-432).
+	ImpactSparkSystem = nullptr;
 	// Robot shots keep the 10 uu sphere (capsule half height = radius); the miner shots of the base class use 14 uu.
 	CollisionCapsule->InitCapsuleSize(10.f, 10.f);
 }

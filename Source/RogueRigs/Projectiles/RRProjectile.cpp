@@ -10,8 +10,11 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Grid/RRArenaGrid.h"
+#include "NiagaraSystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
 #include "RogueRigs.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Weapons/RRWeaponAttributeSet.h"
 #include "World/RRShadows.h"
 
@@ -48,6 +51,13 @@ ARRProjectile::ARRProjectile(const FObjectInitializer& ObjectInitializer)
 	ProjectileMovement->bForceSubStepping = false;
 	ProjectileMovement->bInitialVelocityInLocalSpace = true;
 	ProjectileMovement->Velocity = FVector::ForwardVector;
+
+	// task-432: constructor reference (RRDrone pattern), so the shot Blueprints need no edit; ARREnemyProjectile clears it.
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> ImpactSparkFinder(TEXT("/Game/RogueRigs/FX/NS_ShotImpactSpark.NS_ShotImpactSpark"));
+	if (ImpactSparkFinder.Succeeded())
+	{
+		ImpactSparkSystem = ImpactSparkFinder.Object;
+	}
 }
 
 void ARRProjectile::PostInitializeComponents()
@@ -147,6 +157,33 @@ float ARRProjectile::GetDefaultCollisionRadius(TSubclassOf<ARRProjectile> Class)
 {
 	const ARRProjectile* Default = Class ? Class->GetDefaultObject<ARRProjectile>() : nullptr;
 	return Default && Default->CollisionCapsule ? Default->CollisionCapsule->GetUnscaledCapsuleRadius() : 0.f;
+}
+
+void ARRProjectile::PrewarmImpactSparks(UWorld* World, TSubclassOf<ARRProjectile> Class)
+{
+	const ARRProjectile* Default = Class ? Class->GetDefaultObject<ARRProjectile>() : nullptr;
+	URRNiagaraPoolSubsystem* FXPool = World ? World->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	if (Default && Default->ImpactSparkSystem && FXPool)
+	{
+		FXPool->Prewarm(Default->ImpactSparkSystem, Default->ImpactSparkPoolSize, Default->ImpactSparkPoolSize);
+	}
+}
+
+void ARRProjectile::PlayImpactSpark(const FHitResult* Impact)
+{
+	URRNiagaraPoolSubsystem* FXPool = ImpactSparkSystem && GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	if (FXPool == nullptr)
+	{
+		return;
+	}
+	// The shot's own height, where the player sees the shot: a tall Muzzle capsule (task-412) may touch far below the shot mesh.
+	FVector Location = GetActorLocation();
+	if (Impact && !Impact->bStartPenetrating)
+	{
+		Location.X = Impact->ImpactPoint.X;
+		Location.Y = Impact->ImpactPoint.Y;
+	}
+	FXPool->Spawn(ImpactSparkSystem, Location, FRotator::ZeroRotator, ImpactSparkPoolSize);
 }
 
 bool ARRProjectile::SweepTo(const FVector& TargetLocation)
@@ -256,6 +293,7 @@ void ARRProjectile::OnCollisionBeginOverlap(UPrimitiveComponent* OverlappedCompo
 	if (ARREnemy* HitRobot = Cast<ARREnemy>(OtherActor))
 	{
 		HitRobot->RecordHitDirection(ProjectileMovement->Velocity.IsNearlyZero() ? GetActorForwardVector() : ProjectileMovement->Velocity);
+		PlayImpactSpark(bFromSweep ? &SweepResult : nullptr);
 	}
 	if (const FGameplayEffectSpec* Spec = DamageSpec.Data.Get())
 	{
@@ -304,6 +342,7 @@ void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 			const FIntPoint Cell = Grid->GetCellFromHit(ImpactResult);
 			if (Grid->GetCellType(Cell) == ERRCellType::Barrel)
 			{
+				PlayImpactSpark(&ImpactResult);
 				Grid->ApplyShotDamage(Cell, GetCarriedDamage());
 			}
 		}

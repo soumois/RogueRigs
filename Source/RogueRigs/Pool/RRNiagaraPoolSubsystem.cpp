@@ -50,6 +50,7 @@ UNiagaraComponent* URRNiagaraPoolSubsystem::Spawn(UNiagaraSystem* System, const 
 	}
 	FRRNiagaraSystemPool& Pool = Pools.FindOrAdd(System);
 	Pool.Cap = Cap;
+	++Pool.RequestedCount;
 
 	UNiagaraComponent* Component = nullptr;
 	while (!Component && Pool.Free.Num() > 0)
@@ -152,6 +153,12 @@ int32 URRNiagaraPoolSubsystem::GetSkippedCount(const UNiagaraSystem* System) con
 {
 	const FRRNiagaraSystemPool* Pool = Pools.Find(System);
 	return Pool ? Pool->SkippedCount : 0;
+}
+
+int32 URRNiagaraPoolSubsystem::GetRequestedCount(const UNiagaraSystem* System) const
+{
+	const FRRNiagaraSystemPool* Pool = Pools.Find(System);
+	return Pool ? Pool->RequestedCount : 0;
 }
 
 int32 URRNiagaraPoolSubsystem::GetPlayedCount(const UNiagaraSystem* System) const

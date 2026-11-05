@@ -16,8 +16,13 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Projectiles/RRCollisionChannels.h"
+#include "Projectiles/RREnemyProjectile.h"
 #include "Projectiles/RRProjectile.h"
+#include "Projectiles/RRTurretBullet.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
@@ -1414,6 +1419,111 @@ bool FRRWeaponPierceUpgradeTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(TEXT("upgraded bullet carries the upgraded pierce"), Shot->GetMaxHits(), FMath::RoundToInt32(AfterYellow));
 		Shot->Destroy();
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponImpactSparksTest, "RogueRigs.Weapons.ImpactSparks",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponImpactSparksTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponImpactSparksWorld"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
+	ARRChaser* StillChaser = Rifle ? SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(ChaserCell.X, ChaserCell.Y)) : nullptr;
+	URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+	if (!StillChaser || !TestNotNull(TEXT("Niagara pool"), FXPool))
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
+
+	// A private system, so the counts below hold whatever the shipped asset does (Niagara does not run under -nullrhi).
+	TStrongObjectPtr<UNiagaraSystem> Sparks(NewObject<UNiagaraSystem>());
+	const float ShotZ = 0.5f * Grid->GetBlockHeight();
+	const auto Requests = [&]() { return FXPool->GetRequestedCount(Sparks.Get()); };
+	const auto FlyOut = [&](ARRProjectile* Shot)
+	{
+		FVector LastLocation;
+		TestTrue(TEXT("the shot ends on its target"), TickUntilDestroyed(TestWorld, Shot, 30, LastLocation) != INDEX_NONE);
+	};
+	const auto FireRifleFrom = [&](FIntPoint Cell) -> ARRProjectile*
+	{
+		PlaceMuzzleAt(Rifle, Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, ShotZ));
+		ARRProjectile* Shot = FireSingleShot(*this, Rifle);
+		if (Shot)
+		{
+			FProjectileAccess::ImpactSparkSystemOf(Shot) = Sparks.Get();
+		}
+		return Shot;
+	};
+
+	// Rifle shot on a robot: one spark, near the robot and at the shot's height.
+	const float HealthBefore = TargetHealth(StillChaser);
+	FlyOut(FireRifleFrom(ChaserShooterCell));
+	TestEqual(TEXT("rifle on a robot: one spark"), Requests(), 1);
+	TestTrue(TEXT("rifle on a robot: damage dealt"), TargetHealth(StillChaser) < HealthBefore);
+	const FRRNiagaraSystemPool* SparkPool = FNiagaraPoolAccess::PoolOf(FXPool, Sparks.Get());
+	if (TestNotNull(TEXT("spark pool"), SparkPool))
+	{
+		TestEqual(TEXT("one component created"), SparkPool->CreatedCount, 1);
+		const UNiagaraComponent* Component = SparkPool->Free.Num() > 0 ? SparkPool->Free[0].Get() : (SparkPool->InUse.Num() > 0 ? SparkPool->InUse[0].Get() : nullptr);
+		if (TestNotNull(TEXT("spark component"), Component))
+		{
+			const FVector ChaserCenter = StillChaser->GetActorLocation();
+			const FVector SparkLocation = Component->GetComponentLocation();
+			AddInfo(FString::Printf(TEXT("spark at %s, robot at %s"), *SparkLocation.ToCompactString(), *ChaserCenter.ToCompactString()));
+			TestTrue(TEXT("spark on the near side of the robot, within its reach"), SparkLocation.X < ChaserCenter.X && ChaserCenter.X - SparkLocation.X < 100.f);
+			TestNearlyEqual(TEXT("spark at the shot's height"), SparkLocation.Z, Grid->GetCellCenter(ChaserShooterCell.X, ChaserShooterCell.Y).Z + ShotZ, 1.0);
+		}
+	}
+
+	// Turret bullet on a robot: one spark.
+	const FVector TurretOrigin = Grid->GetCellCenter(ChaserShooterCell.X, ChaserShooterCell.Y) + FVector(0.f, 0.f, ShotZ);
+	ARRProjectile* TurretShot = ARRProjectile::SpawnProjectile(TestWorld.Get(), ARRTurretBullet::StaticClass(), FTransform(TurretOrigin), Rifle, nullptr, FGameplayEffectSpecHandle(), 3000.f, 1.f);
+	if (TestNotNull(TEXT("turret bullet"), TurretShot))
+	{
+		FProjectileAccess::ImpactSparkSystemOf(TurretShot) = Sparks.Get();
+		FlyOut(TurretShot);
+		TestEqual(TEXT("turret bullet on a robot: one more spark"), Requests(), 2);
+	}
+
+	// Rifle shot stopped by rock: no spark.
+	TestEqual(TEXT("(43, 38) is rock"), Grid->GetCellType(RockCell), ERRCellType::Rock);
+	FlyOut(FireRifleFrom(RockWestFloorCell));
+	TestEqual(TEXT("rifle on rock: no spark"), Requests(), 2);
+
+	// Rifle shot on a barrel: one spark.
+	const FIntPoint BarrelCell(43, 6);
+	TestEqual(TEXT("(43, 6) is a barrel"), Grid->GetCellType(BarrelCell), ERRCellType::Barrel);
+	FlyOut(FireRifleFrom(BarrelCell - FIntPoint(1, 0)));
+	TestEqual(TEXT("rifle on a barrel: one spark"), Requests(), 3);
+
+	// Robot shots have no system at all.
+	TestNull(TEXT("robot shots have no spark system"), FProjectileAccess::ImpactSparkSystemOf(GetMutableDefault<ARREnemyProjectile>()).Get());
+
+	// Pool full: its only slot waits to start (tick on, inactive: never reclaimed). The spark is counted as skipped, nothing else happens.
+	ARRProjectile* LastShot = ARRProjectile::SpawnProjectile(TestWorld.Get(), ARRTurretBullet::StaticClass(), FTransform(TurretOrigin), Rifle, nullptr, FGameplayEffectSpecHandle(), 0.f, 1.f);
+	if (TestNotNull(TEXT("idle bullet"), LastShot) && TestNotNull(TEXT("spark pool"), SparkPool))
+	{
+		FRRNiagaraSystemPool* MutablePool = FNiagaraPoolAccess::PoolOf(FXPool, Sparks.Get());
+		MutablePool->InUse.Append(MutablePool->Free);
+		MutablePool->Free.Reset();
+		for (UNiagaraComponent* Busy : MutablePool->InUse)
+		{
+			Busy->SetComponentTickEnabled(true);
+		}
+		FProjectileAccess::ImpactSparkSystemOf(LastShot) = Sparks.Get();
+		FProjectileAccess::ImpactSparkPoolSizeOf(LastShot) = MutablePool->InUse.Num();
+		const int32 SkippedBefore = FXPool->GetSkippedCount(Sparks.Get());
+		const int32 CreatedBefore = MutablePool->CreatedCount;
+		FProjectileAccess::PlayImpactSparkOf(LastShot, nullptr);
+		TestEqual(TEXT("full pool: the spark is skipped"), FXPool->GetSkippedCount(Sparks.Get()), SkippedBefore + 1);
+		TestEqual(TEXT("full pool: no component created"), MutablePool->CreatedCount, CreatedBefore);
+		TestFalse(TEXT("full pool: the shot goes on"), LastShot->IsActorBeingDestroyed());
+		LastShot->Destroy();
 	}
 	return true;
 }
