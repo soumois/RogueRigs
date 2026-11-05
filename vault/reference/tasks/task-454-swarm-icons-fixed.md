@@ -1,9 +1,9 @@
 ---
 id: task-454-swarm-icons-fixed
 description: "Global task: Until the first horde front is over, kills no longer move the swarms on the alert bar; afterwards they do as now."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # First swarms ignore kills until the first front is over
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read level-flow (M1: each kill adds 0.5 s), difficulty (alert grows with time and kills, threat never pauses), enemies-spawn-rules (two hordes triggered by run time, fronts about 1:35 and 2:55), sys-hud-pressure (horde mark = Alert + SecondsUntilFront / AlertFillSeconds: it moves when kills speed the fill). Conflict: the request changes how kills feed the alert bar (Q29); level-flow edited at confirmation. Two readings asked as Q29. Independent of task-451.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-454-02-doc
+- next_step: none
 - started: 2026-11-05T23:32:49Z
 - waiting_for: none
-- result: open
+- result: Done. Commit 2b43ff02. Updated sys-hud-pressure (horde icon still until the first front is over), sys-objectives-run-flow (kill rule, DoKillsAddAlert, bKillsWaitForFirstHorde), sys-objectives (entry point), sys-difficulty (alert rule), sys-tests-hud-text (new test and figures). Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -38,6 +38,6 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 2. task-454-02-doc (vault/reference/tasks/task-454-swarm-icons-fixed/task-454-02-doc.md) — doc: Docs state the new rule.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-454-01-rule]] — step 1, cpp.
 - [[task-454-02-doc]] — step 2, doc.
