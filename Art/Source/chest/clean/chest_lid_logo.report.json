@@ -1,0 +1,174 @@
+{
+  "tris": 1355,
+  "dimensions_cm": [
+    121.078,
+    65.516,
+    31.84
+  ],
+  "materials": [
+    "Logo",
+    "M_BonusChest"
+  ],
+  "uv_layers": [
+    "UVMap"
+  ],
+  "warnings": [],
+  "script": "Tools/art/blender/chest_lid_logo.py",
+  "source": "Art/Source/chest/clean/chest_lid.fbx",
+  "output": "Art/Source/chest/clean/chest_lid.fbx",
+  "units": "1 Blender unit = 1 cm = 1 uu; lid space: origin on the rear seam line, lid toward -Y, Z up; FBX_SCALE_UNITS",
+  "defaults": "task-314 Q1 simplified mark, no text; Q2 cut into the lid top faces, own slot Logo, flat yellow; Q3 centred on the lid top band, W x D cm; Q4 <= 150 extra tris; Q5 company yellow, no emissive",
+  "tris_before": 1315,
+  "tris_after": 1355,
+  "tris_added": 40,
+  "slots_before": [
+    "M_BonusChest"
+  ],
+  "slots_after": [
+    "M_BonusChest",
+    "Logo"
+  ],
+  "faces_per_slot": {
+    "M_BonusChest": 1335,
+    "Logo": 20
+  },
+  "logo_faces": 20,
+  "logo_area_cm2": 83.73,
+  "mark_area_cm2": 83.72,
+  "mark_size_cm": [
+    22,
+    9.7
+  ],
+  "mark_depth_asked_cm": 12,
+  "band_margin_cm": 0.8,
+  "mark_centre_lid_cm": [
+    0,
+    -28.95,
+    18.09
+  ],
+  "band_y_lid_cm": [
+    -34.6,
+    -23.3
+  ],
+  "band_faces_retriangulated": 2,
+  "new_faces": 42,
+  "new_faces_facing_up": 42,
+  "mark_outline_lid_cm": [
+    [
+      -5.28,
+      -31.86
+    ],
+    [
+      -3.41,
+      -30.909
+    ],
+    [
+      0,
+      -33.8
+    ],
+    [
+      3.41,
+      -30.909
+    ],
+    [
+      5.28,
+      -31.86
+    ],
+    [
+      11,
+      -28.95
+    ],
+    [
+      5.28,
+      -26.04
+    ],
+    [
+      3.41,
+      -26.991
+    ],
+    [
+      0,
+      -24.1
+    ],
+    [
+      -3.41,
+      -26.991
+    ],
+    [
+      -5.28,
+      -26.04
+    ],
+    [
+      -11,
+      -28.95
+    ]
+  ],
+  "mark_hole_lid_cm": [
+    [
+      -3.96,
+      -28.95
+    ],
+    [
+      0,
+      -27.156
+    ],
+    [
+      3.96,
+      -28.95
+    ],
+    [
+      0,
+      -30.745
+    ]
+  ],
+  "pivot": "object origin unchanged (identity transform, vertices local to the rear seam line, (0, 32, 41.25) from the body origin)",
+  "object_transform_identity": true,
+  "bbox_before_cm": [
+    [
+      -60.43,
+      -62.61,
+      -7.53
+    ],
+    [
+      60.65,
+      2.91,
+      24.31
+    ]
+  ],
+  "bbox_after_cm": [
+    [
+      -60.43,
+      -62.61,
+      -7.53
+    ],
+    [
+      60.65,
+      2.91,
+      24.31
+    ]
+  ],
+  "bbox_unchanged": true,
+  "open_edges_before": 38,
+  "open_edges_after": 38,
+  "colour": {
+    "hex": "#F5BA20",
+    "roughness": 0.45,
+    "emission": 0,
+    "note": "company yellow = chaser body yellow (Tools/art/blender/chaser/common.py)"
+  },
+  "renders": {
+    "dir": "Art/Source/chest/clean/renders/",
+    "files": [
+      "logo_closed_top.png",
+      "logo_closed_q.png",
+      "logo_closed_front.png",
+      "logo_close_top.png",
+      "logo_vs_sheet_top.png",
+      "logo_vs_sheet_q.png",
+      "logo_vs_sheet_front.png",
+      "logo_before_close_top.png"
+    ],
+    "camera": "camera and light of the task-306 cut_* renders: ortho 170, target (0,0,33), 500 cm, EEVEE, one sun 4.0 rotated (50,10,-60), world 0.85 at 0.6; close_top = ortho 70 target (0,0,60); vs_sheet = render | front view of vault/assets/chest-turnaround.webp",
+    "before_note": "logo_before_close_top.png = the same close top of the lid before the cut (task-309-07 lid): the diagonal shading wedge on the front slope and the smears near the hinges are already there (Meshy source facets), not made by the logo cut"
+  }
+}
