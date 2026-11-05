@@ -490,6 +490,147 @@ bool FRRLevelUpWaveAssetTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRLevelUpWaveFollowsTest, "RogueRigs.LevelUp.WaveFollowsMiner",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+/**
+ * task-449: the level-up wave played through the pool follows a miner who keeps moving: every frame its ring and shards stay
+ * centred on his feet, flat at the floor offset, as far out as when he stands still; the robot push stays one blow. Needs -RenderOffScreen.
+ */
+bool FRRLevelUpWaveFollowsTest::RunTest(const FString& Parameters)
+{
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+	FTestWorld TestWorld(TEXT("RRLevelUpWaveFollows"));
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FLevelUpSetup S;
+	if (!SpawnLevelUpSetup(*this, TestWorld, Recorder.Get(), S))
+	{
+		return false;
+	}
+	const float HalfHeight = S.Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	const FVector Feet = S.Miner->GetActorLocation() - FVector(0.f, 0.f, HalfHeight);
+	ARRChaser* Inside = SpawnStillChaser(*this, TestWorld, Feet - FVector(150.f, 0.f, 0.f));
+	const FFloatProperty* OffsetProperty = FindFProperty<FFloatProperty>(URRLevelUpComponent::StaticClass(), TEXT("LevelUpWaveFloorOffset"));
+	const FFloatProperty* RadiusProperty = FindFProperty<FFloatProperty>(URRLevelUpComponent::StaticClass(), TEXT("PushRadius"));
+	if (!Inside || !TestNotNull(TEXT("LevelUpWaveFloorOffset property"), OffsetProperty) || !TestNotNull(TEXT("PushRadius property"), RadiusProperty))
+	{
+		return false;
+	}
+	const float FloorOffset = OffsetProperty->GetPropertyValue_InContainer(S.LevelUp);
+	const float Radius = RadiusProperty->GetPropertyValue_InContainer(S.LevelUp);
+
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
+	const FVector Launch = Inside->GetCharacterMovement()->PendingLaunchVelocity;
+	TestFalse(TEXT("the robot inside is launched at the level-up"), Launch.IsNearlyZero());
+	Inside->GetCharacterMovement()->PendingLaunchVelocity = FVector::ZeroVector;
+	UNiagaraComponent* Wave = S.LevelUp->GetFollowedWave();
+	if (!TestNotNull(TEXT("the level-up wave follows the miner"), Wave))
+	{
+		return false;
+	}
+	const auto Emitters = [Wave](FNiagaraEmitterInstance*& Ring, FNiagaraEmitterInstance*& Shards)
+	{
+		Ring = nullptr;
+		Shards = nullptr;
+		FNiagaraSystemInstanceControllerPtr Controller = Wave->GetSystemInstanceController();
+		FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+		if (Instance)
+		{
+			Controller->WaitForConcurrentTickAndFinalize();
+			for (const FNiagaraEmitterInstanceRef& Emitter : Instance->GetEmitters())
+			{
+				(Emitter->GetEmitterHandle().GetName() == FName(TEXT("Core")) ? Ring : Shards) = &Emitter.Get();
+			}
+		}
+		return (Ring ? Ring->GetNumParticles() : 0) + (Shards ? Shards->GetNumParticles() : 0);
+	};
+
+	// The miner runs +X at 600 uu/s (10 uu per 1/60 s frame) for the whole wave.
+	const FVector Step(10.f, 0.f, 0.f);
+	int32 Frames = 0;
+	int32 PlayingFrames = 0;
+	int32 Largest = 0;
+	double WaveOffMiner = 0.0;
+	double WaveHeightError = 0.0;
+	double RingOffMiner = 0.0;
+	double ShardCentroidOffMiner = 0.0;
+	double ShardReach = 0.0;
+	double ShardHeightError = 0.0;
+	const FVector StartFeet = Feet;
+	for (; Frames < 120; ++Frames)
+	{
+		S.Miner->SetActorLocation(S.Miner->GetActorLocation() + Step);
+		TestWorld.Tick();
+		FNiagaraEmitterInstance* Ring = nullptr;
+		FNiagaraEmitterInstance* Shards = nullptr;
+		const int32 Count = Emitters(Ring, Shards);
+		if (Count == 0)
+		{
+			if (PlayingFrames > 0)
+			{
+				break;
+			}
+			continue;
+		}
+		++PlayingFrames;
+		Largest = FMath::Max(Largest, Count);
+		const FVector MinerFeet = S.Miner->GetActorLocation() - FVector(0.f, 0.f, HalfHeight);
+		const FTransform& ToWorld = Wave->GetComponentTransform();
+		WaveOffMiner = FMath::Max(WaveOffMiner, FVector::Dist2D(ToWorld.GetLocation(), MinerFeet));
+		WaveHeightError = FMath::Max(WaveHeightError, FMath::Abs(ToWorld.GetLocation().Z - (MinerFeet.Z + FloorOffset)));
+		if (Ring && Ring->GetNumParticles() > 0)
+		{
+			const auto Positions = FNiagaraDataSetAccessor<FNiagaraPosition>::CreateReader(Ring->GetParticleData(), TEXT("Position"));
+			if (Positions.IsValid())
+			{
+				const FVector World = ToWorld.TransformPosition(FVector(FVector3f(Positions[0])));
+				RingOffMiner = FMath::Max(RingOffMiner, FVector::Dist2D(World, MinerFeet));
+			}
+		}
+		if (Shards && Shards->GetNumParticles() > 0)
+		{
+			const auto Positions = FNiagaraDataSetAccessor<FNiagaraPosition>::CreateReader(Shards->GetParticleData(), TEXT("Position"));
+			FVector Sum = FVector::ZeroVector;
+			const int32 Num = Shards->GetNumParticles();
+			for (int32 Index = 0; Positions.IsValid() && Index < Num; ++Index)
+			{
+				const FVector World = ToWorld.TransformPosition(FVector(FVector3f(Positions[Index])));
+				Sum += World;
+				ShardReach = FMath::Max(ShardReach, FVector::Dist2D(World, MinerFeet));
+				ShardHeightError = FMath::Max(ShardHeightError, FMath::Abs(World.Z - (MinerFeet.Z + FloorOffset)));
+			}
+			if (Positions.IsValid() && Num >= 12)
+			{
+				ShardCentroidOffMiner = FMath::Max(ShardCentroidOffMiner, FVector::Dist2D(Sum / Num, MinerFeet));
+			}
+		}
+	}
+	const double Run = FVector::Dist2D(S.Miner->GetActorLocation() - FVector(0.f, 0.f, HalfHeight), StartFeet);
+	// The wave may finish after the level-up tick of its last frame: one more frame lets the tick see it.
+	TestWorld.Tick();
+	AddInfo(FString::Printf(TEXT("level-up wave following a miner at 600 uu/s: %d frames playing, %d sprites at most, miner ran %.0f uu; wave off the feet %.2f uu, height error %.2f uu; ring off the feet %.2f uu; shard centroid off the feet %.1f uu, reach %.0f uu, height error %.2f uu"),
+		PlayingFrames, Largest, Run, WaveOffMiner, WaveHeightError, RingOffMiner, ShardCentroidOffMiner, ShardReach, ShardHeightError));
+	TestTrue(TEXT("the wave played"), PlayingFrames > 10);
+	TestEqual(TEXT("one ring and 24 shards"), Largest, 25);
+	// About 30 frames at 10 uu: the miner covers about the wave radius while it plays.
+	TestTrue(TEXT("the miner ran about as far as the wave reaches"), Run > 0.8 * Radius);
+	TestTrue(TEXT("the wave stays under the miner's feet"), WaveOffMiner < 1.0);
+	TestTrue(TEXT("the wave stays at the floor offset"), WaveHeightError < 1.0);
+	TestTrue(TEXT("the ring stays centred on the miner"), RingOffMiner < 1.0);
+	TestTrue(TEXT("the shards stay centred on the miner"), ShardCentroidOffMiner < 0.2 * Radius);
+	TestTrue(TEXT("the shards reach about the radius around the miner"), ShardReach > Radius * 0.7 && ShardReach < Radius * 1.2);
+	TestTrue(TEXT("the shards stay flat on the floor"), ShardHeightError < 1.0);
+	TestTrue(TEXT("no second push while the wave follows"), Inside->GetCharacterMovement()->PendingLaunchVelocity.IsNearlyZero());
+	TestEqual(TEXT("one burst"), S.LevelUp->GetLevelUpBurstCount(), 1);
+	TestNull(TEXT("the wave stops following once it finished"), S.LevelUp->GetFollowedWave());
+	TestFalse(TEXT("the level-up tick is off again"), S.LevelUp->IsComponentTickEnabled());
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRLevelUpDelayTest, "RogueRigs.LevelUp.PauseAfterDelay",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 

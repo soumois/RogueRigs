@@ -31,7 +31,10 @@ const FName URRLevelUpComponent::WaveRadiusParameter(TEXT("User.WaveRadius"));
 
 URRLevelUpComponent::URRLevelUpComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	// Ticks only while a level-up wave plays, after the miner moved, to keep the wave under him (task-449).
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = false;
+	PrimaryComponentTick.TickGroup = TG_PostPhysics;
 	HealEffectClass = URRGE_Heal::StaticClass();
 }
 
@@ -65,6 +68,7 @@ void URRLevelUpComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Progression->OnLevelUp.RemoveDynamic(this, &URRLevelUpComponent::HandleLevelUp);
 	}
 	BoundProgression.Reset();
+	FollowedWave.Reset();
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(ChoiceDelayTimer);
@@ -148,9 +152,46 @@ void URRLevelUpComponent::PlayLevelUpBurst()
 	const ACharacter* Character = Cast<ACharacter>(Owner);
 	const UCapsuleComponent* Capsule = Character ? Character->GetCapsuleComponent() : nullptr;
 	const float HalfHeight = Capsule ? Capsule->GetScaledCapsuleHalfHeight() : 0.f;
+	// The text stays where it appeared (task-449, Q21); the wave follows the miner while it plays.
 	Pool->Spawn(LevelUpTextSystem, Owner->GetActorLocation() + FVector(0.f, 0.f, HalfHeight + LevelUpTextHeight), FRotator::ZeroRotator, BurstPoolSize);
-	Pool->Spawn(LevelUpWaveSystem, Owner->GetActorLocation() - FVector(0.f, 0.f, HalfHeight - LevelUpWaveFloorOffset), FRotator::ZeroRotator, BurstPoolSize,
-		[this](UNiagaraComponent& Wave) { Wave.SetVariableFloat(WaveRadiusParameter, PushRadius); });
+	UNiagaraComponent* Wave = Pool->Spawn(LevelUpWaveSystem, GetWaveLocation(), FRotator::ZeroRotator, BurstPoolSize,
+		[this](UNiagaraComponent& Spawned) { Spawned.SetVariableFloat(WaveRadiusParameter, PushRadius); });
+	FollowedWave = Wave;
+	SetComponentTickEnabled(Wave != nullptr);
+}
+
+FVector URRLevelUpComponent::GetWaveLocation() const
+{
+	const AActor* Owner = GetOwner();
+	if (!Owner)
+	{
+		return FVector::ZeroVector;
+	}
+	const ACharacter* Character = Cast<ACharacter>(Owner);
+	const UCapsuleComponent* Capsule = Character ? Character->GetCapsuleComponent() : nullptr;
+	const float HalfHeight = Capsule ? Capsule->GetScaledCapsuleHalfHeight() : 0.f;
+	return Owner->GetActorLocation() - FVector(0.f, 0.f, HalfHeight - LevelUpWaveFloorOffset);
+}
+
+UNiagaraComponent* URRLevelUpComponent::GetFollowedWave() const
+{
+	return FollowedWave.Get();
+}
+
+void URRLevelUpComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// Playing, or activated and waiting for its system to be ready (inactive with its tick on, as URRNiagaraPoolSubsystem reads it).
+	UNiagaraComponent* Wave = FollowedWave.Get();
+	if (!Wave || (!Wave->IsActive() && !Wave->IsComponentTickEnabled()))
+	{
+		FollowedWave.Reset();
+		SetComponentTickEnabled(false);
+		return;
+	}
+	// Local-space emitters: moving the component carries the ring and the shards with the miner.
+	Wave->SetWorldLocation(GetWaveLocation());
 }
 
 void URRLevelUpComponent::PushNearbyRobots()

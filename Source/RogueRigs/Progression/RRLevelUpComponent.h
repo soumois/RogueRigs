@@ -10,6 +10,7 @@
 
 class APlayerController;
 class UGameplayEffect;
+class UNiagaraComponent;
 class UNiagaraSystem;
 class URRProgressionComponent;
 class URRRunFlowSubsystem;
@@ -42,7 +43,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnUpgradeOfferClosedSignature);
  * Level-up burst (xp-level-up, task-441): once per level-up moment, whatever the levels gained in it (BurstMinInterval), the gold
  * LevelUpTextSystem plays above the miner. It does not go through URRDamageNumberSubsystem: the player toggle does not hide it.
  * The same moment plays LevelUpWaveSystem at his feet (WaveRadiusParameter = PushRadius) and launches every living robot within
- * PushRadius away from him (ARREnemy::ApplyKnockback, PushSpeed, following KnockbackResistance), with no damage.
+ * PushRadius away from him (ARREnemy::ApplyKnockback, PushSpeed, following KnockbackResistance), with no damage. The push is
+ * one blow from where he stands then; the text stays where it appeared; the wave follows him while it plays (task-449): the
+ * component ticks only then (TG_PostPhysics, after his movement) and moves the wave back under his feet each frame.
  */
 UCLASS(ClassGroup = (RogueRigs), meta = (BlueprintSpawnableComponent))
 class ROGUERIGS_API URRLevelUpComponent : public UActorComponent
@@ -56,8 +59,17 @@ public:
 	/** Components each burst effect may hold in its pool: bursts are at least BurstMinInterval apart, so few play at once. */
 	static constexpr int32 BurstPoolSize = 2;
 
-	/** No tick. */
+	/** Tick off by default; on only while a level-up wave plays (TG_PostPhysics). */
 	URRLevelUpComponent();
+
+	/** Keeps the playing level-up wave under the owner's feet; turns the tick off once the wave finished. */
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	/** The pooled wave component that follows the owner now, or null when no wave plays (tests, debug). Do not keep it. */
+	UNiagaraComponent* GetFollowedWave() const;
+
+	/** World location of the wave: under the owner's capsule, LevelUpWaveFloorOffset above the floor. */
+	FVector GetWaveLocation() const;
 
 	/**
 	 * Applies card Index of the current offer (URRUpgradeComponent::ApplyUpgrade), then shows the next queued choice or ends
@@ -247,6 +259,9 @@ protected:
 
 	/** ChoiceDelay timer. */
 	FTimerHandle ChoiceDelayTimer;
+
+	/** Pooled wave component of the last burst while it plays; the tick moves it under the owner. */
+	TWeakObjectPtr<UNiagaraComponent> FollowedWave;
 
 	/** World time of the last burst; negative before the first one. */
 	double LastBurstTime = -1.0;
