@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: art-prompts-chest, kessler-voss-logo, color-code read (2026-10-24). No conflict: company yellow is allowed, never orange. Open values, defaults pending the owner: Q1 mark = the simplified yellow mark of the sheet (no text), not the full logo artwork (the name is illegible at this size, kessler-voss-logo); Q2 method = the mark cut into the lid top faces as its own material slot Logo with a flat yellow material (sharp at any distance), not painted into the base colour texture; Q3 position and size = as on the sheet, centred on the lid top panel, about 25 x 12 cm, readable from the game camera (lock face at the bottom of the screen); Q4 budget = at most 150 extra tris on the lid; Q5 colour = company yellow of color-code, flat material, no emissive.
 - confirmed_by_owner: yes (owner 2026-10-24: "ok : je garde la commande debug, j'accepte les 3864 tris, le pivot et la pose ouverte se règlent dans 309, et ok pour tous les défauts de la tâche 314." Defaults Q1 to Q5 apply; not launched yet)
 - milestone: M2
-- next_step: task-314-01-chest-lid-logo
+- next_step: task-314-02-bp-chest-lid-logo
 - started: 2026-11-05T23:11:43Z
 - waiting_for: none
 - result: open

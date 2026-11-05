@@ -3,7 +3,7 @@ id: task-314-01-chest-lid-logo
 description: "Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game."
 parent: task-314-chest-lid-logo
 kind: task
-status: in-progress
+status: done
 ---
 # Yellow logo on the chest lid
 
@@ -15,13 +15,14 @@ status: in-progress
 - done_when: mark centred on the lid top as on the sheet, in its own slot Logo; lid pivot, size and other slots unchanged (numbers in the report); renders sent to the owner and his go; no Blender process left; committed
 - editor_state: any
 - token_ceiling: 1.2 M units
-- model: open
-- tokens: open
-- runs: open
+- model: sonnet+opus
+- tokens: input 74, cache write 116430, cache read 2278662, output 33564
+- usage: turns 37, context start 11k peak 93k, resumes 0, 8 min, units 0.54 M
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T23:11:43Z
 - waiting_for: none
-- result: open
+- result: Mark cut into the lid top band as its own slot Logo by Tools/art/blender/chest_lid_logo.py (commit faddb143): 22 x 9.7 cm centred on the band, 20 Logo faces, tris 1315 -> 1355 (+40, Q4 cap 150), pivot and bbox unchanged, M_BonusChest slot kept; renders next to the sheet in Art/Source/chest/clean/renders/logo_*.png. Owner go 2026-11-05: 'Yes, go on' (shape and size accepted). Lid-top shading streaks come from the Meshy source, not fixed.
 
 ## Relations
 - [[task-314-chest-lid-logo]] — parent global task.

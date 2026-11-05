@@ -3,7 +3,7 @@ id: task-314-02-bp-chest-lid-logo
 description: "Reimport the chest lid with its Logo slot and give that slot a flat yellow material (bp): yellow logo on the chest lid, step 02."
 parent: task-314-chest-lid-logo
 kind: task
-status: todo
+status: in-progress
 ---
 # Reimport the lid and colour the Logo slot
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-11-05T23:11:55Z
 - result: open
 
 ## Relations
