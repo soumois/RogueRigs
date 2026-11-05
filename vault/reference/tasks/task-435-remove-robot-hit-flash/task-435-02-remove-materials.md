@@ -3,7 +3,7 @@ id: task-435-02-remove-materials
 description: "Bp: The robot materials and instances no longer read the flash and the flash function is deleted."
 parent: task-435-remove-robot-hit-flash
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the robot hit flash: bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Masters recompile with no error and baked animation inputs intact; shield, emblem and kamikaze core instances keep their look; the function asset no longer exists and nothing references it.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-435
+- usage: included in the executor run of task-435
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T17:32:23Z
 - waiting_for: none
-- result: open
+- result: M_RobotMeshy, M_RobotEye, M_ShieldChaserV2_Anim, MI_ShieldChaserV2_Shield and _Emblem restored from c5afc7f8 (no later change), MF_RobotHitFlash deleted. Masters recompiled and saved, WPO and MF_RobotAnimWPO read back, shield, emblem and core instances read back, no reference found; RogueRigs.Enemies passes.
 
 ## Relations
 - [[task-435-remove-robot-hit-flash]] — parent global task.

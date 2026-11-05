@@ -3,7 +3,7 @@ id: task-435-03-doc
 description: "Doc: Remove the flash from the docs that describe it."
 parent: task-435-remove-robot-hit-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the robot hit flash: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T17:35:19Z
 - waiting_for: none
 - result: open
 
