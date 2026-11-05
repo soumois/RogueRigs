@@ -11,7 +11,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-444-rotors-no-shadow]] — The whole extractor, hull and rotors, casts no shadow. Status todo.
+- [[task-444-rotors-no-shadow]] — The whole extractor, hull and rotors, casts no shadow. Status in-progress.
 - [[task-445-miner-light-wall-shadows]] — The miner floor and wall light casts the shadows of rock walls, and of nothing else. Status todo.
 - [[task-446-explosions-red]] — The whole barrel and kamikaze explosion, sphere, burst and ring, is redone in the cartoon style of the owner reference. Status todo.
 

@@ -3,7 +3,7 @@ id: task-444-01-rotor-shadow-off
 description: "Bp: The hull and the four rotors cast no shadow."
 parent: task-444-rotors-no-shadow
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotors cast no shadow: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T21:07:22Z
 - waiting_for: none
 - result: open
 
