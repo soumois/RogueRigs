@@ -13,6 +13,7 @@
 #include "Enemies/RRChaser.h"
 #include "Enemies/RRHitCapsuleComponent.h"
 #include "Enemies/RRRobotMovementComponent.h"
+#include "Materials/MaterialInterface.h"
 #include "EngineUtils.h"
 #include "FlowField/RREnemyMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -609,6 +610,29 @@ bool FRREnemyHitFlashTest::RunTest(const FString& Parameters)
 	Hit(Kamikaze);
 	TestEqual(TEXT("the kamikaze flashes"), Kamikaze->GetHitFlashValue(), 1.f);
 	TestEqual(TEXT("the core keeps slot 2 at 0"), Slot(Core, 2), 0.f);
+
+	// The materials of the spawned classes read slot 2; the shield and emblem instances are switched off (A3).
+	UClass* ShooterClass = RRTestHarness::LoadTestClass<ARREnemy>(*this, TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Shooter.BP_Shooter_C"));
+	UClass* HeavyClass = RRTestHarness::LoadTestClass<ARREnemy>(*this, TEXT("/Game/RogueRigs/Blueprints/Enemies/BP_Heavy.BP_Heavy_C"));
+	const ARREnemy* Others[] = {Chaser, Shielded, Kamikaze,
+		TestWorld.Spawn<ARREnemy>(ShooterClass, FVector(4000.f, 0.f, 2000.f)), TestWorld.Spawn<ARREnemy>(HeavyClass, FVector(5000.f, 0.f, 2000.f))};
+	for (const ARREnemy* Robot : Others)
+	{
+		const UStaticMeshComponent* Mesh = Robot ? FindMesh(Robot, TEXT("BodyMesh")) : nullptr;
+		if (TestNotNull(TEXT("robot BodyMesh"), Mesh))
+		{
+			for (int32 Index = 0; Index < Mesh->GetNumMaterials(); ++Index)
+			{
+				const UMaterialInterface* Material = Mesh->GetMaterial(Index);
+				float Strength = -1.f;
+				const bool bFound = Material && Material->GetScalarParameterValue(TEXT("HitFlashStrength"), Strength);
+				TestTrue(FString::Printf(TEXT("%s slot %d reads the flash"), *Robot->GetClass()->GetName(), Index), bFound);
+				const FString Name = GetNameSafe(Material);
+				const float Expected = Name.EndsWith(TEXT("_Shield")) || Name.EndsWith(TEXT("_Emblem")) ? 0.f : 1.f;
+				TestEqual(FString::Printf(TEXT("%s strength"), *Name), Strength, Expected);
+			}
+		}
+	}
 	return true;
 }
 
