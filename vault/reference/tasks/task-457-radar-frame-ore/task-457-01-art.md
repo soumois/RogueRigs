@@ -3,7 +3,7 @@ id: task-457-01-art
 description: "Art: Cut the radar frame sprite of the retained mockup."
 parent: task-457-radar-frame-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Radar frame holding the ore count: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T23:54:20Z
 - waiting_for: none
 - result: open
 
