@@ -15,7 +15,12 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRBlockColors.h"
 #include "Misc/App.h"
+#include "NiagaraComponent.h"
+#include "NiagaraDataSetAccessor.h"
+#include "NiagaraEmitterInstance.h"
 #include "NiagaraSystem.h"
+#include "NiagaraSystemInstance.h"
+#include "NiagaraSystemInstanceController.h"
 #include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -741,6 +746,125 @@ bool FRRExplosionWallDebrisRequestTest::RunTest(const FString& Parameters)
 	}
 	TickUntilIdle(TestWorld, Subsystem);
 	TestTrue(TEXT("chain bounded by the pool"), FXPool->GetComponentCount(Debris.Get()) <= Subsystem->GetWallDebrisPoolSize());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRExplosionWallDebrisAssetTest, "RogueRigs.Explosions.WallDebrisAsset",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRExplosionWallDebrisAssetTest::RunTest(const FString& Parameters)
+{
+	using namespace RRExplosionTests;
+
+	UNiagaraSystem* Shipped = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_ExplosionWallDebris.NS_ExplosionWallDebris"));
+	if (!TestNotNull(TEXT("NS_ExplosionWallDebris exists"), Shipped))
+	{
+		return false;
+	}
+	// Niagara only runs under a real RHI (-RenderOffScreen).
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+
+	FTestWorld TestWorld(TEXT("RRExplosionWallDebrisAsset"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	URRExplosionSubsystem* Subsystem = Grid ? GetSubsystem(*this, TestWorld, nullptr) : nullptr;
+	URRNiagaraPoolSubsystem* FXPool = Subsystem ? TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	FRRExplosionStatsRow Stats;
+	if (!FXPool || !TestTrue(TEXT("Barrel row loads"), Subsystem->GetExplosionStats(TEXT("Barrel"), Stats)))
+	{
+		return false;
+	}
+	Stats.Damage = 0.f;
+	Stats.MinerDamage = 0.f;
+	Stats.FXClass.Reset();
+	Stats.Radius = 1500.f;
+
+	const FVector Center = Grid->GetCellCenter(RockWestFloorCell.X, RockWestFloorCell.Y);
+	TestTrue(TEXT("explosion queued"), Subsystem->QueueExplosionWithStats(Center, TEXT("Test"), Stats, nullptr, nullptr));
+	TickUntilIdle(TestWorld, Subsystem);
+	TestEqual(TEXT("the game plays the shipped system once"), FXPool->GetRequestedCount(Shipped), 1);
+	const FRRWallDebrisRequest& Request = Subsystem->GetLastWallDebrisRequest();
+	TestTrue(TEXT("at most 60 particles requested"), Request.Positions.Num() > 0 && Request.Positions.Num() <= 60);
+
+	// The burst, read from the simulation itself on the first frame it has particles.
+	FRRNiagaraSystemPool* Pool = FNiagaraPoolAccess::PoolOf(FXPool, Shipped);
+	if (!TestNotNull(TEXT("debris pool"), Pool) || !TestEqual(TEXT("one effect, not one per block"), Pool->InUse.Num(), 1))
+	{
+		return false;
+	}
+	UNiagaraComponent* Component = Pool->InUse[0];
+	const auto EmitterOf = [Component]() -> FNiagaraEmitterInstance*
+	{
+		FNiagaraSystemInstanceControllerPtr Controller = Component->GetSystemInstanceController();
+		FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+		if (!Instance)
+		{
+			return nullptr;
+		}
+		Controller->WaitForConcurrentTickAndFinalize();
+		return Instance->GetEmitters().Num() > 0 ? &Instance->GetEmitters()[0].Get() : nullptr;
+	};
+	int32 Frame = 0;
+	FNiagaraEmitterInstance* Emitter = EmitterOf();
+	while ((!Emitter || Emitter->GetNumParticles() == 0) && Frame < 600)
+	{
+		TestWorld.Tick();
+		++Frame;
+		Emitter = EmitterOf();
+	}
+	if (!TestTrue(TEXT("the burst spawned"), Emitter && Emitter->GetNumParticles() > 0))
+	{
+		return false;
+	}
+	AddInfo(FString::Printf(TEXT("first particles after %d frame(s), %d particle(s)"), Frame, Emitter->GetNumParticles()));
+	TestEqual(TEXT("as many particles as requested"), Emitter->GetNumParticles(), Request.Positions.Num());
+
+	const FNiagaraDataSet& Data = Emitter->GetParticleData();
+	const auto Positions = FNiagaraDataSetAccessor<FNiagaraPosition>::CreateReader(Data, TEXT("Position"));
+	const auto Velocities = FNiagaraDataSetAccessor<FVector3f>::CreateReader(Data, TEXT("Velocity"));
+	const auto Colors = FNiagaraDataSetAccessor<FLinearColor>::CreateReader(Data, TEXT("Color"));
+	if (!TestTrue(TEXT("particle attributes readable"), Positions.IsValid() && Velocities.IsValid() && Colors.IsValid()))
+	{
+		return false;
+	}
+	const float Cos15 = FMath::Cos(FMath::DegreesToRadians(15.f));
+	double MinOutward = 1.0;
+	for (int32 Index = 0; Index < Emitter->GetNumParticles(); ++Index)
+	{
+		const FVector Position(Positions[Index]);
+		const FVector Velocity(Velocities[Index]);
+		// Starts where a block stood: near one of the requested points (each read by its own index).
+		double Nearest = TNumericLimits<double>::Max();
+		for (const FVector& Requested : Request.Positions)
+		{
+			Nearest = FMath::Min(Nearest, FVector::Dist(Position, Requested));
+		}
+		TestTrue(*FString::Printf(TEXT("particle %d near a requested point (%.1f uu)"), Index, Nearest), Nearest < 60.0);
+		TestTrue(TEXT("block colour"), Request.Colors.ContainsByPredicate([&](const FLinearColor& Color) { return Color.Equals(Colors[Index], 0.01f); }));
+		TestTrue(TEXT("flies upward first"), Velocity.Z > 0.0);
+		const FVector Away = (Position - Center).GetSafeNormal2D();
+		if (FVector::Dist2D(Position, Center) > 100.0)
+		{
+			const double Outward = Velocity.GetSafeNormal2D() | Away;
+			MinOutward = FMath::Min(MinOutward, Outward);
+			TestTrue(*FString::Printf(TEXT("particle %d flies straight away from the centre (cos %.3f)"), Index, Outward), Outward >= Cos15);
+		}
+	}
+	AddInfo(FString::Printf(TEXT("smallest cos between velocity and the outward direction: %.3f"), MinOutward));
+
+	// Falls and is gone within 1.5 s; the component comes back to the pool.
+	Frame = 0;
+	while (FXPool->GetInUseCount(Shipped) > 0 && Frame < 600)
+	{
+		TestWorld.Tick();
+		++Frame;
+	}
+	AddInfo(FString::Printf(TEXT("back in the pool after %d frame(s) of %.4f s"), Frame, FrameSeconds));
+	TestEqual(TEXT("one-shot: back in the pool"), FXPool->GetInUseCount(Shipped), 0);
+	TestTrue(TEXT("gone within 1.5 s (two frames of margin for the pool callback)"), Frame * FrameSeconds <= 1.5f + 2.f * FrameSeconds);
 	return true;
 }
 
