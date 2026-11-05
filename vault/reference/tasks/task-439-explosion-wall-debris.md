@@ -1,0 +1,34 @@
+---
+id: task-439-explosion-wall-debris
+description: "Global task: Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Wall debris thrown away from explosions
+
+- request: Owner 2026-11-05 (verbatim, whole list): "Voici une liste de tâche, découpe les avec le planneur, pose les questions et puis lance l'agent executor par lot de tâche ou par tâche selon ce que tu penses qu'il sera le mieux : * Retire le flash sur le robot quand ils sont touchés. * Améliorer la particule de mort du robot * La particule d'impact de tir doit s'activer aussi quand tu touches un mur. * Il faut aussi une particule de débris de terre lorsqu'on creuse. * Lors d'une explosion, si des murs sont détruit, les débris doivent aller dans la direction opposée d'ou vient l'explosion * Il faut retravailler le muzzle flash * Il faut retravailler l'effet de level up ( un text qui pop comme les dégâts, mais pas d'effet d'arc et en couleur dorée ) + particule au sol + ennemi légèrement repoussé ( la particule doit donner cet effet ) * La particule de sous les hélices de l'extracteur font plus pensé à de la pluie qu'autre chose, il faut modifié ça * Il faudrait aussi représenter le souffle des hélices de l'extracteur au sol ( qui diminue en fonction de sa hauteur ( et elle disparait quand il est assez haut ( + de 4m ) * Les hélices projectent de l'ombre de l'extracteur, retire ça * il faudrait que la light du joueur projette de l'ombre des murs ( seulement )" This task is the point "Lors d'une explosion, si des murs sont détruit, les débris doivent aller dans la direction opposée d'ou vient l'explosion".
+- goal: An explosion that destroys walls visibly blows their debris outward, away from its centre.
+- acceptance: A1 in game, when a barrel or kamikaze explosion destroys blocks, debris leaves from where the blocks stood and flies straight away from the explosion centre, the spread small enough that the outward direction is obvious; A2 colour of the blocks; A3 at most 60 particles per explosion however many blocks break, CPU, one shared or pooled system, never one system per block, chains stay bounded; A4 they fall and are gone within 1.5 s, nothing stays on the floor; A5 what an explosion destroys and damages is unchanged; the barrel burst and ring unchanged; A6 No capture and no stress run in this task unless the owner asks: he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it.
+- gdd_check: Read explosions, destruction-rules, sys-explosions, bp-barrel-explosion, art-style-guide A10 and A14, enemy-death (no Chaos Destruction). Targeted read of Source (Grep, because Q8 depends on it): no wall debris system found; the classes holding Niagara systems are projectile, explosion FX burst, weapon, damage numbers, drone, enemy. Blueprints not checked; NS_BarrelExplosion has no block debris, only sparks that fall. So this task builds debris, it does not redirect existing ones. Radius 735 uu can destroy very many blocks, hence the count bound. explosions edited at confirmation.
+- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- milestone: M2
+- next_step: task-439-01-debris-request
+- started: open
+- waiting_for: owner answers to the questions of the 2026-11-05 FX and light list (Q1 to Q17, "ok" accepts every default)
+- result: open
+
+## Questions
+Asked 2026-11-05, each with a default; open until the owner answers.
+- Q8 Je ne trouve pas aujourd'hui de débris de mur dans le code, les blocs disparaissent et seules les étincelles de l'explosion volent (non vérifié dans les Blueprints). Default: on crée ces débris : de la couleur du bloc, partant de l'emplacement des blocs détruits, en ligne droite à l'opposé du centre de l'explosion, au plus 60 particules par explosion, retombés et disparus en 1,5 s, pour le baril et le kamikaze. Si tu parlais d'autre chose (par exemple les pièces de robots ou les morceaux de minerai), dis-moi quoi.
+
+## Subtasks
+1. task-439-01-debris-request (vault/reference/tasks/task-439-explosion-wall-debris/task-439-01-debris-request.md) — cpp: An explosion that destroys blocks requests one bounded debris effect carrying its centre and the destroyed block places.
+2. task-439-02-debris-system (vault/reference/tasks/task-439-explosion-wall-debris/task-439-02-debris-system.md) — bp: The wall debris Niagara system exists, flies outward from the centre it is given, and is the one the game plays.
+3. task-439-03-doc (vault/reference/tasks/task-439-explosion-wall-debris/task-439-03-doc.md) — doc: Document the debris effect and its bound.
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-439-01-debris-request]] — step 1, cpp.
+- [[task-439-02-debris-system]] — step 2, bp.
+- [[task-439-03-doc]] — step 3, doc.

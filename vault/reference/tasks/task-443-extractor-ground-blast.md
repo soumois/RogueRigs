@@ -1,0 +1,36 @@
+---
+id: task-443-extractor-ground-blast
+description: "Global task: A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Extractor rotor blast on the ground
+
+- request: Owner 2026-11-05 (verbatim, whole list): "Voici une liste de tâche, découpe les avec le planneur, pose les questions et puis lance l'agent executor par lot de tâche ou par tâche selon ce que tu penses qu'il sera le mieux : * Retire le flash sur le robot quand ils sont touchés. * Améliorer la particule de mort du robot * La particule d'impact de tir doit s'activer aussi quand tu touches un mur. * Il faut aussi une particule de débris de terre lorsqu'on creuse. * Lors d'une explosion, si des murs sont détruit, les débris doivent aller dans la direction opposée d'ou vient l'explosion * Il faut retravailler le muzzle flash * Il faut retravailler l'effet de level up ( un text qui pop comme les dégâts, mais pas d'effet d'arc et en couleur dorée ) + particule au sol + ennemi légèrement repoussé ( la particule doit donner cet effet ) * La particule de sous les hélices de l'extracteur font plus pensé à de la pluie qu'autre chose, il faut modifié ça * Il faudrait aussi représenter le souffle des hélices de l'extracteur au sol ( qui diminue en fonction de sa hauteur ( et elle disparait quand il est assez haut ( + de 4m ) * Les hélices projectent de l'ombre de l'extracteur, retire ça * il faudrait que la light du joueur projette de l'ombre des murs ( seulement )" This task is the point "Il faudrait aussi représenter le souffle des hélices de l'extracteur au sol ( qui diminue en fonction de sa hauteur ( et elle disparait quand il est assez haut ( + de 4m )".
+- goal: The rotors visibly blow dust outward on the floor, and that blast weakens as the extractor rises.
+- acceptance: A1 in game, under the landed extractor, dust is visibly pushed outward along the floor under each rotor, clearly stronger than today's ring; A2 its strength falls continuously with the height of the extractor base above the floor, full at 0 and none at 400 uu (4 m) and above; A3 it replaces the existing floor dust ring, no double effect and no fixed 300 uu cutoff left; A4 it follows the takeoff of the arrival extractor and the extraction takeoff behind the end screen; A5 pale grey-beige, no code colour, no gameplay effect on anyone; A6 no Event Tick in the Blueprint, rotor spin and takeoff timings unchanged, Extraction tests pass; A7 No capture and no stress run in this task unless the owner asks: he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it.
+- gdd_check: Read extraction, bp-extractor-rotor-wash, bp-extraction-shuttle, sys-objectives-shuttle. Replaces the "ground dust ring within 300 uu" of extraction, edited at confirmation. Docs state the wash reads a height set once at BeginPlay, and the only event is rotor speed, so no value follows the rise today: a height signal is needed. Rotors stand about 247 to 298 uu above the floor when landed (x4 scale), so 4 m measured at the rotors leaves almost no range: Q13. The rise is 400 uu in 1.5 s, which matches the base reading.
+- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- milestone: M2
+- next_step: task-443-01-height-signal
+- started: open
+- waiting_for: owner answers to the questions of the 2026-11-05 FX and light list (Q1 to Q17, "ok" accepts every default)
+- result: open
+
+## Questions
+Asked 2026-11-05, each with a default; open until the owner answers.
+- Q13 Le souffle remplace-t-il l'anneau de poussière actuel, et les 4 m se mesurent d'où ? Default: oui il le remplace, et le souffle se mesure au bas de l'extracteur : plein quand il est posé, diminue régulièrement, disparaît à 4 m (400 uu, exactement la hauteur de sa montée au décollage). Mesurés aux hélices, déjà à 2,5 à 3 m du sol une fois posé, il disparaîtrait presque aussitôt.
+
+## Subtasks
+1. task-443-01-height-signal (vault/reference/tasks/task-443-extractor-ground-blast/task-443-01-height-signal.md) — cpp: The extractor gives its current height above the floor to the Blueprint when it changes, event driven.
+2. task-443-02-blast-emitter (vault/reference/tasks/task-443-extractor-ground-blast/task-443-02-blast-emitter.md) — bp: The floor dust of the rotor wash becomes a stronger outward blast with a height input, none at 400 uu.
+3. task-443-03-blueprint-wiring (vault/reference/tasks/task-443-extractor-ground-blast/task-443-03-blueprint-wiring.md) — bp: BP_ExtractionShuttle feeds the height to the four wash components.
+4. task-443-04-doc (vault/reference/tasks/task-443-extractor-ground-blast/task-443-04-doc.md) — doc: Document the height signal, the blast and the wiring.
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-443-01-height-signal]] — step 1, cpp.
+- [[task-443-02-blast-emitter]] — step 2, bp.
+- [[task-443-03-blueprint-wiring]] — step 3, bp.
+- [[task-443-04-doc]] — step 4, doc.

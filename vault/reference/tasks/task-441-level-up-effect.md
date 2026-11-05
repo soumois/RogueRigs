@@ -1,0 +1,41 @@
+---
+id: task-441-level-up-effect
+description: "Global task: Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Level-up effect rework
+
+- request: Owner 2026-11-05 (verbatim, whole list): "Voici une liste de tâche, découpe les avec le planneur, pose les questions et puis lance l'agent executor par lot de tâche ou par tâche selon ce que tu penses qu'il sera le mieux : * Retire le flash sur le robot quand ils sont touchés. * Améliorer la particule de mort du robot * La particule d'impact de tir doit s'activer aussi quand tu touches un mur. * Il faut aussi une particule de débris de terre lorsqu'on creuse. * Lors d'une explosion, si des murs sont détruit, les débris doivent aller dans la direction opposée d'ou vient l'explosion * Il faut retravailler le muzzle flash * Il faut retravailler l'effet de level up ( un text qui pop comme les dégâts, mais pas d'effet d'arc et en couleur dorée ) + particule au sol + ennemi légèrement repoussé ( la particule doit donner cet effet ) * La particule de sous les hélices de l'extracteur font plus pensé à de la pluie qu'autre chose, il faut modifié ça * Il faudrait aussi représenter le souffle des hélices de l'extracteur au sol ( qui diminue en fonction de sa hauteur ( et elle disparait quand il est assez haut ( + de 4m ) * Les hélices projectent de l'ombre de l'extracteur, retire ça * il faudrait que la light du joueur projette de l'ombre des murs ( seulement )" This task is the point "Il faut retravailler l'effet de level up ( un text qui pop comme les dégâts, mais pas d'effet d'arc et en couleur dorée ) + particule au sol + ennemi légèrement repoussé ( la particule doit donner cet effet )".
+- goal: A level-up reads as a burst of power around the miner, before the upgrade cards appear.
+- acceptance: A1 in game, on a level-up a gold "LEVEL UP" text pops above the miner with the same scale punch as a damage number, rises straight with no arc, about 0.7 s, and is shown even when damage numbers are off; A2 a one-shot gold wave runs along the floor from his feet out to about 300 uu and replaces the cyan disc; A3 the wave reads as what pushes the robots: robots inside the radius move a little away from him at that moment, with no damage, following their KnockbackResistance; A4 the green heal ring, the 20 % heal, the 0.8 s delay and the card screen are unchanged; A5 several levels gained at once give one text and one wave; A6 existing tests pass, only expectations this change breaks are updated (the disc test goes with the disc); A7 No capture and no stress run in this task unless the owner asks: he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it.
+- gdd_check: Read xp-level-up, damage-numbers, color-code, readability-rules, ground-telegraph, sys-level-up, bp-miner. Replaces the cyan ring and disc of xp-level-up, edited at confirmation, with a color-code row. Ambiguity: real push or look only, Q11, a game rule if real. Gold: rarity colours stay interface only and this is a brief event, not a rarity; gold ground circles of ground-telegraph mean a waiting zone but are static and dotted, this is a one-shot wave. On-screen text stays English (readability-rules). Radius 300 uu and colour provisional.
+- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- milestone: M2
+- next_step: task-441-01-level-up-text
+- started: open
+- waiting_for: owner answers to the questions of the 2026-11-05 FX and light list (Q1 to Q17, "ok" accepts every default)
+- result: open
+
+## Questions
+Asked 2026-11-05, each with a default; open until the owner answers.
+- Q10 Le texte et le sol ? Default: « LEVEL UP » en anglais comme tout le jeu, doré (1, 0,72, 0,15), au-dessus du mineur, même pop que les dégâts, montée droite sans arc, environ 0,7 s, affiché même si les chiffres de dégâts sont coupés. Au sol, une onde dorée qui part des pieds jusqu'à environ 300 uu remplace le disque cyan. L'anneau vert de soin reste, car il dit que tu es soigné. Plusieurs niveaux d'un coup : un seul texte et une seule onde.
+- Q11 « Ennemi légèrement repoussé » : vrai recul ou simple impression ? Default: vrai recul, les robots dans le rayon de l'onde sont réellement poussés un peu, sans dégâts, selon leur résistance au recul, et l'onde montre ce qui les pousse. Force provisoire que tu ajustes en jeu. L'autre choix : aucun effet sur les robots, seule la particule donne l'impression de poussée.
+
+## Subtasks
+1. task-441-01-level-up-text (vault/reference/tasks/task-441-level-up-effect/task-441-01-level-up-text.md) — cpp: A level-up requests the gold straight-rising text, independent of the damage number toggle.
+2. task-441-02-text-asset (vault/reference/tasks/task-441-level-up-effect/task-441-02-text-asset.md) — bp: The text renders as gold "LEVEL UP" with the pop and no arc.
+3. task-441-03-robot-push (vault/reference/tasks/task-441-level-up-effect/task-441-03-robot-push.md) — cpp: A level-up pushes robots inside the radius a little, with no damage, following their resistance.
+4. task-441-04-floor-wave (vault/reference/tasks/task-441-level-up-effect/task-441-04-floor-wave.md) — bp: The one-shot gold floor wave Niagara system exists, sized to the push radius.
+5. task-441-05-miner-wiring (vault/reference/tasks/task-441-level-up-effect/task-441-05-miner-wiring.md) — bp: BP_Miner plays the wave on level-up and no longer has the cyan disc; the heal ring stays.
+6. task-441-06-doc (vault/reference/tasks/task-441-level-up-effect/task-441-06-doc.md) — doc: Document the text, the wave, the push and the removed disc.
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-441-01-level-up-text]] — step 1, cpp.
+- [[task-441-02-text-asset]] — step 2, bp.
+- [[task-441-03-robot-push]] — step 3, cpp.
+- [[task-441-04-floor-wave]] — step 4, bp.
+- [[task-441-05-miner-wiring]] — step 5, bp.
+- [[task-441-06-doc]] — step 6, doc.

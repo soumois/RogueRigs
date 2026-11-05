@@ -1,0 +1,28 @@
+---
+id: task-436-01-robot-puff
+description: "Bp: Representative slice: the robot death puff has its new look."
+parent: task-436-robot-death-particle
+kind: task
+status: todo
+---
+# Better robot death particle: bp
+
+- goal: Representative slice: the robot death puff has its new look.
+- agent: bp
+- depends_on: none
+- inputs: bp-robot-death-puff (vault/reference/tech/blueprints/fx/bp-robot-death-puff.md), enemy-death (vault/reference/gdd/enemies/enemy-death.md), color-code (vault/reference/gdd/art-audio/color-code.md), readability-rules (vault/reference/gdd/art-audio/readability-rules.md), bp-barrel-explosion (vault/reference/tech/blueprints/fx/bp-barrel-explosion.md)
+- expected_output: see done_when
+- done_when: System compiles with no error, one-shot behaviour and pool return kept, at most 20 sprites read back, no orange or red value.
+- editor_state: decided by the Executor
+- token_ceiling: open
+- model: open
+- tokens: open
+- usage: open
+- runs: open
+- milestone: M2
+- started: open
+- waiting_for: none
+- result: open
+
+## Relations
+- [[task-436-robot-death-particle]] — parent global task.
