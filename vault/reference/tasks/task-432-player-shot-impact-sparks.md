@@ -1,6 +1,6 @@
 ---
 id: task-432-player-shot-impact-sparks
-description: "Global task: Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8). Awaiting owner answers."
+description: "Global task: Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8)."
 parent: tasks-done-index
 kind: task
 status: done

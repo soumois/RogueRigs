@@ -19,7 +19,7 @@ class UStaticMeshComponent;
  * scale goes linearly from 0 to Radius / MeshRadius. With HoldSeconds = 0 (default, e.g. BP_HealRing) the parameter goes from
  * 1 to 0 over the same Duration. With HoldSeconds > 0 (explosions, set by the spawner) the mesh grows at full opacity, holds
  * its final state (full size, opacity 1) for HoldSeconds, then fades from 1 to 0 over FadeSeconds at full size.
- * Optional, both off when unset (BP_ExplosionFX, kamikaze): BurstSystem, a one-shot Niagara system played once at BeginPlay at
+ * Optional, both off when unset (BP_ExplosionFX; set by BP_ExplosionFX_Barrel, barrel and kamikaze): BurstSystem, a one-shot Niagara system played once at BeginPlay at
  * the center with the float user parameter BurstRadiusParameterName = Radius; ShockwaveMaterial, a deferred decal projected
  * straight down (floor and rock tops) whose box covers Radius, with the scalars Radius, Progress and Opacity on the ring's own
  * timeline: Progress 0 to 1 over ShockwaveGrowSeconds at Opacity 1, then Opacity 1 to 0 over ShockwaveFadeSeconds, so the ring

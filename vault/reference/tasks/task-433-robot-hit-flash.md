@@ -1,6 +1,6 @@
 ---
 id: task-433-robot-hit-flash
-description: "Global task: A robot that takes a hit turns plain white for a brief moment, at low cost, every class. Awaiting owner answers."
+description: "Global task: A robot that takes a hit turns plain white for a brief moment, at low cost, every class."
 parent: tasks-done-index
 kind: task
 status: done

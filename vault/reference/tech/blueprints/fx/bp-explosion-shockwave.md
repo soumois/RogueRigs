@@ -18,12 +18,13 @@ Values below are provisional, owner 2026-10-16 (request: the explosion circle, r
 - derivation: duplicated from `M_GroundTelegraph` (same graph); the progress-ring Custom node takes the width from the `RingWidth` parameter (input W) instead of the 12 hard-coded; the dashed zone-ring node and the fill node were neutralised (return 0, kept wired so the graph keeps its shape); opacity = max of the three masks x `Opacity`.
 - assets: none besides the two materials.
 - owner_agent: agent-bp
-- verified: material recompiled without error, settings and parameters read back, instance parameters read back, saved. Not checked on screen (no capture allowed; owner judges). Not yet assigned to a Blueprint: task-197-06 or the barrel child sets `ShockwaveMaterial`.
+- verified: material recompiled without error, settings and parameters read back, instance parameters read back, saved. Not checked on screen (no capture allowed; owner judges). Assigned: [[bp-explosion-fx-barrel]] sets `ShockwaveMaterial` to MI_ExplosionShockwave.
 
 ## Relations
 - [[blueprints-fx-index]] — parent index.
 - [[sys-explosions]] — the C++ class that drives the parameters.
 - [[sys-ground-telegraph]] — the material it was derived from.
 - [[bp-explosion-fx]] — the explosion Blueprint family that uses it.
+- [[bp-explosion-fx-barrel]] — the child that assigns it, played by the barrel and the kamikaze.
 - [[color-code]] — orange colour meaning.
 - [[readability-rules]] — colour reservation.

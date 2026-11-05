@@ -1,6 +1,6 @@
 ---
 id: task-434-kamikaze-burst-and-ring
-description: "Global task: The kamikaze explosion gets the Niagara burst and the ground ring of the barrel, scaled to its own radius. Awaiting owner answer."
+description: "Global task: The kamikaze explosion gets the Niagara burst and the ground ring of the barrel, scaled to its own radius."
 parent: tasks-done-index
 kind: task
 status: done
