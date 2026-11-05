@@ -12,7 +12,7 @@ applies_to: art, vfx, level-design, image prompts
 - Acid green and steel blue are reserved for enemies in every biome; terrain never uses enemy colors.
 - Red means enemy fire (shots, targeting lasers: moving lines) or healing (heal ore and pickups: static on the floor). The miner aim laser is white-gold, never red (owner 2026-11-02, [[aim-indicator]]).
 - Orange means "explodes": barrels and the kamikaze's core.
-- Robot hit flash (provisional, owner 2026-11-05, [[task-433-robot-hit-flash]]): a robot that takes damage from any source turns plain white for 0.08 s, every class; a new hit restarts it. The kamikaze core keeps its orange pulse. A hit absorbed by a shield flashes the robot, not the shield.
+- Robot hit flash removed (owner 2026-11-05, [[task-435-remove-robot-hit-flash]], undoes [[task-433-robot-hit-flash]]): a robot that takes damage does not change colour; a hit reads through the impact sparks and the damage number.
 - Rarity colors appear only in the interface, never on an object in the arena.
 - The shooter must be spotted in under a second.
 

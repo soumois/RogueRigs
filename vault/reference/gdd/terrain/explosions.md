@@ -18,6 +18,8 @@ status: approved
 
 - Kamikaze explosion look (owner 2026-11-05, "Oui, lot 1", [[task-434-kamikaze-burst-and-ring]]): it plays the barrel's Niagara burst and ground ring on top of the orange sphere, same particle counts, every size following its own visual radius.
 
+- Wall debris (provisional, owner 2026-11-05, [[task-439-explosion-wall-debris]]): blocks destroyed by an explosion throw debris of the block colour straight away from the explosion centre, at most 60 particles per explosion however many blocks break; they fall and are gone within 1.5 s, no rubble stays.
+
 - Visible explosion (owner 2026-10-10): the visible part is about 5 % larger than the collision radius, so the player is never hit outside what is shown, and it stays 0.1 s at its final state before fading, so it can be seen.
 
 - Barrel fuse (owner 2026-10-12): a barrel explodes 1.5 s after its health reaches 0, so the 0.08 s link delay of a chain becomes the barrel fuse for barrels; the kamikaze rules are unchanged ([[barrel]], [[enemy-kamikaze]]).

@@ -11,15 +11,15 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-435-remove-robot-hit-flash]] — A robot that takes a hit no longer flashes: the feature of task-433 is removed for good. Status wait-answers.
-- [[task-436-robot-death-particle]] — A stronger robot death puff that stays readable in a horde and no longer uses the orange of explosions. Status wait-answers.
-- [[task-437-shot-impact-on-walls]] — The player shot impact sparks also play when the shot is stopped by a wall. Status wait-answers.
-- [[task-438-dig-debris]] — A block broken by the drone throws a short burst of debris of the block colour that falls and disappears. Status wait-answers.
-- [[task-439-explosion-wall-debris]] — Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count. Status wait-answers.
-- [[task-440-muzzle-flash-rework]] — A new look for the miner weapon muzzle flash: forward star, soft halo, white-gold. Status wait-answers.
-- [[task-441-level-up-effect]] — Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little. Status wait-answers.
-- [[task-442-extractor-wash-no-rain]] — The thin downward streaks under the extractor rotors, read as rain, become soft faint air swirls. Status wait-answers.
-- [[task-443-extractor-ground-blast]] — A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m. Status wait-answers.
-- [[task-444-rotors-no-shadow]] — The four extractor rotors cast no shadow; the hull keeps its own. Status wait-answers.
-- [[task-445-miner-light-wall-shadows]] — The miner floor and wall light casts the shadows of rock walls, and of nothing else. Status wait-answers.
+- [[task-435-remove-robot-hit-flash]] — A robot that takes a hit no longer flashes: the feature of task-433 is removed for good. Status todo.
+- [[task-436-robot-death-particle]] — A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde. Status wait-answers.
+- [[task-437-shot-impact-on-walls]] — The player shot impact sparks also play when the shot is stopped by a wall. Status todo.
+- [[task-438-dig-debris]] — A block broken by the drone throws a short burst of debris of the block colour that falls and disappears. Status todo.
+- [[task-439-explosion-wall-debris]] — Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count. Status todo.
+- [[task-440-muzzle-flash-rework]] — A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video. Status wait-answers.
+- [[task-441-level-up-effect]] — Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little. Status todo.
+- [[task-442-extractor-wash-no-rain]] — The thin downward streaks under the extractor rotors, read as rain, become soft faint air swirls. Status todo.
+- [[task-443-extractor-ground-blast]] — A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m. Status todo.
+- [[task-444-rotors-no-shadow]] — The whole extractor, hull and rotors, casts no shadow. Status todo.
+- [[task-445-miner-light-wall-shadows]] — The miner floor and wall light casts the shadows of rock walls, and of nothing else. Status todo.
 
