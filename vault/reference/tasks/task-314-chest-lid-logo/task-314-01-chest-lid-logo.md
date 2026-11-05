@@ -3,7 +3,7 @@ id: task-314-01-chest-lid-logo
 description: "Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game."
 parent: task-314-chest-lid-logo
 kind: task
-status: todo
+status: in-progress
 ---
 # Yellow logo on the chest lid
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-11-05T22:56:10Z
 - result: open
 
 ## Relations
