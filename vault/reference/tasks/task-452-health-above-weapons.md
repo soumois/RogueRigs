@@ -3,11 +3,11 @@ id: task-452-health-above-weapons
 description: "Global task: The health bar leaves the top left and sits just above the weapon slots, in the retained unified look."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Health bar just above the weapon slots
 
-- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes.
+- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes. Owner answer 2026-11-05 (relayed by the main session, verbatim): "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )" = the plan and the defaults of Q27 accepted.
 
 Il faudrait refaire la barre d'évolution ( où on voit le swarm qui arrive et le C ( pour commande ) et  B pour bonus ), que ça soit mieux intégré
 
@@ -21,15 +21,15 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - goal: In game the health bar is read just above the weapons, in the unified HUD look.
 - acceptance: A0 Starts only once task-451-hud-mockups is done: the look comes from the mockup the owner retained there (recorded in its art-prompts node, files under Art/Source/hud-unified/). A1 the health bar and its "current / max" text sit just above the 4 weapon slots, centred on them, per Q27, and no longer under the radar; A2 its look follows the retained mockup; A3 drain, damage chunk, hit flash, shake, punch and the green/yellow/red colour still work; the red damage vignette and GAME OVER are unchanged; A4 the layout holds at other resolutions and ratios per umg-layout, Widgets follow umg-layout (root Canvas, anchors, no fixed pixel sizes) and start from the assets as they are: an uncommitted owner edit is committed alone first. A5 compiles and runs with no error, existing tests pass, only expectations this change breaks are updated; A6 No capture run by the capture agent unless the owner asks (Q26): he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it. The report also gives the token cost of this task, per subtask and in total, from cost-log.
 - gdd_check: Read sys-hud-health-bar (effects to preserve), umg-layout. No gdd node places the health bar; nothing conflicts.
-- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-452-01-art
 - started: open
-- waiting_for: owner answers to Q24 to Q34
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-05, each with a default; open until the owner answers.
+Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
 - Q27 Vie. Default: barre centrée juste au-dessus des 4 emplacements d'armes, de leur largeur totale, texte « 100 / 100 » dedans ; tous ses effets (glissement, morceau clair, flash, secousse, couleur vert/jaune/rouge) restent ; la vignette rouge et le GAME OVER ne bougent pas.
 
 ## Subtasks

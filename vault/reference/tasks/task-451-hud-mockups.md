@@ -3,11 +3,11 @@ id: task-451-hud-mockups
 description: "Global task: Image proposals of one unified in-game HUD, made with Kie.ai GPT Image from the current screenshot; the owner retains one before any build."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Unified in-game HUD: visual proposals
 
-- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes.
+- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes. Owner answer 2026-11-05 (relayed by the main session, verbatim): "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )" = the plan and the defaults of Q24, Q25, Q26 accepted.
 
 Il faudrait refaire la barre d'évolution ( où on voit le swarm qui arrive et le C ( pour commande ) et  B pour bonus ), que ça soit mieux intégré
 
@@ -21,15 +21,15 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - goal: The owner has seen proposals of a unified HUD and retained one, which the build tasks 452 to 458 follow.
 - acceptance: A1 proposals generated with Tools/art/kie_image.js (GPT Image 2 via Kie.ai, KIE_API_KEY), image-to-image from Art/Source/hud-unified/reference/owner-hud-current-2026-11-05.webp, count and spread per Q24, each shown to the owner as a file; A2 each proposal shows the whole HUD as one family of pieces, with every point of the request visible: health bar just above the weapon slots, alert bar with swarm marks and console/bonus/shuttle marks better integrated, radar inside a frame holding the ore count, XP bar with its 5-part ticks; A3 the look respects art-style-guide, color-code and the Kessler-Voss look already retained for the shop screen, and invents no game text beyond the current labels; A4 prompts kept verbatim under Art/Source/hud-unified/prompts/, the retained image with its run log committed, the others left untracked, per kie-image-workflow; A5 a new art-prompts node records the prompts, runs, credits, the owner's choice in his words and what each build task takes from it; A6 if the owner asks for a correction, at most one correction round per his request; no build work in this task.
 - gdd_check: Read run-index, difficulty, level-flow, xp-level-up, enemies-spawn-rules, art-audio-index, art-prompts-shop-screen-mockup, kie-image-workflow (tool runs GPT Image 2, so "api chatgpt" maps to it per the owner's clarification), umg-layout, sys-hud-pressure, sys-hud-health-bar. No gdd node holds the HUD layout; no conflict with the request. Split per owner rule: one global per point (451 proposals, 452 health, 453 alert bar, 454 swarm rule, 455 XP ticks, 456 XP ghost, 457 radar and ore, 458 weapon slots if Q34 yes). Captures: the owner validates in game himself (recent practice, tasks 449-450), asked as Q26.
-- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-451-01-mockups
 - started: open
-- waiting_for: owner answers to Q24 to Q34
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-05, each with a default; open until the owner answers.
+Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
 - Q24 Propositions. Default: 3 directions visuelles différentes, 2 variantes chacune (6 images, environ 36 crédits Kie.ai), toutes en image-to-image depuis ta capture, chacune montrant tout le HUD unifié (radar + minerai, barre d'alerte, vie au-dessus des armes, barre d'XP avec traits) dans la famille de look du shop (métal gunmetal/teal, rouille, Kessler-Voss). Tu en retiens une, ou tu demandes une correction, avant toute construction.
 - Q25 Ordre. Default: la maquette (451) d'abord ; 452, 453, 455, 456, 457, 458 attendent ta maquette retenue ; 454 (règle des swarms) n'en dépend pas et peut partir tout de suite.
 - Q26 Vérification. Default: pas de capture par l'agent capture ; tu valides en jeu toi-même, chaque rapport liste ce qu'il faut regarder. Autre choix : capture aux 4 résolutions (1920x1080, 1280x720, 1920x1200, 2560x1080) à la fin de chaque tâche visuelle.

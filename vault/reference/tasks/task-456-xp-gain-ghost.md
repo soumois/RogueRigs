@@ -3,11 +3,11 @@ id: task-456-xp-gain-ghost
 description: "Global task: on an XP gain a pale ghost fill shows the new XP at once; the cyan fill then catches up."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # XP gain ghost on the XP bar
 
-- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes.
+- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes. Owner answer 2026-11-05 (relayed by the main session, verbatim): "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )" = the plan and the defaults of Q32 accepted.
 
 Il faudrait refaire la barre d'évolution ( où on voit le swarm qui arrive et le C ( pour commande ) et  B pour bonus ), que ça soit mieux intégré
 
@@ -21,15 +21,15 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - goal: Gaining XP is seen as a ghost that the fill then catches up.
 - acceptance: A0 Starts only once task-451-hud-mockups is done: the look comes from the mockup the owner retained there (recorded in its art-prompts node, files under Art/Source/hud-unified/). A1 per Q32: on a gain the ghost fill shows the new value at once, the cyan fill catches up after about 0.4 s; a new gain restarts the wait; A2 on a level-up the ghost reaches the end, the bar empties, then the remainder shows the same way; several levels at once do not leave the bar stuck; A3 no per-frame work when nothing moves (event armed, as the health bar); A4 ticks of task-455 and "Lv N" unchanged; colour and look per the retained mockup; A5 a test covers ghost and fill values after a gain and after a level-up; existing tests pass, only expectations this change breaks are updated; A6 No capture run by the capture agent unless the owner asks (Q26): he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it. The report also gives the token cost of this task, per subtask and in total, from cost-log.
 - gdd_check: Read xp-level-up, sys-hud-health-bar (chunk: delay 0.4 s, rate 7 per s, event armed): the ghost mirrors it. No conflict; xp-level-up edited at confirmation.
-- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-456-01-ghost-logic
 - started: open
-- waiting_for: owner answers to Q24 to Q34
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-05, each with a default; open until the owner answers.
+Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
 - Q32 Fantôme d'XP. Default: à chaque gain, un remplissage pâle (cyan très clair) montre tout de suite la nouvelle XP, puis la barre cyan le rattrape après environ 0,4 s, au même rythme que le morceau clair de la vie ; au level up, le fantôme va au bout, la barre se vide puis le reste s'affiche de la même façon.
 
 ## Subtasks

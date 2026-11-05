@@ -3,11 +3,11 @@ id: task-455-xp-bar-ticks
 description: "Global task: Thin light ticks split the XP bar into 5 equal parts."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # XP bar split in 5 by light ticks
 
-- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes.
+- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes. Owner answer 2026-11-05 (relayed by the main session, verbatim): "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )" = the plan and the defaults of Q31 accepted.
 
 Il faudrait refaire la barre d'évolution ( où on voit le swarm qui arrive et le C ( pour commande ) et  B pour bonus ), que ça soit mieux intégré
 
@@ -21,15 +21,15 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - goal: The XP bar shows light ticks at each fifth.
 - acceptance: A0 Starts only once task-451-hud-mockups is done: the look comes from the mockup the owner retained there (recorded in its art-prompts node, files under Art/Source/hud-unified/). A1 per Q31 (default: 4 thin, light lines at 20, 40, 60, 80 % of the bar, whatever the level), above the fill and readable on empty and full parts without hiding it; A2 tick look per the retained mockup; A3 XP fill, "Lv N" and level-up behaviour unchanged; A4 Widgets follow umg-layout (root Canvas, anchors, no fixed pixel sizes) and start from the assets as they are: an uncommitted owner edit is committed alone first. the ticks follow the bar width at every resolution; A5 compiles and runs with no error; A6 No capture run by the capture agent unless the owner asks (Q26): he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it. The report also gives the token cost of this task, per subtask and in total, from cost-log.
 - gdd_check: Read xp-level-up (HUD: cyan XP bar across the bottom, level on its left). No conflict; xp-level-up edited at confirmation. "par 5" has two readings, asked as Q31.
-- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-455-01-ticks
 - started: open
-- waiting_for: owner answers to Q24 to Q34
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-05, each with a default; open until the owner answers.
+Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
 - Q31 « Séparation par 5 ». Default: 4 traits fins et légers coupent la barre en 5 parts égales (20 % chacune), quel que soit le niveau. Autre : un trait tous les 5 points d'XP (leur nombre change avec le niveau).
 
 ## Subtasks

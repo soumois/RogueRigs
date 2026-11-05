@@ -3,11 +3,11 @@ id: task-453-alert-bar-redesign
 description: "Global task: The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Alert bar redesigned and better integrated
 
-- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes.
+- request: Owner 2026-11-05 (verbatim): "Il faudrait retravailler les différents UI in game , j'aimerais que la vie se trouve juste au dessus des armes. Owner answer 2026-11-05 (relayed by the main session, verbatim): "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )" = the plan and the defaults of Q28 accepted.
 
 Il faudrait refaire la barre d'évolution ( où on voit le swarm qui arrive et le C ( pour commande ) et  B pour bonus ), que ça soit mieux intégré
 
@@ -21,15 +21,15 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - goal: The alert bar reads as part of the unified HUD, marks included.
 - acceptance: A0 Starts only once task-451-hud-mockups is done: the look comes from the mockup the owner retained there (recorded in its art-prompts node, files under Art/Source/hud-unified/). A1 the alert bar, its fill and its marks (swarms, console, bonus chest, shuttle) follow the retained mockup, per Q28; A2 marks keep their positions, done states and colours by color-code; the rules (fill, console pause, icon positions) are unchanged by this task; A3 Widgets follow umg-layout (root Canvas, anchors, no fixed pixel sizes) and start from the assets as they are: an uncommitted owner edit is committed alone first. A4 compiles and runs with no error, existing tests pass, only expectations this change breaks are updated; A5 No capture run by the capture agent unless the owner asks (Q26): he validates the look in game himself; the final report lists what to look at and says plainly that the look is unverified until he has seen it. The report also gives the token cost of this task, per subtask and in total, from cost-log.
 - gdd_check: Read level-flow, difficulty, sys-hud-pressure. Look change only (rules versus rendering); the swarm rule is task-454.
-- confirmed_by_owner: no (plan and questions handed back 2026-11-05)
+- confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-453-01-art
 - started: open
-- waiting_for: owner answers to Q24 to Q34
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-05, each with a default; open until the owner answers.
+Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
 - Q28 Barre d'alerte. Default: elle reste en haut au centre ; son cadre, son remplissage et ses marqueurs prennent le look de la maquette retenue ; si la maquette montre des icônes à la place des lettres C, B, S, ce sont des icônes (couleurs du code couleur) ; aucune règle ne change ici.
 
 ## Subtasks
