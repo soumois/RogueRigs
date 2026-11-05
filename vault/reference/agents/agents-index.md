@@ -11,7 +11,7 @@ The main Claude Code session only relays between the owner and two agents: the P
 Crew in use: planner → executor → style-guide (critic of its text and images).
 Not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).
 
-Lessons are filed by theme; each agent reads the node about its own limits: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
+Lessons are filed by theme: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
 
 ## Children
 - [[agent-planner]] — plans a request into confirmed task nodes and asks the owner; open to run or change planning.
@@ -26,7 +26,9 @@ Lessons are filed by theme; each agent reads the node about its own limits: owne
 - [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).
 - [[agent-3d]] — validated image to cleaned FBX through Meshy and headless Blender (`Tools/art/`).
 - [[cloud-session-git]] — committing, tagging and pushing from a cloud session linked to the PC: lock files, identity, trailers; open before a commit from the cloud.
-- [[orchestration-protocol]] — the step-by-step procedure the Planner (steps 0 to 4) and the Executor (steps 5 and 6) follow for every request, including resume after a limit.
+- [[orchestration-protocol]] — planning procedure of the Planner for every request, steps 0 to 4.
+- [[execution-protocol]] — execution procedure of the Executor, steps 5 and 6, including resume.
+- [[task-spec]] — how a plan is written: task-create spec, defaults file, confirmation; read before writing a plan.
 - [[orchestrator-runbook]] — the commands that work: git, editor start and stop, delegation prompt, closing a subtask, dashboard.
 - [[orchestrator-lessons]] — owner rules and planning lessons; read before every plan.
 - [[orchestrator-script-quirks]] — task scripts, git, editor, shells and permission pitfalls; open before closing a subtask or committing.

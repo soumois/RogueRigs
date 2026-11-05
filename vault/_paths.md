@@ -189,6 +189,7 @@ enemy-death  reference/gdd/enemies/enemy-death.md
 enemy-heavy  reference/gdd/enemies/enemy-heavy.md
 enemy-kamikaze  reference/gdd/enemies/enemy-kamikaze.md
 enemy-shooter  reference/gdd/enemies/enemy-shooter.md
+execution-protocol  reference/agents/execution-protocol.md
 explosions  reference/gdd/terrain/explosions.md
 external-tools-index  reference/external-tools/external-tools-index.md
 extraction  reference/gdd/run/extraction.md
@@ -414,6 +415,7 @@ systems-index  reference/tech/systems/systems-index.md
 systems-tools-index  reference/tech/systems/tools/systems-tools-index.md
 systems-ui-index  reference/tech/systems/ui/systems-ui-index.md
 systems-world-index  reference/tech/systems/world/systems-world-index.md
+task-spec  reference/agents/task-spec.md
 tech-index  reference/tech/tech-index.md
 terrain-index  reference/gdd/terrain/terrain-index.md
 text-content-events  reference/tech/pipelines/text-content-events.md

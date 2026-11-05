@@ -7,13 +7,13 @@ status: todo
 ---
 # <Subtask title>
 
-- goal: <one outcome, one agent>
-- agent: <agent id>
+- goal: <one outcome, one role>
+- agent: <role whose rules apply>
 - depends_on: <subtask ids, or none>
 - inputs: <vault node ids and files>
-- expected_output: <files, format>
+- expected_output: <files, format, or "see done_when">
 - done_when: <checks the orchestrator runs before marking done>
-- editor_state: closed | open | any
+- editor_state: closed | open | any | decided by the Executor
 - token_ceiling: <x> M units — bound on the subtask's weighted units (input-token equivalents, weights in `vault/scripts/cost-rates.json`), the `units` figure of `usage`; e.g. `1.2 M units`
 - model: <model of the agent that ran it (opus | sonnet | haiku), filled when done>
 - tokens: <input N, cache write N, cache read N, output N — from `node vault/scripts/agent-usage.js`, all runs included; filled when done>

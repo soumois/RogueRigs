@@ -17,8 +17,9 @@
 //     questions_header? ("Asked <today>, each with a default; open until the owner answers."),
 //     relations? [ [id, gloss], ... ] (extra Relations lines), index_line? (default description),
 //     subtasks: [ <subtask>, ... ] (ordered; step numbers 01, 02, ... follow the order) }
-//   subtask: { slug (after task-NNN-SS-), agent, line (one-line gloss for ## Subtasks), goal, inputs [...],
-//     expected_output, done_when, editor_state, token_ceiling ("<x> M units"),
+//   subtask: { slug (after task-NNN-SS-), agent, line (one-line gloss for ## Subtasks), inputs [...], done_when,
+//     goal? (default line), expected_output? (default "see done_when"), editor_state? (default "decided by the Executor"),
+//     token_ceiling? ("<x> M units", default "open"),
 //     title? (default "<global title>: <agent>"), description? (default "<Agent>: <line>"),
 //     depends_on? (ids, step numbers, or "none"; default "none" for step 1, the previous subtask otherwise),
 //     milestone? (the global's) }
@@ -106,7 +107,7 @@ if (isOld) {
     const subLines = [], relLines = [];
     g.subtasks.forEach((s, i) => {
       const sid = sids[i];
-      need(s, ['slug', 'agent', 'line', 'goal', 'inputs', 'expected_output', 'done_when', 'editor_state', 'token_ceiling'], sid);
+      need(s, ['slug', 'agent', 'line', 'inputs', 'done_when'], sid);
       if (!Array.isArray(s.inputs)) fail(`${sid}: inputs must be a list`);
       let dep = s.depends_on;
       if (dep === undefined) dep = i ? [sids[i - 1]] : 'none';
@@ -118,9 +119,9 @@ if (isOld) {
       }).join(', ');
       const sdesc = s.description || `${cap(s.agent)}: ${s.line}`;
       writes.push([path.join(T, gid, sid + '.md'), ['---', `id: ${sid}`, `description: "${sdesc}"`, `parent: ${gid}`, 'kind: task',
-        'status: todo', '---', `# ${s.title || g.title + ': ' + s.agent}`, '', `- goal: ${s.goal}`, `- agent: ${s.agent}`, `- depends_on: ${dep}`,
-        `- inputs: ${s.inputs.map(x => input(x, sid)).join(', ')}`, `- expected_output: ${s.expected_output}`, `- done_when: ${s.done_when}`,
-        `- editor_state: ${s.editor_state}`, `- token_ceiling: ${s.token_ceiling}`, '- model: open', '- tokens: open', '- usage: open',
+        'status: todo', '---', `# ${s.title || g.title + ': ' + s.agent}`, '', `- goal: ${s.goal || s.line}`, `- agent: ${s.agent}`, `- depends_on: ${dep}`,
+        `- inputs: ${s.inputs.map(x => input(x, sid)).join(', ')}`, `- expected_output: ${s.expected_output || 'see done_when'}`, `- done_when: ${s.done_when}`,
+        `- editor_state: ${s.editor_state || 'decided by the Executor'}`, `- token_ceiling: ${s.token_ceiling || 'open'}`, '- model: open', '- tokens: open', '- usage: open',
         '- runs: open', `- milestone: ${s.milestone || milestone}`, '- started: open', '- waiting_for: none', '- result: open', '',
         '## Relations', `- [[${gid}]] — parent global task.`, ''].join('\n')]);
       subLines.push(`${i + 1}. ${sid} (vault/reference/tasks/${gid}/${sid}.md) — ${s.agent}: ${s.line}`);

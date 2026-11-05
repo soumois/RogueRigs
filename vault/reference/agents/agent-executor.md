@@ -10,12 +10,12 @@ status: provisional
 - role: second half of the Orchestrator. Runs one owner-confirmed global task and does the work itself in one context (code, editor, art, 3d, capture, docs): verifies `done_when`, looks at its own result in game, records result and status for resume (owner 2026-11-05: planner + one Opus agent per task; four-task comparison in the model field).
 - invoked_by: the main session, once per global task (fresh agent each time, owner rule: a long-lived orchestrator grows its context and cost).
 - trigger: a global task with `confirmed_by_owner: yes` and status `todo`, `in-progress` or `wait-answers`.
-- reads: its global task node and subtask nodes, [[orchestrator-runbook]], [[orchestrator-script-quirks]], [[orchestration-protocol]] (steps 5 and 6); [[_authoring]] only before editing a vault doc; the first time a role comes up in the task, the node of that role, plus [[bp-mcp-lessons]] for bp and [[art-3d-lessons]] for art and 3d. Subtask nodes are opened directly from the `next: <path>` last line of `task-start.js` / `task-next.js` or from the path in the global `## Subtasks` (execution exception of [[_navigation]]); never guessed by analogy, never searched. It does not read the root, the navigation, the gdd or the planning lessons.
+- reads: its global task node and subtask nodes, [[orchestrator-runbook]], [[orchestrator-script-quirks]], [[execution-protocol]]; [[_authoring]] only before editing a vault doc; the first time a role comes up in the task, the node of that role, plus [[bp-mcp-lessons]] for bp and [[art-3d-lessons]] for art and 3d. Subtask nodes are opened directly from the `next: <path>` last line of `task-start.js` / `task-next.js` or from the path in the global `## Subtasks` (execution exception of [[_navigation]]); never guessed by analogy, never searched. It does not read the root, the navigation, the gdd or the planning lessons.
 - produces: updated task nodes (`result`, `model`, `tokens`, `runs`, status), one commit per finished subtask, a final report.
 - output_format: to the main session: subtasks done with their `result`, blocked items, unverified items, paths of the images and renders the owner must see.
 - definition_of_done: every subtask `done` with its `done_when` passed, global `acceptance` passed, lint clean, committed, `next_step: none`.
 - start: at its step 0, `node vault/scripts/task-start.js <global-id>` sets the global and its first open subtask `in-progress` with `next_step`, lints and commits; it refuses a global without `confirmed_by_owner: yes` and is a no-op when already started ([[orchestrator-runbook]]). Its output holds only signal lines and ends with `next: <absolute path of the subtask>`; open that path directly.
-- owner_wait: when it stops for an owner action or answer, it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<action or question>"` and commits them by path; on resume `status=in-progress` (or `task-start.js`) resets `waiting_for` to `none` ([[orchestration-protocol]] step 5).
+- owner_wait: when it stops for an owner action or answer, it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<action or question>"` and commits them by path; on resume `status=in-progress` (or `task-start.js`) resets `waiting_for` to `none` ([[execution-protocol]] step 5).
 - roles: a subtask's `agent` field names the role whose rules apply (`cpp`, `bp`, `capture`, `doc`, `level-design`, `text`, `art`, `3d`); the Executor applies them itself and does not launch those agents. They stay defined for a direct owner request. It remains the sole owner of the confirmed plan and does not call the Planner during execution.
 - critic: `style-guide` is the one agent it launches, after every text or image generation, with a description starting with the subtask id: a producer does not judge its own work against the style rules.
 - doc_subtask: the last subtask of a global with cpp or bp subtasks is a real node with `agent: doc`. The Executor writes the nodes of its `inputs` itself, following [[agent-doc]], and closes it with `task-next.js`.
@@ -33,7 +33,7 @@ status: provisional
 ## Relations
 - [[agents-index]] — parent index.
 - [[agent-planner]] — writes the nodes it runs.
-- [[orchestration-protocol]] — steps 5 and 6 are its procedure.
+- [[execution-protocol]] — its procedure.
 - [[orchestrator-runbook]] — the commands it uses.
 - [[orchestrator-script-quirks]] — script, git and editor pitfalls.
 - [[agent-doc]] — rules of the doc subtask it writes.
