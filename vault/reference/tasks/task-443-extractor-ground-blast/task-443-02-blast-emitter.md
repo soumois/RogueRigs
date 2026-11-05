@@ -3,7 +3,7 @@ id: task-443-02-blast-emitter
 description: "Bp: The floor dust of the rotor wash becomes a stronger outward blast with a height input, none at 400 uu."
 parent: task-443-extractor-ground-blast
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotor blast on the ground: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:51:14Z
 - waiting_for: none
 - result: open
 
