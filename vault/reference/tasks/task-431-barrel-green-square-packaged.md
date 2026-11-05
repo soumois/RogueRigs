@@ -3,7 +3,7 @@ id: task-431-barrel-green-square-packaged
 description: "Global task: no green default-decal square at any barrel fuse or explosion in a packaged build, second and later runs of one process included."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel explosion green square in the packaged build
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-04, "Oui mais prépare la tâche seulement.")
 - milestone: M2
 - next_step: task-431-01-packaged-green-square-fix
-- started: open
+- started: 2026-11-05T14:41:52Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-431-01-packaged-green-square-fix
 description: "Cpp: reproduce the green square in a packaged build from the second run of one process, find the cause, fix it, verify in packaged frames."
 parent: task-431-barrel-green-square-packaged
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel explosion green square in the packaged build: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T14:41:52Z
 - waiting_for: none
 - result: open
 
