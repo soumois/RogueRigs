@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T15:45:57Z
 - waiting_for: none
-- result: Done. bp-shot-impact-spark created and linked from blueprints-fx-index; sys-projectiles (hit rule, location, pool bound 24), sys-turret, sys-actor-pool updated; lint clean.
+- result: Done, look unverified until the owner sees it in game. Miner and turret shots play NS_ShotImpactSpark (6 CPU sprites, 0.1 to 0.2 s, white-gold) through the Niagara pool, cap 24, on a hit on a robot or a barrel; nothing on rock, ore or for robot shots; a full pool skips the spark. Weapons and Barrel test families pass; no capture and no stress run (A6).
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
