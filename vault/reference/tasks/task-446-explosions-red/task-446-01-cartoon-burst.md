@@ -3,7 +3,7 @@ id: task-446-01-cartoon-burst
 description: "Bp: Representative slice: the burst and its material have the cartoon look, in the style of the robot death flash."
 parent: task-446-explosions-red
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel and kamikaze explosions in cartoon style: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:07:12Z
 - waiting_for: none
 - result: open
 

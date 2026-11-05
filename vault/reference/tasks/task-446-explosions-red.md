@@ -3,7 +3,7 @@ id: task-446-explosions-red
 description: "Global task: The whole barrel and kamikaze explosion, sphere, burst and ring, is redone in the cartoon style of the owner reference."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel and kamikaze explosions in cartoon style
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Q20- refaire tout l'explosion en style cartoon")
 - milestone: M2
 - next_step: task-446-01-cartoon-burst
-- started: open
+- started: 2026-11-05T22:07:12Z
 - waiting_for: none
 - result: open
 
