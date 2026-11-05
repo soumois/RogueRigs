@@ -3,7 +3,7 @@ id: task-448-01-robot-puff-check
 description: "Bp: The robot death puff is read in the simulation on a real kill, and fixed only if its compiled values are wrong."
 parent: task-448-death-puffs-sim-check
 kind: task
-status: todo
+status: in-progress
 ---
 # Check the robot death puffs in the simulation: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:33:16Z
 - waiting_for: none
 - result: open
 

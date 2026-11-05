@@ -3,7 +3,7 @@ id: task-448-death-puffs-sim-check
 description: "Global task: Read the robot and heavy death puffs in the simulation on real kills, and fix them only if the compiled values are wrong."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Check the robot death puffs in the simulation
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Oui, corrige")
 - milestone: M2
 - next_step: task-448-01-robot-puff-check
-- started: open
+- started: 2026-11-05T22:33:16Z
 - waiting_for: none
 - result: open
 
