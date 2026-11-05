@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read extraction, bp-extraction-shuttle, lights-no-shadows (objectives are not covered by the C++ no-shadow rule, flags as authored). No conflict. Q14 answered with Art/Source/extractor-fx/20261105-owner-rotor-shadows-and-streaks.webp: scope widened from the rotors to the whole extractor. extraction edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-444-01-rotor-shadow-off
+- next_step: task-444-02-doc
 - started: 2026-11-05T21:07:22Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-444-02-doc
 description: "Doc: Record the rotor shadow flags."
 parent: task-444-rotors-no-shadow
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotors cast no shadow: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T21:10:39Z
 - waiting_for: none
 - result: open
 
