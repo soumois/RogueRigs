@@ -41,6 +41,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnUpgradeOfferClosedSignature);
  * screen is open join the queue. No pause when the miner died before the delay ended.
  * Level-up burst (xp-level-up, task-441): once per level-up moment, whatever the levels gained in it (BurstMinInterval), the gold
  * LevelUpTextSystem plays above the miner. It does not go through URRDamageNumberSubsystem: the player toggle does not hide it.
+ * The same moment plays LevelUpWaveSystem at his feet (WaveRadiusParameter = PushRadius) and launches every living robot within
+ * PushRadius away from him (ARREnemy::ApplyKnockback, PushSpeed, following KnockbackResistance), with no damage.
  */
 UCLASS(ClassGroup = (RogueRigs), meta = (BlueprintSpawnableComponent))
 class ROGUERIGS_API URRLevelUpComponent : public UActorComponent
@@ -48,6 +50,9 @@ class ROGUERIGS_API URRLevelUpComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	/** Niagara user parameter (float) of LevelUpWaveSystem: radius (uu) the wave reaches, PushRadius. */
+	static const FName WaveRadiusParameter;
+
 	/** Components each burst effect may hold in its pool: bursts are at least BurstMinInterval apart, so few play at once. */
 	static constexpr int32 BurstPoolSize = 2;
 
@@ -157,8 +162,11 @@ protected:
 	/** Applies HealEffectClass with SetByCaller Data.Heal = HealFraction x MaxHealth to the owner's ASC (skipped when dead). */
 	void ApplyLevelUpHeal();
 
-	/** One level-up moment (skipped inside BurstMinInterval of the last one, when dead or once the run is over): plays the text. */
+	/** One level-up moment (skipped inside BurstMinInterval of the last one, when dead or once the run is over): text, wave, robot push. */
 	void PlayLevelUpBurst();
+
+	/** Launches every living robot within PushRadius (2D) of the owner away from him; a robot exactly on him has no direction and stays. */
+	void PushNearbyRobots();
 
 	/** Delay timer callback: pauses and shows the first queued choice (drops the queue when the owner died). */
 	void HandleChoiceDelayElapsed();
@@ -207,6 +215,22 @@ protected:
 	/** Height (uu) of the text above the capsule top (as the heal and ore numbers: 40, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (Units = "cm"))
 	float LevelUpTextHeight = 40.f;
+
+	/** One-shot gold floor wave (NS_LevelUpWave, set in BP_Miner), played at the owner's feet: null = no wave, the push still applies. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst")
+	TObjectPtr<UNiagaraSystem> LevelUpWaveSystem;
+
+	/** Height (uu) of the wave above the floor under the miner, so its sprites do not fight with the floor (provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (Units = "cm"))
+	float LevelUpWaveFloorOffset = 5.f;
+
+	/** Radius (uu) of the wave and of the push (xp-level-up: about 300, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (ClampMin = 0, Units = "cm"))
+	float PushRadius = 300.f;
+
+	/** Launch speed (uu/s) of a robot with no knockback resistance (xp-level-up: a slight push, provisional, the owner tunes it in game). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (ClampMin = 0))
+	float PushSpeed = 800.f;
 
 	/** Level-ups closer than this to the last burst belong to the same moment: no second burst (the text life, 0.7 s, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp|Burst", meta = (ClampMin = 0, Units = "s"))

@@ -6,6 +6,19 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Enemies/RRChaser.h"
+#include "EngineUtils.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Misc/App.h"
+#include "NiagaraComponent.h"
+#include "NiagaraDataSetAccessor.h"
+#include "NiagaraEmitterInstance.h"
+#include "NiagaraEmitterHandle.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "NiagaraSystemInstance.h"
+#include "NiagaraSystemInstanceController.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Objectives/RRRunFlowSubsystem.h"
@@ -202,6 +215,144 @@ bool FRRLevelUpBurstOncePerMomentTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("a second burst after 0.75 s"), S.LevelUp->GetLevelUpBurstCount(), 2);
 
 	Settings->SetShowDamageNumbers(bWasShown);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRLevelUpPushTest, "RogueRigs.LevelUp.BurstPushesRobots",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+/** task-441: the level-up launches robots inside the radius away from the miner, by their resistance, with no damage; robots outside get nothing; one push for several levels. */
+bool FRRLevelUpPushTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld;
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	FLevelUpSetup S;
+	if (!SpawnLevelUpSetup(*this, TestWorld, Recorder.Get(), S))
+	{
+		return false;
+	}
+	const FVector Feet = S.Miner->GetActorLocation() - FVector(0.f, 0.f, S.Miner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	ARRChaser* Inside = SpawnStillChaser(*this, TestWorld, Feet - FVector(150.f, 0.f, 0.f));
+	ARRChaser* Outside = SpawnStillChaser(*this, TestWorld, Feet + FVector(0.f, 450.f, 0.f));
+	if (!Inside || !Outside)
+	{
+		return false;
+	}
+	const float HealthBefore = Inside->GetHealthSet()->GetHealth();
+	const FFloatProperty* PushSpeedProperty = FindFProperty<FFloatProperty>(URRLevelUpComponent::StaticClass(), TEXT("PushSpeed"));
+	if (!TestNotNull(TEXT("PushSpeed property"), PushSpeedProperty))
+	{
+		return false;
+	}
+	const float Speed = PushSpeedProperty->GetPropertyValue_InContainer(S.LevelUp) * (1.f - Inside->GetKnockbackResistance());
+
+	// Two levels at once: one launch, not two.
+	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 2));
+	const FVector Launch = Inside->GetCharacterMovement()->PendingLaunchVelocity;
+	TestTrue(TEXT("the robot inside is launched away from the miner once, by its resistance"), Launch.Equals(FVector(-Speed, 0.f, 0.f), 1.f));
+	TestTrue(TEXT("the robot outside is not launched"), Outside->GetCharacterMovement()->PendingLaunchVelocity.IsNearlyZero());
+	TestEqual(TEXT("no damage"), Inside->GetHealthSet()->GetHealth(), HealthBefore);
+
+	// Movement on: how far the launch really carries it.
+	UCharacterMovementComponent* Movement = Inside->GetCharacterMovement();
+	Movement->SetComponentTickEnabled(true);
+	const FVector Start = Inside->GetActorLocation();
+	TickFrames(TestWorld, 40);
+	const double Travel = (Start - Inside->GetActorLocation()).X;
+	AddInfo(FString::Printf(TEXT("level-up push: launch %.0f uu/s, travel %.1f uu in 40 frames"), Speed, Travel));
+	TestTrue(TEXT("the robot moved away from the miner"), Travel > 10.0);
+	TestEqual(TEXT("still no damage"), Inside->GetHealthSet()->GetHealth(), HealthBefore);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRLevelUpTextAssetTest, "RogueRigs.LevelUp.TextAsset",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+/** task-441: BP_Miner plays NS_LevelUpText; under -RenderOffScreen it holds one gold sprite rising straight for about 0.7 s, with the pop. */
+bool FRRLevelUpTextAssetTest::RunTest(const FString& Parameters)
+{
+	UNiagaraSystem* System = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_LevelUpText.NS_LevelUpText"));
+	UClass* MinerClass = LoadTestClass<ARRMiner>(*this, MinerClassPath);
+	if (!TestNotNull(TEXT("NS_LevelUpText"), System) || !MinerClass)
+	{
+		return false;
+	}
+	const URRLevelUpComponent* Defaults = MinerClass->GetDefaultObject<ARRMiner>()->GetLevelUp();
+	const FObjectPropertyBase* Property = FindFProperty<FObjectPropertyBase>(URRLevelUpComponent::StaticClass(), TEXT("LevelUpTextSystem"));
+	TestTrue(TEXT("BP_Miner plays NS_LevelUpText"), Defaults && Property && Property->GetObjectPropertyValue_InContainer(Defaults) == System);
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+
+	FTestWorld TestWorld(TEXT("RRLevelUpTextAsset"));
+	UNiagaraComponent* Component = UNiagaraFunctionLibrary::SpawnSystemAtLocation(TestWorld.Get(), System, FVector(0.f, 0.f, 100.f), FRotator::ZeroRotator,
+		FVector::OneVector, /*bAutoDestroy*/ false, /*bAutoActivate*/ true, ENCPoolMethod::None, /*bPreCullCheck*/ false);
+	if (!TestNotNull(TEXT("text component"), Component))
+	{
+		return false;
+	}
+	const auto Emitter = [Component]() -> FNiagaraEmitterInstance*
+	{
+		FNiagaraSystemInstanceControllerPtr Controller = Component->GetSystemInstanceController();
+		FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+		if (!Instance || Instance->GetEmitters().IsEmpty())
+		{
+			return nullptr;
+		}
+		Controller->WaitForConcurrentTickAndFinalize();
+		return &Instance->GetEmitters()[0].Get();
+	};
+	int32 Frame = 0;
+	while ((!Emitter() || Emitter()->GetNumParticles() == 0) && Frame < 60)
+	{
+		TestWorld.Tick();
+		++Frame;
+	}
+	if (!TestTrue(TEXT("the text spawned"), Emitter() && Emitter()->GetNumParticles() == 1))
+	{
+		return false;
+	}
+	float FirstWidth = 0.f;
+	float LastWidth = 0.f;
+	FVector3f First = FVector3f::ZeroVector;
+	FVector3f Last = FVector3f::ZeroVector;
+	FLinearColor Color = FLinearColor::Black;
+	int32 Frames = 0;
+	float Mid = 0.f;
+	for (; Frames < 60 && Emitter()->GetNumParticles() > 0; ++Frames)
+	{
+		const FNiagaraDataSet& Data = Emitter()->GetParticleData();
+		const auto Sizes = FNiagaraDataSetAccessor<FVector2f>::CreateReader(Data, TEXT("SpriteSize"));
+		const auto Positions = FNiagaraDataSetAccessor<FNiagaraPosition>::CreateReader(Data, TEXT("Position"));
+		const auto Colors = FNiagaraDataSetAccessor<FLinearColor>::CreateReader(Data, TEXT("Color"));
+		if (!TestTrue(TEXT("particle attributes readable"), Sizes.IsValid() && Positions.IsValid() && Colors.IsValid()))
+		{
+			return false;
+		}
+		LastWidth = Sizes[0].X;
+		Last = FVector3f(Positions[0]);
+		if (Frames == 0)
+		{
+			FirstWidth = LastWidth;
+			First = Last;
+			Color = Colors[0];
+		}
+		if (Frames == 20)
+		{
+			Mid = Last.Z;
+		}
+		TestWorld.Tick();
+	}
+	AddInfo(FString::Printf(TEXT("level-up text: %d frames, width %.0f to %.0f uu, position %s to %s, colour %s"), Frames, FirstWidth, LastWidth, *First.ToString(), *Last.ToString(), *Color.ToString()));
+	TestTrue(TEXT("lives about 0.7 s"), Frames >= 36 && Frames <= 46);
+	TestTrue(TEXT("pop: starts larger, ends at 640 uu"), FirstWidth > LastWidth * 1.1f && FMath::IsNearlyEqual(LastWidth, 640.f, 1.f));
+	TestTrue(TEXT("rises straight"), Last.Z > First.Z + 40.f && FMath::IsNearlyEqual(Last.X, First.X, 0.1f) && FMath::IsNearlyEqual(Last.Y, First.Y, 0.1f));
+	// A straight constant rise: the second half climbs as much as the first (a thrown arc would fall back).
+	TestTrue(TEXT("no arc: still climbing at the end"), Last.Z > Mid + 20.f);
+	TestTrue(TEXT("gold"), Color.Equals(FLinearColor(1.f, 0.72f, 0.15f, 1.f), 0.02f));
+	Component->DestroyComponent();
 	return true;
 }
 

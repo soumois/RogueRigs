@@ -5,10 +5,13 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Components/CapsuleComponent.h"
+#include "Enemies/RREnemy.h"
+#include "EngineUtils.h"
 #include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "NiagaraComponent.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRGE_Heal.h"
@@ -23,6 +26,8 @@
 #include "Weapons/RRWeapon.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRLevelUpComponent)
+
+const FName URRLevelUpComponent::WaveRadiusParameter(TEXT("User.WaveRadius"));
 
 URRLevelUpComponent::URRLevelUpComponent()
 {
@@ -49,6 +54,7 @@ void URRLevelUpComponent::BeginPlay()
 	if (URRNiagaraPoolSubsystem* Pool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr)
 	{
 		Pool->Prewarm(LevelUpTextSystem, BurstPoolSize, BurstPoolSize);
+		Pool->Prewarm(LevelUpWaveSystem, BurstPoolSize, BurstPoolSize);
 	}
 }
 
@@ -132,6 +138,7 @@ void URRLevelUpComponent::PlayLevelUpBurst()
 	}
 	LastBurstTime = Now;
 	++LevelUpBurstCount;
+	PushNearbyRobots();
 
 	URRNiagaraPoolSubsystem* Pool = World->GetSubsystem<URRNiagaraPoolSubsystem>();
 	if (!Pool)
@@ -142,6 +149,24 @@ void URRLevelUpComponent::PlayLevelUpBurst()
 	const UCapsuleComponent* Capsule = Character ? Character->GetCapsuleComponent() : nullptr;
 	const float HalfHeight = Capsule ? Capsule->GetScaledCapsuleHalfHeight() : 0.f;
 	Pool->Spawn(LevelUpTextSystem, Owner->GetActorLocation() + FVector(0.f, 0.f, HalfHeight + LevelUpTextHeight), FRotator::ZeroRotator, BurstPoolSize);
+	Pool->Spawn(LevelUpWaveSystem, Owner->GetActorLocation() - FVector(0.f, 0.f, HalfHeight - LevelUpWaveFloorOffset), FRotator::ZeroRotator, BurstPoolSize,
+		[this](UNiagaraComponent& Wave) { Wave.SetVariableFloat(WaveRadiusParameter, PushRadius); });
+}
+
+void URRLevelUpComponent::PushNearbyRobots()
+{
+	const AActor* Owner = GetOwner();
+	const FVector Center = Owner->GetActorLocation();
+	const double RadiusSquared = FMath::Square(static_cast<double>(PushRadius));
+	for (TActorIterator<ARREnemy> It(GetWorld()); It; ++It)
+	{
+		ARREnemy* Robot = *It;
+		// A pooled idle robot keeps State.Dead, so IsDead filters it; ApplyKnockback scales by the robot's resistance.
+		if (!Robot->IsDead() && FVector::DistSquared2D(Robot->GetActorLocation(), Center) <= RadiusSquared)
+		{
+			Robot->ApplyKnockback((Robot->GetActorLocation() - Center).GetSafeNormal2D() * PushSpeed);
+		}
+	}
 }
 
 bool URRLevelUpComponent::QueueBonusChoice(float BonusLuck)
