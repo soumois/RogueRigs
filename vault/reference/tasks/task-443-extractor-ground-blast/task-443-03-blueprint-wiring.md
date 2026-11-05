@@ -3,7 +3,7 @@ id: task-443-03-blueprint-wiring
 description: "Bp: BP_ExtractionShuttle feeds the height to the four wash components."
 parent: task-443-extractor-ground-blast
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotor blast on the ground: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:55:34Z
 - waiting_for: none
 - result: open
 
