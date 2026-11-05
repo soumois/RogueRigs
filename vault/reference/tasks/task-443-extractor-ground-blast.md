@@ -1,9 +1,9 @@
 ---
 id: task-443-extractor-ground-blast
 description: "Global task: A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor rotor blast on the ground
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read extraction, bp-extractor-rotor-wash, bp-extraction-shuttle, sys-objectives-shuttle. Replaces the "ground dust ring within 300 uu" of extraction, edited at confirmation. Docs state the wash reads a height set once at BeginPlay, and the only event is rotor speed, so no value follows the rise today: a height signal is needed. Rotors stand about 247 to 298 uu above the floor when landed (x4 scale), so 4 m measured at the rotors leaves almost no range: Q13. The rise is 400 uu in 1.5 s, which matches the base reading.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-443-04-doc
+- next_step: none
 - started: 2026-11-05T20:44:47Z
 - waiting_for: none
-- result: open
+- result: Done. bp-extractor-rotor-wash, bp-extraction-shuttle and sys-objectives-shuttle state the current behaviour; unreal-mcp-quirks gains the last-edit compile trap and the Niagara dump check. Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -29,7 +29,7 @@ Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du co
 4. task-443-04-doc (vault/reference/tasks/task-443-extractor-ground-blast/task-443-04-doc.md) — doc: Document the height signal, the blast and the wiring.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-443-01-height-signal]] — step 1, cpp.
 - [[task-443-02-blast-emitter]] — step 2, bp.
 - [[task-443-03-blueprint-wiring]] — step 3, bp.

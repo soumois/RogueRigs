@@ -450,3 +450,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-440-muzzle-flash-rework]] — A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video. Status done.
 - [[task-441-level-up-effect]] — Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little. Status done.
 - [[task-442-extractor-wash-no-rain]] — The thin downward streaks under the extractor rotors, read as rain, become soft faint air swirls. Status done.
+- [[task-443-extractor-ground-blast]] — A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m. Status done.

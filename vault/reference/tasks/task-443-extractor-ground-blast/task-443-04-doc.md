@@ -3,7 +3,7 @@ id: task-443-04-doc
 description: "Doc: Document the height signal, the blast and the wiring."
 parent: task-443-extractor-ground-blast
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor rotor blast on the ground: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The three nodes state the current behaviour; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-443
+- usage: included in the executor run of task-443
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T21:02:49Z
 - waiting_for: none
-- result: open
+- result: bp-extractor-rotor-wash, bp-extraction-shuttle and sys-objectives-shuttle state the current behaviour; unreal-mcp-quirks gains the last-edit compile trap and the Niagara dump check. Lint clean.
 
 ## Relations
 - [[task-443-extractor-ground-blast]] — parent global task.
