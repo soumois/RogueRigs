@@ -36,7 +36,7 @@ kind: doc
 - [[blueprints-index]] — parent index.
 - [[sys-hud]] — the C++ base class and events.
 - [[wbp-health-status]] — child widget: health, game over, damage vignette.
-- [[wbp-xp-status]] — child widget: XP bar, level, LEVEL UP flash.
+- [[wbp-xp-status]] — child widget: XP bar and level.
 - [[wbp-weapons]] — child widget: weapon slots with placeholder icons and padlock, ammo, reload, turret line.
 - [[wbp-upgrade-choice]] — child widget: level-up cards and reroll.
 - [[wbp-alert-objectives]] — child widget: alert bar, icons, horde banner, objective, shuttle, end screen.

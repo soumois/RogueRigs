@@ -12,7 +12,7 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
 - [[wbp-subtitles]] — WBP_Subtitles, the company subtitle line, a sub-widget of WBP_HUD.
 - [[wbp-health-status]] — WBP_HealthStatus, health bar and text, Game Over text and damage vignette, a sub-widget of WBP_HUD.
-- [[wbp-xp-status]] — WBP_XPStatus, XP bar, level text and LEVEL UP flash, a sub-widget of WBP_HUD.
+- [[wbp-xp-status]] — WBP_XPStatus, XP bar and level text, a sub-widget of WBP_HUD.
 - [[wbp-weapons]] — WBP_Weapons, weapon slots, ammo, reload and turret line, a sub-widget of WBP_HUD.
 - [[wbp-upgrade-choice]] — WBP_UpgradeChoice, level-up cards and reroll, a sub-widget of WBP_HUD.
 - [[wbp-alert-objectives]] — WBP_AlertObjectives, alert bar and icons, horde banner, objective, shuttle and end screen, a sub-widget of WBP_HUD.
