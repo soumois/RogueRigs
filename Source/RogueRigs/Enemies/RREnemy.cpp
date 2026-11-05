@@ -613,8 +613,6 @@ void ARREnemy::ResetForNewLife()
 
 	BlinkHiddenMeshes.Reset();
 	RestoreVisualParts();
-	// The pool clears the timers of a released robot: a flash still on at release ends here.
-	EndHitFlash();
 
 	if (URRRobotSeparationSubsystem* Separation = GetWorld()->GetSubsystem<URRRobotSeparationSubsystem>())
 	{
@@ -740,34 +738,6 @@ void ARREnemy::HandleDamageReceived(float Damage, bool bIsCritical, float Health
 	{
 		const float CapsuleTop = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 		Numbers->AddHit(this, Damage, bIsCritical, GetActorLocation() + FVector(0.f, 0.f, CapsuleTop + DamageNumberHeight), DamageNumberSpawnRadius);
-	}
-	StartHitFlash();
-}
-
-void ARREnemy::StartHitFlash()
-{
-	if (!AnimatedMesh || HitFlashDuration <= 0.f)
-	{
-		return;
-	}
-	if (!bHitFlashOn)
-	{
-		bHitFlashOn = true;
-		AnimatedMesh->SetCustomPrimitiveDataFloat(HitFlashDataIndex, 1.f);
-	}
-	GetWorldTimerManager().SetTimer(HitFlashTimer, this, &ARREnemy::EndHitFlash, HitFlashDuration, false);
-}
-
-void ARREnemy::EndHitFlash()
-{
-	GetWorldTimerManager().ClearTimer(HitFlashTimer);
-	if (bHitFlashOn)
-	{
-		bHitFlashOn = false;
-		if (AnimatedMesh)
-		{
-			AnimatedMesh->SetCustomPrimitiveDataFloat(HitFlashDataIndex, 0.f);
-		}
 	}
 }
 
