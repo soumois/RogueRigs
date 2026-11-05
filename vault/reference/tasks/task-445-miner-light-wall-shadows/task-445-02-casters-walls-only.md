@@ -3,7 +3,7 @@ id: task-445-02-casters-walls-only
 description: "Cpp: From this light, only rock, ore and heal ore blocks cast shadows; anything found casting that should not is corrected."
 parent: task-445-miner-light-wall-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light casts wall shadows only: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T21:15:07Z
 - waiting_for: none
 - result: open
 

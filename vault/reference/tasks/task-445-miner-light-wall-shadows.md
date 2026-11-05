@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read visual-style, task-425 (Q1 "no shadow" accepted by the owner 2026-11-04: reversed here), bp-miner, lights-no-shadows, lights-dark-ambient, perf-risks. Light meant: FloorWallLight of task-425, the older PlayerLight is removed. visual-style edited at confirmation. Two readings of "seulement": Q15. Q16 answered: the owner moved the light himself, so height and retuning leave this task; commit 87c5aff6 "Modification light manually" (2026-11-04) changed BP_Miner and may be that move, he has not said so, and the docs still give the older value, so read it. Q17 answered: no GPU measure; cost on the old PlayerLight stays in perf-risks (+2.5 to 3 ms at 1080p at radius 3000 uu).
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-445-01-light-shadows
+- next_step: task-445-02-casters-walls-only
 - started: 2026-11-05T21:12:19Z
 - waiting_for: none
 - result: open
