@@ -3,7 +3,7 @@ id: task-457-01-art
 description: "Art: Cut the radar frame sprite of the retained mockup."
 parent: task-457-radar-frame-ore
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Radar frame holding the ore count: art
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-05T23:54:20Z
-- waiting_for: none
+- waiting_for: owner picks radar frame candidate 1 or 2 (Art/Source/hud-unified/20261105-155448-hud-unified-1.png / -2.png; keyed in Saved/Scratch/hud-radar/)
 - result: open
 
 ## Relations

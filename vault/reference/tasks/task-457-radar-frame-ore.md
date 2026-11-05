@@ -3,7 +3,7 @@ id: task-457-radar-frame-ore
 description: "Global task: the radar gets a frame that runs on into an attached panel holding the ore count."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Radar frame holding the ore count
 
@@ -25,7 +25,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - milestone: M2
 - next_step: task-457-01-art
 - started: 2026-11-05T23:54:20Z
-- waiting_for: none
+- waiting_for: owner picks radar frame candidate 1 or 2 (task-457-01-art)
 - result: open
 
 ## Questions

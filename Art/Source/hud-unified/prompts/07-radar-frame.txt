@@ -1,0 +1,7 @@
+Image 1 is a close crop of the top-left HUD piece of Image 2, a full game HUD mockup; both are visual references only. Redraw, as a clean own version at high resolution, ONLY that HUD piece, alone, as one UI sprite: a round radar frame whose metal runs on to the right into an attached rectangular plate.
+
+The round frame: a thick circular ring of segmented riveted gunmetal plates with worn teal trims, faceted bolts, light rust chips and chamfered edges, as in Image 1. The hole inside the ring is a perfect circle filled with flat magenta FF00FF: no map, no dot, no marker, no glass, no shadow inside the hole.
+
+The attached plate: a horizontal riveted gunmetal plate with chamfered corners, bolted corners and worn teal trims, about as tall as half the ring, joined to the right side of the ring at its upper half by a short bolted bracket so the ring and the plate read as one single piece. The inside of the plate is a flat, even, very dark teal-grey panel with nothing on it: no crystal, no number, no icon, no text.
+
+Flat-shaded low-poly look, visible facets, strong directional light with lifted shadows so everything stays readable. The piece is centred and fills about 90 percent of the image width, with a margin of flat magenta FF00FF all around; the background outside the piece is flat magenta FF00FF, no scene, no crystals, no shadow, no glow. No text, no letters, no numbers, no icons, no characters.

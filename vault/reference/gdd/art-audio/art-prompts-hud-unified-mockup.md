@@ -1,6 +1,6 @@
 ---
 id: art-prompts-hud-unified-mockup
-description: "Unified in-game HUD mockups (task-451): Kie.ai prompts, runs, credits, critic reviews, candidate files, owner choice and what tasks 452-458 take."
+description: "Unified in-game HUD mockups (task-451) and the radar frame sprite (task-457): Kie.ai prompts, runs, credits, critic reviews, candidates, owner choice, what 452-458 take."
 parent: art-prompts
 kind: note
 ---
@@ -47,6 +47,11 @@ The retained image is the layout and look reference; every piece uses one frame 
 - 456 XP ghost: same XP bar frame; the image shows no ghost effect.
 - 457 radar and ore: riveted ring around the round minimap, the frame running right into an attached plate with the crystal icon and the count.
 - 458 weapon slots: 4 slots in one bolted frame, rifle with its cream reload bar, teal padlocks on locked slots.
+
+## Radar frame sprite (task-457-01)
+- Prompt `prompts/07-radar-frame.txt`, refs: a 3x crop of the mockup top-left piece (Image 1, temporary, `Saved/Scratch/hud-radar/mockup-radar-crop.png`) and the mockup (Image 2); the external example not attached. GPT Image 2 image-to-image, 16:9, 1K, magenta key, 2 variants, 12 credits. Run `20261105-155448-hud-unified`.
+- Candidates (pending the owner's choice): `-1.png` and `-2.png`. Keyed with `Tools/art/ui_icon_prepare.js --size 1024 --keep-aspect --margin 0.02`, `--check` clean, to `Saved/Scratch/hud-radar/T_HUD_RadarFrame-c1.png` (1024 x 580, hole 386 x 381 centred at 304,288) and `-c2.png` (1024 x 560, hole 385 x 374 at 292,278).
+- Critic: both pass A1-A18 and the colour code; neither copies the external example. Both are more teal than the mockup's dark gunmetal plates; c1 is the closer one (c2 rust more saturated).
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
