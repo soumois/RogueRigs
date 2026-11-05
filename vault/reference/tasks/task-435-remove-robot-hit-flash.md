@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T17:27:42Z
 - waiting_for: none
-- result: Done. bp-robot-hit-flash and its index line deleted (history in git and task-433); hit flash lines removed from sys-enemies-base, sys-damage, sys-tests-enemies, bp-robot-meshy-material, bp-robot-eye-material, bp-shield-chaser-v2; bp-kamikaze had no mention. Lint clean.
+- result: Robot hit flash removed: no flash value is written on a hit, MF_RobotHitFlash is deleted, the five material assets are back to their pre-flash files (masters recompiled and saved), the test and the docs are gone. RogueRigs.Enemies passes, 12 of 12. A1 and the look of A2 unverified until the owner has seen them in game (A5).
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
