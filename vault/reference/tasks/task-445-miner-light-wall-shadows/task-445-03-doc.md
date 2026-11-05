@@ -3,7 +3,7 @@ id: task-445-03-doc
 description: "Doc: Document the shadow, the values and how to turn it off."
 parent: task-445-miner-light-wall-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light casts wall shadows only: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T21:30:14Z
 - waiting_for: none
 - result: open
 
