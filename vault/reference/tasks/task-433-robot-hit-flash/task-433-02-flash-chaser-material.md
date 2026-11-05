@@ -3,7 +3,7 @@ id: task-433-02-flash-chaser-material
 description: "Bp: Representative slice: the chaser reads the flash value and turns plain white, baked animation intact."
 parent: task-433-robot-hit-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot hit flash: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T16:13:51Z
 - waiting_for: none
 - result: open
 
