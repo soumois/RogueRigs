@@ -1,9 +1,9 @@
 ---
 id: task-431-barrel-green-square-packaged
 description: "Global task: no green default-decal square at any barrel fuse or explosion in a packaged build, second and later runs of one process included."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Barrel explosion green square in the packaged build
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: [[barrel]] and [[explosions]] read 2026-11-04: a render defect, no rule change, no `open` value needed, no conflict. Earlier work: [[task-200-decal-green-square-check]] (diagnosis in -game) and [[task-201-decal-first-frame-green]] (warm-up fix, uncooked cause: incomplete shader map, fallback to the engine default deferred decal; cooked build unverified). The packaged-build frames are taken by the cpp subtask itself, as in task-201: capture.js and [[agent-capture]] only launch `-game` from the editor, and the defect is seen in a build.
 - confirmed_by_owner: yes (2026-11-04, "Oui mais prépare la tâche seulement.")
 - milestone: M2
-- next_step: task-431-02-packaged-green-square-doc
+- next_step: none
 - started: 2026-11-05T14:41:52Z
 - waiting_for: none
-- result: open
+- result: Done. sys-ground-telegraph holds cause, fix and packaged verification, its null-material gotcha corrected; sys-cheats lists rr.Debug.FuseBarrel; sys-explosions and build-toolchain unchanged (warm-up call and packaging untouched); lint clean.
 
 ## Questions
 Decided 2026-11-04 (owner "Oui mais prépare la tâche seulement."): the defaults of Q6 are accepted; values provisional, owner 2026-11-04.
@@ -32,7 +32,7 @@ Decided 2026-11-04 (owner "Oui mais prépare la tâche seulement."): the default
 2. task-431-02-packaged-green-square-doc (vault/reference/tasks/task-431-barrel-green-square-packaged/task-431-02-packaged-green-square-doc.md) — doc: record the packaged-build cause and fix in the decal warm-up docs
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-431-01-packaged-green-square-fix]] — step 1, cpp.
 - [[task-431-02-packaged-green-square-doc]] — step 2, doc.
 - [[task-201-decal-first-frame-green]] — the -game fix (decal warm-up) this build defect escapes.
