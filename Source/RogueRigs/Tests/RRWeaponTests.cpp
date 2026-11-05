@@ -1428,6 +1428,13 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponImpactSparksTest, "RogueRigs.Weapons.I
 
 bool FRRWeaponImpactSparksTest::RunTest(const FString& Parameters)
 {
+	// The private empty system below cannot run under a real RHI (engine crash on tick); RogueRigs.Weapons.ImpactSparkAsset covers that case.
+	if (FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED under a real RHI: run with -nullrhi."));
+		return true;
+	}
+
 	FTestWorld TestWorld(TEXT("RRWeaponImpactSparksWorld"));
 	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
 	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
@@ -1525,6 +1532,52 @@ bool FRRWeaponImpactSparksTest::RunTest(const FString& Parameters)
 		TestFalse(TEXT("full pool: the shot goes on"), LastShot->IsActorBeingDestroyed());
 		LastShot->Destroy();
 	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponImpactSparkAssetTest, "RogueRigs.Weapons.ImpactSparkAsset",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponImpactSparkAssetTest::RunTest(const FString& Parameters)
+{
+	FTestWorld TestWorld(TEXT("RRWeaponImpactSparkAssetWorld"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
+	ARRChaser* StillChaser = Rifle ? SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(ChaserCell.X, ChaserCell.Y)) : nullptr;
+	URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+	UNiagaraSystem* Shipped = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_ShotImpactSpark.NS_ShotImpactSpark"));
+	if (!StillChaser || !TestNotNull(TEXT("Niagara pool"), FXPool) || !TestNotNull(TEXT("NS_ShotImpactSpark exists"), Shipped))
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
+	TestEqual(TEXT("turret bullet plays it"), FProjectileAccess::ImpactSparkSystemOf(GetMutableDefault<ARRTurretBullet>()).Get(), Shipped);
+	TestEqual(TEXT("rifle shot plays it"), FProjectileAccess::ImpactSparkSystemOf(Rifle->GetProjectileClass()->GetDefaultObject<ARRProjectile>()).Get(), Shipped);
+	TestTrue(TEXT("Acquire prewarmed the pool"), FXPool->GetComponentCount(Shipped) > 0);
+	const int32 CreatedAfterPrewarm = FXPool->GetCreatedCount(Shipped);
+
+	PlaceMuzzleAt(Rifle, Grid->GetCellCenter(ChaserShooterCell.X, ChaserShooterCell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight()));
+	FVector LastLocation;
+	TestTrue(TEXT("the shot ends on the robot"), TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 30, LastLocation) != INDEX_NONE);
+	TestEqual(TEXT("one spark requested"), FXPool->GetRequestedCount(Shipped), 1);
+	TestEqual(TEXT("no component created at the hit"), FXPool->GetCreatedCount(Shipped), CreatedAfterPrewarm);
+
+	// Niagara only runs under a real RHI (-RenderOffScreen): the spark plays and comes back to the pool (one-shot).
+	if (!FApp::CanEverRender())
+	{
+		AddInfo(TEXT("play check SKIPPED: FApp::CanEverRender() is false under -nullrhi; run with -RenderOffScreen."));
+		return true;
+	}
+	TestEqual(TEXT("the spark played"), FXPool->GetPlayedCount(Shipped), 1);
+	int32 Frames = 0;
+	while (FXPool->GetInUseCount(Shipped) > 0 && Frames < 600)
+	{
+		TestWorld.Tick();
+		++Frames;
+	}
+	AddInfo(FString::Printf(TEXT("spark back in the pool after %d frame(s) of %.4f s"), Frames, FrameSeconds));
+	TestEqual(TEXT("one-shot: back in the pool"), FXPool->GetInUseCount(Shipped), 0);
 	return true;
 }
 
