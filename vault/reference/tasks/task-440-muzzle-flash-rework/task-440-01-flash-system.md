@@ -10,7 +10,7 @@ status: todo
 - goal: The muzzle flash system and its soft material have the new look, larger on the shotgun.
 - agent: bp
 - depends_on: none
-- inputs: bp-muzzle-flash (vault/reference/tech/blueprints/fx/bp-muzzle-flash.md), art-style-guide (vault/reference/gdd/art-audio/art-style-guide.md), color-code (vault/reference/gdd/art-audio/color-code.md), bp-burst-rifle (vault/reference/tech/blueprints/player/bp-burst-rifle.md), bp-shotgun (vault/reference/tech/blueprints/player/bp-shotgun.md)
+- inputs: bp-muzzle-flash (vault/reference/tech/blueprints/fx/bp-muzzle-flash.md), art-style-guide (vault/reference/gdd/art-audio/art-style-guide.md), color-code (vault/reference/gdd/art-audio/color-code.md), bp-burst-rifle (vault/reference/tech/blueprints/player/bp-burst-rifle.md), Art/Source/muzzle-flash/20261105-owner-ref-video-1328-1333-sheet.png, bp-shotgun (vault/reference/tech/blueprints/player/bp-shotgun.md)
 - expected_output: see done_when
 - done_when: System and material compile with no error, values read back within the bounds, the rifle and the shotgun both play it, no light, tests of A6 pass.
 - editor_state: decided by the Executor

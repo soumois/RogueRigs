@@ -10,9 +10,9 @@ status: todo
 - goal: Representative slice: the robot death puff has its new look.
 - agent: bp
 - depends_on: none
-- inputs: bp-robot-death-puff (vault/reference/tech/blueprints/fx/bp-robot-death-puff.md), enemy-death (vault/reference/gdd/enemies/enemy-death.md), color-code (vault/reference/gdd/art-audio/color-code.md), readability-rules (vault/reference/gdd/art-audio/readability-rules.md), bp-barrel-explosion (vault/reference/tech/blueprints/fx/bp-barrel-explosion.md)
+- inputs: bp-robot-death-puff (vault/reference/tech/blueprints/fx/bp-robot-death-puff.md), enemy-death (vault/reference/gdd/enemies/enemy-death.md), color-code (vault/reference/gdd/art-audio/color-code.md), readability-rules (vault/reference/gdd/art-audio/readability-rules.md), bp-barrel-explosion (vault/reference/tech/blueprints/fx/bp-barrel-explosion.md), Art/Source/robot-death-fx/20261105-owner-ref-cartoon-explosion.png
 - expected_output: see done_when
-- done_when: System compiles with no error, one-shot behaviour and pool return kept, at most 20 sprites read back, no orange or red value.
+- done_when: System compiles with no error, one-shot behaviour and pool return kept, at most 20 sprites read back, material compiles with flat cel-shaded bands, no red value, no pixel of the reference shipped.
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: open
