@@ -8,7 +8,7 @@ status: approved
 # Robot death
 
 - Robots are built from separate rigid parts, each bound 100 % to one bone. That split is what makes the death effect possible.
-- On death the robot shrinks for 0.15 s (as in M1) and drops its XP; a puff of sparks (about 12 sprites, 0.3 s) starts at the death and hides the shrink (provisional, owner 2026-10-14).
+- On death the robot shrinks for 0.15 s (as in M1) and drops its XP; a cartoon flash starts at the death and hides the shrink (provisional, owner 2026-11-05, [[task-436-robot-death-particle]], reference `Art/Source/robot-death-fx/20261105-owner-ref-cartoon-explosion.png`; was about 12 warm sprites in 0.3 s): small flash, white and yellow core with jagged cel-shaded edges in flat colour bands, orange and red-orange outer bands, chunky blobs and thin lines thrown outward, dark red burnt puffs at the end, at most 20 sprites, about 0.4 s; the heavy keeps the same look about 3 times larger.
 - When the robot disappears, 2 to 4 pieces are thrown, as Niagara mesh particles (provisional, owner 2026-10-14; was 2 or 3):
   - the pieces are drawn at random among: torso block (head, torso and pelvis as one piece), each arm, each leg;
   - an arm is thrown whole or cut at the elbow, a leg whole or cut at the knee, one time in two; a cut limb counts as 2 pieces;

@@ -12,7 +12,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
 - [[task-435-remove-robot-hit-flash]] — A robot that takes a hit no longer flashes: the feature of task-433 is removed for good. Status in-progress.
-- [[task-436-robot-death-particle]] — A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde. Status wait-answers.
+- [[task-436-robot-death-particle]] — A cartoon robot death flash after the owner reference instead of a plain smoke cloud, bounded in a horde. Status todo.
 - [[task-437-shot-impact-on-walls]] — The player shot impact sparks also play when the shot is stopped by a wall. Status todo.
 - [[task-438-dig-debris]] — A block broken by the drone throws a short burst of debris of the block colour that falls and disappears. Status todo.
 - [[task-439-explosion-wall-debris]] — Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count. Status todo.
