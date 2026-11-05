@@ -3,7 +3,7 @@ id: task-441-03-robot-push
 description: "Cpp: A level-up pushes robots inside the radius a little, with no damage, following their resistance."
 parent: task-441-level-up-effect
 kind: task
-status: in-progress
+status: done
 ---
 # Level-up effect rework: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build ok; a test or existing family shows robots inside move away and take no damage, robots outside do not move.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-441
+- usage: included in the executor run of task-441
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T20:14:02Z
 - waiting_for: none
-- result: open
+- result: PushNearbyRobots in the burst: every living robot within PushRadius 300 uu (2D) gets ARREnemy::ApplyKnockback away from the miner at PushSpeed 800 uu/s (provisional), scaled by KnockbackResistance, no damage. Also added LevelUpWaveSystem and User.WaveRadius. Build ok. RogueRigs.LevelUp 7 of 7 under -nullrhi: inside launched once for two levels, outside not, health unchanged, travel 73.6 uu in 40 frames. TextAsset passed under -RenderOffScreen: 1 sprite, 41 frames, width 730 to 640, rises straight, gold.
 
 ## Relations
 - [[task-441-level-up-effect]] — parent global task.

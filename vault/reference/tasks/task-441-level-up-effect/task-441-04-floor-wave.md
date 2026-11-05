@@ -3,7 +3,7 @@ id: task-441-04-floor-wave
 description: "Bp: The one-shot gold floor wave Niagara system exists, sized to the push radius."
 parent: task-441-level-up-effect
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up effect rework: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:20:10Z
 - waiting_for: none
 - result: open
 
