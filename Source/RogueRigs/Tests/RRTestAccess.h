@@ -231,6 +231,10 @@ namespace RRTestAccess
 		static float AntennaSpinSpeedOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::AntennaSpinSpeed); }
 		static float LaserPitchMinOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserPitchMinDegrees); }
 		static float LaserPitchMaxOf(const ARRDrone* Drone) { return Drone->*(&FDroneAccess::LaserPitchMaxDegrees); }
+		static TObjectPtr<UNiagaraSystem>& DigDebrisSystemOf(ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigDebrisSystem); }
+		static int32& DigDebrisPoolSizeOf(ARRDrone* Drone) { return Drone->*(&FDroneAccess::DigDebrisPoolSize); }
+		static void PlayDigDebrisOf(ARRDrone* Drone, FIntPoint Cell, ERRCellType Type) { (Drone->*(&FDroneAccess::PlayDigDebris))(Cell, Type); }
+		static FLinearColor ChipColorOf(const ARRDrone* Drone, ERRCellType Type) { return (Drone->*(&FDroneAccess::GetChipColorForType))(Type); }
 	};
 
 	/** ARREnemy: XP pickup class (tests drop ARRTestPickupXP) and the CSV stats copy. */

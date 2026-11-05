@@ -24,6 +24,9 @@
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/App.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
@@ -2294,6 +2297,206 @@ bool FRRDigRockDamageDataTest::RunTest(const FString& Parameters)
 			TestEqual(*FString::Printf(TEXT("slot %s overridden only when named"), *Slots[Slot].MaterialSlotName.ToString()),
 				Visual.Render->GetMaterial(Slot) == OverrideMaterial, bNamed);
 		}
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRDigDebrisBurstTest, "RogueRigs.Dig.DigDebrisBurst",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRDigDebrisBurstTest::RunTest(const FString& Parameters)
+{
+	using namespace RRDigTests;
+
+	// The private empty system below cannot run under a real RHI (engine crash on tick).
+	if (FApp::CanEverRender())
+	{
+		AddInfo(TEXT("SKIPPED under a real RHI: run with -nullrhi."));
+		return true;
+	}
+
+	// A private system, so the counts hold whatever the shipped asset does (Niagara does not run under -nullrhi). Large cap: no reclaim moves a burst during a check.
+	TStrongObjectPtr<UNiagaraSystem> Debris(NewObject<UNiagaraSystem>());
+	const auto PrepareDrone = [&Debris](ARRDrone* Drone)
+	{
+		FDroneAccess::DigDebrisSystemOf(Drone) = Debris.Get();
+		FDroneAccess::DigDebrisPoolSizeOf(Drone) = 64;
+	};
+	const auto FindBurst = [&Debris](URRNiagaraPoolSubsystem* FXPool, const ARRArenaGrid* Grid, FIntPoint Cell) -> const UNiagaraComponent*
+	{
+		const FRRNiagaraSystemPool* Pool = FNiagaraPoolAccess::PoolOf(FXPool, Debris.Get());
+		if (!Pool)
+		{
+			return nullptr;
+		}
+		const FVector Center = Grid->GetCellCenter(Cell.X, Cell.Y);
+		for (const TArray<TObjectPtr<UNiagaraComponent>>* Components : { &Pool->InUse, &Pool->Free })
+		{
+			for (const UNiagaraComponent* Component : *Components)
+			{
+				if (Component && FVector::Dist2D(Component->GetComponentLocation(), Center) < 1.0)
+				{
+					return Component;
+				}
+			}
+		}
+		return nullptr;
+	};
+	const auto ReadColor = [](const UNiagaraComponent* Component)
+	{
+		return Component->GetOverrideParameters().GetParameterValueOrDefault<FLinearColor>(FNiagaraVariable(FNiagaraTypeDefinition::GetColorDef(), TEXT("User.ChipColor")), FLinearColor::Transparent);
+	};
+
+	// Rock: one burst per broken block, over the block, in the rock colour, thrown toward the side of the miner. Other break sources: none.
+	{
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = nullptr;
+		ARRMiner* Miner = nullptr;
+		ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+		URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+		if (!Drone || !TestNotNull(TEXT("Niagara pool"), FXPool))
+		{
+			return false;
+		}
+		PrepareDrone(Drone);
+		const TArray<FIntPoint> Arc = { FineRockCell, FIntPoint(129, 114), FIntPoint(129, 116), FIntPoint(130, 115), FIntPoint(130, 114), FIntPoint(130, 113) };
+		TArray<int32> Frames;
+		TestTrue(TEXT("arc broken"), TickUntilDestroyed(TestWorld, Grid, Arc, 60, Frames) != INDEX_NONE);
+		TestEqual(TEXT("one burst per broken block"), FXPool->GetRequestedCount(Debris.Get()), Arc.Num());
+		for (const FIntPoint& Cell : Arc)
+		{
+			const UNiagaraComponent* Burst = FindBurst(FXPool, Grid, Cell);
+			if (TestNotNull(*FString::Printf(TEXT("burst over %s"), *Cell.ToString()), Burst))
+			{
+				TestTrue(TEXT("rock colour"), ReadColor(Burst).Equals(FDroneAccess::ChipColorOf(Drone, ERRCellType::Rock)));
+				const FVector Throw(Burst->GetOverrideParameters().GetParameterValueOrDefault<FVector3f>(FNiagaraVariable(FNiagaraTypeDefinition::GetVec3Def(), TEXT("User.ThrowDirection")), FVector3f::ZeroVector));
+				TestTrue(TEXT("thrown toward the side of the miner"), Throw.Equals(-FVector::ForwardVector));
+			}
+		}
+
+		const int32 RequestsBefore = FXPool->GetRequestedCount(Debris.Get());
+		const ERRTerrainDamageSource OtherSources[] = { ERRTerrainDamageSource::Barrel, ERRTerrainDamageSource::Kamikaze, ERRTerrainDamageSource::Shot, ERRTerrainDamageSource::Extractor };
+		int32 SourceIndex = 0;
+		for (int32 Y = 0; Y < 240 && SourceIndex < UE_ARRAY_COUNT(OtherSources); ++Y)
+		{
+			for (int32 X = 0; X < 100 && SourceIndex < UE_ARRAY_COUNT(OtherSources); ++X)
+			{
+				if (Grid->GetCellType(FIntPoint(X, Y)) == ERRCellType::Rock && Grid->DestroyCell(FIntPoint(X, Y), OtherSources[SourceIndex]))
+				{
+					++SourceIndex;
+				}
+			}
+		}
+		TestEqual(TEXT("a block broken by each other source"), SourceIndex, static_cast<int32>(UE_ARRAY_COUNT(OtherSources)));
+		TestWorld.Tick();
+		TestEqual(TEXT("other break sources: no burst"), FXPool->GetRequestedCount(Debris.Get()), RequestsBefore);
+	}
+
+	// Ore types: each block of the vein gets a burst in its colour. A barrel only lights its fuse: no burst over it.
+	for (const ERRCellType Type : { ERRCellType::Ore, ERRCellType::HealOre, ERRCellType::SpecialOre, ERRCellType::Barrel })
+	{
+		const FString TypeName = UEnum::GetValueAsString(Type);
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = SpawnFineGrid(*this, TestWorld);
+		URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+		if (!Grid || !TestNotNull(TEXT("Niagara pool"), FXPool))
+		{
+			return false;
+		}
+		// A block with open floor on its west, the miner cell free on its north and south, so the arc points at the block.
+		FIntPoint Target(INDEX_NONE, INDEX_NONE);
+		for (int32 Y = 1; Y < 239 && Target.X == INDEX_NONE; ++Y)
+		{
+			for (int32 X = 1; X < 240 && Target.X == INDEX_NONE; ++X)
+			{
+				if (Grid->GetCellType(FIntPoint(X, Y)) == Type && Grid->GetCellType(FIntPoint(X - 1, Y)) == ERRCellType::Floor
+					&& Grid->GetCellType(FIntPoint(X - 1, Y - 1)) == ERRCellType::Floor && Grid->GetCellType(FIntPoint(X - 1, Y + 1)) == ERRCellType::Floor)
+				{
+					Target = FIntPoint(X, Y);
+				}
+			}
+		}
+		if (Target.X == INDEX_NONE)
+		{
+			AddInfo(FString::Printf(TEXT("%s: no reachable cell in this layout, not dug"), *TypeName));
+			continue;
+		}
+		ARRMiner* Miner = SpawnMiner(*this, TestWorld, Grid, Target - FIntPoint(1, 0));
+		ARRDrone* Drone = Miner ? Miner->GetDrone() : nullptr;
+		if (!TestNotNull(TEXT("BP_Miner spawned its drone"), Drone))
+		{
+			return false;
+		}
+		for (ARRWeapon* Weapon : Miner->GetWeapons())
+		{
+			if (IsValid(Weapon) && Weapon->GetAutoFireComponent())
+			{
+				Weapon->GetAutoFireComponent()->StopFiring();
+			}
+		}
+		PrepareDrone(Drone);
+		TArray<FIntPoint> Vein;
+		Grid->GetDepositCells(Target, Vein);
+		if (Vein.Num() == 0)
+		{
+			Vein.Add(Target);
+		}
+		AddInfo(FString::Printf(TEXT("%s: dug at %s, %d block(s)"), *TypeName, *Target.ToString(), Vein.Num()));
+		if (Type == ERRCellType::Barrel)
+		{
+			for (int32 Frame = 0; Frame < 45; ++Frame)
+			{
+				TestWorld.Tick();
+			}
+			TestTrue(TEXT("barrel dug to 0"), Grid->GetCellHealth(Target) <= UE_KINDA_SMALL_NUMBER);
+			TestNull(TEXT("no burst over a dug barrel"), FindBurst(FXPool, Grid, Target));
+			continue;
+		}
+		TArray<int32> Frames;
+		TestTrue(*FString::Printf(TEXT("%s broken"), *TypeName), TickUntilDestroyed(TestWorld, Grid, Vein, 240, Frames) != INDEX_NONE);
+		for (const FIntPoint& Cell : Vein)
+		{
+			const UNiagaraComponent* Burst = FindBurst(FXPool, Grid, Cell);
+			if (TestNotNull(*FString::Printf(TEXT("%s: burst over %s"), *TypeName, *Cell.ToString()), Burst))
+			{
+				TestTrue(*FString::Printf(TEXT("%s colour"), *TypeName), ReadColor(Burst).Equals(FDroneAccess::ChipColorOf(Drone, Type)));
+			}
+		}
+	}
+
+	// Full pool: its only slot waits to start (tick on, inactive: never reclaimed). The burst is skipped and the dig goes on.
+	{
+		FTestWorld TestWorld;
+		ARRArenaGrid* Grid = nullptr;
+		ARRMiner* Miner = nullptr;
+		ARRDrone* Drone = SpawnArcDigScene(*this, TestWorld, FineRockWestFloorCell, Grid, Miner);
+		URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
+		if (!Drone || !TestNotNull(TEXT("Niagara pool"), FXPool))
+		{
+			return false;
+		}
+		FDroneAccess::DigDebrisSystemOf(Drone) = Debris.Get();
+		FDroneAccess::DigDebrisPoolSizeOf(Drone) = 1;
+		TestWorld.Tick();
+		TestEqual(TEXT("drone digging"), Drone->GetState(), ERRDroneState::Dig);
+		FDroneAccess::PlayDigDebrisOf(Drone, FineRockCell, ERRCellType::Rock);
+		FRRNiagaraSystemPool* Pool = FNiagaraPoolAccess::PoolOf(FXPool, Debris.Get());
+		if (TestNotNull(TEXT("debris pool"), Pool))
+		{
+			Pool->InUse.Append(Pool->Free);
+			Pool->Free.Reset();
+			for (UNiagaraComponent* Busy : Pool->InUse)
+			{
+				Busy->SetComponentTickEnabled(true);
+			}
+			const int32 SkippedBefore = FXPool->GetSkippedCount(Debris.Get());
+			const int32 CreatedBefore = Pool->CreatedCount;
+			FDroneAccess::PlayDigDebrisOf(Drone, FineRockCell, ERRCellType::Rock);
+			TestEqual(TEXT("full pool: the burst is skipped"), FXPool->GetSkippedCount(Debris.Get()), SkippedBefore + 1);
+			TestEqual(TEXT("full pool: no component created"), Pool->CreatedCount, CreatedBefore);
+		}
+		TArray<int32> Frames;
+		TestTrue(TEXT("full pool: the dig goes on"), TickUntilDestroyed(TestWorld, Grid, { FineRockCell }, 60, Frames) != INDEX_NONE);
 	}
 	return true;
 }

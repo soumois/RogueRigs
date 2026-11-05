@@ -402,6 +402,15 @@ protected:
 	void StopDigImpact();
 
 	/**
+	 * One debris burst for a block the drone has just broken (task-438-01): plays DigDebrisSystem once through
+	 * URRNiagaraPoolSubsystem (cap DigDebrisPoolSize, skipped when no slot is free) over the cell, DigDebrisSpawnHeight above the
+	 * floor, with User.ChipColor = GetChipColorForType(Type) and User.ThrowDirection = outward normal of the face toward the miner.
+	 * Called only from the Dig tick: the other break sources (explosions, extractor, shots) never reach it, nor does a barrel,
+	 * whose dig only lights its fuse.
+	 */
+	void PlayDigDebris(FIntPoint Cell, ERRCellType Type);
+
+	/**
 	 * Thrusters (task-254-02), every tick in every state: measures the actor's world speed from its location delta over
 	 * DeltaSeconds, smooths it (exponential, ThrusterSpeedSmoothing), writes it to User.Speed of both thrusters and activates
 	 * an inactive thruster. No activation when the process can never render (-nullrhi) or without ThrusterSystem.
@@ -520,6 +529,18 @@ protected:
 	/** Chip colour for barrel blocks: orange (color-code; value provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Impact")
 	FLinearColor BarrelChipColor = FLinearColor(1.f, 0.35f, 0.05f, 1.f);
+
+	/** One-shot burst played per block the drone breaks (PlayDigDebris). Default /Game/RogueRigs/FX/Dig/NS_DigDebris (constructor reference). None = no burst. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Debris")
+	TObjectPtr<UNiagaraSystem> DigDebrisSystem;
+
+	/** Most bursts playing at once, prewarmed by SetOwnerMiner; a break finding no free slot shows no burst (provisional: an 8-block arc lasts longer than a burst, a vein adds a few). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Debris", meta = (ClampMin = 0))
+	int32 DigDebrisPoolSize = 16;
+
+	/** Height above the floor where a burst starts, in uu (provisional; blocks are 100 uu high). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Debris", meta = (ClampMin = 0, Units = "cm"))
+	float DigDebrisSpawnHeight = 70.f;
 
 	/** Current User.Intensity of the dig impact effect: 1 while cutting, falls to 0 during the fade. */
 	float DigImpactIntensity = 0.f;

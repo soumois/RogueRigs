@@ -18,6 +18,7 @@
 #include "Player/RRMiner.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Misc/App.h"
 #include "UObject/ConstructorHelpers.h"
 #include "RogueRigs.h"
@@ -79,6 +80,12 @@ ARRDrone::ARRDrone()
 	if (DigImpactFinder.Succeeded())
 	{
 		DigImpactSystem = DigImpactFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> DigDebrisFinder(TEXT("/Game/RogueRigs/FX/Dig/NS_DigDebris.NS_DigDebris"));
+	if (DigDebrisFinder.Succeeded())
+	{
+		DigDebrisSystem = DigDebrisFinder.Object;
 	}
 
 	// Thrusters (task-254-02): one owned component per side pod, relative to the base so they follow its yaw and tilt.
@@ -176,6 +183,13 @@ void ARRDrone::SetOwnerMiner(ARRMiner* NewOwnerMiner)
 		LookYaw = OwnerMiner->GetActorRotation().Yaw;
 		SetActorRotation(FRotator(0.f, LookYaw, 0.f));
 		RestartPatrol();
+
+		// The first broken block finds its components ready and the system compiled (task-438-01).
+		URRNiagaraPoolSubsystem* FXPool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+		if (FXPool && DigDebrisSystem)
+		{
+			FXPool->Prewarm(DigDebrisSystem, DigDebrisPoolSize, DigDebrisPoolSize);
+		}
 	}
 }
 
@@ -1234,7 +1248,12 @@ void ARRDrone::TickDig(float DeltaSeconds)
 	CollectDigTargets(Targets);
 	for (const FIntPoint& Cell : Targets)
 	{
-		DigGrid->ApplyTerrainDamage(Cell, Damage, ERRTerrainDamageSource::Drone);
+		// Read before the hit: a broken cell is Floor. A barrel brought to 0 only lights its fuse, and its explosion does the rest.
+		const ERRCellType Type = DigGrid->GetCellType(Cell);
+		if (DigGrid->ApplyTerrainDamage(Cell, Damage, ERRTerrainDamageSource::Drone) && Type != ERRCellType::Barrel)
+		{
+			PlayDigDebris(Cell, Type);
+		}
 	}
 	for (int32 Index = 0; Index < DigCells.Num();)
 	{
@@ -1498,6 +1517,25 @@ void ARRDrone::StopDigImpact()
 		DigImpactComponent->SetVariableFloat(IntensityParameter, 0.f);
 		DigImpactComponent->Deactivate();
 	}
+}
+
+void ARRDrone::PlayDigDebris(FIntPoint Cell, ERRCellType Type)
+{
+	URRNiagaraPoolSubsystem* FXPool = GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	if (!FXPool || !DigDebrisSystem || !IsValid(DigGrid) || !IsValid(OwnerMiner))
+	{
+		return;
+	}
+	const FVector Location = DigGrid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.0, 0.0, DigDebrisSpawnHeight);
+	const FIntPoint FaceSide = GetDigFaceSide(Cell);
+	const FLinearColor Color = GetChipColorForType(Type);
+	FXPool->Spawn(DigDebrisSystem, Location, FRotator::ZeroRotator, DigDebrisPoolSize, [&FaceSide, &Color](UNiagaraComponent& Component)
+	{
+		static const FName ChipColorParameter(TEXT("User.ChipColor"));
+		static const FName ThrowDirectionParameter(TEXT("User.ThrowDirection"));
+		Component.SetVariableLinearColor(ChipColorParameter, Color);
+		Component.SetVariableVec3(ThrowDirectionParameter, FVector(FaceSide.X, FaceSide.Y, 0.0));
+	});
 }
 
 FLinearColor ARRDrone::GetDigChipColor() const
