@@ -1,9 +1,9 @@
 ---
 id: task-440-muzzle-flash-rework
 description: "Global task: A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Muzzle flash rework
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read art-style-guide A8, color-code, bp-muzzle-flash. "Retravailler" states no direction: Q9, answered with the video (frames in Art/Source/muzzle-flash/20261105-owner-ref-video-1328-1333-sheet.png, viewed by the Planner). It shows about eight flashes of several colours looping on a board, so which ones he means is Q19. The colour rule (player fire is white-gold, A8) excludes copying the colours. No conflict. Unverified since task-414: look on screen. A8 edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "oui (réponse à : « Q19 : tu valides la version par défaut, c'est-à-dire les flashs chauds de la vidéo en blanc-or, ou tu préfères un flash précis, avec sa position dans la vidéo ? »)")
 - milestone: M2
-- next_step: task-440-02-doc
+- next_step: none
 - started: 2026-11-05T19:39:46Z
 - waiting_for: none
-- result: open
+- result: Done. bp-muzzle-flash rewritten (emitters, sizes, material, shapes, verified, unverified); sys-weapons, bp-shotgun, blueprints-fx-index, sys-automation-tests, unreal-mcp-quirks updated; lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "oui (réponse à : « Q19 : tu valides la version par défaut, c'est-à-dire les flashs chauds de la vidéo en blanc-or, ou tu préfères un flash précis, avec sa position dans la vidéo ? »)"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -28,6 +28,6 @@ Decided 2026-11-05 (owner "oui (réponse à : « Q19 : tu valides la version par
 2. task-440-02-doc (vault/reference/tasks/task-440-muzzle-flash-rework/task-440-02-doc.md) — doc: Document the new values.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-440-01-flash-system]] — step 1, bp.
 - [[task-440-02-doc]] — step 2, doc.

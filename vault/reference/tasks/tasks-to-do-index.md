@@ -11,7 +11,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-314-chest-lid-logo]] — Add the yellow Kessler-Voss mark on top of the chest lid, as on the validated sheet, and show it in game. Status todo.
-- [[task-440-muzzle-flash-rework]] — A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video. Status in-progress.
 - [[task-441-level-up-effect]] — Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little. Status todo.
 - [[task-442-extractor-wash-no-rain]] — The thin downward streaks under the extractor rotors, read as rain, become soft faint air swirls. Status todo.
 - [[task-443-extractor-ground-blast]] — A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m. Status todo.
