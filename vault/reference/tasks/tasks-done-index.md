@@ -440,3 +440,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-430-ore-pickup-number]] — floating Duskite icon plus "+1" above the miner when he collects a Duskite chunk, rendered like the damage numbers. Status done.
 - [[task-431-barrel-green-square-packaged]] — no green default-decal square at any barrel fuse or explosion in a packaged build, second and later runs of one process included. Status done.
 - [[task-432-player-shot-impact-sparks]] — Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8). Awaiting owner answers. Status done.
+- [[task-433-robot-hit-flash]] — A robot that takes a hit turns plain white for a brief moment, at low cost, every class. Awaiting owner answers. Status done.
