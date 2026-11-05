@@ -3,7 +3,7 @@ id: task-439-01-debris-request
 description: "Cpp: An explosion that destroys blocks requests one bounded debris effect carrying its centre and the destroyed block places."
 parent: task-439-explosion-wall-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall debris thrown away from explosions: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:19:15Z
 - waiting_for: none
 - result: open
 
