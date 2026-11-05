@@ -37,7 +37,8 @@ fs.writeFileSync(file, s);
 
 const nodeId = file.split('/').pop().replace('.md', '');
 const C = R + 'vault/reference/production/cost-log.md';
-let c = fs.readFileSync(C, 'utf8');
+// LF only from here on: every pattern below expects \n, and a CRLF working copy (core.autocrlf) would silently add no row.
+let c = fs.readFileSync(C, 'utf8').replace(/\r\n/g, '\n');
 const OLD_HEAD = '| Subtask | Model | Runs | Input | Cache write | Cache read | Output |\n|---|---|---|---|---|---|---|';
 const NEW_HEAD = '| Subtask | Model | Runs | Input | Cache write | Cache read | Output | Units (M) | Turns | Resumes |\n|---|---|---|---|---|---|---|---|---|---|';
 const kv = x => parseFloat(x.replace(/[^\d.]/g, '')) * (/M/.test(x) ? 1e6 : 1000);
