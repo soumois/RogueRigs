@@ -3,7 +3,7 @@ id: task-445-01-light-shadows
 description: "Bp: FloorWallLight casts shadows, its position and intensity left as the owner set them."
 parent: task-445-miner-light-wall-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light casts wall shadows only: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T21:12:19Z
 - waiting_for: none
 - result: open
 
