@@ -3,7 +3,7 @@ id: task-447-swirls-alpha-fix
 description: "Global task: The rotor wash swirls of task-442 read alpha 0 in the simulation: make them actually show, look values unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the invisible extractor swirls
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-05, "Oui, corrige")
 - milestone: M2
 - next_step: task-447-01-swirls-compiled
-- started: open
+- started: 2026-11-05T22:22:52Z
 - waiting_for: none
 - result: open
 

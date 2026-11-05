@@ -3,7 +3,7 @@ id: task-447-01-swirls-compiled
 description: "Bp: The compiled Swirls emitter gives particles the alpha the asset declares."
 parent: task-447-swirls-alpha-fix
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the invisible extractor swirls: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:22:52Z
 - waiting_for: none
 - result: open
 
