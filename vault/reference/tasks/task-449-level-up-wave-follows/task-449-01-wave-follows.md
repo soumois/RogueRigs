@@ -3,7 +3,7 @@ id: task-449-01-wave-follows
 description: "Cpp: The level-up wave stays on the miner while it plays, the push staying one blow."
 parent: task-449-level-up-wave-follows
 kind: task
-status: in-progress
+status: done
 ---
 # Level-up floor wave follows the miner: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build ok; in the simulation ring and shard positions follow a moving miner and stay at floor height; push still applied once; LevelUp test family passes, figures given in the result.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-449
+- usage: included in the executor run of task-449
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T22:42:52Z
 - waiting_for: none
-- result: open
+- result: Commit 6e31c55a. URRLevelUpComponent ticks only while its pooled NS_LevelUpWave plays (TG_PostPhysics, after movement) and moves it under the miner's feet each frame; the local-space ring and shards follow. Text spawn and push unchanged. Build ok. RogueRigs.LevelUp under -RenderOffScreen: 9/9 pass, new WaveFollowsMiner: miner running 600 uu/s covers 300 uu during the 29 frames of the wave; wave and ring 0.00 uu off his feet, height error 0.00 uu; shards centroid within 31.5 uu of him, reach 321 uu around him, flat (0.00 uu); push launched once, none while following; 25 sprites; tick off after the wave. WaveAsset unchanged (25 sprites, 29 frames, ring 599 uu). Look in game unverified (owner).
 
 ## Relations
 - [[task-449-level-up-wave-follows]] — parent global task.

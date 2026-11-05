@@ -3,7 +3,7 @@ id: task-449-02-doc
 description: "Doc: Record that the wave follows the miner."
 parent: task-449-level-up-wave-follows
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up floor wave follows the miner: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:49:50Z
 - waiting_for: none
 - result: open
 
