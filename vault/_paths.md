@@ -112,6 +112,7 @@ bp-enemy-spawner  reference/tech/blueprints/world/bp-enemy-spawner.md
 bp-explosion-fx  reference/tech/blueprints/fx/bp-explosion-fx.md
 bp-explosion-fx-barrel  reference/tech/blueprints/fx/bp-explosion-fx-barrel.md
 bp-explosion-shockwave  reference/tech/blueprints/fx/bp-explosion-shockwave.md
+bp-explosion-wall-debris  reference/tech/blueprints/fx/bp-explosion-wall-debris.md
 bp-extraction-shuttle  reference/tech/blueprints/world/bp-extraction-shuttle.md
 bp-extractor-rotor-wash  reference/tech/blueprints/fx/bp-extractor-rotor-wash.md
 bp-floor-plates-material  reference/tech/blueprints/world/bp-floor-plates-material.md
