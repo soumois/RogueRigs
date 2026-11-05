@@ -23,7 +23,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read sys-hud-health-bar (effects to preserve), umg-layout. No gdd node places the health bar; nothing conflicts.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-452-02-health-panel
+- next_step: task-452-03-hud-placement
 - started: 2026-11-05T23:43:51Z
 - waiting_for: none
 - result: open
