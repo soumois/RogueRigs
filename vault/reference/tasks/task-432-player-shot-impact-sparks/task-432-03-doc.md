@@ -3,7 +3,7 @@ id: task-432-03-doc
 description: "Doc: Document the spark path, its pool bound and the new Niagara system."
 parent: task-432-player-shot-impact-sparks
 kind: task
-status: in-progress
+status: done
 ---
 # Player shot impact sparks: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The listed nodes are updated, a bp node exists for the new system and is linked from its index, the pool bound is written, lint is clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-432
+- usage: included in the executor run of task-432
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T16:03:30Z
 - waiting_for: none
-- result: open
+- result: bp-shot-impact-spark created and linked from blueprints-fx-index; sys-projectiles (hit rule, location, pool bound 24), sys-turret, sys-actor-pool updated; lint clean.
 
 ## Relations
 - [[task-432-player-shot-impact-sparks]] — parent global task.

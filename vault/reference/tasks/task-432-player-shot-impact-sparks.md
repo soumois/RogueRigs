@@ -1,9 +1,9 @@
 ---
 id: task-432-player-shot-impact-sparks
 description: "Global task: Small white-gold sparks where a player shot hits its target, through a pool or a shared system (style guide A8). Awaiting owner answers."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Player shot impact sparks
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read art-style-guide (A8), color-code, readability-rules, destruction-rules, perf-lead-debris-gpu, milestones. In scope: M3 juice (VFX). No conflict with the GDD. Not stated: which targets and which shots count (Q1, Q2), size (Q3), cost measure (Q4). Destruction-rules: shots never break blocks and rock stops them, and NS_DigImpact already means digging, which is why the default leaves rock without sparks. Perf lead: an active GPU system cost about 68 µs against 16 to 24 µs for CPU, hence A4. No code read by the Planner; the main session's read-only findings are in its brief, not relied on here beyond the request.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-432-03-doc
+- next_step: none
 - started: 2026-11-05T15:45:57Z
 - waiting_for: none
-- result: open
+- result: Done. bp-shot-impact-spark created and linked from blueprints-fx-index; sys-projectiles (hit rule, location, pool bound 24), sys-turret, sys-actor-pool updated; lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -31,7 +31,7 @@ Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accept
 3. task-432-03-doc (vault/reference/tasks/task-432-player-shot-impact-sparks/task-432-03-doc.md) — doc: Document the spark path, its pool bound and the new Niagara system.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-432-01-spawn-on-hit]] — step 1, cpp.
 - [[task-432-02-spark-system]] — step 2, bp.
 - [[task-432-03-doc]] — step 3, doc.
