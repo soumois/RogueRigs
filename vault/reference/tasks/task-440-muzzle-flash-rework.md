@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read art-style-guide A8, color-code, bp-muzzle-flash. "Retravailler" states no direction: Q9, answered with the video (frames in Art/Source/muzzle-flash/20261105-owner-ref-video-1328-1333-sheet.png, viewed by the Planner). It shows about eight flashes of several colours looping on a board, so which ones he means is Q19. The colour rule (player fire is white-gold, A8) excludes copying the colours. No conflict. Unverified since task-414: look on screen. A8 edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "oui (réponse à : « Q19 : tu valides la version par défaut, c'est-à-dire les flashs chauds de la vidéo en blanc-or, ou tu préfères un flash précis, avec sa position dans la vidéo ? »)")
 - milestone: M2
-- next_step: task-440-01-flash-system
+- next_step: task-440-02-doc
 - started: 2026-11-05T19:39:46Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-440-02-doc
 description: "Doc: Document the new values."
 parent: task-440-muzzle-flash-rework
 kind: task
-status: todo
+status: in-progress
 ---
 # Muzzle flash rework: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:59:07Z
 - waiting_for: none
 - result: open
 
