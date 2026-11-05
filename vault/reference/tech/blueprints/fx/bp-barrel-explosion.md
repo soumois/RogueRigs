@@ -8,7 +8,7 @@ kind: doc
 
 - asset_path: /Game/RogueRigs/FX/NS_BarrelExplosion (Niagara system, no Blueprint; built from NS_RobotDeathPuff as system template and the engine OmnidirectionalBurst emitter template, same folder as the other FX); material /Game/RogueRigs/FX/M_BarrelExplosionSprite.
 - parent_class: UNiagaraSystem
-- purpose: the burst played on top of the orange sphere by `ARRExplosionFX::BurstSystem` ([[sys-explosions]], [[bp-explosion-fx]]); reusable for the kamikaze (visual radius 327.6 uu) because every size comes from the radius. Owner request 2026-10-16: "an explosion part (we can reuse it for the kamikaze)".
+- purpose: the burst played on top of the orange sphere by `ARRExplosionFX::BurstSystem` ([[sys-explosions]], [[bp-explosion-fx]]); also played by the kamikaze since task-434-01 (visual radius 327.6 uu) through [[bp-explosion-fx-barrel]]; every size comes from the radius. Owner request 2026-10-16: "an explosion part (we can reuse it for the kamikaze)".
 - user_parameter: `User.Radius` (float user variable named `User.Radius`, the `Radius` of the User namespace), default 735 (barrel visual radius); the C++ sets it before activation. Read back: type NiagaraFloat, default 735. Particle sizes, spawn sphere radii and speeds are HLSL expressions `User.Radius * k`.
 - one_shot: system loop Once, loop duration 1.0 s (was 0.1 s from the death puff template, raised so the smoke burst at 0.1 s is not cut), inactive response Complete; each emitter loops Once (Life Cycle Mode Self), so the longest particle (smoke, 1.3 s + 0.1 s delay) ends the system at about 1.4 s, inside the 1.5 s `BurstSeconds`. No collision module, no events, no pooling (ARRExplosionFX owns the component).
 - emitters (all CPU sprites, shadows off, material M_BarrelExplosionSprite; 95 particles per explosion; bigger burst, task-199-01, provisional, owner 2026-10-16 (barrel burst looked small next to the 735 uu sphere in the task-197-07 frames: one orange glow, few sparks, faint smoke); k = factor of `User.Radius`, R = 735 gives the barrel value in uu):
@@ -21,14 +21,15 @@ kind: doc
 - colour: orange and yellow-orange mean "explodes", the grey smoke is neutral; no red, red stays reserved for enemy fire ([[color-code]], [[readability-rules]]).
 - events: none
 - logic_in_bp: none
-- assets: not yet referenced: a barrel child of BP_ExplosionFX that sets `BurstSystem` is task-197-06 or later (bp-explosion-fx still leaves it unset).
+- assets: referenced by `BurstSystem` of [[bp-explosion-fx-barrel]]; [[bp-explosion-fx]] leaves it unset.
 - verified: compile state UpToDate after task-199-01 (new counts, sizes and colours read back through GetEmitterInputValues-style SetStackInputData results), system compile state UpToDate, no stack error or warning; material recompiled with no error; every value above read back through MCP; PIE not run. Not verified: the visual (no capture allowed; squares replaced by the soft material but the look, the density at 735 uu and the 45-particle cost are not judged); that the 1.4 s end really releases the component.
 - owner_agent: agent-bp
 
 ## Relations
 - [[blueprints-fx-index]] — parent index.
 - [[sys-explosions]] — the `BurstSystem` and `User.Radius` contract.
-- [[bp-explosion-fx]] — the explosion Blueprint that will play it.
+- [[bp-explosion-fx]] — the parent explosion Blueprint, burst unset.
+- [[bp-explosion-fx-barrel]] — the Blueprint that plays it, for the barrel and kamikaze rows.
 - [[bp-robot-death-puff]] — the burst it was derived from.
 - [[color-code]] — colours.
 - [[readability-rules]] — no red, readable burst.
