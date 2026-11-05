@@ -3,7 +3,7 @@ id: task-432-03-doc
 description: "Doc: Document the spark path, its pool bound and the new Niagara system."
 parent: task-432-player-shot-impact-sparks
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact sparks: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T16:03:30Z
 - waiting_for: none
 - result: open
 
