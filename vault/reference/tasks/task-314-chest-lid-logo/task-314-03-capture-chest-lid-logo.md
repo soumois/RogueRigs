@@ -3,7 +3,7 @@ id: task-314-03-capture-chest-lid-logo
 description: "Capture the chest with its lid logo in game (cpp): yellow logo on the chest lid, step 03."
 parent: task-314-chest-lid-logo
 kind: task
-status: todo
+status: in-progress
 ---
 # Capture the chest lid logo in game
 
@@ -19,6 +19,7 @@ status: todo
 - tokens: open
 - runs: open
 - milestone: M2
+- started: 2026-11-05T23:14:26Z
 - result: open
 
 ## Relations
