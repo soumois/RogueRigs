@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-05T17:37:13Z
 - waiting_for: none
-- result: Done. bp-robot-death-puff and bp-heavy-death-puff state the new values; bp-kamikaze-death-puff created, bp-kamikaze and blueprints-fx-index updated (56596513); lint clean.
+- result: Done, look unverified until the owner has seen it (A7, no capture). NS_RobotDeathPuff and NS_HeavyDeathPuff are the cartoon flash after the owner reference: 18 CPU sprites (core, lines, blobs, burnt puffs), about 0.42 s, flat cel bands white, yellow, orange, red-orange, dark red, three procedural materials, heavy at 3x, pool 40 kept. Kamikaze death unchanged through NS_KamikazeDeathPuff, a copy of the former puff, because BP_Kamikaze shared the system. Docs: bp-robot-death-puff, bp-heavy-death-puff, bp-kamikaze-death-puff, bp-kamikaze.
 
 ## Questions
 Decided 2026-11-05 (owner, relayed by the main session): Q3 and Q18 by his words written in them, Q4 by its default, kept when he left it unanswered; values provisional, owner 2026-11-05.
