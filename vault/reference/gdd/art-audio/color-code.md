@@ -39,6 +39,7 @@ Exception (owner 2026-10-11): the explosion warning sign on the barrel is a yell
 Exception "console state lamps" (owner 2026-10-23, provisional): the command console orange lamps turn red (Locked), orange (Idle), green (Hacking, Complete) and its screen black or green; a small detail on a white + teal element, allowed despite red and green being enemy colours ([[objective-console]]).
 
 - Colour principle (owner 2026-10-13): an element is coded by its main colour, the colour that dominates it, not by a detail. A small detail may reuse a colour that belongs to another element (the barrel is orange with a yellow sign, and yellow stays the chaser colour). The same colour may appear as a detail on any element.
+- Not rigid (owner 2026-11-05): this table applies as [[readability-rules]] says, "Colour rules are not rigid"; it must not go against what a player expects, and explosion effects may hold red.
 - Big XP block (owner 2026-10-13, replaces the white block of 2026-10-12): bright magenta-pink with a glow of the same hue, scale 1.8 unchanged; magenta is not the main colour of any other element.
 
 ## Relations

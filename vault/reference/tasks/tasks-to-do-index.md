@@ -22,4 +22,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-443-extractor-ground-blast]] — A visible blast of dust on the floor under the extractor rotors, fading with height and gone above 4 m. Status todo.
 - [[task-444-rotors-no-shadow]] — The whole extractor, hull and rotors, casts no shadow. Status todo.
 - [[task-445-miner-light-wall-shadows]] — The miner floor and wall light casts the shadows of rock walls, and of nothing else. Status todo.
+- [[task-446-explosions-red]] — The barrel and kamikaze explosion burst gets red, as the owner now allows and expects of an explosion. Status wait-answers.
 
