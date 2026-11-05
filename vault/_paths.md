@@ -122,6 +122,7 @@ bp-heavy-death-puff  reference/tech/blueprints/fx/bp-heavy-death-puff.md
 bp-heavy-slam-impact  reference/tech/blueprints/fx/bp-heavy-slam-impact.md
 bp-kamikaze  reference/tech/blueprints/enemies/bp-kamikaze.md
 bp-kamikaze-death-puff  reference/tech/blueprints/fx/bp-kamikaze-death-puff.md
+bp-level-up-burst  reference/tech/blueprints/fx/bp-level-up-burst.md
 bp-main-menu-game-mode  reference/tech/blueprints/player/bp-main-menu-game-mode.md
 bp-mcp-lessons  reference/agents/bp-mcp-lessons.md
 bp-miner  reference/tech/blueprints/player/bp-miner.md

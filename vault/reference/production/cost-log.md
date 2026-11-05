@@ -1042,18 +1042,19 @@ kind: note
 | [[task-441-03-robot-push]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-441-04-floor-wave]] | opus | 2 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-441-05-miner-wiring]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-441-06-doc]] | opus | 1 | 0k | 20k | 13k | 4k | 0.04 | 2 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| All subtask rows above | 385.93 | 0k | 90.93 M | 1890.95 M | 16649k |
+| All subtask rows above | 385.97 | 0k | 90.95 M | 1890.96 M | 16653k |
 | model mixed | 8.97 | 0k | 3.17 M | 26.83 M | 463k |
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
-| model opus | 208.86 | 0k | 46.44 M | 1048.43 M | 9199k |
+| model opus | 208.90 | 0k | 46.46 M | 1048.44 M | 9203k |
 | model sonnet | 168.10 | 0k | 41.33 M | 815.69 M | 6987k |
-| Executors and legacy orchestrators that ran a task (pilot) | 42.18 | 6k | 15.10 M | 148.92 M | 1680k |
+| Executors and legacy orchestrators that ran a task (pilot) | 42.41 | 6k | 15.13 M | 150.41 M | 1690k |
 | Planning runs (planners and legacy planning passes) | 40.80 | 4k | 12.27 M | 148.39 M | 2125k |
 | Agents without a subtask id (other) | 5.67 | 1k | 1.17 M | 32.83 M | 185k |
 | Main sessions (all of them, also chat outside tasks) | 85.04 | 8k | 13.66 M | 562.88 M | 2334k |

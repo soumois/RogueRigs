@@ -448,3 +448,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-438-dig-debris]] — A block broken by the drone throws a short burst of debris of the block colour that falls and disappears. Status done.
 - [[task-439-explosion-wall-debris]] — Blocks destroyed by an explosion throw debris directly away from the explosion centre, with a bounded count. Status done.
 - [[task-440-muzzle-flash-rework]] — A stylised, varied white-gold muzzle flash for the miner weapons, after the owner reference video. Status done.
+- [[task-441-level-up-effect]] — Level-up shows a gold LEVEL UP text without arc, a one-shot wave on the floor, and pushes nearby robots a little. Status done.
