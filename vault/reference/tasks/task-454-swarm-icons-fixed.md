@@ -3,7 +3,7 @@ id: task-454-swarm-icons-fixed
 description: "Global task: Until the first horde front is over, kills no longer move the swarms on the alert bar; afterwards they do as now."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # First swarms ignore kills until the first front is over
 
@@ -24,7 +24,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-454-01-rule
-- started: open
+- started: 2026-11-05T23:32:49Z
 - waiting_for: none
 - result: open
 

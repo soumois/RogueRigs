@@ -3,7 +3,7 @@ id: task-454-01-rule
 description: "Cpp: Kills stop moving the alert bar and the swarm marks until the first front is over."
 parent: task-454-swarm-icons-fixed
 kind: task
-status: todo
+status: in-progress
 ---
 # First swarms ignore kills until the first front is over: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T23:32:49Z
 - waiting_for: none
 - result: open
 
