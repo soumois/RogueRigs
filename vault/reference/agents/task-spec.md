@@ -16,7 +16,7 @@ module.exports = { anchor: 'task-NNN-slug', edits: [{ file, old, new }], globals
 }] };
 ```
 
-- `request`: the owner's words verbatim. `gdd_check`: nodes read, conflicts, `open` values and decisions, no copied prose. `edits`: the gdd edits the defaults imply, exact text.
+- `request`: the owner's words verbatim. `acceptance`: one string, never a list (A1 ...; A2 ...). `gdd_check`: nodes read, conflicts, `open` values and decisions, no copied prose. `edits`: the gdd edits the defaults imply, exact text.
 - Subtask optional fields, only when they say something the Executor cannot decide: `goal` (default `line`), `expected_output`, `editor_state`, `token_ceiling`, `depends_on` (default the previous subtask), `milestone`.
 - `inputs`: a bare id becomes `id (path)`; an unknown id is refused; literal paths are kept. Point at sources, never copy them.
 - The script refuses, before writing anything, an existing node, an unknown id or a missing field. Numbers: list `vault/reference/tasks` right before creating.

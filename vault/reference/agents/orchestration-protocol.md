@@ -34,7 +34,7 @@ Global node: the owner's words, goal, acceptance, GDD check, questions. Add subt
 - Large batch: keep one global and split it into bounded slices of the same role, with disjoint scope and checks (about 4–5 test families per C++ slice). No tightly coupled splits, no per-file microtasks.
 - Editor work: one main asset per bp subtask (owner 2026-10-14). Order: materials, then Niagara and widgets, then the Blueprint that wires them, then map placement.
 - Doc: a global with cpp or bp subtasks ends with one subtask `agent: doc` whose `inputs` are the `sys-*`, `bp-*` and tool nodes to create or update (owner 2026-10-27).
-- Visual check: one subtask `agent: capture` whose `done_when` is a checklist C1..Cn taken from `acceptance`, each point observable on a frame (owner 2026-10-29).
+- Visual check: one subtask `agent: capture` whose `done_when` is a checklist C1..Cn taken from `acceptance`, each point observable on a frame (owner 2026-10-29). For a screen or widget, the default stays the four resolutions of [[umg-layout]]: fewer only if the owner chooses it, asked as a question whose default is the four.
 - Uncertain result (owner 2026-11-01, only when the visual result or integration is materially uncertain): plan one representative slice, for example one shop card with its states or one clip in a game state, then its check, then expansion subtasks that depend on it. Record the expected result, references and rules to preserve. A validated mockup may replace the slice.
 
 Plan only what the owner asked: no new tests, bot runs, screenshot sessions or features. Only update existing tests that a requested change breaks. The plan shown lists exactly what will run.
@@ -52,3 +52,4 @@ Status and defaults file: [[task-spec]].
 - [[agent-planner]] — runs steps 0 to 4.
 - [[agent-executor]] — runs what it plans.
 - [[tasks-to-do-index]] — read at step 0.
+- [[umg-layout]] — the resolutions a screen is checked at.
