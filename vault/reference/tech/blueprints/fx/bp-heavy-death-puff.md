@@ -20,7 +20,9 @@ kind: doc
 - events: none
 - logic_in_bp: none
 - assets: used by BP_Heavy as DeathPuffSystem since task-297-02.
-- verified: compile state UpToDate, 0 errors, 0 warnings; values above read back; PIE start without a LogNiagara error. Not verified: the look in game (owner validates, task-436 A7, no capture); the +130 offset assumes the heavy actor origin is near its mid-height; cost not judged.
+- verified: compile state UpToDate, 0 errors, 0 warnings; values above read back; PIE start without a LogNiagara error.
+- simulation_check (task-448-02, no asset change): a real BP_Heavy kill in PIE (`rr.Debug.KillRobots`, slomo 0.05), `fx.Niagara.DumpComponents full`: Lines 6 at t 0.03, life 0.141 to 0.184, 21 x 238 to 356 cm; Core 1 at t 0, life 0.32, 840 cm; Blobs 6 at t 0.06, life 0.223 to 0.277, 125 to 145 cm; Puffs 5 at t 0.17, life 0.205 to 0.245, 143 to 166 cm; colours as the robot puff, z 256 (robot puff 124: +130 against +60); alpha = NormalizedAge on every row (error 0). No LogNiagara warning. Method and traps: [[bp-robot-death-puff]].
+- not_verified: the look in game (owner validates, task-436 A7, no capture); the +130 offset assumes the heavy actor origin is near its mid-height; cost not judged.
 - owner_review: feet and shins briefly visible below the former puff (0.04 to 0.09 s) accepted, no rework (owner 2026-10-23, "On accepte, les pieds visibles ne gênent pas"); not reviewed again on the new look.
 - owner_agent: agent-bp
 

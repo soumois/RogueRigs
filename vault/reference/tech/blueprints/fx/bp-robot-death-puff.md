@@ -25,7 +25,9 @@ kind: doc
 - events: none
 - logic_in_bp: none
 - assets: DeathPuffSystem of BP_Chaser ([[bp-chaser]]), BP_ChaserV2, BP_ShieldChaser ([[bp-shield-chaser]]), BP_ShieldChaserV2, BP_Shooter. BP_Kamikaze has its own copy of the former puff: [[bp-kamikaze-death-puff]].
-- verified: compile state UpToDate, 0 errors, 0 warnings; 3 materials compile; all values above read back; PIE start without a LogNiagara error. Not verified: the look in game (owner validates, task-436 A7, no capture); that the 0.42 s end really releases the component (not readable through MCP); cost at horde scale (no stress run). Formula preview, not a game frame: `Saved/Scratch/robot-death-fx/20261105-formula-preview-not-a-game-frame.png` (temporary).
+- verified: compile state UpToDate, 0 errors, 0 warnings; 3 materials compile; all values above read back; PIE start without a LogNiagara error.
+- simulation_check (task-448-01, no asset change): 5 real kills in PIE (`rr.Debug.KillRobots`, slomo 0.05), `fx.Niagara.DumpComponents full`: per puff Lines 6 at t 0.03, life 0.144 to 0.199, 7 x 72 to 117 cm; Core 1 at t 0, life 0.32, 280 cm; Blobs 6 at t 0.06, life 0.221 to 0.279, 34 to 49 cm; Puffs 5 at t 0.17, life 0.201 to 0.249, 43 to 66 cm; colours as above, z 124; alpha = NormalizedAge on every row (error 0). No LogNiagara warning. Probe traps: an open level-up screen pauses the world (puffs stay Active with 0 particles); a background editor throttles PIE to about 3 fps.
+- not_verified: the look in game (owner validates, task-436 A7, no capture); that the 0.42 s end really releases the component (not readable through MCP); cost at horde scale (no stress run). Formula preview, not a game frame: `Saved/Scratch/robot-death-fx/20261105-formula-preview-not-a-game-frame.png` (temporary).
 - owner_agent: agent-bp
 
 ## Relations
