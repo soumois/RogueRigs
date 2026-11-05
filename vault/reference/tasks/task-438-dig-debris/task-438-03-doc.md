@@ -3,7 +3,7 @@ id: task-438-03-doc
 description: "Doc: Document the burst and its bound."
 parent: task-438-dig-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris when digging: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:17:19Z
 - waiting_for: none
 - result: open
 
