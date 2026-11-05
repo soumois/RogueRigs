@@ -3,7 +3,7 @@ id: task-433-04-doc
 description: "Doc: Document the flash value, its slot and the materials that read it."
 parent: task-433-robot-hit-flash
 kind: task
-status: todo
+status: in-progress
 ---
 # Robot hit flash: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T16:21:45Z
 - waiting_for: none
 - result: open
 

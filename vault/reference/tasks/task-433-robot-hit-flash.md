@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read readability-rules, color-code, enemy-chaser ("hits are a flash", which this implements), enemy-kamikaze, enemy-death, enemies-index, milestones. In scope: M3 juice. No conflict: white is no robot's main colour and a 0.08 s flash leaves colour coding intact. Not stated: which classes, sources and shield case (Q1, Q2), exact duration and repeated hits (Q3). Whether each robot class reads Custom Primitive Data is a code fact the Executor checks, hence the representative slice before the other classes. Cost measure: Q4 of task-432 covers the lot.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-433-03-flash-other-robots
+- next_step: task-433-04-doc
 - started: 2026-11-05T16:05:27Z
 - waiting_for: none
 - result: open
