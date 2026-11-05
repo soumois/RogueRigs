@@ -3,7 +3,7 @@ id: task-452-02-health-panel
 description: "Bp: The health panel takes the retained look, effects kept."
 parent: task-452-health-above-weapons
 kind: task
-status: todo
+status: in-progress
 ---
 # Health bar just above the weapon slots: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T23:45:51Z
 - waiting_for: none
 - result: open
 
