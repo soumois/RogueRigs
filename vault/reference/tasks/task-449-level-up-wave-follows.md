@@ -1,9 +1,9 @@
 ---
 id: task-449-level-up-wave-follows
 description: "Global task: The gold level-up floor wave follows the miner while it plays, instead of staying where he levelled up."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level-up floor wave follows the miner
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read xp-level-up, sys-level-up, bp-level-up-burst, task-441. Nothing conflicts; xp-level-up edited at confirmation. task-441 made the push a real one-shot (A3 of task-441) and the wave a one-shot, so following changes the look only and the push stays as it is. The owner names "text" and "particule au sol" apart in task-441, hence the default of Q21. The orange sphere in his screenshot is an explosion and is not part of this task. Rough size check from that one frame (miner about 130 px for 176 uu, perspective ignored): the yellow ring is about 680 uu across with a band of about 65 uu. bp-level-up-burst gives the wave at most 599 uu across with a band of 30 % then 5 % of the radius, so a band this wide means an early, smaller ring; bp-explosion-shockwave gives a constant 60 uu band growing to the radius, about 655 uu across for the kamikaze. So the frame fits the explosion ring at least as well as the wave: not settled, the Executor reports what it finds. The wave follows the miner either way. Does not touch the assets of tasks 446, 447, 448.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-449-02-doc
+- next_step: none
 - started: 2026-11-05T22:42:52Z
 - waiting_for: none
-- result: open
+- result: Done. Commit 5e984eb5. sys-level-up (burst entry, GetWaveLocation, GetFollowedWave, tick only while the wave plays, test figures) and bp-level-up-burst (purpose, verified, unverified) state that the wave follows the miner, the text stays and the push is one blow. Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -27,6 +27,6 @@ Decided 2026-11-05 (owner "Ok, tout par défaut"): every default below is accept
 2. task-449-02-doc (vault/reference/tasks/task-449-level-up-wave-follows/task-449-02-doc.md) — doc: Record that the wave follows the miner.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-449-01-wave-follows]] — step 1, cpp.
 - [[task-449-02-doc]] — step 2, doc.

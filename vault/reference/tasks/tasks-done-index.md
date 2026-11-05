@@ -456,3 +456,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-446-explosions-red]] — The whole barrel and kamikaze explosion, sphere, burst and ring, is redone in the cartoon style of the owner reference. Status done.
 - [[task-447-swirls-alpha-fix]] — The rotor wash swirls of task-442 read alpha 0 in the simulation: make them actually show, look values unchanged. Status done.
 - [[task-448-death-puffs-sim-check]] — Read the robot and heavy death puffs in the simulation on real kills, and fix them only if the compiled values are wrong. Status done.
+- [[task-449-level-up-wave-follows]] — The gold level-up floor wave follows the miner while it plays, instead of staying where he levelled up. Status done.
