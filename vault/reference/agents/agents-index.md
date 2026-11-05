@@ -6,16 +6,16 @@ kind: note
 ---
 # Dev crew
 
-The main Claude Code session only relays between the owner and two agents: the Planner turns each owner request into confirmed task nodes, then one fresh Executor per global task delegates each subtask to one specialized subagent (`.claude/agents/`). Agents never talk to each other: they read inputs from and write outputs to this vault and the repo. Token ceilings are bounds on a subtask's weighted units (`<x> M units`), provisional, corrected after each milestone retrospective.
+The main Claude Code session only relays between the owner and two agents: the Planner turns each owner request into confirmed task nodes, then one fresh Opus Executor per global task does the work itself, applying the role nodes below (owner 2026-11-05). Agents read inputs from and write outputs to this vault and the repo. Token ceilings are bounds on a subtask's weighted units (`<x> M units`), provisional, corrected after each milestone retrospective.
 
-Crew in use: planner → executor → cpp, bp (code and editor) → capture (visual checks) → doc; level-design (layouts); text → style-guide (critic); art → style-guide → 3d → bp (assets).
+Crew in use: planner → executor → style-guide (critic of its text and images).
 Not written yet: agent-balance, agent-animation, agent-sound, agent-qa (deferred).
 
 Lessons are filed by theme; each agent reads the node about its own limits: owner rules for the Planner, [[bp-mcp-lessons]] for bp, [[art-3d-lessons]] for art and 3d.
 
 ## Children
 - [[agent-planner]] — plans a request into confirmed task nodes and asks the owner; open to run or change planning.
-- [[agent-executor]] — runs one confirmed global task from its nodes, delegating each subtask; open to run or change execution.
+- [[agent-executor]] — one Opus agent runs one confirmed global task from its nodes, doing each subtask itself; open to run or change execution.
 - [[agent-level-design]] — writes arena layouts as validated grid JSON.
 - [[agent-cpp]] — writes and builds C++ and Node tooling, runs stress and tests, returns a change summary.
 - [[agent-bp]] — builds the editor layer through Unreal MCP, returns a change summary.

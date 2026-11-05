@@ -1,6 +1,6 @@
 ---
 name: planner
-description: Planner of the Rogue Rigs crew. Use for a new owner request: resume check, restate, GDD check, plan and task nodes. Stops for the owner's answers (relayed by the main session) and never delegates or executes.
+description: "Planner of the Rogue Rigs crew. Use for a new owner request - resume check, restate, GDD check, plan and task nodes. Stops for the owner's answers (relayed by the main session) and never delegates or executes."
 model: opus
 tools: Read, Write, Edit, Bash, PowerShell, Glob, Grep
 color: yellow

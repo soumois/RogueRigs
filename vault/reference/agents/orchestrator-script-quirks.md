@@ -12,7 +12,7 @@ Commands themselves: [[orchestrator-runbook]]. Observed 2026-10-11 to 2026-10-14
 - `task-next.js` closes the global task when the subtask it closes is the last done one it finds: create every planned subtask node BEFORE closing, `git add` new ones first (untracked nodes fail its commit with "pathspec did not match"), and check the global is still `in-progress` afterwards. For a global with several subtasks, `task-status.js` per subtask is safer.
 - Run it ONCE: a second run overwrites the `result` field.
 - It hard-codes its Co-Authored-By line: if it differs from the session's, amend ONLY your own just-made commit (check `git log -1`).
-- `record-cost.js` matches usage by the subtask id at the start of the agent's description. A resumed agent keeps its first description: close that subtask with `task-status.js status=done "result=..." runs=1` and note the cost is counted elsewhere.
+- `record-cost.js` matches usage by the subtask id at the start of the agent's description; a subtask with no such agent counts as included in the executor run of its global, and it refuses only if that global has no executor run either. The executor is tied to its global by the first task number of its prompt, and its description must not start with a subtask id. A resumed agent keeps its first description: close that subtask with `task-status.js status=done "result=..." runs=1` and note the cost is counted elsewhere.
 - `task-create.js` refuses to overwrite an existing node and writes nothing: pick a free number or remove the stale draft first. It does not lint or commit.
 - `task-confirm.js` hard-codes its Co-Authored-By line (Opus 5.5), like `task-next.js`.
 - Two sessions create task numbers in parallel: `ls vault/reference/tasks` right before creating.
@@ -23,6 +23,7 @@ Commands themselves: [[orchestrator-runbook]]. Observed 2026-10-11 to 2026-10-14
 
 ## Editor
 - Start with `Start-Process`, then poll `http://127.0.0.1:8000/mcp` (HTTP 405 on GET means up).
+- Before closing, save every asset you touched with `save_assets` ([[agent-bp]] step order), so that the "Save Content" dialog that stopped tasks 424 and 314 has nothing to ask. Not yet checked on a real close (owner 2026-11-05).
 - Close only an editor this session launched, with `CloseMainWindow()`. A "Save Content" dialog may keep it alive: `Stop-Process -Force` only when `git status` shows no modified tracked file, and never close it while that dialog is open without asking.
 - `Build.bat` refuses to build while Live Coding runs in the owner's editor: ask him to close it, never kill it.
 - Headless tests and builds need the editor closed; a build "up to date" after asset-only work means the tests do not exercise the Blueprints.

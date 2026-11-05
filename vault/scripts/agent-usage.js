@@ -340,7 +340,7 @@ const taskIds = new Set([...subtasks.map(s => s.id.split('-')[1]), ...pilots.fil
 const tasks = [...taskIds].sort().map(n => {
   const w = sumRecs(all.filter(r => r.role === 'worker' && r.sub.split('-')[1] === n));
   const p = sumRecs(pilots.filter(r => r.globalTask === n));
-  return { task: 'task-' + n, workersUnits: w.units, pilotUnits: p.units, pilotAgents: pilots.filter(r => r.globalTask === n).length, totalUnits: w.units + p.units,
+  return { task: 'task-' + n, workersUnits: w.units, pilotUnits: p.units, pilotAgents: pilots.filter(r => r.globalTask === n).length, pilotModels: Object.keys(p.byModel), totalUnits: w.units + p.units,
     usd: w.usd !== null && p.usd !== null ? w.usd + p.usd : null };
 });
 const planning = all.filter(r => r.role === 'planning').map(r => ({ id: r.id, session: r.session, start: r.start, description: r.desc, models: r.models, calls: r.calls, resumes: r.resumes, resumeReasons: r.resumeReasons, firstCtx: r.firstCtx, peakCtx: r.peakCtx, input: r.input, cacheWrite: r.cacheWrite, cacheRead: r.cacheRead, output: r.output, units: unitsOf(r), promptStart: r.promptStart, handbackTasks: r.handbackTasks, trace: r.plannerTrace || null }));

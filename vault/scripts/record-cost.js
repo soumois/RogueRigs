@@ -9,17 +9,22 @@ process.chdir(R);
 const [id, runs] = process.argv.slice(2);
 const data = JSON.parse(execSync('node vault/scripts/agent-usage.js --json --snapshot --agent-debug', { maxBuffer: 1 << 28 }).toString());
 const rates = JSON.parse(fs.readFileSync(R + 'vault/scripts/cost-rates.json', 'utf8'));
-const r = data.subtasks.find(x => x.id === id);
-if (!r) throw new Error('no usage for ' + id);
-const model = r.models.split('+').filter(m => m && m !== '<synthetic>').map(m => m.replace('claude-', '').replace(/-\d.*$/, '')).join('+');
+// A subtask done by the executor itself has no worker of its own: its tokens stay on the executor's run of the global task
+// (agent-usage.js role pilot, "Executors" line of the cost-log totals) and its row is written with zeros so that closure still has one.
+const globalId = id.split('-').slice(0, 2).join('-');
+const pilot = data.tasks.find(t => t.task === globalId && t.pilotAgents > 0);
+const worker = data.subtasks.find(x => x.id === id);
+if (!worker && !pilot) throw new Error('no usage for ' + id);
+const r = worker || { models: pilot.pilotModels.join('+'), input: 0, cacheWrite: 0, cacheRead: 0, output: 0, units: 0, usd: null, calls: 0, firstCtx: 0, peakCtx: 0, resumes: 0, resumeReasons: {}, seconds: 0 };
+const model = worker ? r.models.split('+').filter(m => m && m !== '<synthetic>').map(m => m.replace('claude-', '').replace(/-\d.*$/, '')).join('+') : r.models;
 const T = R + 'vault/reference/tasks/';
 let file;
 for (const d of fs.readdirSync(T, { withFileTypes: true })) if (d.isDirectory()) for (const f of fs.readdirSync(T + d.name)) if (f.startsWith(id + '-')) file = T + d.name + '/' + f;
 const k = n => Math.round(n / 1000) + 'k';
 const Mu = n => (n / 1e6).toFixed(2);
 const reasons = Object.entries(r.resumeReasons).map(([a, n]) => `${a} x${n}`).join(', ');
-const usage = `turns ${r.calls}, context start ${k(r.firstCtx)} peak ${k(r.peakCtx)}, resumes ${r.resumes}${reasons ? ' (' + reasons + ')' : ''}, ${Math.round(r.seconds / 60)} min, units ${Mu(r.units)} M${r.usd === null ? '' : ', USD ' + r.usd.toFixed(2)}`;
-const tokensLine = `- tokens: input ${r.input}, cache write ${r.cacheWrite}, cache read ${r.cacheRead}, output ${r.output}`;
+const usage = worker ? `turns ${r.calls}, context start ${k(r.firstCtx)} peak ${k(r.peakCtx)}, resumes ${r.resumes}${reasons ? ' (' + reasons + ')' : ''}, ${Math.round(r.seconds / 60)} min, units ${Mu(r.units)} M${r.usd === null ? '' : ', USD ' + r.usd.toFixed(2)}` : `included in the executor run of ${globalId}`;
+const tokensLine = worker ? `- tokens: input ${r.input}, cache write ${r.cacheWrite}, cache read ${r.cacheRead}, output ${r.output}` : `- tokens: included in the executor run of ${globalId}`;
 let s = fs.readFileSync(file, 'utf8');
 s = s.replace(/^- model: .*$/m, '- model: ' + model).replace(/^- runs: .*$/m, '- runs: ' + runs);
 if (/^- usage: .*$/m.test(s)) s = s.replace(/^- tokens: .*$/m, tokensLine).replace(/^- usage: .*$/m, '- usage: ' + usage);
