@@ -3,7 +3,7 @@ id: task-438-02-debris-system
 description: "Bp: The one-shot dig debris Niagara system exists and is the one the game plays."
 parent: task-438-dig-debris
 kind: task
-status: todo
+status: in-progress
 ---
 # Debris when digging: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T19:09:45Z
 - waiting_for: none
 - result: open
 
