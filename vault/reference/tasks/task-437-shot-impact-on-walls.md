@@ -1,9 +1,9 @@
 ---
 id: task-437-shot-impact-on-walls
 description: "Global task: The player shot impact sparks also play when the shot is stopped by a wall."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shot impact sparks on walls
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read task-432, art-style-guide A8, destruction-rules, bp-shot-impact-spark. Reverses the default the owner accepted on task-432 Q1 ("none on rock or ore"): A8 edited at confirmation. Known risk he had accepted avoiding: sparks on rock may resemble the drone laser sparks; he judges in game. Q5 answered: "les murs que l'on peut creuser". arena-grid: "No indestructible rock in the rock biome", so today this covers every wall; the criterion stays what the drone can dig.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-437-02-doc
+- next_step: none
 - started: 2026-11-05T17:53:42Z
 - waiting_for: none
-- result: open
+- result: Done. Done. bp-shot-impact-spark and sys-projectiles state that a stop on any block the drone can dig plays the spark; commit 2780395a; lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -27,6 +27,6 @@ Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du co
 2. task-437-02-doc (vault/reference/tasks/task-437-shot-impact-on-walls/task-437-02-doc.md) — doc: Document the new targets of the spark.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-437-01-spark-on-block]] — step 1, cpp.
 - [[task-437-02-doc]] — step 2, doc.
