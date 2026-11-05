@@ -1,9 +1,9 @@
 ---
 id: task-435-remove-robot-hit-flash
 description: "Global task: A robot that takes a hit no longer flashes: the feature of task-433 is removed for good."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Remove the robot hit flash
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read readability-rules, enemy-chaser, enemy-death, bp-robot-hit-flash, task-433. Conflict, by the owner's own new word: the hit flash rule of readability-rules and "hits are a flash" of enemy-chaser, both edited at confirmation. The wind-up "stops and flashes" telegraph of enemy-chaser is a different rule and stays (rules versus rendering). In scope: M3 juice, submission November 9.
 - confirmed_by_owner: yes (2026-11-05, "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens")
 - milestone: M2
-- next_step: task-435-03-doc
+- next_step: none
 - started: 2026-11-05T17:27:42Z
 - waiting_for: none
-- result: open
+- result: Done. bp-robot-hit-flash and its index line deleted (history in git and task-433); hit flash lines removed from sys-enemies-base, sys-damage, sys-tests-enemies, bp-robot-meshy-material, bp-robot-eye-material, bp-shield-chaser-v2; bp-kamikaze had no mention. Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du couts pour les tâches 432/433 et 434 par exemple. Q3 - C'est un bete nuage de fumée, j'aimerais des particules un peu plus cartoon pour que cela flash ( voir image 1 comme exemple ). Q5 - Les murs que l'on peut creuser. Tu avais marqué dans ton rapport de la précedante tâche qu'il n'y avait pas d'éteincelles lorsqu'on tire sur la roche ou du minerai. Je veux changer ça. Q9 - Il est trop basique, tu peux voir dans la vidéo ( tu peux voir de 13:28 et 13:33 ). Q14 : l'extractor entier ne doit pas projeter d'ombre ( tu peux voir sur l'image 2 qu'on voit l'ombre de deux hélices ). Q16 j 'ai déjà bougé moi même la hauteur de la lumiére. Q17 : Non, mais je veux bien les couts en tokens"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -29,7 +29,7 @@ Decided 2026-11-05 (owner "Q2 - Remesurer les tokens, je n'ai aucune idée du co
 3. task-435-03-doc (vault/reference/tasks/task-435-remove-robot-hit-flash/task-435-03-doc.md) — doc: Remove the flash from the docs that describe it.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-435-01-remove-trigger]] — step 1, cpp.
 - [[task-435-02-remove-materials]] — step 2, bp.
 - [[task-435-03-doc]] — step 3, doc.
