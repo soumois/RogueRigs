@@ -3,7 +3,7 @@ id: task-450-02-doc
 description: "Doc: Remove the cyan text from the docs that describe it as current."
 parent: task-450-remove-hud-level-up-text
 kind: task
-status: todo
+status: in-progress
 ---
 # Remove the cyan LEVEL UP text from the HUD: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:54:12Z
 - waiting_for: none
 - result: open
 

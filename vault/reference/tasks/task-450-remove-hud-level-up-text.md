@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read xp-level-up (already gives the gold text only), wbp-xp-status: the cyan text is the LevelUpText TextBlock of WBP_XPStatus, Roboto Bold 56, cyan, shown 1 s on OnLevelUp, per its doc. No gdd edit. Does not touch the assets of tasks 446, 447, 448.
 - confirmed_by_owner: yes (2026-11-05, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-450-01-remove-text
+- next_step: task-450-02-doc
 - started: 2026-11-05T22:51:16Z
 - waiting_for: none
 - result: open
