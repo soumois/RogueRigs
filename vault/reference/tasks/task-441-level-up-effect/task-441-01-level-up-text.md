@@ -3,7 +3,7 @@ id: task-441-01-level-up-text
 description: "Cpp: A level-up requests the gold straight-rising text, independent of the damage number toggle."
 parent: task-441-level-up-effect
 kind: task
-status: in-progress
+status: done
 ---
 # Level-up effect rework: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Build ok; one text request per level-up moment, damage number behaviour unchanged; LevelUp test family passes.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-441
+- usage: included in the executor run of task-441
+- runs: 1
 - milestone: M2
 - started: 2026-11-05T20:02:13Z
 - waiting_for: none
-- result: open
+- result: Burst in URRLevelUpComponent: PlayLevelUpBurst once per moment (BurstMinInterval 0.7 s), spawns LevelUpTextSystem through the Niagara pool at capsule top + 40 uu; no damage number subsystem, so the toggle does not hide it. Build ok; RogueRigs.LevelUp 5 of 5 including the new BurstOncePerMoment.
 
 ## Relations
 - [[task-441-level-up-effect]] — parent global task.

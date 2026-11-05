@@ -3,7 +3,7 @@ id: task-441-02-text-asset
 description: "Bp: The text renders as gold "LEVEL UP" with the pop and no arc."
 parent: task-441-level-up-effect
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up effect rework: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T20:10:26Z
 - waiting_for: none
 - result: open
 
