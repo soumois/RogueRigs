@@ -21,8 +21,9 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-explosion-shockwave]] — M_ExplosionShockwave and its orange instance, the explosion ground ring decal.
 - [[bp-heal-ring]] — BP_HealRing, the green ring on heal.
 - [[bp-damage-numbers]] — NS_DamageNumbers, M_DamageNumber and the digit atlas, the floating damage numbers.
-- [[bp-robot-death-puff]] — NS_RobotDeathPuff, the robot death puff.
-- [[bp-heavy-death-puff]] — NS_HeavyDeathPuff, the heavy death puff (about 3x the robot one).
+- [[bp-robot-death-puff]] — NS_RobotDeathPuff and the M_CartoonBlast materials, the cartoon robot death flash.
+- [[bp-heavy-death-puff]] — NS_HeavyDeathPuff, the same flash 3x larger for the heavy.
+- [[bp-kamikaze-death-puff]] — NS_KamikazeDeathPuff, the former warm puff kept for the kamikaze death.
 - [[bp-robot-debris]] — NS_RobotDebris, the robot debris pieces.
 - [[bp-shield-debris]] — NS_ShieldDebris, the five shield pieces thrown when the shield breaks.
 - [[bp-barrel-explosion]] — NS_BarrelExplosion and M_BarrelExplosionSprite, the explosion Niagara burst.
