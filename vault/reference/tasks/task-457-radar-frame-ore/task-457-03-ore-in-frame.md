@@ -1,13 +1,13 @@
 ---
 id: task-457-03-ore-in-frame
-description: "Bp: The ore count shows inside the radar frame; the floating counter is gone."
+description: "Bp: The ore count shows in the part of the radar frame that extends to take it in; the floating counter is gone."
 parent: task-457-radar-frame-ore
 kind: task
 status: todo
 ---
 # Radar frame holding the ore count: bp
 
-- goal: The ore count shows inside the radar frame; the floating counter is gone.
+- goal: The ore count shows in the part of the radar frame that extends to take it in; the floating counter is gone.
 - agent: bp
 - depends_on: task-457-02-radar-frame
 - inputs: wbp-ore-counter (vault/reference/tech/blueprints/ui/wbp-ore-counter.md), wbp-hud (vault/reference/tech/blueprints/ui/wbp-hud.md), sys-objectives-ore-counter (vault/reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md), umg-layout (vault/reference/tech/conventions/umg-layout.md)
