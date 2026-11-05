@@ -3,7 +3,7 @@ id: task-443-04-doc
 description: "Doc: Document the height signal, the blast and the wiring."
 parent: task-443-extractor-ground-blast
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor rotor blast on the ground: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T21:02:49Z
 - waiting_for: none
 - result: open
 
