@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read bp-barrel-explosion, bp-explosion-fx-barrel, bp-explosion-fx, bp-explosion-shockwave, explosions, ground-telegraph, readability-rules, color-code, task-434. No conflict since the owner softened the colour rules (readability-rules, 2026-11-05). Q20: his "tout" replaces the recolour default. Both rows play BP_ExplosionFX_Barrel. The ring material is a copy of the telegraph material with its own instance, so restyling it need not touch the telegraphs; the ring is read as part of "tout", its orange staying inside the reference palette, nothing open. The "Visible explosion" rule is a game rule and stays (rules versus rendering). A10 and explosions edited at confirmation. Task-434 A4 "no red" stays as a closed record.
 - confirmed_by_owner: yes (2026-11-05, "Q20- refaire tout l'explosion en style cartoon")
 - milestone: M2
-- next_step: task-446-03-cartoon-ring
+- next_step: task-446-04-doc
 - started: 2026-11-05T22:07:12Z
 - waiting_for: none
 - result: open

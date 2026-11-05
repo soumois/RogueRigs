@@ -3,7 +3,7 @@ id: task-446-04-doc
 description: "Doc: Document the new look and remove the statements that no longer hold."
 parent: task-446-explosions-red
 kind: task
-status: todo
+status: in-progress
 ---
 # Barrel and kamikaze explosions in cartoon style: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-05T22:20:14Z
 - waiting_for: none
 - result: open
 
