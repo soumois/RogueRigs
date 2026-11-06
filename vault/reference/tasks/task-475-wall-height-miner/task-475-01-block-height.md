@@ -3,7 +3,7 @@ id: task-475-01-block-height
 description: "Cpp: The terrain block height becomes the shrunk miner height, as one tunable value, with everything on the blocks following."
 parent: task-475-wall-height-miner
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls raised to the miner height: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:17:22Z
 - waiting_for: none
 - result: open
 

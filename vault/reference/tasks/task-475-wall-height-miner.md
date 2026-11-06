@@ -3,7 +3,7 @@ id: task-475-wall-height-miner
 description: "Global task: Rock, ore and heal ore blocks are raised slightly so their top is at the height of the shrunk miner; play and destruction unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls raised to the miner height
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, his own instruction "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"; scope rock, ore, heal ore only is provisional, to confirm)
 - milestone: M2
 - next_step: task-475-01-block-height
-- started: open
+- started: 2026-11-06T17:17:22Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none
