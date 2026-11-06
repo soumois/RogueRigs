@@ -9,7 +9,7 @@ status: approved
 
 | Element | Color |
 |---|---|
-| Breakable rock | light lilac-violet top, a thin glowing warm orange rim along the top edge, dark stratified sides (owner 2026-11-05, provisional, [[task-471-wall-look-reference]]; was light grey tinted violet; the orange rim is a detail, not "explodes"); intact rock has a smooth top with no cracks; cracks, then tilted plates, show damage (owner 2026-10-17, task-219, [[rock-look-reference]]) |
+| Breakable rock | light lilac-violet top, a thin glowing warm orange rim along the top edge that also lights the outer edge of the top face, dark sides with soft vertical shading and no dark lines (owner 2026-11-06, provisional, [[task-478-wall-lines-emissive-edge]]; was dark stratified sides, owner 2026-11-05, [[task-471-wall-look-reference]]; was light grey tinted violet; the orange rim is a detail, not "explodes"); intact rock has a smooth top with no cracks; cracks, then tilted plates, show damage (owner 2026-10-17, task-219, [[rock-look-reference]]) |
 | Ore rock (Duskite) | same base + glowing violet crystals (kept, owner 2026-10-10) |
 | Barrel | orange |
 | Heal ore and heal pickups | red |
