@@ -164,16 +164,5 @@ struct ROGUERIGS_API FRRUpgradeCard
 	bool IsNewWeapon() const { return CardType == ERRUpgradeCardType::NewWeapon; }
 
 	/** True when both cards raise the same stat on the same target (tier ignored), or offer the same weapon: such cards never share an offer. */
-	bool IsSameChoice(const FRRUpgradeCard& Other) const
-	{
-		if (CardType != Other.CardType)
-		{
-			return false;
-		}
-		if (IsNewWeapon())
-		{
-			return WeaponClass == Other.WeaponClass;
-		}
-		return Stat == Other.Stat && Target == Other.Target && TargetWeapon == Other.TargetWeapon;
-	}
+	bool IsSameChoice(const FRRUpgradeCard& Other) const;
 };

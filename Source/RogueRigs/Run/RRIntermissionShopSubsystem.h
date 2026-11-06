@@ -5,7 +5,6 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-// RRUpgradeCard.h converts TSubclassOf<ARRWeapon> inline (IsSameChoice): the complete type is needed by every includer.
 #include "Upgrades/RRUpgradeCard.h"
 #include "Weapons/RRWeapon.h"
 #include "RRIntermissionShopSubsystem.generated.h"
