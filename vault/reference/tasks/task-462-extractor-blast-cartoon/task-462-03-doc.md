@@ -3,7 +3,7 @@ id: task-462-03-doc
 description: "Doc: Docs describe the new ground blast and its references."
 parent: task-462-extractor-blast-cartoon
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor ground blast redone in cartoon style from references: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:58:10Z
 - waiting_for: none
 - result: open
 
