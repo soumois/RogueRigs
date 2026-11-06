@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-483-executor-budget-alert-traces]] — Measures executors against their level: non-blocking budget alert at closing, and executor traces kept in agent-usage.js. Open to run or review the measurement. Status in-progress.

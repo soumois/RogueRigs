@@ -491,3 +491,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status done.
 - [[task-481-shipping-compile-fix]] — Removes the C2027 on ARRWeapon that stops RogueRigs Win64 Shipping from compiling. Open to run the fix behind the v0.1.3 build; gameplay unchanged. Status done.
 - [[task-482-verification-levels]] — Crew rule: the Planner sets a verification level per global task (light, standard, exploratory) with an indicative executor budget. Open to run or review the rule change. Status done.
+- [[task-483-executor-budget-alert-traces]] — Measures executors against their level: non-blocking budget alert at closing, and executor traces kept in agent-usage.js. Open to run or review the measurement. Status done.

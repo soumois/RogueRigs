@@ -1,9 +1,9 @@
 ---
 id: task-483-executor-budget-alert-traces
 description: "Global task: Measures executors against their level: non-blocking budget alert at closing, and executor traces kept in agent-usage.js. Open to run or review the measurement."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Budget alert at closing and executor traces
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: No gdd node touched: this is crew process, outside the game milestones, so no gdd conflict and no milestone scope issue. Crew nodes read: agent-planner, agent-executor, orchestration-protocol, orchestrator-lessons, task-spec. Two targeted code reads, reason: an alert per closed subtask looks unusable with zero subtask rows (agent-executor cost). Fact: task-cost.js already computes turns and units of the whole executor run and writes them on the global at each closed subtask, so the alert compares that running total to the budget. Limit: turns after the last closure are not counted (Q7). agent-usage.js already strips traces from usage-agents.json; line 283 is the bp and cpp restriction. No open value besides the size limit (Q6). Depends on task-482 (level field and figures): run it after 482 is done. Do not run alongside task-481 or another executor: closing subtasks rewrites usage-snapshot.json.
 - confirmed_by_owner: yes (2026-11-06, "Ok")
 - milestone: M2
-- next_step: task-483-02-executor-traces
+- next_step: none
 - started: 2026-11-06T22:48:40Z
 - waiting_for: none
-- executor_tokens: input 22, cache write 79932, cache read 648293, output 19098
-- executor_usage: runs 1, turns 11, context start 17k peak 92k, resumes 0, 5 min, units 0.26 M
+- executor_tokens: input 28, cache write 92467, cache read 935652, output 27228
+- executor_usage: runs 1, turns 14, context start 17k peak 104k, resumes 0, 7 min, units 0.35 M
 - planning_tokens: input 7, cache write 23040, cache read 106026, output 9799
 - planning_usage: a38e0f5c "Plan verification levels and cost alerts" 1/2 (tasks 482, 483), units 0.09 M
-- result: open
+- result: Done. agent-usage.js --agent-debug now keeps a per-turn trace for executors in usage-snapshot.json. Real run: this executor (afdb528bc528cdd36) shows in --agent-detail from a copy with no transcript. Sizes measured at closing: real trace of task-477, 113 turns, 112821 bytes (about 1 kB per turn); usage-snapshot.json 6860658 bytes with 38 executor traces (5062432 before), so the 20 MB limit leaves room for about 190 runs like 477. usage-agents.json 419132 bytes (under 4 MiB), 792 records, 0 traces; same JSON array, crew-board register.tsx reading code unchanged. Limit snapshotMaxBytes 20000000 in cost-rates.json: tested on a throwaway copy with a lower limit: 2 oldest executor traces removed, record count and token sums identical, recent traces kept; with an unreachable limit one ALERT line and no failure. Also: a snapshot without --agent-debug no longer erases a saved trace. usage-snapshot.json stays uncommitted as before (task-next.js does not commit it). Global acceptance A1 to A9 pass; no game code, Blueprint, asset or capture. This global has no level, so no budget alert on its own closing. Cost: executor run.
 
 ## Questions
 Decided 2026-11-06 (owner "Ok"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -32,6 +32,6 @@ Decided 2026-11-06 (owner "Ok"): every default below is accepted; values provisi
 2. task-483-02-executor-traces (vault/reference/tasks/task-483-executor-budget-alert-traces/task-483-02-executor-traces.md) — doc: Keep executor traces in agent-usage.js under the size limit, with usage-agents.json still free of them.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-483-01-budget-alert]] — step 1, doc.
 - [[task-483-02-executor-traces]] — step 2, doc.
