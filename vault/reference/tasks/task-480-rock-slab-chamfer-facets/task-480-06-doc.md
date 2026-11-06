@@ -3,7 +3,7 @@ id: task-480-06-doc
 description: "Doc: Docs describe the chamfer, the faceted pieces and the material changes."
 parent: task-480-rock-slab-chamfer-facets
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T22:07:33Z
 - waiting_for: none
 - result: open
 
