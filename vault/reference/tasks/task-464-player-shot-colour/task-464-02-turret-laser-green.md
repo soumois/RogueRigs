@@ -12,7 +12,7 @@ status: todo
 - depends_on: task-464-01-rifle-laser-green
 - inputs: color-code (vault/reference/gdd/art-audio/color-code.md), turret (vault/reference/gdd/weapons/turret.md), task-464-01-rifle-laser-green (vault/reference/tasks/task-464-player-shot-colour/task-464-01-rifle-laser-green.md)
 - expected_output: see done_when
-- done_when: In a -game run turret shots and their impact sparks match the rifle laser look of task-464-01; turrets still have no muzzle flash; turret behaviour and values unchanged.
+- done_when: In a -game run turret shots and their impact sparks match the rifle laser look of task-464-01; turret behaviour and values unchanged.
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: open

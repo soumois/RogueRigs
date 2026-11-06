@@ -11,8 +11,8 @@ status: todo
 - agent: bp
 - depends_on: task-464-02-turret-laser-green
 - inputs: color-code (vault/reference/gdd/art-audio/color-code.md), burst-rifle (vault/reference/gdd/weapons/burst-rifle.md), shotgun (vault/reference/gdd/weapons/shotgun.md), Art/Source/muzzle-flash/owner-ref-green-laser-muzzle-2026-11-05.webp
-- expected_output: see done_when
-- done_when: In a -game run each rifle shot shows a green muzzle flash with a pale hot core, bright green burst, forward streak, shards and darker green glow, growing then fading into shards, about as brief as today; the shotgun volley flash is white-gold as today; no flash on turrets.
+- expected_output: A green flash effect the turret reuses in task-464-04.
+- done_when: In a -game run each rifle shot shows a green muzzle flash with a pale hot core, bright green burst, forward streak, shards and darker green glow, growing then fading into shards, about as brief as today; the shotgun volley flash is white-gold as today.
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: open
