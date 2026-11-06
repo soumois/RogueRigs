@@ -40,8 +40,9 @@
     "rotation": "k x 90 deg about Z, (x,y)->(-y,x): corner A->B->C->D->A; Unreal import flips Y, verify the first placement"
   },
   "shapes": {
-    "full": {
+    "full_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlab_Full_01.fbx",
+      "facets": 0,
       "tris": 2,
       "budget": 2,
       "within_budget": true,
@@ -89,26 +90,28 @@
         "top_tris_0": 2,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
       },
       "all_flat_shaded": true,
-      "top_flat_z": [
+      "top_and_chamfer_z": [
         100.0
       ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
       "downward_facing_tris": 0
     },
-    "edge": {
+    "edge_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlab_Edge_01.fbx",
-      "tris": 43,
+      "facets": 2,
+      "tris": 35,
       "budget": 48,
       "within_budget": true,
       "dimensions_cm": [
-        47.13,
+        44.98,
         67.0,
         100.0
       ],
       "bounds_min": [
-        -13.63,
+        -11.48,
         -33.5,
         0.0
       ],
@@ -127,11 +130,71 @@
       "uv_checks": {
         "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
         "LightMap": {
-          "triangles": 43,
+          "triangles": 35,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9547
+            0.9902
+          ],
+          "min_gap_px_at_256": 7.486,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 12,
+        "side_tris_G1": 16,
+        "top_tris_0": 7,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_and_chamfer_z": [
+        94.7712,
+        100.0
+      ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
+      "downward_facing_tris": 1
+    },
+    "edge_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Edge_02.fbx",
+      "facets": 2,
+      "tris": 35,
+      "budget": 48,
+      "within_budget": true,
+      "dimensions_cm": [
+        45.72,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -12.22,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 35,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9874
           ],
           "min_gap_px_at_256": 5.024,
           "min_border_px_at_256": 2.512,
@@ -142,21 +205,24 @@
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
         "rim_tris_R1": 12,
-        "side_tris_G1": 24,
+        "side_tris_G1": 16,
         "top_tris_0": 7,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
       },
       "all_flat_shaded": true,
-      "top_flat_z": [
+      "top_and_chamfer_z": [
+        94.7712,
         100.0
       ],
-      "downward_facing_tris": 0
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
+      "downward_facing_tris": 3
     },
-    "outer": {
+    "outer_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlab_Outer_01.fbx",
-      "tris": 42,
+      "facets": 2,
+      "tris": 34,
       "budget": 48,
       "within_budget": true,
       "dimensions_cm": [
@@ -184,11 +250,11 @@
       "uv_checks": {
         "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
         "LightMap": {
-          "triangles": 42,
+          "triangles": 34,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9875
+            0.9769
           ],
           "min_gap_px_at_256": 5.024,
           "min_border_px_at_256": 2.512,
@@ -199,21 +265,84 @@
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
         "rim_tris_R1": 12,
-        "side_tris_G1": 24,
+        "side_tris_G1": 16,
         "top_tris_0": 6,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
       },
       "all_flat_shaded": true,
-      "top_flat_z": [
+      "top_and_chamfer_z": [
+        94.7712,
         100.0
       ],
-      "downward_facing_tris": 1
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
+      "downward_facing_tris": 4
     },
-    "inner": {
+    "outer_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Outer_02.fbx",
+      "facets": 2,
+      "tris": 34,
+      "budget": 48,
+      "within_budget": true,
+      "dimensions_cm": [
+        42.5,
+        42.5,
+        100.0
+      ],
+      "bounds_min": [
+        -9.0,
+        -9.0,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 34,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9098
+          ],
+          "min_gap_px_at_256": 5.024,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 12,
+        "side_tris_G1": 16,
+        "top_tris_0": 6,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_and_chamfer_z": [
+        94.7712,
+        100.0
+      ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
+      "downward_facing_tris": 2
+    },
+    "inner_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlab_Inner_01.fbx",
-      "tris": 58,
+      "facets": 2,
+      "tris": 44,
       "budget": 64,
       "within_budget": true,
       "dimensions_cm": [
@@ -241,11 +370,11 @@
       "uv_checks": {
         "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
         "LightMap": {
-          "triangles": 58,
+          "triangles": 44,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
-            0.9757
+            0.9821
           ],
           "min_gap_px_at_256": 5.024,
           "min_border_px_at_256": 2.512,
@@ -256,21 +385,84 @@
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
         "rim_tris_R1": 16,
-        "side_tris_G1": 32,
+        "side_tris_G1": 18,
         "top_tris_0": 10,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
       },
       "all_flat_shaded": true,
-      "top_flat_z": [
+      "top_and_chamfer_z": [
+        94.7712,
         100.0
       ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
       "downward_facing_tris": 1
     },
-    "diagonal": {
+    "inner_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Inner_02.fbx",
+      "facets": 2,
+      "tris": 44,
+      "budget": 64,
+      "within_budget": true,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 44,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9821
+          ],
+          "min_gap_px_at_256": 5.024,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 16,
+        "side_tris_G1": 18,
+        "top_tris_0": 10,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_and_chamfer_z": [
+        94.7712,
+        100.0
+      ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
+      "downward_facing_tris": 0
+    },
+    "diagonal_01": {
       "file": "Art/Meshes/rock-slab/SM_RockSlab_Diagonal_01.fbx",
-      "tris": 86,
+      "facets": 4,
+      "tris": 70,
       "budget": 96,
       "within_budget": true,
       "dimensions_cm": [
@@ -298,13 +490,13 @@
       "uv_checks": {
         "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
         "LightMap": {
-          "triangles": 86,
+          "triangles": 70,
           "overlapping_pairs": 0,
           "bounds": [
             0.0098,
             0.9902
           ],
-          "min_gap_px_at_256": 5.529,
+          "min_gap_px_at_256": 5.336,
           "min_border_px_at_256": 2.512,
           "pass": true
         }
@@ -313,22 +505,84 @@
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
         "rim_tris_R1": 24,
-        "side_tris_G1": 48,
+        "side_tris_G1": 32,
         "top_tris_0": 14,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
       },
       "all_flat_shaded": true,
-      "top_flat_z": [
+      "top_and_chamfer_z": [
+        94.7712,
         100.0
       ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
       "downward_facing_tris": 0
+    },
+    "diagonal_02": {
+      "file": "Art/Meshes/rock-slab/SM_RockSlab_Diagonal_02.fbx",
+      "facets": 4,
+      "tris": 70,
+      "budget": 96,
+      "within_budget": true,
+      "dimensions_cm": [
+        67.0,
+        67.0,
+        100.0
+      ],
+      "bounds_min": [
+        -33.5,
+        -33.5,
+        0.0
+      ],
+      "bounds_max": [
+        33.5,
+        33.5,
+        100.0
+      ],
+      "materials": [
+        "M_RockSlab"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "uv_checks": {
+        "UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
+        "LightMap": {
+          "triangles": 70,
+          "overlapping_pairs": 0,
+          "bounds": [
+            0.0098,
+            0.9902
+          ],
+          "min_gap_px_at_256": 5.336,
+          "min_border_px_at_256": 2.512,
+          "pass": true
+        }
+      },
+      "vertex_colour": {
+        "attribute": "Color (corner, float)",
+        "export": "colors_type=LINEAR",
+        "rim_tris_R1": 24,
+        "side_tris_G1": 32,
+        "top_tris_0": 14,
+        "inconsistent_faces": 0,
+        "pass": true,
+        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+      },
+      "all_flat_shaded": true,
+      "top_and_chamfer_z": [
+        94.7712,
+        100.0
+      ],
+      "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
+      "downward_facing_tris": 1
     }
   },
   "warnings": [],
   "seam_check": {
-    "method": "test layout 8 x 8 cells (###..### / ###..### / ##.#.... / ##..##.. / .....##. / ###.#### / ###..#.. / ###...#.), pieces placed with rotation k x 90 deg from the marching-squares case; for every pair of adjacent placed pieces the rim and side-row vertices lying on the shared border are compared as sets (3 mm rounding, exact in practice)",
+    "method": "test layout 8 x 8 cells (###..### / ###..### / ##.#.... / ##..##.. / .....##. / ###.#### / ###..#.. / ###...#.), pieces placed with rotation k x 90 deg from the marching-squares case; for every pair of adjacent placed pieces (variants mixed by position) the chamfer and side-column vertices lying on the shared border are compared as sets (3 mm rounding, exact in practice)",
     "pieces_placed": 70,
     "shape_counts": {
       "outer": 25,
@@ -338,14 +592,14 @@
       "inner": 7
     },
     "adjacent_pairs_checked": 114,
-    "border_vertices_compared": 248,
+    "border_vertices_compared": 310,
     "mismatching_pairs": 0,
     "all_5_shapes_used": true,
     "pass": true,
-    "guarantee": "the outline crosses a border only at its middle (0,+-33.5 / +-33.5,0), perpendicular to it; the rim inner point and the 3 side rows (z 100, 48, 0; flare 0, 4, 9 uu) at that point are fixed offsets along the border with no jitter, independent of shape and rotation"
+    "guarantee": "the outline crosses a border only at its middle (0,+-33.5 / +-33.5,0), perpendicular to it; the chamfer points and the side column at that point (z 94.77 offset 0, z 85.77 offset 1.5, z 48 offset 4, z 0 offset 9) are fixed offsets along the border with no jitter, independent of shape, variant and rotation; facet offsets apply only to interior columns"
   },
   "fbx_roundtrip_blender_import": {
-    "full": {
+    "full_01": {
       "tris": 2,
       "colour_attributes": [
         "Color"
@@ -361,8 +615,8 @@
         1.0
       ]
     },
-    "edge": {
-      "tris": 43,
+    "edge_01": {
+      "tris": 35,
       "colour_attributes": [
         "Color"
       ],
@@ -377,8 +631,8 @@
         1.0
       ]
     },
-    "outer": {
-      "tris": 42,
+    "edge_02": {
+      "tris": 35,
       "colour_attributes": [
         "Color"
       ],
@@ -393,8 +647,8 @@
         1.0
       ]
     },
-    "inner": {
-      "tris": 58,
+    "outer_01": {
+      "tris": 34,
       "colour_attributes": [
         "Color"
       ],
@@ -409,8 +663,72 @@
         1.0
       ]
     },
-    "diagonal": {
-      "tris": 86,
+    "outer_02": {
+      "tris": 34,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "inner_01": {
+      "tris": 44,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "inner_02": {
+      "tris": 44,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "diagonal_01": {
+      "tris": 70,
+      "colour_attributes": [
+        "Color"
+      ],
+      "uv_layers": [
+        "UVMap",
+        "LightMap"
+      ],
+      "height_after_import": 100.0,
+      "object_scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "diagonal_02": {
+      "tris": 70,
       "colour_attributes": [
         "Color"
       ],
@@ -433,7 +751,7 @@
     "colors_type": "LINEAR",
     "mesh_smooth_type": "FACE"
   },
-  "variant": "_01 only; the system may add _02 ... later",
+  "variant": "_01 and _02 for edge, outer, inner, diagonal (same outline, different facets); full has no side, _01 only",
   "layout": {
     "rows_top_to_bottom": [
       "###..###",
@@ -731,16 +1049,25 @@
   "preview": {
     "layout_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_layout_game_cam.png",
     "layout_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_layout_three_quarter.png",
-    "full_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_full_three_quarter.png",
-    "full_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_full_game_cam.png",
-    "edge_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_three_quarter.png",
-    "edge_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_game_cam.png",
-    "outer_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_three_quarter.png",
-    "outer_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_game_cam.png",
-    "inner_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_three_quarter.png",
-    "inner_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_game_cam.png",
-    "diagonal_three_quarter": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_three_quarter.png",
-    "diagonal_game_cam": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_game_cam.png",
+    "layout_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_layout_low_side.png",
+    "full_01_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_full_01_top.png",
+    "full_01_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_full_01_low_side.png",
+    "edge_01_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_01_top.png",
+    "edge_01_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_01_low_side.png",
+    "edge_02_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_02_top.png",
+    "edge_02_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_edge_02_low_side.png",
+    "outer_01_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_01_top.png",
+    "outer_01_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_01_low_side.png",
+    "outer_02_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_02_top.png",
+    "outer_02_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_outer_02_low_side.png",
+    "inner_01_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_01_top.png",
+    "inner_01_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_01_low_side.png",
+    "inner_02_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_02_top.png",
+    "inner_02_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_inner_02_low_side.png",
+    "diagonal_01_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_01_top.png",
+    "diagonal_01_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_01_low_side.png",
+    "diagonal_02_top": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_02_top.png",
+    "diagonal_02_low_side": "C:\\Users\\soumo\\Documents\\Unreal Projects\\RogueRigs\\Art\\Meshes\\rock-slab\\preview\\rockslab_diagonal_02_low_side.png",
     "camera": {
       "layout_game_cam": {
         "hfov": 90.0,
@@ -764,7 +1091,18 @@
         ],
         "dist": 1050.0
       },
-      "pieces": "hfov 40, pitch 35 azim 32 (three-quarter) or pitch 60 azim 0 (steep), target (0,0,40), distance 330",
+      "layout_low_side": {
+        "hfov": 50.0,
+        "pitch": 12.0,
+        "azim": 28.0,
+        "target": [
+          268.0,
+          268.0,
+          50.0
+        ],
+        "dist": 760.0
+      },
+      "pieces": "hfov 40, pitch 89.9 (top) or pitch 14 at the piece open side (low side), target (0,0,40 or 45), distance 330",
       "pitch_meaning": "degrees below the horizon, azim 0 = looking toward +Y, perspective, horizontal FOV, sensor fit horizontal",
       "layout_resolution": [
         1920,
@@ -776,12 +1114,12 @@
       ]
     },
     "light": {
-      "type": "sun, energy 1.0, same rotation as the camera (camera-following)",
+      "type": "sun, energy 1.0, tilted 50 deg, azimuth = camera + 55 deg",
       "world": "colour #C8C8CC strength 0.35 (also the background colour of the sky)",
       "floor": "plane z = 0, #B9B9BE, roughness 1",
       "view_transform": "Standard",
       "engine": "EEVEE",
-      "colours": "top #8E89A8, rim #C4BFDB (R), side #55516F (G); preview tones only"
+      "colours": "top #8E89A8, chamfer #F2A03A (R), sides #2E2442 / #4A3A68 / #6A5690 by facet R; preview tones only"
     }
   }
 }

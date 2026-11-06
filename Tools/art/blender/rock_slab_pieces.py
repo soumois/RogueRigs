@@ -1,22 +1,35 @@
-"""Rock slab dual-grid pieces (task-230-02). Blender route, deterministic, no Unreal import.
+"""Rock slab dual-grid pieces (task-230-02, chamfer and facets task-480-01). Blender route, deterministic, no Unreal import.
   "$BLENDER_EXE" -b --factory-startup -P Tools/art/blender/rock_slab_pieces.py -- [--out-dir Art/Meshes/rock-slab] [--no-preview]
-Writes SM_RockSlab_<Shape>_01.fbx (full, edge, outer, inner, diagonal), SM_RockSlab.report.json and previews.
+Writes SM_RockSlab_<Shape>_01.fbx (full, edge, outer, inner, diagonal), SM_RockSlab_<Shape>_02.fbx (all but full, which has no side), SM_RockSlab.report.json and previews.
 Units: 1 Blender unit = 1 cm (= 1 uu). Piece = 67 x 67 centred on a cell corner; its 4 corners are the 4 cell centres.
 Canonical orientations (Blender axes, corners A(-,-) B(+,-) C(+,+) D(-,+)); the engine rotates by k x 90 deg about Z (x,y)->(-y,x):
   full: A B C D rock; edge: B C rock (rock on +X); outer: C rock; inner: B C D rock (notch at A); diagonal: A C rock (joined saddle).
-Seams: every outline crosses a piece border at the middle of the border, perpendicular to it, and the 3 side rows and the rim
-inner point at that crossing are fixed offsets along the border (no jitter), so any two pieces share exact vertices."""
+Seams: every outline crosses a piece border at the middle of the border, perpendicular to it, and the side rows and the chamfer
+inner point at that crossing are fixed offsets along the border (no jitter), so any two pieces and variants share exact vertices.
+Top edge (task-480): the outer edge of the top drops CHAMFER_H along the outline (same outline seen from above, top height kept) and
+rises to the top over RIM_W inward; these chamfer triangles carry vertex colour R = 1 (the emissive mark of M_RockSlab).
+Sides (task-480): large facets of irregular width between columns on outline vertices, interior columns offset and skewed, end
+columns fixed. Side faces carry G = 1 and a per-facet random value in R that M_RockSlab turns into the facet tint."""
 import bpy, bmesh, math, os, sys, json, random
 from mathutils import Vector, Euler
 
 H = 33.5            # half piece = half cell (67 uu)
 TOP = 100.0         # rock top above the floor top
-RIM_W = 4.0         # rim band width on the top
-ROW_OFF = (0.0, 4.0, 9.0)      # side rows: outward offset (flare) at z = TOP, mid, 0
+Z_SCALE = 153.0 / TOP   # engine z scale of the pieces (BlockHeight / RockPieceMeshHeight); only used to size the chamfer in world uu
+RIM_W = 8.0         # chamfer width on the top (world uu, x and y are not scaled)
+CHAMFER_H = 8.0 / Z_SCALE   # chamfer drop in mesh units = 8 world uu, about 5 % of the block height
+RIM_FLAT_W = 4.0    # flat rim band of the footprint that rock_slab_broken.py cuts (keeps its blocks as they were)
+Z_CHAMFER = TOP - CHAMFER_H
+LIP_DROP = 9.0      # z drop of the facet start row under the chamfer (mesh units): the outline curve meets the straight facet tops there
+LIP_OFF = 1.5       # outward offset of the facet start row at a piece border
+ROW_OFF = (LIP_OFF, 4.0, 9.0)  # side columns at a piece border: outward offset at the facet start, mid and foot
 ROW_Z_MID = 48.0
+FACET_MIN_W, FACET_MAX_W = 16.0, 46.0   # facet width limits along the outline (chord, uu); widths in steps of the outline segments
+PIECE_VARIANTS = {"full": (1,), "edge": (1, 2), "outer": (1, 2), "inner": (1, 2), "diagonal": (1, 2)}
 MASKS = {"full": 15, "edge": 6, "outer": 4, "inner": 14, "diagonal": 5}
 CANON = {"A": (-H, -H), "B": (H, -H), "C": (H, H), "D": (-H, H)}
 BUDGET = {"full": 2, "edge": 48, "outer": 48, "inner": 64, "diagonal": 96}
+PIECE_NAME = "SM_RockSlab_%s_%02d"
 SEG = {"edge": 6, "outer": 6, "inner": 8, "diagonal": 6}
 
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -151,10 +164,33 @@ class Builder:
         return f
 
 
-def build_piece(shape):
+def facet_bounds(pts, rng, avoid=None):
+    """indices of the facet columns along an outline chain: 0, ..., n, consecutive columns FACET_MIN_W to FACET_MAX_W apart (chord)"""
+    n = len(pts) - 1
+    best = None
+    for _ in range(400):
+        cols = [0]
+        while cols[-1] < n:
+            opts = [j for j in range(cols[-1] + 1, n + 1) if FACET_MIN_W <= (pts[j] - pts[cols[-1]]).length <= FACET_MAX_W]
+            if not opts:
+                cols = None
+                break
+            cols.append(rng.choice(opts))
+        if cols and cols != avoid:
+            return cols
+        if cols:
+            best = cols
+    return best or [0, n]
+
+
+def build_piece(shape, variant=1, flat_rim=False):
+    """variant: facet layout (1, 2). flat_rim: the footprint of rock_slab_broken.py (flat rim band RIM_FLAT_W at the top height), same outline and foot chain."""
     seed = {"full": 1, "edge": 2, "outer": 3, "inner": 4, "diagonal": 5}[shape] * 7919
     b = Builder(shape, seed)
-    TOPC, RIMC, SIDEC = (0, 0, 0), (1, 0, 0), (0, 1, 0)
+    b.foot_chains = []    # per outline chain: (outline points, foot position (x, y) under each of them), for the broken variants
+    b.facets = 0
+    rng = random.Random(seed * 13 + 4001)
+    TOPC, RIMC = (0, 0, 0), (1, 0, 0)
     if shape == "full":
         b.face([(-H, -H, TOP), (H, -H, TOP), (H, H, TOP), (-H, H, TOP)], TOPC, up=1, kind="top")
         return b
@@ -163,37 +199,55 @@ def build_piece(shape):
     body_chains = []
     for pts, ref in outlines:
         ins = inward_normals(pts, ref)
-        P = [Vector((p.x, p.y, TOP)) for p in pts]
-        Q = [Vector((p.x + RIM_W * nn.x, p.y + RIM_W * nn.y, TOP)) for p, nn in zip(pts, ins)]
-        # side rows: outward = -inward
-        rows = []
-        for r, off in enumerate(ROW_OFF):
-            row = []
-            for i, (p, nn) in enumerate(zip(pts, ins)):
-                end = i in (0, n)
-                o, z = off, (TOP if r == 0 else ROW_Z_MID if r == 1 else 0.0)
-                tx = 0.0
-                if r == 1 and not end:
-                    o += b.rng.uniform(-3.0, 3.0); z += b.rng.uniform(-10.0, 10.0)
-                    tx = b.rng.uniform(-3.0, 3.0)
-                elif r == 2 and not end:
-                    o += b.rng.uniform(-1.5, 1.5); tx = b.rng.uniform(-2.5, 2.5)
-                tang = Vector((-nn.y, nn.x))
-                row.append(Vector((p.x - nn.x * o + tang.x * tx, p.y - nn.y * o + tang.y * tx, z)))
-            rows.append(row)
+        # variant 2 draws after variant 1 from the same stream, so it never repeats its columns
+        cols = None
+        for v in range(1, variant + 1):
+            cols = facet_bounds(pts, rng, avoid=cols)
+            state = [(rng.uniform(0.0, 3.5), rng.uniform(-1.5, 4.0), rng.uniform(-2.0, 5.0), rng.uniform(-14.0, 14.0), rng.uniform(-3.0, 3.0), rng.uniform(-6.0, 6.0),
+                      2.5 if rng.random() < 0.35 else 0.0) for _ in range(n + 1)]
+            tints = [rng.random() for _ in range(n + 1)]
+        zp = TOP if flat_rim else Z_CHAMFER
+        P = [Vector((p.x, p.y, zp)) for p in pts]
+        rw = RIM_FLAT_W if flat_rim else RIM_W
+        Q = [Vector((p.x + rw * nn.x, p.y + rw * nn.y, TOP)) for p, nn in zip(pts, ins)]
+        def at(i, off, tx, z):
+            p, nn = pts[i], ins[i]
+            tang = Vector((-nn.y, nn.x))
+            return Vector((p.x - nn.x * off + tang.x * tx, p.y - nn.y * off + tang.y * tx, z))
+        col = {}
+        for i in cols:
+            if i in (0, n):      # end column on a piece border: fixed, shared by every shape and variant
+                col[i] = (at(i, ROW_OFF[0], 0.0, Z_CHAMFER - LIP_DROP), at(i, ROW_OFF[1], 0.0, ROW_Z_MID), at(i, ROW_OFF[2], 0.0, 0.0))
+            else:
+                dl, dm, df, dz, tm, tf, ridge = state[i]
+                col[i] = (at(i, LIP_OFF + dl + ridge, 0.0, Z_CHAMFER - LIP_DROP), at(i, ROW_OFF[1] + dm + ridge, tm, ROW_Z_MID + dz), at(i, ROW_OFF[2] + df + ridge, tf, 0.0))
         for i in range(n):
             b.face([P[i], P[i + 1], Q[i + 1], Q[i]], RIMC, up=1, kind="rim")
+        foot = [None] * (n + 1)
+        for fi in range(len(cols) - 1):
+            c0, c1 = cols[fi], cols[fi + 1]
+            b.facets += 1
+            colr = (tints[c0], 1, 0)
+            outd = Vector((-ins[c0].x - ins[c1].x, -ins[c0].y - ins[c1].y, 0.0))
+            for i in range(c0, c1 + 1):
+                t = (i - c0) / (c1 - c0)
+                f = col[c0][2].lerp(col[c1][2], t)
+                foot[i] = (f.x, f.y)
+            # lip: the outline polyline fans onto the straight start of the facet, just under the chamfer
+            m = (c0 + c1) // 2
+            for i in range(c0, c1):
+                b.face([P[i], P[i + 1], col[c0][0] if i < m else col[c1][0]], colr, out=outd, kind="side")
+            b.face([P[m], col[c0][0], col[c1][0]], colr, out=outd, kind="side")
+            # the facet itself: two rows, the kink height differs per column
             for r in range(2):
-                a0, a1, b0, b1 = rows[r][i], rows[r][i + 1], rows[r + 1][i], rows[r + 1][i + 1]
-                mid = (a0 + a1 + b0 + b1) / 4
-                outd = Vector((-ins[i].x - ins[i + 1].x, -ins[i].y - ins[i + 1].y, 0.0))
-                # quad split in two triangles (flat facets), alternate the diagonal for a faceted look
-                tris = ([a0, a1, b1], [a0, b1, b0]) if (i + r) % 2 == 0 else ([a0, a1, b0], [a1, b1, b0])
+                a0, a1, b0, b1 = col[c0][r], col[c1][r], col[c0][r + 1], col[c1][r + 1]
+                tris = ([a0, a1, b1], [a0, b1, b0]) if (fi + r) % 2 == 0 else ([a0, a1, b0], [a1, b1, b0])
                 for tr in tris:
-                    b.face(tr, SIDEC, out=outd, kind="side")
-        for r in rows:
-            b.seam_pts += [tuple(v) for v in r]
+                    b.face(tr, colr, out=outd, kind="side")
+        for i in cols:
+            b.seam_pts += [tuple(v) for v in col[i]]
         b.seam_pts += [tuple(v) for v in P] + [tuple(v) for v in Q]
+        b.foot_chains.append((pts, foot))
         body_chains.append(Q)
     # top body polygon (rim inner chain + piece corners), counter-clockwise
     if shape == "edge":
@@ -284,11 +338,11 @@ def main():
                                         "rotation": "k x 90 deg about Z, (x,y)->(-y,x): corner A->B->C->D->A; Unreal import flips Y, verify the first placement"},
               "shapes": {}, "warnings": []}
     builders = {}
-    for shape in MASKS:
-        b = build_piece(shape)
+    for shape, var in [(sh, v) for sh in MASKS for v in PIECE_VARIANTS[sh]]:
+        b = build_piece(shape, var)
         N, s = finish(b)
-        builders[shape] = b
-        name = "SM_RockSlab_%s_01" % shape.capitalize()
+        builders[(shape, var)] = b
+        name = PIECE_NAME % (shape.capitalize(), var)
         ob = to_object(b, name)
         bpy.ops.object.select_all(action="DESELECT"); ob.select_set(True)
         bpy.context.view_layer.objects.active = ob
@@ -307,15 +361,15 @@ def main():
             if len(set(cs)) != 1:
                 bad += 1
             r, g, _ = cs[0]
-            if r == 1 and g == 0: rim_tris += 1
-            elif g == 1 and r == 0: side_tris += 1
+            if g == 1: side_tris += 1
+            elif r == 1 and g == 0: rim_tris += 1
             elif r == 0 and g == 0: top_tris += 1
             else: bad += 1
-        # rim tris must be on top plane, side tris must not be flat top
+        # top tris must be on the top plane, chamfer tris must stay between the chamfer foot and the top and face up
         for p in me.polygons:
             zc = [me.vertices[i].co.z for i in p.vertices]
             ca0 = ca[p.loop_indices[0]].color
-            if ca0[0] > 0.5 and max(zc) - min(zc) > 1e-4: bad += 1
+            if ca0[1] < 0.5 and ca0[0] > 0.5 and (min(zc) < Z_CHAMFER - 1e-3 or p.normal.z < 0.5): bad += 1
             if (ca0[0] < 0.5 and ca0[1] < 0.5) and max(zc) - min(zc) > 1e-4: bad += 1
             if p.normal.z < -1e-6 and ca0[1] < 0.5: bad += 1   # top and rim must face up
         # UV check
@@ -337,16 +391,17 @@ def main():
         uv0 = me.uv_layers["UVMap"].data
         normals_down = sum(1 for p in me.polygons if p.normal.z < -1e-6)   # side facets leaning inward (overhang)
         sides = [p for p in me.polygons if ca[p.loop_indices[0]].color[1] > 0.5]
-        report["shapes"][shape] = {
-            "file": "Art/Meshes/rock-slab/%s.fbx" % name, "tris": tris, "budget": BUDGET[shape], "within_budget": tris <= BUDGET[shape],
+        report["shapes"]["%s_%02d" % (shape, var)] = {
+            "file": "Art/Meshes/rock-slab/%s.fbx" % name, "facets": b.facets, "tris": tris, "budget": BUDGET[shape], "within_budget": tris <= BUDGET[shape],
             "dimensions_cm": dims, "bounds_min": [round(min(xs), 2), round(min(ys), 2), round(min(zs), 2)], "bounds_max": [round(max(xs), 2), round(max(ys), 2), round(max(zs), 2)],
             "materials": ["M_RockSlab"], "uv_layers": [u.name for u in me.uv_layers],
             "uv_checks": {"UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
                           "LightMap": {"triangles": tris, "overlapping_pairs": overlaps, "bounds": [round(bmin, 4), round(bmax, 4)], "min_gap_px_at_256": round(mingap * 256, 3), "min_border_px_at_256": round(min(bmin, 1 - bmax) * 256, 3), "pass": bool(uv_ok)}},
             "vertex_colour": {"attribute": "Color (corner, float)", "export": "colors_type=LINEAR", "rim_tris_R1": rim_tris, "side_tris_G1": side_tris, "top_tris_0": top_tris, "inconsistent_faces": bad, "pass": bad == 0,
-                              "rule": "R=1 only on the flat rim band along the outline; G=1 only on side faces; top body 0,0"},
+                              "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"},
             "all_flat_shaded": all(not p.use_smooth for p in me.polygons),
-            "top_flat_z": sorted(set(round(me.vertices[i].co.z, 4) for p in me.polygons if ca[p.loop_indices[0]].color[1] < 0.5 for i in p.vertices)),
+            "top_and_chamfer_z": sorted(set(round(me.vertices[i].co.z, 4) for p in me.polygons if ca[p.loop_indices[0]].color[1] < 0.5 for i in p.vertices)),
+            "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
             "downward_facing_tris": normals_down,
         }
         if tris > BUDGET[shape]:
@@ -370,6 +425,9 @@ def main():
         return 1 if 0 <= c < W and 0 <= r < Hh and rows[r][c] == "#" else 0
     placed = {}
     used = {}
+    def variant_at(shape, i, j):
+        vs = PIECE_VARIANTS[shape]
+        return vs[(i * 3 + j) % len(vs)]
     for j in range(Hh + 1):
         for i in range(W + 1):
             m = cell(i - 1, j - 1) | cell(i, j - 1) << 1 | cell(i, j) << 2 | cell(i - 1, j) << 3
@@ -379,7 +437,7 @@ def main():
                 used[cs[0]] = used.get(cs[0], 0) + 1
     def world_pts(i, j):
         shape, k = placed[(i, j)]
-        return [(rot(p, k)[0] + i * 67.0, rot(p, k)[1] + j * 67.0, p[2]) for p in builders[shape].seam_pts]
+        return [(rot(p, k)[0] + i * 67.0, rot(p, k)[1] + j * 67.0, p[2]) for p in builders[(shape, variant_at(shape, i, j))].seam_pts]
     cache = {key: world_pts(*key) for key in placed}
     pairs = 0; mism = 0; maxdev = 0.0; crossings = 0
     for (i, j) in placed:
@@ -402,33 +460,33 @@ def main():
             if a != bb:
                 mism += 1
     report["seam_check"] = {
-        "method": "test layout 8 x 8 cells (%s), pieces placed with rotation k x 90 deg from the marching-squares case; for every pair of adjacent placed pieces the rim and side-row vertices lying on the shared border are compared as sets (3 mm rounding, exact in practice)" % " / ".join(LAYOUT),
+        "method": "test layout 8 x 8 cells (%s), pieces placed with rotation k x 90 deg from the marching-squares case; for every pair of adjacent placed pieces (variants mixed by position) the chamfer and side-column vertices lying on the shared border are compared as sets (3 mm rounding, exact in practice)" % " / ".join(LAYOUT),
         "pieces_placed": len(placed), "shape_counts": used, "adjacent_pairs_checked": pairs, "border_vertices_compared": crossings, "mismatching_pairs": mism,
         "all_5_shapes_used": sorted(used) == sorted(MASKS), "pass": bool(mism == 0 and sorted(used) == sorted(MASKS)),
-        "guarantee": "the outline crosses a border only at its middle (0,+-33.5 / +-33.5,0), perpendicular to it; the rim inner point and the 3 side rows (z 100, 48, 0; flare 0, 4, 9 uu) at that point are fixed offsets along the border with no jitter, independent of shape and rotation",
+        "guarantee": "the outline crosses a border only at its middle (0,+-33.5 / +-33.5,0), perpendicular to it; the chamfer points and the side column at that point (z 94.77 offset 0, z 85.77 offset 1.5, z 48 offset 4, z 0 offset 9) are fixed offsets along the border with no jitter, independent of shape, variant and rotation; facet offsets apply only to interior columns",
     }
     if mism: report["warnings"].append("seam mismatch")
 
     # ---- round-trip check of one exported FBX
     # (re-import in a clean scene: tris, vertex colour, UV layers survive)
     rt = {}
-    for shape in MASKS:
-        name = "SM_RockSlab_%s_01" % shape.capitalize()
+    for shape, var in [(sh, v) for sh in MASKS for v in PIECE_VARIANTS[sh]]:
+        name = PIECE_NAME % (shape.capitalize(), var)
         before = set(bpy.data.objects)
         bpy.ops.import_scene.fbx(filepath=os.path.join(OUTDIR, name + ".fbx"))
         new = [o for o in bpy.data.objects if o not in before and o.type == "MESH"][0]
         me = new.data
         mx = [new.matrix_world @ v.co for v in me.vertices]
-        rt[shape] = {"tris": len(me.polygons), "colour_attributes": [c.name for c in me.color_attributes], "uv_layers": [u.name for u in me.uv_layers],
+        rt["%s_%02d" % (shape, var)] = {"tris": len(me.polygons), "colour_attributes": [c.name for c in me.color_attributes], "uv_layers": [u.name for u in me.uv_layers],
                      "height_after_import": round(max(v.z for v in mx) - min(v.z for v in mx), 3), "object_scale": [round(x, 4) for x in new.scale]}
         for o in [o for o in bpy.data.objects if o not in before]:
             bpy.data.objects.remove(o)
     report["fbx_roundtrip_blender_import"] = rt
     report["fbx_export"] = {"apply_scale_options": "FBX_SCALE_UNITS", "global_scale": 1.0, "axes": "Blender default", "colors_type": "LINEAR", "mesh_smooth_type": "FACE"}
-    report["variant"] = "_01 only; the system may add _02 ... later"
+    report["variant"] = "_01 and _02 for edge, outer, inner, diagonal (same outline, different facets); full has no side, _01 only"
     report["layout"] = {"rows_top_to_bottom": LAYOUT, "placed": {"%d,%d" % k: [v[0], v[1] * 90] for k, v in placed.items()}}
     if PREVIEW:
-        report["preview"] = previews(builders, placed)
+        report["preview"] = previews(builders, placed, variant_at)
     with open(os.path.join(OUTDIR, "SM_RockSlab.report.json"), "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
     print(json.dumps({k: (v if k != "layout" else "...") for k, v in report.items() if k in ("shapes", "seam_check", "warnings")}, indent=1)[:6000])
@@ -450,17 +508,22 @@ def make_material():
     sep = nt.nodes.new("ShaderNodeSeparateColor")
     nt.links.new(at.outputs["Color"], sep.inputs["Color"])
     mix1 = nt.nodes.new("ShaderNodeMix"); mix1.data_type = "RGBA"
-    mix1.inputs[6].default_value = srgb("#8E89A8"); mix1.inputs[7].default_value = srgb("#C4BFDB")
+    mix1.inputs[6].default_value = srgb("#8E89A8"); mix1.inputs[7].default_value = srgb("#F2A03A")
     nt.links.new(sep.outputs["Red"], mix1.inputs[0])
+    ramp = nt.nodes.new("ShaderNodeValToRGB")     # facet tint from R on side faces, preview tones only
+    ramp.color_ramp.interpolation = "CONSTANT"
+    ramp.color_ramp.elements[0].color = srgb("#2E2442"); ramp.color_ramp.elements[1].position = 0.45; ramp.color_ramp.elements[1].color = srgb("#4A3A68")
+    e = ramp.color_ramp.elements.new(0.85); e.color = srgb("#6A5690")
+    nt.links.new(sep.outputs["Red"], ramp.inputs["Fac"])
     mix2 = nt.nodes.new("ShaderNodeMix"); mix2.data_type = "RGBA"
-    mix2.inputs[7].default_value = srgb("#55516F")
+    nt.links.new(ramp.outputs["Color"], mix2.inputs[7])
     nt.links.new(mix1.outputs[2], mix2.inputs[6]); nt.links.new(sep.outputs["Green"], mix2.inputs[0])
     nt.links.new(mix2.outputs[2], bsdf.inputs["Base Color"])
     return m
 
 
 def combined_object(name, items, builders):
-    """items: list of (shape, k, cx, cy) -> one mesh object (positions transformed, colours kept)."""
+    """items: list of ((shape, variant), k, cx, cy) -> one mesh object (positions transformed, colours kept)."""
     bm = bmesh.new()
     col = bm.loops.layers.float_color.new("Color")
     for shape, k, cx, cy in items:
@@ -514,13 +577,13 @@ def render_one(sc, objs, path, cam_spec):
     sc.camera = cam
     sun_d = bpy.data.lights.new("Sun", "SUN"); sun_d.energy = 1.0
     sun = bpy.data.objects.new("Sun", sun_d); sc.collection.objects.link(sun)
-    sun.rotation_euler = cam.rotation_euler.copy()     # camera-following sun: same rotation as the camera
+    sun.rotation_euler = (math.radians(50.0), 0.0, math.radians(cam_spec["azim"] + 55.0))     # fixed offset from the camera azimuth, so facets differ in tone
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
     bpy.data.objects.remove(cam); bpy.data.objects.remove(sun)
 
 
-def previews(builders, placed):
+def previews(builders, placed, variant_at):
     os.makedirs(PREV_DIR, exist_ok=True)
     mat = make_material()
     floor_m = bpy.data.materials.new("FLOOR"); floor_m.use_nodes = True
@@ -528,7 +591,7 @@ def previews(builders, placed):
     floor_m.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 1.0
     out = {}
     # layout
-    items = [(s, k, i * 67.0, j * 67.0) for (i, j), (s, k) in placed.items()]
+    items = [((s, variant_at(s, i, j)), k, i * 67.0, j * 67.0) for (i, j), (s, k) in placed.items()]
     lay = combined_object("Layout", items, builders); lay.data.materials.append(mat)
     fl = bpy.data.meshes.new("Floor"); fl.from_pydata([(-3000, -3000, 0), (4000, -3000, 0), (4000, 4000, 0), (-3000, 4000, 0)], [], [(0, 1, 2, 3)])
     flo = bpy.data.objects.new("Floor", fl); bpy.context.scene.collection.objects.link(flo); fl.materials.append(floor_m)
@@ -538,21 +601,25 @@ def previews(builders, placed):
     p = os.path.join(PREV_DIR, "rockslab_layout_game_cam.png"); render_one(sc, [lay, flo], p, game); out["layout_game_cam"] = p
     tq = {"hfov": 50.0, "pitch": 38.0, "azim": 28.0, "target": cen, "dist": 1050.0}
     p = os.path.join(PREV_DIR, "rockslab_layout_three_quarter.png"); render_one(sc, [lay, flo], p, tq); out["layout_three_quarter"] = p
+    low = {"hfov": 50.0, "pitch": 12.0, "azim": 28.0, "target": (268.0, 268.0, 50.0), "dist": 760.0}
+    p = os.path.join(PREV_DIR, "rockslab_layout_low_side.png"); render_one(sc, [lay, flo], p, low); out["layout_low_side"] = p
     bpy.data.objects.remove(lay)
-    # per piece: three-quarter + game-cam steep, each piece in canonical orientation, with a tiny frame of neighbours not needed
-    sc.render.resolution_x, sc.render.resolution_y = 1000, 1000
-    for shape in MASKS:
-        o = combined_object("P_" + shape, [(shape, 0, 0.0, 0.0)], builders); o.data.materials.append(mat)
-        p = os.path.join(PREV_DIR, "rockslab_%s_three_quarter.png" % shape)
-        render_one(sc, [o, flo], p, {"hfov": 40.0, "pitch": 35.0, "azim": 32.0, "target": (0, 0, 40.0), "dist": 330.0}); out[shape + "_three_quarter"] = p
-        p = os.path.join(PREV_DIR, "rockslab_%s_game_cam.png" % shape)
-        render_one(sc, [o, flo], p, {"hfov": 40.0, "pitch": 60.0, "azim": 0.0, "target": (0, 0, 40.0), "dist": 330.0}); out[shape + "_game_cam"] = p
+    # per piece and variant: straight from above (outline) + low side view, each piece in canonical orientation; azim looks at its open side
+    sc.render.resolution_x, sc.render.resolution_y = 800, 800
+    LOW_AZIM = {"full": 0.0, "edge": 90.0, "outer": 45.0, "inner": 45.0, "diagonal": 135.0}
+    for shape, var in [(sh, v) for sh in MASKS for v in PIECE_VARIANTS[sh]]:
+        tag = "%s_%02d" % (shape, var)
+        o = combined_object("P_" + tag, [((shape, var), 0, 0.0, 0.0)], builders); o.data.materials.append(mat)
+        p = os.path.join(PREV_DIR, "rockslab_%s_top.png" % tag)
+        render_one(sc, [o, flo], p, {"hfov": 40.0, "pitch": 89.9, "azim": 0.0, "target": (0, 0, 40.0), "dist": 330.0}); out[tag + "_top"] = p
+        p = os.path.join(PREV_DIR, "rockslab_%s_low_side.png" % tag)
+        render_one(sc, [o, flo], p, {"hfov": 40.0, "pitch": 14.0, "azim": LOW_AZIM[shape], "target": (0, 0, 45.0), "dist": 330.0}); out[tag + "_low_side"] = p
         bpy.data.objects.remove(o)
-    out["camera"] = {"layout_game_cam": game, "layout_three_quarter": tq, "pieces": "hfov 40, pitch 35 azim 32 (three-quarter) or pitch 60 azim 0 (steep), target (0,0,40), distance 330",
+    out["camera"] = {"layout_game_cam": game, "layout_three_quarter": tq, "layout_low_side": low, "pieces": "hfov 40, pitch 89.9 (top) or pitch 14 at the piece open side (low side), target (0,0,40 or 45), distance 330",
                      "pitch_meaning": "degrees below the horizon, azim 0 = looking toward +Y, perspective, horizontal FOV, sensor fit horizontal",
                      "layout_resolution": [1920, 1080], "piece_resolution": [1000, 1000]}
-    out["light"] = {"type": "sun, energy 1.0, same rotation as the camera (camera-following)", "world": "colour #C8C8CC strength 0.35 (also the background colour of the sky)", "floor": "plane z = 0, #B9B9BE, roughness 1",
-                    "view_transform": "Standard", "engine": "EEVEE", "colours": "top #8E89A8, rim #C4BFDB (R), side #55516F (G); preview tones only"}
+    out["light"] = {"type": "sun, energy 1.0, tilted 50 deg, azimuth = camera + 55 deg", "world": "colour #C8C8CC strength 0.35 (also the background colour of the sky)", "floor": "plane z = 0, #B9B9BE, roughness 1",
+                    "view_transform": "Standard", "engine": "EEVEE", "colours": "top #8E89A8, chamfer #F2A03A (R), sides #2E2442 / #4A3A68 / #6A5690 by facet R; preview tones only"}
     return out
 
 
