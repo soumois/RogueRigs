@@ -20,7 +20,7 @@ status: done
 - executor_usage: runs 1, turns 69, context start 17k peak 186k, resumes 3, 8 min, units 1.17 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
-- result: Done. Done (beaa3d6f). bp-muzzle-flash: rifle sizes x0.7 (streak 11.2 x 210-252, shape 119-140, core 35-42, sparks 5.6-8.4 x 35-63 at 280-490), NS_MuzzleFlashTurret at the old sizes, why (sprite size ignores component scale), verified_476 frames, task-476 relation. bp-turret: OnTurretFired spawns NS_MuzzleFlashTurret, scale 0.6. sys-weapons: muzzle flash paragraph. Lint clean (warnings pre-existing).
+- result: Done, size provisional until the owner sees it. 476-01 (af6e7912): rifle NS_MuzzleFlash every sprite size and the spark speed x0.7 (core 35-42 uu, shape 119-140, streak 11.2 x 210-252), look, colours and timing unchanged; turret keeps its size through NS_MuzzleFlashTurret, a copy at the task-464 sizes (sprite size ignores component scale); shotgun untouched. 476-02: before/after -game slomo frames, sheets Saved/Captures/task476_compare_crop.png and task476_compare_turret2.png: rifle star smaller, same look; turret and shotgun flashes unchanged. 476-03 (beaa3d6f): bp-muzzle-flash, bp-turret, sys-weapons. No gameplay value or C++ changed. Not rerun: RogueRigs.Weapons.MuzzleFlashAsset (asset-only change).
 
 ## Questions
 Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-06.
