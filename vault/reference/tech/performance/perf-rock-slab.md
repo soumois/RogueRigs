@@ -76,6 +76,19 @@ Launch, one per spot (editor closed): `UnrealEditor.exe "<path>/RogueRigs.uproje
 
 Look versus after3: heal crystals pink-red instead of orange. Broken-piece tops near the spot D notch carry the grain, but one flat lavender square remains there and the 0.7 sag cells still show flat lavender tops; thin piece outlines are more visible on the broken area. Tops barely darker (mean RGB of a top patch at spot D 189 182 197 to 185 177 195): still near white. No rim band on the top outline; a thin light line appears along the foot of wall faces at spot A.
 
+## Chamfer and facets (task-480, 2026-11-06)
+Triangles per piece, before -> after: full 2 -> 2, edge 43 -> 35, outer 42 -> 34, inner 58 -> 44, diagonal 86 -> 70 (each variant); broken unchanged, 120 to 420. Piece ISMs 633 -> 1078 for 20 987 pieces (2 variant slots per shape).
+
+`Scripts/Run-StressTest.ps1 -Counts 100 -Settle 5 -Measure 20 -Mode peace`, ms avg / p99. Before = pre-task assets restored from git for one run; the runs are not from the fixed spots above.
+
+| Run | Frame | Game | GPU |
+|---|---|---|---|
+| Before | 13.13 / 15.80 | 4.78 / 7.54 | 11.37 / 13.13 |
+| Final material, run 1 | 12.25 / 14.70 | 4.32 / 6.40 | 10.71 / 12.49 |
+| Final material, run 2 | 12.63 / 15.51 | 4.46 / 6.67 | 10.96 / 12.90 |
+
+Not worse. The lower figures are within what one baseline run can show, so no gain is claimed.
+
 ## Relations
 - [[performance-index]] — parent index.
 - [[rock-state-render-options]] — the slab rock design measured here.
@@ -86,3 +99,4 @@ Look versus after3: heal crystals pink-red instead of orange. Broken-piece tops 
 - [[task-230-14-barrel-chain-crash]] — the task that produced the ISM-fix chain row.
 - [[task-230-26-rock-control-capture-2]] — the task that produced the control captures and command lines.
 - [[rock-render-counts]] — the provisional triangle budget compared in the after section.
+- [[task-480-rock-slab-chamfer-facets]] — the task that produced the chamfer and facets section.

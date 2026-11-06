@@ -25,6 +25,8 @@ kind: doc
 - verified: PIE and editor barrel instance count 16 (task-011-06); the level instance had stale overrides of BarrelMesh and BarrelMaterial, reset to inherit; instance counts floor 1525 (open cells only), rock 2192, heal ore 12, ore, special ore and barrel 0 (re-read at editor level, task-006-04).
 - placed_in: /Game/RogueRigs/Maps/L_ArenaM1 (one instance at the origin, with a directional light, a sky light at intensity 0.3 (real-time capture off), no sky atmosphere so the void is dark, plus BP_SpaceBackground at (8040, 8040, 0) drawing the space layers in the void (task-332, see [[bp-space-background]]), BP_AsteroidField at the origin with 12 asteroids in the void (task-334, see [[bp-asteroid-field]]), a PlayerStart at (8100, 8100, 120) on the spawn cell (40, 40), game mode override BP_TopDownGameMode). Verified: map instance counts floor 1525, rock 2192, heal ore 12; PIE spawns BP_TwinStickCharacter at (8100, 8100) at z 90, on the spawn cell.
 
+- rock_piece_variants (task-480-03): class defaults list SM_RockSlab_{Edge,Outer,Inner,Diagonal}_01 and _02 in RockPieceMeshes, Full_01 alone; set by Tools/unreal/rock_slab_variants_assign.py ([[tool-unreal-reimport]]). The existing corner hash picks the variant.
+
 ## Relations
 - [[blueprints-index]] — parent index.
 - [[sys-grid]] — the C++ system this Blueprint configures.

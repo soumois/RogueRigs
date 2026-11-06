@@ -17,7 +17,7 @@ Target: owner image C (`Art/Source/rock-look/20261017-131704-rock-look-2.png`): 
 
 ## Owner decisions (2026-10-17)
 - Nanite: assumed for the grid pieces (owner); contra-indications to check at integration: WPO cost (outline warp, shake), dynamic instance add/remove, very low-poly pieces.
-- Variants: one per piece shape for now; the system must already support several (variant index per instance, chosen by cell hash).
+- Variants: one per piece shape at first; the system supports several (variant index per instance, chosen by cell hash). Since task-480: two per shape with a side, one for full.
 - A1: relaxed to level 3 (painted colour, normal and roughness maps allowed; [[art-style-guide]]).
 - Cracks: shown as soon as a block is below 100 % health (owner).
 - Dual grid: approved for the display (owner); triangle budget of [[rock-render-counts]]: provisional, to check by a game measure at integration; rim: vertex colour in the one material (owner).

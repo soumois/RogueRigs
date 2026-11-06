@@ -18,6 +18,7 @@ Outline vertices (vertex colour tag) are pushed horizontally in the material (wo
 ## Rim and sides
 - Rim: a thin band of top geometry along the outline, a lighter flat tone (A1 "thin lighter band, own flat material"). A second material slot doubles draws per piece HISM; a vertex-colour tone in the one material avoids it (preferred, owner to confirm).
 - Sides: 2 rows of faceted triangles from the warped outline down to the floor top, slightly flared; only outlined pieces have them.
+- As built since task-480: the rim is a geometric chamfer of 8 x 8 world uu, and the sides are 2 large facets per outline chain with a short lip row under the chamfer (Tools/art/blender/rock_slab_pieces.py, [[bp-rock-slab-material]]).
 
 ## Floor under rock
 Today a rock block spans the floor slab and a floor instance is added on destruction ([[sys-grid]]). Rounded and warped outlines would show the void inside a block cell, so: floor slab on every non-void cell, rock pieces from floor top to `BlockHeight`, `bBlocksFillFloorSlab` false. The destroy path no longer adds floor.
