@@ -1,9 +1,9 @@
 ---
 id: task-468-aim-laser-unlimited-length
 description: "Global task: The aim laser loses its 600 uu cap and ends on the first wall, robot or barrel, never drawn over a wall."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Aim laser without length limit, stopping at walls and robots
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read aim-indicator, miner, color-code, task-464-player-shot-colour. Conflicts: aim-indicator Length caps the line at 600 uu (task-423) and fades the last 150 uu; the owner removes the cap. "Mur ou robot": barrels stop shots too (miner, aim assist), so Q1 asks whether they stop the line (default yes) and states that border cliffs count as walls (the capture shows the line over them). Tip fade (task-423) lost its purpose without a range end: Q2, default removed. No open value. Owner image kept in Art/Source/aim-indicator/owner-capture-green-unlimited-2026-11-06.webp (Q5 in task-469). aim-indicator Length and Look edited at confirmation. Milestone of aim-indicator: M3. No code read; the crossing of the wall is not diagnosed.
 - confirmed_by_owner: yes (2026-11-06, "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche")
 - milestone: M2
-- next_step: task-468-02-doc
+- next_step: none
 - started: 2026-11-06T10:23:22Z
 - waiting_for: none
-- executor_tokens: input 72, cache write 83926, cache read 2267444, output 23058
-- executor_usage: runs 1, turns 36, context start 18k peak 96k, resumes 0, 5 min, units 0.45 M
+- executor_tokens: input 82, cache write 95442, cache read 2769836, output 26697
+- executor_usage: runs 1, turns 41, context start 18k peak 107k, resumes 0, 6 min, units 0.53 M
 - planning_tokens: input 25, cache write 33914, cache read 560922, output 11927
 - planning_usage: aa81a0a3 "Plan unlimited aim line" 1/2 (tasks 468, 469), units 0.16 M
-- result: open
+- result: Done. Commit fc741b81. sys-aim-indicator updated: no length cap (TraceReach 10000 uu search bound, GetTraceReach), what stops the line (block cells rock/ore/barrel incl. rock-closed border, living robot capsules incl. shield chaser) and what does not, sharp tip (TipFadeFrac 0, task-423 fade API removed), tuning, unverified items, link to task-468. aim-indicator (gdd) already matched the result: unchanged. Not edited (outside inputs): bp-aim-laser-material line c++ still describes the task-423 per-length TipFadeFrac push. Lint clean.
 
 ## Questions
 Decided 2026-11-06 (owner "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche"): Q1 and Q2 defaults accepted; Q3 not the default: no capture, the owner checks in game himself; values provisional, owner 2026-11-06.
@@ -33,6 +33,6 @@ Decided 2026-11-06 (owner "Pas de capture, ok pour le reste. ne lance rien, pré
 2. task-468-02-doc (vault/reference/tasks/task-468-aim-laser-unlimited-length/task-468-02-doc.md) — doc: The aim indicator tech doc describes the unlimited line and what stops it.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-468-01-unlimited-stop]] — step 1, cpp.
 - [[task-468-02-doc]] — step 2, doc.

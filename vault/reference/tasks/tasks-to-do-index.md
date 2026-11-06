@@ -12,7 +12,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 
 
-- [[task-468-aim-laser-unlimited-length]] — The aim laser loses its 600 uu cap and ends on the first wall, robot or barrel, never drawn over a wall. Status in-progress.
 - [[task-469-aim-laser-green]] — The aim laser turns from white-gold to the bright lime green of the owner in-game capture; only the colour changes. Status todo.
 - [[task-470-cartoon-floor-texture]] — The arena floor shows the owner hand-painted cartoon magenta-purple flagstone texture (image 1) instead of the task-273 cracked plates; first step of the cartoon direction. Status todo.
 - [[task-471-wall-look-reference]] — Terrain walls get the look of owner image 2: light-lilac tops, a glowing warm orange rim along the top edge, dark stratified sides; checked by capture against the image. Status todo.

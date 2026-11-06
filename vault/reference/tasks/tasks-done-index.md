@@ -476,3 +476,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-465-shot-impact-burst]] — Player shot impacts become a flat cartoon burst of spikes and triangles from the owner reference: white for projectiles, green for lasers. Status done.
 - [[task-466-extractor-ground-wind-refs]] — The extractor ground blast is redone after the owner sprite sheet and in-game mockup: flattened swirl rings, curved wind streaks, dust puffs pushed outward. Status cancelled.
 - [[task-467-bottom-hud-match-target]] — Health strip, weapon slots and XP bar reworked, captured in game and compared with the owner target image, round after round until they match. Status done.
+- [[task-468-aim-laser-unlimited-length]] — The aim laser loses its 600 uu cap and ends on the first wall, robot or barrel, never drawn over a wall. Status done.
