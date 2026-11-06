@@ -1,9 +1,9 @@
 ---
 id: task-469-aim-laser-green
 description: "Global task: The aim laser turns from white-gold to the bright lime green of the owner in-game capture; only the colour changes."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Aim laser in the lime green of the owner capture
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read aim-indicator, color-code, task-464-player-shot-colour. Conflicts: aim-indicator and color-code say the aim laser is white-gold and never acid green; task-464 (todo) A6 checks the aim laser stays white-gold. The owner reference is a bright lime green close to the green of the player laser shots of task-464 and not far from the Shooter acid green; the owner accepted a similar green for shots (task-464 A8 checks the Shooter); Q4 default: the lime green of his capture, single colour core plus glow, A3 checks the Shooter. Edits at confirmation: aim-indicator Colour, color-code (aim laser leaves the white-gold row, own row), task-464 A6. Owner image kept in Art/Source/aim-indicator/owner-capture-green-unlimited-2026-11-06.webp (Q5). No open value. No code read.
 - confirmed_by_owner: yes (2026-11-06, "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche")
 - milestone: M2
-- next_step: task-469-02-doc
+- next_step: none
 - started: 2026-11-06T10:29:46Z
 - waiting_for: none
-- executor_tokens: input 40, cache write 44398, cache read 747082, output 8195
-- executor_usage: runs 1, turns 19, context start 18k peak 56k, resumes 0, 3 min, units 0.17 M
+- executor_tokens: input 48, cache write 50839, cache read 982804, output 10580
+- executor_usage: runs 1, turns 23, context start 18k peak 63k, resumes 0, 4 min, units 0.21 M
 - planning_tokens: input 25, cache write 33914, cache read 560922, output 11927
 - planning_usage: aa81a0a3 "Plan unlimited aim line" 1/2 (tasks 468, 469), units 0.16 M
-- result: open
+- result: Done. sys-aim-indicator gives the implemented Color linear (0.35, 1.0, 0.02) = sRGB (160, 255, 40), the sampled capture values and the unverified points; bp-aim-laser-material says the component pushes lime Color and TipFadeFrac 0 (stale task-423 fade text replaced). aim-indicator and color-code already state the capture lime green (edited at confirmation), no change. Not edited: readability-rules (kind rule) still says 'The miner aim laser is white-gold, never red' - owner decision needed. Lint clean.
 
 ## Questions
 Decided 2026-11-06 (owner "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche"): Q4 and Q5 defaults accepted (Q3 in task-468: no capture, the owner checks in game himself); values provisional, owner 2026-11-06.
@@ -32,6 +32,6 @@ Decided 2026-11-06 (owner "Pas de capture, ok pour le reste. ne lance rien, pré
 2. task-469-02-doc (vault/reference/tasks/task-469-aim-laser-green/task-469-02-doc.md) — doc: The aim indicator tech doc states the new colour values.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-469-01-green]] — step 1, bp.
 - [[task-469-02-doc]] — step 2, doc.
