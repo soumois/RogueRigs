@@ -23,7 +23,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read umg-layout. No gdd node places the radar or the ore count; nothing conflicts.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-457-01-art
+- next_step: task-457-02-radar-frame
 - started: 2026-11-06T00:33:47Z
 - waiting_for: none
 - result: open

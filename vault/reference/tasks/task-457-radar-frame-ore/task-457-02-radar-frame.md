@@ -3,7 +3,7 @@ id: task-457-02-radar-frame
 description: "Bp: The radar widget gets its frame with a place for the ore count."
 parent: task-457-radar-frame-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Radar frame holding the ore count: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T00:34:23Z
 - waiting_for: none
 - result: open
 
