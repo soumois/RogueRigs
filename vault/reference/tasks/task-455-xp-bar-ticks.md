@@ -26,7 +26,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T00:57:36Z
 - waiting_for: none
-- result: Done. Commit 6ee90430: wbp-xp-status updated (tree XPBarArea > XPBar + XPTick20/40/60/80, ticks decision Q31, anchors table per umg-layout for each widget, verified line, umg-layout relation). Lint clean.
+- result: Done. A1 4 ticks XPTick20/40/60/80 at 0.2/0.4/0.6/0.8 of XPBarArea, white A 0.75, 2 wide, above the fill (5e101e15); A2 thin light marks as in the retained mockup, exact spacing; A3 XPBar name, fill, Lv text and graphs untouched; A4 Canvas and anchors, follows bar width, no owner edit was pending; A5 compiled, PIE GrantXP 3 then 40 no error; A6 no capture, look unverified until the owner sees it; doc 6ee90430. Cost: both subtasks included in the executor run (cost-log rows 0k each).
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
