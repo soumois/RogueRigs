@@ -8,7 +8,7 @@ status: approved
 # Arena grid
 
 - The arena is a grid. Rock and ore are placed, and destroyed, one block at a time.
-- Blocks are always low, so nothing hides a unit from the near-vertical camera.
+- Blocks are low, so nothing hides a unit from the near-vertical camera: rock, ore and heal ore tops are level with the top of the miner (owner 2026-11-06, provisional, [[task-475-wall-height-miner]]; raised slightly, was lower; barrels and the void edge unchanged).
 - Floor: cracked faceted plates, no scattered pebbles or rubble (owner 2026-10-21, provisional, task-273; was "clean"); look in [[art-style-guide]] A13.
 - Arena edge: a cliff into open space (stars, planet). No indestructible rock in the rock biome.
 - Layouts: M1 uses one fixed layout written as grid JSON by the Level-Design agent; M2 uses a deterministic C++ generator (no runtime AI); until it exists, the Level-Design agent writes each level layout of the run beforehand, at 240 × 240 directly (owner 2026-10-17).
