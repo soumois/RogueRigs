@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:40:28Z
 - waiting_for: none
-- result: Done. Done (d5b11415): bp-extractor-rotor-wash states the current GroundBlast (M_ExtractorBlastWind puffs and strokes, MaterialRandom split, sizes, alpha 0.6 x Intensity x S, rate 32/s, PIE check values, unverified look) and links extractor-blast-references and task-462; bp-extraction-shuttle assets and the fx index gloss updated; lint clean.
+- result: Done, look unverified until the owner sees it. A1: five references recorded in extractor-blast-references (links only), Wind Waker hard-edged puffs with a curl + tapered curved strokes followed. A2: GroundBlast uses new M_ExtractorBlastWind, sharp-edged cartoon puffs and curved wind strokes thrown outward on the floor, no blur, style-guide pass after one A10 correction. A3: alpha 0.6 x Intensity x saturate(1 - H/400) read in PIE on the four components down to 0 at 400, wiring unchanged for both takeoffs. A4: Swirls, spin, shadows, timings, wiring untouched, no Event Tick, Extraction 7/7. A5: no capture, no stress run. Cost from agent-usage: executor run 2.87 M units, style-guide 0.06 M (2 rounds, 1 resume), total 2.92 M.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
