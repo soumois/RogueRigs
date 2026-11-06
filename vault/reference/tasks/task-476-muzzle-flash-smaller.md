@@ -3,7 +3,7 @@ id: task-476-muzzle-flash-smaller
 description: "Global task: The green burst rifle muzzle flash keeps its look but is shown smaller; turret and shotgun flashes unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Player muzzle flash a little smaller
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-476-01-rifle-flash-size
-- started: open
+- started: 2026-11-06T19:26:29Z
 - waiting_for: none
 - result: open
 
