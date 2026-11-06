@@ -3,7 +3,7 @@ id: task-453-03-doc
 description: "Doc: Docs describe the new look."
 parent: task-453-alert-bar-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar redesigned and better integrated: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T00:55:33Z
 - waiting_for: none
 - result: open
 
