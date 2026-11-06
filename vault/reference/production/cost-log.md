@@ -1166,6 +1166,7 @@ kind: note
 | [[task-480-01-slab-pieces-chamfer-facets]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-480-02-broken-pieces-facets]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-480-03-reimport-pieces]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-480-04-material-loop]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
@@ -1177,10 +1178,10 @@ Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token 
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 209.71 | 0k | 46.78 M | 1049.20 M | 9269k |
 | model sonnet | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 95.79 | 11k | 21.93 M | 504.31 M | 3587k |
+| Executors and legacy orchestrators that ran a task (pilot) | 96.85 | 12k | 22.01 M | 511.65 M | 3633k |
 | Planning runs (planners and legacy planning passes) | 45.00 | 5k | 13.44 M | 161.58 M | 2407k |
 | Agents without a subtask id (other) | 5.67 | 1k | 1.17 M | 32.83 M | 185k |
-| Main sessions (all of them, also chat outside tasks) | 92.86 | 9k | 14.71 M | 616.73 M | 2557k |
+| Main sessions (all of them, also chat outside tasks) | 92.93 | 9k | 14.72 M | 617.21 M | 2561k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.

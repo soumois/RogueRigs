@@ -3,7 +3,7 @@ id: task-480-05-capture
 description: "Capture: Final independent check of the slabs against the before image."
 parent: task-480-rock-slab-chamfer-facets
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T22:05:37Z
 - waiting_for: none
 - result: open
 
