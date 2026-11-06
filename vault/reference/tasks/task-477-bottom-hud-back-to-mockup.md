@@ -20,7 +20,7 @@ status: done
 - executor_usage: runs 1, turns 108, context start 17k peak 283k, resumes 1, 23 min, units 2.65 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
-- result: Done. wbp-health-status, wbp-weapons, wbp-xp-status: new current layout entries (task-477 pieces, slots, sizes, fonts, colours; 467 entries marked superseded; assets lists say which 467 and 461 sprites are no longer used); wbp-hud: Weapons offset -72 and the HealthStatus instance FillColorStops override trap; art-prompts-hud-unified-mockup already holds the cut pieces and what they replace (task-477-01). Lint clean (warnings only, pre-existing). Commit a73436c6.
+- result: Done. Bottom HUD redrawn from the retained mockup itself (Q1): five pieces cut out of the mockup at their 1080p pixel size (strip, block with shoulder plates, cell, rail with end cap, 8-rivet Lv plate; 0 credits) drawn as Image at their mockup place; health full stop set to the mockup green, text 24, Lv 26, white ticks, padlocks 63, dark grey XP track. Loop: 2 rounds of 6 (round 1 failed C5 padlock size, fixed). Final capture t477_06_final at 1920 x 1080: C1..C8 seen, none ambiguous; positions within 1 px of the mockup. Sheets: Saved/Captures/t477_06_final/sheet-bottom.png, sheet-block.png, sheet-full.png. Unverified: card flight on a frame; other resolutions (Q3). Top HUD untouched.
 
 ## Questions
 Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-06.
