@@ -23,7 +23,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read xp-level-up (HUD: cyan XP bar across the bottom, level on its left). No conflict; xp-level-up edited at confirmation. "par 5" has two readings, asked as Q31.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-455-01-ticks
+- next_step: task-455-02-doc
 - started: 2026-11-06T00:57:36Z
 - waiting_for: none
 - result: open
