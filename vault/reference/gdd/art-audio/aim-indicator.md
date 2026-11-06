@@ -1,6 +1,6 @@
 ---
 id: aim-indicator
-description: "Aim indicator: white-gold laser from the rifle muzzle along the aim, above the floor, stopping at the first robot or rock. Open for aim feedback."
+description: "Aim indicator: lime green laser from the rifle muzzle along the aim, above the floor, no length limit, stopping at the first robot, barrel or rock. Open for aim feedback."
 parent: art-audio-index
 kind: spec
 status: provisional
@@ -9,10 +9,10 @@ status: provisional
 
 - What (owner 2026-11-02, [[task-415-aim-laser]], replaces the chevrons of [[task-328-aim-chevrons]] to task-331): a thin straight laser line from the shown rifle Muzzle of the [[miner]] along the aim direction, horizontal at Muzzle height, above the floor and parallel to it, never piercing it (owner correction 2026-11-02).
 - Why: shows where the auto-fire goes (P2) and gives a stick player, who has no cursor, an aim reference (P1, P2, [[gdd-pillars]]). The 2026-10-27 "not a laser" choice is reversed by the owner (2026-11-02); the laser is never red, the colour of enemy fire and of the shooter targeting laser ([[readability-rules]]).
-- Colour: white-gold, the player shots colour ([[color-code]]), sRGB (255, 236, 170), linear about (1.0, 0.84, 0.40). Never red, orange, acid green or steel blue, no rarity colour.
+- Colour (provisional, owner 2026-11-06, [[task-469-aim-laser-green]], "Prend la couleur comme référence"): the bright lime green of the owner capture `Art/Source/aim-indicator/owner-capture-green-unlimited-2026-11-06.webp`, pale yellow-green core and lime glow, sampled from that image; only the colour changed, not the look (was white-gold sRGB (255, 236, 170)). Never red, orange, steel blue or a rarity colour; the acid green Shooter must still be spotted at once ([[color-code]]).
 - Weapon-agnostic (owner 2026-10-27): direction only. No spread widening, no pulse per shot, no length tied to a weapon range. Weapon-specific feedback may come later as a separate layer; not part of this node.
-- Length (owner 2026-11-02, "ça s'arrête au premier robot où le premier mur"): from the Muzzle to the first robot or the first block on the aim line, whichever is nearer, at most 600 uu (about 9 cells of 67 uu; provisional, owner 2026-11-03, [[task-423-miner-aim-laser-range-fade]]; was 1200 uu) (miner cannot shoot through rock, [[destruction-rules]]).
-- Look (provisional, owner 2026-11-02): bright core 3 uu wide plus a soft glow of the same colour about 8 uu on each side at low opacity; uniform brightness along the line; the last 150 uu fade to zero at the tip, whatever ends the line (maximum range, rock block or robot); a line shorter than 300 uu fades over its last half (provisional, owner 2026-11-03, [[task-423-miner-aim-laser-range-fade]]; was the last 15 % of the length); unlit.
+- Length (provisional, owner 2026-11-06, [[task-468-aim-laser-unlimited-length]], "On va arrêter de limiter la ligne d'AIM en longueur. Juste cela s'arrête lorsque cela touche un mur ou un robot."): no maximum length; from the Muzzle to the first robot (its shield included), barrel or rock on the aim line, whichever is nearer; rock means breakable blocks and the walls and cliffs of the arena border alike, and the line is never drawn over a wall; pickups, turrets, drone, console and extractor do not stop it; when nothing is hit it runs past the screen edge (was at most 600 uu, [[task-423-miner-aim-laser-range-fade]]) (miner cannot shoot through rock, [[destruction-rules]]).
+- Look (provisional, owner 2026-11-02): bright core 3 uu wide plus a soft glow of the same colour about 8 uu on each side at low opacity; uniform brightness along the line; no fade at the tip: the line ends sharp on the wall, robot or barrel it touches (provisional, owner 2026-11-06, [[task-468-aim-laser-unlimited-length]]; was the last 150 uu fading, [[task-423-miner-aim-laser-range-fade]]); unlit.
 - Reticle: none at the laser end; in the reference the hex brackets are the player cursor, not part of the laser (owner 2026-11-02).
 - Behaviour: pure visual, no collision, no gameplay effect; never places the [[drone]].
 - Scope: the miner only; turrets have no aim laser (owner 2026-11-02). The chevron values and fixes (tasks 328 to 331, [[task-329-aim-chevrons-fade]], [[task-330-aim-chevrons-sharp]]) are in git history; the chevron code and M_AimChevrons are removed.
@@ -25,7 +25,7 @@ status: provisional
 ## Relations
 - [[art-audio-index]] — parent index.
 - [[miner]] — the aim it shows.
-- [[color-code]] — white-gold player side colour.
+- [[color-code]] — colour table, aim laser row.
 - [[readability-rules]] — colours it must avoid.
 - [[sys-aim-indicator]] — the C++ component and material contract that implement it.
 - [[ground-telegraph]] — projected-decal technique the former chevrons used.
