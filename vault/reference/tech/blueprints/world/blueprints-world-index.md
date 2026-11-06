@@ -15,7 +15,7 @@ Arena grid, objective console, bonus chest, shuttle, spawner and barrel asset: t
 - [[bp-extraction-shuttle]] — BP_ExtractionShuttle, the extraction shuttle (extractor body, four rotors, chevrons).
 - [[bp-enemy-spawner]] — BP_EnemySpawner, the enemy spawner placed in the arena.
 - [[bp-rock-slab-material]] — M_RockSlab and MI_RockSlab, the rock piece material (top texture, cracks, shake, broken sag).
-- [[bp-floor-plates-material]] — M_FloorPlates and MI_FloorPlates, the floor material (world-aligned plate textures, noise anti-tiling, revert).
+- [[bp-floor-plates-material]] — the floor material: M_FloorCartoon with the owner painted flagstones (task-470), M_FloorPlates kept unused, revert.
 - [[bp-space-background-material]] — M_SpaceBackground and its three instances (procedural stars, nebula, dust; nebula plane replaced in task-335), parameters, tuning, revert.
 - [[bp-space-texture-material]] — M_SpaceTexture, MI_Space_Deep and MI_Space_Clouds, generated-texture void layers: parameters, final intensities, capture finding.
 - [[bp-space-background]] — BP_SpaceBackground, the four planes under the arena: depths, scales, placement, removal.
