@@ -3,7 +3,7 @@ id: task-466-01-wind-sprites
 description: "Bp: Material set for the ground wind shapes of the owner sheet: swirl ring, curved streaks, dust puffs with debris, dust disc."
 parent: task-466-extractor-ground-wind-refs
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor ground wind redone from the owner references: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T05:27:11Z
 - waiting_for: none
 - result: open
 

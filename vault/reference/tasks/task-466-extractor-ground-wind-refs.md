@@ -3,7 +3,7 @@ id: task-466-extractor-ground-wind-refs
 description: "Global task: The extractor ground blast is redone after the owner sprite sheet and in-game mockup: flattened swirl rings, curved wind streaks, dust puffs pushed outward."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor ground wind redone from the owner references
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
 - next_step: task-466-01-wind-sprites
-- started: open
+- started: 2026-11-06T05:27:11Z
 - waiting_for: none
 - result: open
 
