@@ -3,7 +3,7 @@ id: task-478-wall-lines-emissive-edge
 description: "Global task: wall sides lose their dark lines and read as one surface (image 3); emissive also on the top face edge; 4 rounds max."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls without black lines, emissive on the top edge
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-478-01-wall-match-loop
-- started: open
+- started: 2026-11-06T20:00:00Z
 - waiting_for: none
 - result: open
 

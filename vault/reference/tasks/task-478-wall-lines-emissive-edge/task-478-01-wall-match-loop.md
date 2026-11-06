@@ -3,7 +3,7 @@ id: task-478-01-wall-match-loop
 description: "Bp: Loop: remove the dark lines and visible cuts, place the emissive on the top edge, capture, compare with image 3, rework; at most 4 rounds."
 parent: task-478-wall-lines-emissive-edge
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls without black lines, emissive on the top edge: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T20:00:00Z
 - waiting_for: none
 - result: open
 
