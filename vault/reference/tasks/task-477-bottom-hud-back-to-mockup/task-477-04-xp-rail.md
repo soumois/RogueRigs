@@ -3,7 +3,7 @@ id: task-477-04-xp-rail
 description: "Bp: The XP rail and Lv plate use the new pieces as on the mockup."
 parent: task-477-bottom-hud-back-to-mockup
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:52:27Z
 - waiting_for: none
 - result: open
 
