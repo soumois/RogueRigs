@@ -3,7 +3,7 @@ id: task-472-02-shadow-material-wiring
 description: "Bp: The purple-grey soft-edged shadow material, assigned to every listed actor with its start values."
 parent: task-472-actor-blob-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Light-independent purple-grey shadows under actors: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T18:09:02Z
 - waiting_for: none
 - result: open
 
