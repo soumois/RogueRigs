@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:22:48Z
 - waiting_for: none
-- result: Done. wbp-health-status, wbp-weapons, wbp-xp-status, wbp-hud, blueprints-ui-index and art-prompts-hud-unified-mockup state the current look and assets (bottom panel, slot wells, XP frame, Lv cap, positions at 1080p); lint clean. Commit 7705ad12.
+- result: Bottom HUD rebuilt as in image 2 / the retained mockup: health bar and four slot wells inside one riveted panel (T_HUD_BottomPanel in WBP_HealthStatus, connector base plate removed), XP bar in T_HUD_XPFrame rails with Lv in the T_HUD_LevelCap plate, dark empty XP track. Sprites: 2 Kie.ai runs, 24 credits, critic pick c1 of both (commits 5459bd08, 22b01a16, 81462e37, 7705ad12). Compiled, saved, PIE with XP grants and card picks: no runtime error. Look unverified until the owner sees it in game (A6). Cost: style-guide 0.12 M units (6 turns), executor run about 1.23 M units at closure (agent-usage), total about 1.35 M.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
