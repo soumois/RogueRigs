@@ -1,9 +1,9 @@
 ---
 id: task-475-wall-height-miner
 description: "Global task: Rock, ore and heal ore blocks are raised slightly so their top is at the height of the shrunk miner; play and destruction unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Walls raised to the miner height
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read arena-grid ("Blocks are always low, so nothing hides a unit from the near-vertical camera"), visual-style ("Blocks are always low (no occlusion)"), miner. Conflict decided by the owner himself (his request goes against the vault): blocks rise to the miner height; the no-occlusion intent is kept as acceptance A6; arena-grid and visual-style updated by hand at planning, provisional. Barrels and the void edge are not walls (provisional, to confirm). Order: after task-474 (miner height) and before task-471 (wall look judged on the final geometry) and task-473 (light). No code read.
 - confirmed_by_owner: yes (2026-11-06, his own instruction "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"; scope rock, ore, heal ore only is provisional, to confirm)
 - milestone: M2
-- next_step: task-475-03-doc
+- next_step: none
 - started: 2026-11-06T17:29:44Z
 - waiting_for: none
-- executor_tokens: input 162, cache write 155500, cache read 7663855, output 42420
-- executor_usage: runs 1, turns 80, context start 18k peak 168k, resumes 1, 13 min, units 1.17 M
+- executor_tokens: input 174, cache write 162936, cache read 8691999, output 45031
+- executor_usage: runs 1, turns 86, context start 18k peak 175k, resumes 1, 14 min, units 1.30 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: open
+- result: Done. Commit 128c0704: sys-grid records BlockHeight 153 (task-475-01 bea54ef4, was 100, provisional), BarrelHeight 100, the block top per cell type (GetCellBlockTopHeight) and the barrel fit on BarrelHeight; bp-arena-grid notes BlockHeight is not overridden and follows the C++ default (153, was 100). No Blueprint changed, so no other bp node. Lint clean.
 
 ## Subtasks
 1. task-475-01-block-height (vault/reference/tasks/task-475-wall-height-miner/task-475-01-block-height.md) — cpp: The terrain block height becomes the shrunk miner height, as one tunable value, with everything on the blocks following.
@@ -28,7 +28,7 @@ status: in-progress
 3. task-475-03-doc (vault/reference/tasks/task-475-wall-height-miner/task-475-03-doc.md) — doc: Docs record the new block height.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-475-01-block-height]] — step 1, cpp.
 - [[task-475-02-capture]] — step 2, capture.
 - [[task-475-03-doc]] — step 3, doc.
