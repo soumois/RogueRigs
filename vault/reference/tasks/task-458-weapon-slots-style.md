@@ -23,7 +23,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Not named point by point by the owner; derived from "retravailler les différents UI in game" and "interface unifiée", hence Q34. placeholder-weapon-icons stay as they are.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-458-01-art
+- next_step: task-458-02-slots
 - started: 2026-11-06T01:13:02Z
 - waiting_for: none
 - result: open
