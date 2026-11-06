@@ -89,7 +89,7 @@ bool FRRCheatConsoleVariablesTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(TEXT("ChooseUpgrade back to -1"), Choose->GetInt(), -1);
 	}
-	for (int32 Frame = 0; Frame < 50; ++Frame)
+	for (int32 Frame = 0; Frame < 110; ++Frame)
 	{
 		TestWorld.Tick();
 	}
@@ -205,7 +205,13 @@ bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("x10: 10 s of alert in 1 s"), RunFlow->GetAlertSeconds() - AlertBefore, 10.f, 0.01f);
 	Settings->AlertSpeedMultiplier = 1.f;
 
-	// The level-up screen opened during those frames: reroll, then pick.
+	// Finish the 1.8 s level-up delay (task-459): the screen opens within 60 more frames.
+	for (int32 Frame = 0; Frame < 60 && !LevelUp->IsAwaitingChoice(); ++Frame)
+	{
+		TestWorld.Tick();
+	}
+
+	// The level-up screen opened after those frames: reroll, then pick.
 	if (!TestTrue(TEXT("screen open"), LevelUp->IsAwaitingChoice()))
 	{
 		return false;

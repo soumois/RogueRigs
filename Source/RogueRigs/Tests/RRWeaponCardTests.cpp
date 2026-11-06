@@ -462,7 +462,7 @@ bool FRRWeaponCardsLevelQueueTest::RunTest(const FString& Parameters)
 	Progression->AddXP(WeaponCardRawXPFor(Progression, 5));
 	TestEqual(TEXT("level 6"), Progression->GetLevel(), 6);
 	TestEqual(TEXT("five choices owed"), LevelUp->GetPendingChoices(), 5);
-	for (int32 Frame = 0; Frame < 60 && !LevelUp->IsAwaitingChoice(); ++Frame)
+	for (int32 Frame = 0; Frame < 150 && !LevelUp->IsAwaitingChoice(); ++Frame)
 	{
 		TestWorld.Tick();
 	}

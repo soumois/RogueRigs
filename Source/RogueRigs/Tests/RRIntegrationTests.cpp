@@ -1694,7 +1694,7 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	const double LevelUpTime = World->GetTimeSeconds();
 	int32 PauseFrame = -1;
 	bool bPausedEarly = false;
-	for (int32 Frame = 1; Frame <= 60 && PauseFrame < 0; ++Frame)
+	for (int32 Frame = 1; Frame <= 150 && PauseFrame < 0; ++Frame)
 	{
 		TestWorld.Tick();
 		if (LevelUp->IsAwaitingChoice())
@@ -1710,7 +1710,7 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestTrue(TEXT("screen opens after the 0.8 s delay (within one frame)"), DelaySeconds >= LevelUp->GetChoiceDelay() - FrameSeconds - 1e-3 && DelaySeconds <= LevelUp->GetChoiceDelay() + FrameSeconds + 1e-3);
+	TestTrue(TEXT("screen opens after the 1.8 s delay (within one frame)"), DelaySeconds >= LevelUp->GetChoiceDelay() - FrameSeconds - 1e-3 && DelaySeconds <= LevelUp->GetChoiceDelay() + FrameSeconds + 1e-3);
 	TestTrue(TEXT("world paused by the game mode"), World->IsPaused());
 	TestTrue(TEXT("controller reports the pause"), Controller->IsPaused());
 	TestTrue(TEXT("cursor shown on the screen"), Controller->ShouldShowMouseCursor());
@@ -2378,7 +2378,7 @@ namespace RRIntegrationIntermissionTests
 
 		// Control: a level-up in level 1 offers a choice after ChoiceDelay.
 		GainOneLevel(Miner);
-		for (int32 Frame = 0; Frame < 90 && !LevelUp->IsAwaitingChoice(); ++Frame)
+		for (int32 Frame = 0; Frame < 150 && !LevelUp->IsAwaitingChoice(); ++Frame)
 		{
 			TickFrame(TestWorld);
 		}
@@ -2432,7 +2432,7 @@ namespace RRIntegrationIntermissionTests
 		const int32 CardsBefore = Miner->GetUpgrades()->GetPickedUpgrades().Num();
 		GainOneLevel(Miner);
 		Test.AddInfo(FString::Printf(TEXT("%s: level 2 level-up, same frame: %s"), Path, *DescribeLevelUp(Miner)));
-		for (int32 Frame = 0; Frame < 90 && !LevelUp->IsAwaitingChoice(); ++Frame)
+		for (int32 Frame = 0; Frame < 150 && !LevelUp->IsAwaitingChoice(); ++Frame)
 		{
 			TickFrame(TestWorld);
 		}

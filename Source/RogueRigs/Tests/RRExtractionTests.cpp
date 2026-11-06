@@ -289,7 +289,7 @@ bool FRRExtractionEndClosesOfferTest::RunTest(const FString& Parameters)
 
 	// An open card screen and a second level-up queued when the run ends.
 	Progression->AddXP(Progression->GetXPToNextLevel() - Progression->GetXP());
-	TickFrames(TestWorld, 60);
+	TickFrames(TestWorld, 110);
 	TestTrue(TEXT("card screen open"), LevelUp->IsAwaitingChoice());
 	TestTrue(TEXT("run ends"), Setup.RunFlow->EndRun(true));
 	TestFalse(TEXT("card screen closed by the end"), LevelUp->IsAwaitingChoice());

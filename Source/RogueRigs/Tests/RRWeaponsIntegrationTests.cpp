@@ -170,7 +170,7 @@ namespace RRWeaponsIntegrationTests
 	}
 
 	/** Ticks until the level-up screen is open (MaxFrames at most); the frame count, or -1 when it never opened. */
-	int32 TickUntilScreen(const FTestWorld& TestWorld, const URRLevelUpComponent* LevelUp, int32 MaxFrames = 120)
+	int32 TickUntilScreen(const FTestWorld& TestWorld, const URRLevelUpComponent* LevelUp, int32 MaxFrames = 150)
 	{
 		for (int32 Frame = 1; Frame <= MaxFrames; ++Frame)
 		{
