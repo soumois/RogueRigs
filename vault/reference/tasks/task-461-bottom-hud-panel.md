@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read xp-level-up, art-prompts-hud-unified-mockup (retained A direction; 452 health plate and 458 slots reused T_Shop_ButtonReroll and T_LevelEnd_Frame, the result the owner now says is not integrated), task-458. No conflict; xp-level-up edited at confirmation. Image 2 matches the retained mockup. Source of the frame sprites: Q37.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-461-03-xp-frame
+- next_step: task-461-04-doc
 - started: 2026-11-06T04:22:48Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-461-04-doc
 description: "Doc: Docs describe the bottom panel and the XP frame."
 parent: task-461-bottom-hud-panel
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD built as one riveted panel and a framed XP bar: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:37:39Z
 - waiting_for: none
 - result: open
 
