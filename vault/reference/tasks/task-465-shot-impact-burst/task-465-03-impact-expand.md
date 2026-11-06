@@ -3,7 +3,7 @@ id: task-465-03-impact-expand
 description: "Bp: Turret impacts get the green burst sized to the turret shot; shotgun pellet impacts get the same burst in white with warm gold-orange accents"
 parent: task-465-shot-impact-burst
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact burst: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:42:43Z
 - waiting_for: none
 - result: open
 
