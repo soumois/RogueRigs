@@ -488,3 +488,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-477-bottom-hud-back-to-mockup]] — The bottom HUD (health strip, weapon slots, XP rail) is redone from the retained art mockup and reworked in a capture loop of at most 6 rounds until it matches it. Status done.
 - [[task-478-wall-lines-emissive-edge]] — The dark lines on wall faces go away so walls read as one continuous surface like owner image 3, and the orange emissive also lights the edge of the top face; up to 4 correction rounds. Status done.
 - [[task-479-level-up-cards-delay]] — The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged. Status done.
+- [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status done.
