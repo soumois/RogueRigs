@@ -1,9 +1,9 @@
 ---
 id: task-474-miner-scale-down
 description: "Global task: The miner is shown 10 % smaller; collision and gameplay values unchanged; everything attached to it follows the new size."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner 10 % smaller
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read miner (look, asset, sockets, IK), visual-style, art-style-guide A4 (drone about the size of the miner head and shoulders: drone unchanged by default, ratio shifts slightly). No GDD value for the miner size: decided by the owner, 90 % of now. Rules versus rendering (orchestrator-lessons): collision and gameplay values unchanged, provisional, reported to the owner to confirm. Order: runs before task-475 (wall height measured on the shrunk miner) and before task-472 (shadow size from the footprint). No code read.
 - confirmed_by_owner: yes (2026-11-06, his own instruction "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"; A2 hitbox and gameplay unchanged is provisional, to confirm)
 - milestone: M2
-- next_step: task-474-03-doc
+- next_step: none
 - started: 2026-11-06T17:15:11Z
 - waiting_for: none
-- executor_tokens: input 160, cache write 147083, cache read 7725183, output 40090
-- executor_usage: runs 1, turns 79, context start 17k peak 159k, resumes 1, 11 min, units 1.16 M
+- executor_tokens: input 178, cache write 156933, cache read 9198462, output 44362
+- executor_usage: runs 1, turns 88, context start 17k peak 169k, resumes 1, 12 min, units 1.34 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: open
+- result: Done. Miner mesh shown at 90 %: BP_Miner Mesh RelativeScale3D 0.9, top of head at rest 170 -> 153 uu (39732c16). Rifle, Muzzle, aim laser, hand offset and left-hand grip follow through a one-line C++ attach change (hand socket attach includes scale). Capsule 88/34 and all gameplay values unchanged (A2 provisional, to confirm). Camera, drone, FloorWallLight, ABP untouched. Build OK; RogueRigs.Weapons 16/17, ImpactSparkAsset fails on the rifle spark asset (pre-existing, unrelated). Capture: C1 C2 C5 seen, laser start seen; muzzle flash and numbers above the head ambiguous (not caught on frames), for the owner. Sheets: Saved/Captures/MinerScale474Sheets/. Docs: bp-miner, miner, sys-player-classes (497ff016). Cost: executor run, see executor_tokens.
 
 ## Subtasks
 1. task-474-01-miner-scale (vault/reference/tasks/task-474-miner-scale-down/task-474-01-miner-scale.md) — bp: The miner mesh is shown at 90 % with every attachment and effect following, collision and gameplay unchanged.
@@ -28,7 +28,7 @@ status: in-progress
 3. task-474-03-doc (vault/reference/tasks/task-474-miner-scale-down/task-474-03-doc.md) — doc: Docs record the new miner scale.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-474-01-miner-scale]] — step 1, bp.
 - [[task-474-02-capture]] — step 2, capture.
 - [[task-474-03-doc]] — step 3, doc.
