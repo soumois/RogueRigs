@@ -3,7 +3,7 @@ id: task-457-03-ore-in-frame
 description: "Bp: The ore count shows in the part of the radar frame that extends to take it in; the floating counter is gone."
 parent: task-457-radar-frame-ore
 kind: task
-status: todo
+status: in-progress
 ---
 # Radar frame holding the ore count: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T00:37:31Z
 - waiting_for: none
 - result: open
 
