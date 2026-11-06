@@ -26,7 +26,10 @@ kind: doc
 - verified_task_314_02: slots, slot materials, M_ChestLogo parameter and constant, Lid transform read back after the save; BP_BonusChest compiled with warnings_as_errors, no error; look checked in game by task-314-03.
 - verified: task-306-03 (editor, no PIE): compiles without error with warnings_as_errors; components, parents, relative transforms, meshes and slot materials read back as above; look and lock-face direction not viewed on screen. task-056-02 PIE (alert speed cheat x40, console hack cheat): spawned as BP_BonusChest_C_0 at 60 % alert, no error in LogBlueprint, LogScript or LogRogueRigs. The chest hack completion and the OnRewardGranted glow were not exercised (no cheat completes the chest hack); look not viewed on screen.
 
+- actor_shadow (task-472, commits 890894ef, 0028c7a2): BP_BonusChest gets the inherited C++ `BlobShadow` (light-independent purple-grey disc, [[sys-blob-shadow]]); per-type `Opacity` 0.6 and `SizeScale` 1.2 (owner 2026-11-06 Q3, provisional) are its Blueprint defaults, no value overridden in this Blueprint. Fitted at BeginPlay to the closed chest meshes (Mesh, Lid, Latch); every chest mesh casts no light shadow (`ARRBonusChest::PostInitializeComponents`). Seen as a thin rim only around the body at 1.2 (task-472-03, owner to judge).
+
 ## Relations
+- [[sys-blob-shadow]] — the shadow under the chest.
 - [[blueprints-index]] — parent index.
 - [[sys-objectives]] — the C++ class and events.
 - [[bp-rr-game-mode]] — holds it in RunFlowConfig.

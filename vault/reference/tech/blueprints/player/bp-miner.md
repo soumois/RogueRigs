@@ -99,7 +99,10 @@ Owner 2026-11-04 "Tout par défaut" ([[task-425-miner-floor-wall-light]]): a lig
 - Shadow off: untick Cast Shadows on `FloorWallLight` in BP_Miner, compile, save. The pool stays.
 - Unverified: no capture (the owner looks in game, A6); GPU cost not measured (Q17, [[perf-risks]]).
 
+- actor_shadow (task-472, commits 890894ef, 0028c7a2): BP_Miner keeps the inherited C++ `BlobShadow` (light-independent purple-grey disc, [[sys-blob-shadow]]); per-type `Opacity` 0.6 and `SizeScale` 1.2 (owner 2026-11-06 Q3, provisional) are its Blueprint defaults, no value overridden in this Blueprint. Footprint = capsule diameter (68 uu, radius 34 unchanged by the task-474 mesh scale).
+
 ## Relations
+- [[sys-blob-shadow]] — the shadow under the miner.
 - [[task-474-miner-scale-down]] — set the mesh scale 0.9.
 - [[task-425-miner-floor-wall-light]] — added FloorWallLight.
 - [[task-445-miner-light-wall-shadows]] — turned on its wall shadows.

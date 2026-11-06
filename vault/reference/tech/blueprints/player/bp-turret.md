@@ -17,7 +17,10 @@ kind: doc
 - owner_agent: agent-bp
 - verified: task-350-03: compiled and saved; components, transforms and slots as listed read back by the Blueprint agent (slot materials read back in task-350-02, not again in 03). task-350-04: -game capture (frames in `Saved/TurretInGame/after/`, not committed): the base stays fixed, the head turns toward two different robots, the flash is a large blur; 8 tests pass on the final Blueprint (Turret.* x7 and Integration.PlaceTurretInputKillsRobot). Not verified: exact canon-tip shot start (flash blurred), on-screen size against the grey box, no shadow and no collision in frames, canon axis height 18.7 uu on the mesh. Earlier (task-032-02 and before): PIE firing checked, colours unchecked.
 
+- actor_shadow (task-472, commits 890894ef, 0028c7a2): BP_Turret gets the inherited C++ `BlobShadow` (light-independent purple-grey disc, [[sys-blob-shadow]]); per-type `Opacity` 0.6 and `SizeScale` 1.2 (owner 2026-11-06 Q3, provisional) are its Blueprint defaults, no value overridden in this Blueprint. Fitted at BeginPlay to TurretBaseMesh and TurretHeadMesh bounds (`FitToOwnerMeshes`). Seen in -game frames of task-472 (dark disc under each turret).
+
 ## Relations
+- [[sys-blob-shadow]] — the shadow under the turret.
 - [[blueprints-index]] — parent index.
 - [[bp-turret-materials]] — the turret textures, material, instances and meshes.
 - [[sys-turret]] — the C++ classes and placement rules.
