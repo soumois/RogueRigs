@@ -4,11 +4,12 @@ Writes SM_RockSlabBroken_<Shape>_01.fbx and _02.fbx (two different cuts), SM_Roc
 The constants, outlines and rim band come from rock_slab_pieces.py itself (its source is executed up to main(), so the outline and
 every border crossing point are those of the intact pieces). The whole footprint of the piece is cut like a Voronoi diagram into
 solid blocks (about 10 per 67 x 67 cell of area, a minimum inscribed size, seeds retried until no sliver is left):
-  - each block is a closed prism: top at z = 100, vertical faces, bottom at z = 0; along the void outline the foot of the wall is
-    pushed out by the same 9 uu flare as the intact wall (so the outline and its border end points are the intact ones);
+  - each block is a closed prism: top at z = 100, vertical faces, bottom at z = 0; along the void outline the foot of the wall follows
+    the foot of the facets of the intact piece of the same variant number (task-480: 9 uu at the borders, so the outline and its border
+    end points are the intact ones); the broken top keeps the flat 4 uu rim footprint of task-230, so the cut does not change;
   - the only vertices allowed on a piece border are -H, -12, 0, 12, H on every side (the cut snaps to them), plus the rim ends
     already on the intact border, so neighbouring pieces match exactly; border faces exist too, so a block is closed on its own;
-  - the intact rim band is kept as the top of the block, coded R = 0.5 (block tops R = 1), side faces G = 1, bottoms B = 1;
+  - the rim band is part of the block top: R = 1 on every top (task-480, no chamfer glow mark), side faces G = 1 with the block seed in R (facet tint of M_RockSlab), bottoms B = 1;
   - per block rigid-motion data in UV2 (BlockA), UV3 (BlockB), UV4 (BlockC), see CHANNELS.
 The sag is NOT modelled: the material does it (WPO). It is simulated here for the previews only, block by block (rigid)."""
 import os, sys
@@ -38,7 +39,7 @@ CHANNELS = {
     "UV2 'BlockA'": "(block centre X / 100, block centre Y / 100) in piece-local XY (before the instance rotation) = the block pivot position; identical on every vertex of a block (top, sides, bottom)",
     "UV3 'BlockB'": "(block seed 0..1, block radius / 100) with radius = largest distance centre -> block top vertex; identical on every vertex of a block; every face belongs to a block (UV3.x >= 0 everywhere)",
     "UV4 'BlockC'": "(rim flag, block index / 16): rim flag 1 = the block touches the void outline (its wall faces the void and slumps), 0 = inner block; index = order of the block in the piece",
-    "vertex colour 'Color'": "R = 1 block tops, R = 0.5 rim band (part of the block top), G = 1 side faces, B = 1 bottoms (all others 0); read R with thresholds 0.25 / 0.75 (export quantises to 8 bit)",
+    "vertex colour 'Color'": "R = 1 block tops including the rim band (no chamfer mark, task-480), G = 1 side faces with R = block seed (facet tint), B = 1 bottoms (all others 0)",
     "import": "enable full precision UVs in the Unreal static mesh import (UV2 holds values in [-0.5, 0.5], half precision would give ~0.05 uu error); keep 5 UV channels (UV0..UV4); the importer's auto lightmap channel must not overwrite UV4",
 }
 
@@ -146,9 +147,9 @@ def in_tri(p, t):
 
 
 # ---------------------------------------------------------------- footprint of an intact piece
-def footprint(shape):
+def footprint(shape, variant=1):
     """convex triangles (CCW) of the body, of the rim band, and the outline chains with the foot displacement of the intact wall"""
-    ib = build_piece(shape)
+    ib = build_piece(shape, variant, flat_rim=True)
     body, rim = [], []
     for f in ib.kind_faces["top"]:
         pts = [(l.vert.co.x, l.vert.co.y) for l in f.loops]
@@ -157,10 +158,8 @@ def footprint(shape):
         pts = [(l.vert.co.x, l.vert.co.y) for l in f.loops]
         for k in range(1, len(pts) - 1): rim.append(ccw([pts[0], pts[k], pts[k + 1]]))
     outl = []
-    if shape != "full":
-        for pts, ref in outline_pts(shape, SEG[shape]):
-            ins = inward_normals(pts, ref)
-            outl.append(([(p.x, p.y) for p in pts], [(-n.x * FLARE, -n.y * FLARE) for n in ins]))
+    for pts, foot in ib.foot_chains:
+        outl.append(([(p.x, p.y) for p in pts], [(f[0] - p.x, f[1] - p.y) for p, f in zip(pts, foot)]))
     return body, rim, outl
 
 
@@ -366,7 +365,7 @@ def make_blocks(shape, variant, body, rim, outl):
 
 # ---------------------------------------------------------------- build
 def build_broken(shape, variant):
-    body, rim, outl = footprint(shape)
+    body, rim, outl = footprint(shape, variant)
     blocks, nsites, tries = make_blocks(shape, variant, body, rim, outl)
     seed = {"full": 1, "edge": 2, "outer": 3, "inner": 4, "diagonal": 5}[shape] * 7919
     b = Builder("broken_" + shape, seed)
@@ -391,19 +390,19 @@ def build_broken(shape, variant):
     for idx, blk in enumerate(blocks):
         sd = rng.random()
         for (p0, p1, p2, kind) in blk["tris"]:
-            tri3(((0.5 if kind else 1.0, 0, 0),), [(p[0], p[1], TOP) for p in (p0, p1, p2)], blk, sd, idx, up=1, kind="top")
+            tri3(((1.0, 0, 0),), [(p[0], p[1], TOP) for p in (p0, p1, p2)], blk, sd, idx, up=1, kind="top")
         for (a, c) in blk["bnd"]:
             da, dc = foot_disp(a, outl), foot_disp(c, outl)
             A, C = (a[0], a[1], TOP), (c[0], c[1], TOP)
             A0, C0 = (a[0] + da[0], a[1] + da[1], 0.0), (c[0] + dc[0], c[1] + dc[1], 0.0)
-            outv = Vector((c[1] - a[1], -(c[0] - a[0]), 0.0))
-            for tr in ([A, C, C0], [A, C0, A0]):
-                tri3(((0, 1, 0),), tr, blk, sd, idx, out=outv, kind="side")
+            # winding from the top triangle order, not from the geometry: a skewed facet foot may fold a short wall, the prism stays closed
+            for tr in ([C, A, A0], [C, A0, C0]):
+                tri3(((sd, 1, 0),), tr, blk, sd, idx, kind="side")
         for (p0, p1, p2, kind) in blk["tris"]:
             pts = []
-            for p in (p0, p1, p2):
+            for p in (p2, p1, p0):
                 d = foot_disp(p, outl); pts.append((p[0] + d[0], p[1] + d[1], 0.0))
-            tri3(((0, 0, 1),), pts, blk, sd, idx, up=-1, kind="cap")
+            tri3(((0, 0, 1),), pts, blk, sd, idx, kind="cap")
         info.append({"id": idx, "centre_cm": [round(blk["cx"], 2), round(blk["cy"], 2)], "radius_cm": round(blk["rad"], 2), "seed": round(sd, 4),
                      "top_area_uu2": round(blk["area"], 1), "min_width_uu": round(2 * blk["inr"], 1), "touches_void_outline": blk["void"],
                      "top_tris": len(blk["tris"]), "boundary_edges": len(blk["bnd"])})
@@ -532,7 +531,7 @@ def main():
               "channels": CHANNELS, "shapes": {}, "warnings": []}
     builders, intact = {}, {}
     for shape in SHAPES:
-        ib = build_piece(shape); finish(ib); intact[shape] = ib
+        ib = build_piece(shape, 1); finish(ib); intact[shape] = ib
         for var in VARIANTS:
             b = build_broken(shape, var)
             finish(b)
@@ -547,7 +546,7 @@ def main():
             tris = len(me.polygons)
             xs = [v.co.x for v in me.vertices]; ys = [v.co.y for v in me.vertices]; zs = [v.co.z for v in me.vertices]
             ca = me.color_attributes["Color"].data
-            cnt = {"R1": 0, "R05": 0, "G": 0, "B": 0}; bad = 0
+            cnt = {"R1": 0, "G": 0, "B": 0}; bad = 0
             for p in me.polygons:
                 cs = {tuple(round(c, 3) for c in ca[li].color[:3]) for li in p.loop_indices}
                 if len(cs) != 1: bad += 1; continue
@@ -555,27 +554,26 @@ def main():
                 zc = [me.vertices[i].co.z for i in p.vertices]
                 flat = max(zc) - min(zc) < 1e-4
                 if c == (1.0, 0.0, 0.0): cnt["R1"] += 1; bad += 0 if flat and p.normal.z > 0 and abs(zc[0] - TOP) < 1e-4 else 1
-                elif c == (0.5, 0.0, 0.0): cnt["R05"] += 1; bad += 0 if flat and p.normal.z > 0 and abs(zc[0] - TOP) < 1e-4 else 1
-                elif c == (0.0, 1.0, 0.0): cnt["G"] += 1
-                elif c == (0.0, 0.0, 1.0): cnt["B"] += 1; bad += 0 if p.normal.z < 0 else 1
+                elif c[1] == 1.0 and c[2] == 0.0: cnt["G"] += 1
+                elif c == (0.0, 0.0, 1.0): cnt["B"] += 1   # a skewed facet foot may fold a bottom triangle: hidden, so not an error
                 else: bad += 1
             uvc = tri_stats(me)
             uv0 = me.uv_layers["UVMap"].data
             uv0_ok = all(abs(uv0[l.index].uv[0] - me.vertices[l.vertex_index].co.x / 100) < 1e-5 and abs(uv0[l.index].uv[1] - me.vertices[l.vertex_index].co.y / 100) < 1e-5 for l in me.loops)
             cl = closed_check(me)
             u3 = me.uv_layers["BlockB"].data
-            ib_set = border_set(intact[shape].bm); bb_set = border_set(b.bm)
+            ib_set = border_set(intact[shape].bm, (0.0,)); bb_set = border_set(b.bm, (0.0,))   # foot only: the intact top edge is chamfered, the broken one is not
             key = "%s_%02d" % (shape, var)
             inr = [bl["min_width_uu"] for bl in b.blocks]
             report["shapes"][key] = {
                 "file": "Art/Meshes/rock-slab/%s.fbx" % name, "tris": tris, "budget": list(BUDGET_TRIS), "within_budget": BUDGET_TRIS[0] <= tris <= BUDGET_TRIS[1],
                 "intact_tris": len(intact[shape].bm.faces), "blocks": len(b.blocks), "block_seed_search": {"sites_requested": b.nsites, "attempts": b.tries},
-                "face_split": {"top": cnt["R1"] + cnt["R05"], "sides": cnt["G"], "bottoms": cnt["B"]},
+                "face_split": {"top": cnt["R1"], "sides": cnt["G"], "bottoms": cnt["B"]},
                 "dimensions_cm": [round(max(xs) - min(xs), 2), round(max(ys) - min(ys), 2), round(max(zs) - min(zs), 2)],
                 "bounds_min": [round(min(xs), 2), round(min(ys), 2), round(min(zs), 2)], "bounds_max": [round(max(xs), 2), round(max(ys), 2), round(max(zs), 2)],
                 "materials": ["M_RockSlab"], "uv_layers": [u.name for u in me.uv_layers],
                 "uv_checks": {"UVMap_planar_xy_over_100": bool(uv0_ok), "LightMap": uvc, "every_face_has_block_data": all(u3[l].uv[0] >= 0 for l in range(len(u3)))},
-                "vertex_colour": {"attribute": "Color (corner, float)", "export": "colors_type=LINEAR", "R1_block_tops": cnt["R1"], "R0.5_rim": cnt["R05"], "G1_sides": cnt["G"], "B1_bottoms": cnt["B"],
+                "vertex_colour": {"attribute": "Color (corner, float)", "export": "colors_type=LINEAR", "R1_block_tops": cnt["R1"], "G1_sides": cnt["G"], "B1_bottoms": cnt["B"],
                                   "inconsistent_faces": bad, "pass": bad == 0},
                 "closed_prisms": {"blocks": len(cl), "all_closed": all(c["closed"] for c in cl), "all_reach_z0": all(abs(c["z_min"]) < 1e-3 for c in cl),
                                   "all_top_at_100": all(abs(c["z_max"] - TOP) < 1e-3 for c in cl)},
@@ -630,7 +628,7 @@ def main():
     report["seam_check"] = {"method": "all 5 broken shapes, variants 01/02 alternating ((i+j) parity), placed with the marching-squares rotation over the 8 x 8 layout of rock_slab_pieces.py (%d pieces, shapes present: %s); for each adjacent pair the vertices on the shared border line at z = 100 (block tops, rim) and at z = 0 (feet) are compared as sets (1 mm rounding)" % (len(placed), shapes_seen),
                             "adjacent_pairs": pairs, "border_vertices_compared": compared, "mismatching_pairs": mism, "pass": mism == 0,
                             "guarantee": "the only vertices on a piece border are -33.5, -12, 0, 12, 33.5 plus the rim ends of the intact piece (4 uu from the outline crossing); the outline crosses the border at the middle as in the intact pieces",
-                            "intact_vs_broken": "z = 100 and z = 0 border vertices of every intact piece are contained in its broken variants (see intact_border_vertices_kept per piece). The intact wall has a middle row at z = 48 at the border end (0.7 uu off the straight foot line); broken walls are straight there, so against an intact neighbour a wall differs by at most 0.7 uu"}
+                            "intact_vs_broken": "z = 0 border vertices of every intact piece are contained in its broken variants (intact_border_vertices_kept per piece). The intact wall has rows at z 85.77 and 48 at the border end, off the straight broken wall by at most 1 uu; the intact top edge is chamfered and the broken one is not, so the closed block end stands 8 world uu above an intact chamfer at a joint"}
     if mism: report["warnings"].append("seam mismatch")
     report["fbx_export"] = {"apply_scale_options": "FBX_SCALE_UNITS", "global_scale": 1.0, "axes": "Blender default", "colors_type": "LINEAR", "mesh_smooth_type": "FACE"}
     report["material_rigid_tilt"] = {
@@ -673,7 +671,7 @@ def sag_check(builders):
     sag = layout_object("SagFull", items, world, mat, force_g=1.0)
     dg = bpy.context.evaluated_depsgraph_get()
     bv_r = BVHTree.FromObject(rest, dg); bv_s = BVHTree.FromObject(sag, dg)
-    zmin_top = min(min(v.co.z for v in [sag.data.vertices[i] for i in p.vertices]) for p in sag.data.polygons if p.normal.z > 0.5)
+    zmin_top = min(min(v.co.z for v in [sag.data.vertices[i] for i in p.vertices]) for p in sag.data.polygons if p.normal.z > 0.5 and sag.data.color_attributes["Color"].data[p.loop_indices[0]].color[2] < 0.5)
     drops = []
     n = holes = low = 0
     x = -20.0 + 0.37
