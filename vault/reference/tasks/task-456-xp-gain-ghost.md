@@ -1,9 +1,9 @@
 ---
 id: task-456-xp-gain-ghost
 description: "Global task: on an XP gain a pale ghost fill shows the new XP at once; the cyan fill then catches up."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP gain ghost on the XP bar
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read xp-level-up, sys-hud-health-bar (chunk: delay 0.4 s, rate 7 per s, event armed): the ghost mirrors it. No conflict; xp-level-up edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-456-03-doc
+- next_step: none
 - started: 2026-11-06T01:01:19Z
 - waiting_for: none
-- result: open
+- result: Done. Done (commit cea4a039). New sys-hud-xp-bar (child of sys-hud): URRXPStatusWidget rules, event-armed update, values CatchUpDelay 0.4 s, CatchUpRate 7/s, snap 0.001, GhostColor #c8f6ff (provisional, Q32), test RogueRigs.HUD.XPGhost. wbp-xp-status updated: parent class, XPGhostBar row in the anchors table, XPBar background alpha 0, draw order ghost/fill/ticks, ShowXP level text only, verified task-456-02. Lint clean (vault OK, no problem).
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -38,7 +38,7 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 3. task-456-03-doc (vault/reference/tasks/task-456-xp-gain-ghost/task-456-03-doc.md) — doc: Docs describe the ghost.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-456-01-ghost-logic]] — step 1, cpp.
 - [[task-456-02-ghost-bar]] — step 2, bp.
 - [[task-456-03-doc]] — step 3, doc.

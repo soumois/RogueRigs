@@ -464,4 +464,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-453-alert-bar-redesign]] — The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay. Status done.
 - [[task-454-swarm-icons-fixed]] — Until the first horde front is over, kills no longer move the swarms on the alert bar; afterwards they do as now. Status done.
 - [[task-455-xp-bar-ticks]] — Thin light ticks split the XP bar into 5 equal parts. Status done.
+- [[task-456-xp-gain-ghost]] — On an XP gain a pale ghost fill shows the new XP at once and the cyan fill catches up, the mirror of the health damage chunk. Status done.
 - [[task-457-radar-frame-ore]] — The radar gets a frame in the unified look, and the ore count moves into that frame instead of floating beside it. Status done.
