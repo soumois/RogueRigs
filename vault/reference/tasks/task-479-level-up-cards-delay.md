@@ -61,7 +61,7 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - executor_usage: runs 1, turns 12, context start 17k peak 88k, resumes 0, 6 min, units 0.23 M
 - planning_tokens: input 15, cache write 35116, cache read 306038, output 10554
 - planning_usage: aeff9c58 "Plan card delay and rock slab look" 1/2 (tasks 479, 480), units 0.13 M
-- result: Done. sys-level-up gives ChoiceDelay 1.2 s with task-479 and the 72 frames (1.200 s) measure; lint clean; commit 5ee49665.
+- result: Done. The 3-card screen opens 1.2 s after a level-up (ChoiceDelay 1.8 -> 1.2, f72f7825), measured 72 frames = 1.200 s with BP_Miner and the real game mode (Integration.LevelUpUpgradeLoop), game running during the wait; two levels at once wait once then chain (LevelUp.ChainedOffers); burst, push, heal, chest screen code unchanged; 18 tests pass; sys-level-up updated (5ee49665). Cheats.LightHalo fails on a point light count on the miner, unrelated to the delay, not touched. Feel not seen in game by the Executor. Cost: 0.23 M units in the executor run, per subtask included in it.
 
 ## Questions
 Decided 2026-11-06 (owner "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )"): every default below is accepted; values provisional, owner 2026-11-06.
