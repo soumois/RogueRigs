@@ -20,7 +20,7 @@ status: done
 - executor_usage: runs 1, turns 86, context start 18k peak 175k, resumes 1, 14 min, units 1.30 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: Done. Commit 128c0704: sys-grid records BlockHeight 153 (task-475-01 bea54ef4, was 100, provisional), BarrelHeight 100, the block top per cell type (GetCellBlockTopHeight) and the barrel fit on BarrelHeight; bp-arena-grid notes BlockHeight is not overridden and follows the C++ default (153, was 100). No Blueprint changed, so no other bp node. Lint clean.
+- result: Done. Block height 100 -> 153 uu (head top of the 0.9 miner, 170 x 0.9), one C++ default ARRArenaGrid BlockHeight (bea54ef4); barrels kept at 100 by a new BarrelHeight; pieces, crystals, collision and dig face follow. A1 A2 A4 A5 A7 met (tests Dig, Barrel, Weapons, Explosions, Ore, Shooter: 62/63, the failing RogueRigs.Weapons.ImpactSparkAsset already failed before this task). A3 crystals and damaged plates seen; crack colour, marked outline, heal ore and shot impacts not seen. A6 ambiguous, to the owner: robots 2-3 cells behind a wall now show only their upper part at the normal camera (Saved/Captures/Wall475Sheets/c3_crop.png). A8 sheets in Saved/Captures/Wall475Sheets/. Docs: sys-grid, bp-arena-grid (128c0704).
 
 ## Subtasks
 1. task-475-01-block-height (vault/reference/tasks/task-475-wall-height-miner/task-475-01-block-height.md) — cpp: The terrain block height becomes the shrunk miner height, as one tunable value, with everything on the blocks following.
