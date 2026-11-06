@@ -3,7 +3,7 @@ id: task-483-02-executor-traces
 description: "Doc: Keep executor traces in agent-usage.js under the size limit, with usage-agents.json still free of them."
 parent: task-483-executor-budget-alert-traces
 kind: task
-status: todo
+status: in-progress
 ---
 # Budget alert at closing and executor traces: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T22:54:19Z
 - waiting_for: none
 - result: open
 

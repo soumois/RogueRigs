@@ -13,9 +13,13 @@ status: in-progress
 - gdd_check: No gdd node touched: this is crew process, outside the game milestones, so no gdd conflict and no milestone scope issue. Crew nodes read: agent-planner, agent-executor, orchestration-protocol, orchestrator-lessons, task-spec. Two targeted code reads, reason: an alert per closed subtask looks unusable with zero subtask rows (agent-executor cost). Fact: task-cost.js already computes turns and units of the whole executor run and writes them on the global at each closed subtask, so the alert compares that running total to the budget. Limit: turns after the last closure are not counted (Q7). agent-usage.js already strips traces from usage-agents.json; line 283 is the bp and cpp restriction. No open value besides the size limit (Q6). Depends on task-482 (level field and figures): run it after 482 is done. Do not run alongside task-481 or another executor: closing subtasks rewrites usage-snapshot.json.
 - confirmed_by_owner: yes (2026-11-06, "Ok")
 - milestone: M2
-- next_step: task-483-01-budget-alert
+- next_step: task-483-02-executor-traces
 - started: 2026-11-06T22:48:40Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 79932, cache read 648293, output 19098
+- executor_usage: runs 1, turns 11, context start 17k peak 92k, resumes 0, 5 min, units 0.26 M
+- planning_tokens: input 7, cache write 23040, cache read 106026, output 9799
+- planning_usage: a38e0f5c "Plan verification levels and cost alerts" 1/2 (tasks 482, 483), units 0.09 M
 - result: open
 
 ## Questions
