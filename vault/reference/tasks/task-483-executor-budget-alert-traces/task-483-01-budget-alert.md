@@ -3,7 +3,7 @@ id: task-483-01-budget-alert
 description: "Doc: Print a non-blocking alert at closing when the executor run exceeds the budget of its level."
 parent: task-483-executor-budget-alert-traces
 kind: task
-status: todo
+status: in-progress
 ---
 # Budget alert at closing and executor traces: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T22:48:40Z
 - waiting_for: none
 - result: open
 

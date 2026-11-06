@@ -3,7 +3,7 @@ id: task-483-executor-budget-alert-traces
 description: "Global task: Measures executors against their level: non-blocking budget alert at closing, and executor traces kept in agent-usage.js. Open to run or review the measurement."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Budget alert at closing and executor traces
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Ok")
 - milestone: M2
 - next_step: task-483-01-budget-alert
-- started: open
+- started: 2026-11-06T22:48:40Z
 - waiting_for: none
 - result: open
 
