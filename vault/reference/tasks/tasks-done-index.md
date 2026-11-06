@@ -467,3 +467,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-456-xp-gain-ghost]] — On an XP gain a pale ghost fill shows the new XP at once and the cyan fill catches up, the mirror of the health damage chunk. Status done.
 - [[task-457-radar-frame-ore]] — The radar gets a frame in the unified look, and the ore count moves into that frame instead of floating beside it. Status done.
 - [[task-458-weapon-slots-style]] — The frames of the 4 weapon slots take the retained unified look; their contents stay. Status done.
+- [[task-459-level-up-pause-delay]] — The upgrade cards open 1 s later after a level-up, so the level-up effect can be seen. Status done.

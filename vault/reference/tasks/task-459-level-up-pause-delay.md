@@ -1,9 +1,9 @@
 ---
 id: task-459-level-up-pause-delay
 description: "Global task: The upgrade cards open 1 s later after a level-up, so the level-up effect can be seen."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # One more second before the level-up cards
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read xp-level-up (level-up sequence: about 0.8 s then pause and cards; level-up effect of task-441 and 449). No conflict. "1 sec" read as +1 s on the existing 0.8 s, hence 1.8 s; xp-level-up edited at confirmation. Whether the game runs or freezes during the wait: Q35.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-459-02-doc
+- next_step: none
 - started: 2026-11-06T04:09:55Z
 - waiting_for: none
-- result: open
+- result: Done. sys-level-up data line: ChoiceDelay 1.8 s current (was 0.8 s, task-459); gotchas: LevelUpUpgradeLoop measures 108 frames = 1.800 s with BP_Miner. xp-level-up already said 1.8 s (edited at confirmation). Lint clean. Commit 906f3398.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -27,6 +27,6 @@ Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisi
 2. task-459-02-doc (vault/reference/tasks/task-459-level-up-pause-delay/task-459-02-doc.md) — doc: Record the new delay.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-459-01-delay]] — step 1, cpp.
 - [[task-459-02-doc]] — step 2, doc.

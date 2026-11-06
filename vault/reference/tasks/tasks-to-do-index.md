@@ -12,7 +12,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 
 
-- [[task-459-level-up-pause-delay]] — The upgrade cards open 1 s later after a level-up, so the level-up effect can be seen. Status in-progress.
 - [[task-460-alert-letters-readable]] — On the alert bar the C, B and S letters stay readable when a red horde "!" is at or moves over their position. Status todo.
 - [[task-461-bottom-hud-panel]] — Health bar and the four weapon slots in one riveted panel, XP bar in its own riveted frame with a framed Lv cap, as in the retained mockup. Status todo.
 - [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status todo.
