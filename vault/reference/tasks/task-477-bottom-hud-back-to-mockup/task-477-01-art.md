@@ -3,7 +3,7 @@ id: task-477-01-art
 description: "Art: Frame pieces for the health strip, block frame, slot cell, XP rail and Lv plate, taken from the mockup per Q1."
 parent: task-477-bottom-hud-back-to-mockup
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:36:24Z
 - waiting_for: none
 - result: open
 

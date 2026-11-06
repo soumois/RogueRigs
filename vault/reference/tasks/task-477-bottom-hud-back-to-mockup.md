@@ -3,7 +3,7 @@ id: task-477-bottom-hud-back-to-mockup
 description: "Global task: bottom HUD redone from the retained art mockup, reworked in at most 6 capture rounds until it matches."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-477-01-art
-- started: open
+- started: 2026-11-06T19:36:24Z
 - waiting_for: none
 - result: open
 
