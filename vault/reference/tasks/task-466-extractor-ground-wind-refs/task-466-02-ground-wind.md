@@ -3,7 +3,7 @@ id: task-466-02-ground-wind
 description: "Bp: The extractor ground blast shows the mockup layout with these shapes, height fade and takeoffs kept."
 parent: task-466-extractor-ground-wind-refs
 kind: task
-status: in-progress
+status: cancelled
 ---
 # Extractor ground wind redone from the owner references: bp
 

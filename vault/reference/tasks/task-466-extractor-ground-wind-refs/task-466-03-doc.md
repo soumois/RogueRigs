@@ -3,7 +3,7 @@ id: task-466-03-doc
 description: "Doc: Docs describe the new ground wind and the owner references it follows."
 parent: task-466-extractor-ground-wind-refs
 kind: task
-status: todo
+status: cancelled
 ---
 # Extractor ground wind redone from the owner references: doc
 

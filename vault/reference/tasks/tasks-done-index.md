@@ -471,3 +471,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-460-alert-letters-readable]] — On the alert bar the C, B and S letters stay readable when a red horde "!" is at or moves over their position. Status done.
 - [[task-461-bottom-hud-panel]] — Health bar and the four weapon slots in one riveted panel, XP bar in its own riveted frame with a framed Lv cap, as in the retained mockup. Status done.
 - [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status done.
+- [[task-466-extractor-ground-wind-refs]] — The extractor ground blast is redone after the owner sprite sheet and in-game mockup: flattened swirl rings, curved wind streaks, dust puffs pushed outward. Status cancelled.
