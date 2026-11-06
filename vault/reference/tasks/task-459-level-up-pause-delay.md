@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read xp-level-up (level-up sequence: about 0.8 s then pause and cards; level-up effect of task-441 and 449). No conflict. "1 sec" read as +1 s on the existing 0.8 s, hence 1.8 s; xp-level-up edited at confirmation. Whether the game runs or freezes during the wait: Q35.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-459-01-delay
+- next_step: task-459-02-doc
 - started: 2026-11-06T04:09:55Z
 - waiting_for: none
 - result: open

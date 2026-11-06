@@ -3,7 +3,7 @@ id: task-459-02-doc
 description: "Doc: Record the new delay."
 parent: task-459-level-up-pause-delay
 kind: task
-status: todo
+status: in-progress
 ---
 # One more second before the level-up cards: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:17:23Z
 - waiting_for: none
 - result: open
 
