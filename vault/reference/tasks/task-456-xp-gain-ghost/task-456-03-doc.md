@@ -3,7 +3,7 @@ id: task-456-03-doc
 description: "Doc: Docs describe the ghost."
 parent: task-456-xp-gain-ghost
 kind: task
-status: todo
+status: in-progress
 ---
 # XP gain ghost on the XP bar: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T01:10:36Z
 - waiting_for: none
 - result: open
 
