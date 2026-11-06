@@ -98,6 +98,9 @@ Owner 2026-11-04 "Tout par défaut" ([[task-425-miner-floor-wall-light]]): a lig
 - Shadow length: location 0 puts the light at the capsule centre, world Z 90.15 in PIE, under the block top at Z 100 ([[sys-grid]] `BlockHeight`). A floor point behind a wall is always hidden, so the shadow has no end of its own: it runs from the wall foot to the edge of the light (800 uu, about 12 cells). Block tops get none of this light. With the light above the block top, at height h, a wall at distance d casts a shadow d x 100 / (h - 100) long.
 - Shadow off: untick Cast Shadows on `FloorWallLight` in BP_Miner, compile, save. The pool stays.
 - Unverified: no capture (the owner looks in game, A6); GPU cost not measured (Q17, [[perf-risks]]).
+- Calibration on owner image 2 (task-473-01, d2415904, owner 2026-11-06 "Ok pour tout le reste", provisional; [[task-473-miner-light-calibration]]): intensity 4 -> 6.5, attenuationRadius 800 -> 700, lightFalloffExponent 4 -> 3, lightColor 255/194/158 -> 255/175/60 (warm orange). Unchanged: relative location (0, 0, 0), channel 1 only, castShadows true, Unitless, no inverse squared falloff. Result: orange centre fading to red-magenta, pool size close to image 2; floor near the miner R channel p95 about 219 (above the about 205 rule; image 2 itself about 252), outer ring redder than the image's pink-violet. Captures `Saved/Captures/task473-*` (local).
+- Set headless, editor closed: `Tools/unreal/miner_floor_light.py` (`intensity= radius= exponent= color=r,g,b`; no argument reads back; never writes the location; copy to a path without spaces).
+- Revert to the pre-task-473 pool: `miner_floor_light.py intensity=4 radius=800 exponent=4 color=255,194,158`, or the same values on the component in BP_Miner, compile, save.
 
 - actor_shadow (task-472, commits 890894ef, 0028c7a2): BP_Miner keeps the inherited C++ `BlobShadow` (light-independent purple-grey disc, [[sys-blob-shadow]]); per-type `Opacity` 0.6 and `SizeScale` 1.2 (owner 2026-11-06 Q3, provisional) are its Blueprint defaults, no value overridden in this Blueprint. Footprint = capsule diameter (68 uu, radius 34 unchanged by the task-474 mesh scale).
 
@@ -106,6 +109,7 @@ Owner 2026-11-04 "Tout par défaut" ([[task-425-miner-floor-wall-light]]): a lig
 - [[task-474-miner-scale-down]] — set the mesh scale 0.9.
 - [[task-425-miner-floor-wall-light]] — added FloorWallLight.
 - [[task-445-miner-light-wall-shadows]] — turned on its wall shadows.
+- [[task-473-miner-light-calibration]] — calibrated the FloorWallLight colour, intensity and size on owner image 2.
 - [[task-410-right-hand-offset-live]] — added the right arm IK and hand rotation nodes.
 - [[task-411-right-hand-offset-rifle-stays]] — made the rifle stay in place under the offset.
 - [[task-400-burst-rifle-in-hand]] — added WeaponSocket_R.

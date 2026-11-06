@@ -38,3 +38,4 @@ Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur (
 - [[task-473-01-light-match-loop]] — step 1, bp.
 - [[task-473-02-capture]] — step 2, capture.
 - [[task-473-03-doc]] — step 3, doc.
+- [[bp-miner]] — holds the calibrated FloorWallLight values and their revert.
