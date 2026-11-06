@@ -694,11 +694,16 @@ FTransform ARRArenaGrid::GetFloorInstanceTransform(FIntPoint Cell) const
 	return FTransform(FRotator::ZeroRotator, Location, FVector(HorizontalScale, HorizontalScale, FloorThickness / MeshBaseSize));
 }
 
+float ARRArenaGrid::GetCellBlockTopHeight(FIntPoint Cell) const
+{
+	return IsValidCell(Cell) && Cells[GetCellIndex(Cell)] == ERRCellType::Barrel ? BarrelHeight : BlockHeight;
+}
+
 FTransform ARRArenaGrid::GetBlockInstanceTransform(FIntPoint Cell) const
 {
-	// The block spans [0, BlockHeight], or [-FloorThickness, BlockHeight] when it fills the slab of its floorless cell.
+	// The block spans [0, Top], or [-FloorThickness, Top] when it fills the slab of its floorless cell (Top: BarrelHeight for a barrel, else BlockHeight).
 	const float Bottom = bBlocksFillFloorSlab ? -FloorThickness : 0.f;
-	const float Height = BlockHeight - Bottom;
+	const float Height = GetCellBlockTopHeight(Cell) - Bottom;
 	const float HorizontalScale = CellSize / MeshBaseSize;
 	const FVector Location((Cell.X + 0.5f) * CellSize, (Cell.Y + 0.5f) * CellSize, Bottom + 0.5f * Height);
 	return FTransform(FRotator::ZeroRotator, Location, FVector(HorizontalScale, HorizontalScale, Height / MeshBaseSize));
@@ -736,9 +741,9 @@ FTransform ARRArenaGrid::GetBlockRenderTransform(FIntPoint Cell) const
 	{
 		return GetBlockInstanceTransform(Cell);
 	}
-	// Uniform scale: the mesh fits one cell in width and BlockHeight in height. Its bounds bottom centre (the pivot of a
+	// Uniform scale: the mesh fits one cell in width and BarrelHeight in height. Its bounds bottom centre (the pivot of a
 	// bottom-pivot mesh) sits on the cell centre at the floor top (z = 0): a barrel cell keeps its floor slab, the barrel stands on it.
-	const float Scale = FMath::Min(CellSize / Width, BlockHeight / Size.Z);
+	const float Scale = FMath::Min(CellSize / Width, BarrelHeight / Size.Z);
 	const FVector Anchor(Box.GetCenter().X, Box.GetCenter().Y, Box.Min.Z);
 	const FVector Location = FVector((Cell.X + 0.5f) * CellSize, (Cell.Y + 0.5f) * CellSize, 0.f) - Scale * Anchor;
 	return FTransform(FRotator::ZeroRotator, Location, FVector(Scale));

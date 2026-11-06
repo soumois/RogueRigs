@@ -539,7 +539,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Debris", meta = (ClampMin = 0))
 	int32 DigDebrisPoolSize = 16;
 
-	/** Height above the floor where a burst starts, in uu (provisional; blocks are 100 uu high). */
+	/** Height above the floor where a burst starts, in uu (provisional; blocks are 153 uu high since task-475-01, 100 before). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Dig Debris", meta = (ClampMin = 0, Units = "cm"))
 	float DigDebrisSpawnHeight = 70.f;
 

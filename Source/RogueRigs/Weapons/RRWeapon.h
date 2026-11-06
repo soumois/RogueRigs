@@ -341,7 +341,7 @@ protected:
 
 	/**
 	 * Height of the shots above the floor under the owning miner, in uu, for shots without a hand weapon and for the low-Muzzle
-	 * fallback. Must stay below the grid's BlockHeight (100 by default) so shots stop on blocks; checked at acquisition.
+	 * fallback. Must stay below the grid's BlockHeight (153 by default since task-475-01) so shots stop on blocks; checked at acquisition.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Projectile", meta = (ClampMin = 0, Units = "cm"))
 	float ShotHeight = 50.f;

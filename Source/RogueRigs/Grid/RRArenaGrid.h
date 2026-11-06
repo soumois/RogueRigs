@@ -403,6 +403,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	float GetBlockHeight() const { return BlockHeight; }
 
+	/** Height of a barrel cell above the floor top in uu (BarrelHeight). */
+	float GetBarrelHeight() const { return BarrelHeight; }
+
+	/** Top height above the floor top of the block in Cell: BarrelHeight for a barrel cell, BlockHeight otherwise. */
+	float GetCellBlockTopHeight(FIntPoint Cell) const;
+
 	/** Spawn cell read from the layout; (-1, -1) when no layout is loaded or it has no spawn. */
 	UFUNCTION(BlueprintPure, Category = "Grid")
 	FIntPoint GetSpawnCell() const;
@@ -792,12 +798,12 @@ protected:
 	/** Actor-space rest transform of the floor slab instance of a cell. */
 	FTransform GetFloorInstanceTransform(FIntPoint Cell) const;
 
-	/** Actor-space rest transform of the block instance of a cell: the MeshBaseSize cube filling the block volume. Collision instances always use it. */
+	/** Actor-space rest transform of the block instance of a cell: the MeshBaseSize cube filling the block volume up to GetCellBlockTopHeight. Collision instances always use it. */
 	FTransform GetBlockInstanceTransform(FIntPoint Cell) const;
 
 	/**
 	 * Actor-space rest transform of the rendering instance of a block cell. Barrels: BarrelMesh uniformly scaled from its bounds to fit
-	 * CellSize in width and BlockHeight in height (smaller factor), bounds bottom centre on the cell centre at the floor top (z = 0:
+	 * CellSize in width and BarrelHeight in height (smaller factor), bounds bottom centre on the cell centre at the floor top (z = 0:
 	 * a barrel cell keeps its floor slab and the barrel stands on it). Other types, or a null / boundless BarrelMesh: GetBlockInstanceTransform.
 	 */
 	FTransform GetBlockRenderTransform(FIntPoint Cell) const;
@@ -1057,9 +1063,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
 	float CellSize = 67.f;
 
-	/** Height of a block above the floor top (provisional). */
+	/**
+	 * Height of a rock, ore, heal ore or special ore block above the floor top: 153 since task-475-01 (owner 2026-11-06,
+	 * provisional: the top of the 10 % smaller miner's head at rest, 170 x 0.9; was 100). Rock pieces, crystals, collision
+	 * and the dig face follow it. Barrels use BarrelHeight. Keep it above the weapons' ShotHeight so shots stop on blocks.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
-	float BlockHeight = 100.f;
+	float BlockHeight = 153.f;
+
+	/** Height of a barrel cell (render fit and collision) above the floor top: 100, the block height before task-475-01, so barrels stay unchanged when BlockHeight changes. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
+	float BarrelHeight = 100.f;
 
 	/** Thickness of the floor slab under the floor top; thick so the asteroid edge reads as a cliff. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid", meta = (ClampMin = "1.0", Units = "cm"))
