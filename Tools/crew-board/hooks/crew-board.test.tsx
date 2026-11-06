@@ -168,6 +168,42 @@ test('the task view shows the token table and the executor cost from the usage s
   await ui.unmount()
 })
 
+test('a usage snapshot over 4 MiB is read through its compact copy usage-agents.json', async ($, on) => {
+  const clock = mock.clock(on)
+  on('command.register', () => ({ value: { command: 'crew' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  const fwd = (p: string) => p.split(String.fromCharCode(92)).join('/')
+  const agents = JSON.stringify([
+    { kind: 'agent', id: 'exec1', role: 'pilot', type: 'executor', globalTask: '318', input: 10, cacheWrite: 2000, cacheRead: 100000, output: 1500, seconds: 120, models: ['claude-sonnet-5-5'] },
+  ])
+  const big = { name: 'usage-snapshot.json', kind: 'file' as const, size: 5 * 1024 * 1024, mtimeMs: 1, isLink: false }
+  on('fs.list', (_, e) => {
+    const p = fwd(e.path)
+    if (p.endsWith('/vault/scripts')) return { value: [big, file('usage-agents.json')] }
+    if (p === DIR) return { value: [file('task-318-preload.md'), dir('task-318-preload')] }
+    if (p.endsWith('/task-318-preload')) return { value: [file('task-318-01-preload.md')] }
+
+    return { value: [] }
+  })
+  on('fs.read', (_, e) => {
+    const p = fwd(e.path)
+    if (p.endsWith('usage-snapshot.json')) throw new Error('file over 4 MiB')
+    if (p.endsWith('usage-agents.json')) return { value: agents }
+
+    return { value: p.endsWith('/task-318-preload.md') ? TASK : SUB }
+  })
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  await clock.advance(200)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await ui.press({ key: 't-task-318-preload' })
+  await ui.press({ key: 'costs' })
+  expect((await ui.find({ type: 'Text', text: /sonnet/ }))?.text).toMatch(/sonnet/)
+  await ui.unmount()
+})
+
 test('a running planner and a big executor transcript are read through the helper script', async ($, on) => {
   const clock = mock.clock(on)
   on('command.register', () => ({ value: { command: 'crew' } }))

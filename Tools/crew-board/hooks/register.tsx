@@ -536,15 +536,16 @@ export const register: Register = (on, options) => {
 
   const loadUsage = async () => {
     let changed = false
-    const entry = (await io.list(scriptsDir)).find(f => f.name === 'usage-snapshot.json')
+    // usage-agents.json: the snapshot's agent records without debug traces, written by agent-usage.js with every snapshot,
+    // because the snapshot itself passed the module's 4 MiB read limit
+    const scripts = await io.list(scriptsDir)
+    const compact = scripts.find(f => f.name === 'usage-agents.json')
+    const entry = compact ?? scripts.find(f => f.name === 'usage-snapshot.json')
     if (entry && entry.mtimeMs !== usageMtime) {
-      // the snapshot passes 4 MiB with the agent debug traces (the module's read limit): a helper script strips them
-      if (pluginRoot === '') pluginRoot = fwd(await io.root())
-      const out = await io.run(['node', `${pluginRoot}/snapshot_agents.js`, `${scriptsDir}/usage-snapshot.json`])
-      if (out.exitCode === 0) snapRecords = JSON.parse(out.stdout) as Record<string, unknown>[]
+      if (compact) snapRecords = JSON.parse(await io.read(`${scriptsDir}/usage-agents.json`)) as Record<string, unknown>[]
       else if (entry.size < 4 * 1024 * 1024)
         snapRecords = ((JSON.parse(await io.read(`${scriptsDir}/usage-snapshot.json`)).records ?? []) as Record<string, unknown>[]).filter(r => r.kind === 'agent')
-      else throw new Error('usage snapshot over 4 MiB and snapshot_agents.js failed')
+      else throw new Error('usage-snapshot.json is over 4 MiB and usage-agents.json is missing: run node vault/scripts/agent-usage.js --snapshot')
       usageMtime = entry.mtimeMs
       changed = true
     }
@@ -669,11 +670,13 @@ export const register: Register = (on, options) => {
       let files = 0
       for (const rec of cache.values()) files += 1 + rec.subs.size
       await publish()
+      let usageError = ''
       try {
         await loadUsage()
-      } catch {
-        // a missing or half-written snapshot is retried at the next change
+      } catch (err) {
+        // a missing or half-written snapshot is retried at the next change; the reason is shown under the board
         usageMtime = -1
+        usageError = `costs: ${err instanceof Error ? err.message : String(err)}`
       }
       await pollLive()
       await io.patchScan(s => ({
@@ -684,7 +687,7 @@ export const register: Register = (on, options) => {
         files,
         at: Date.now(),
         frame: s.frame + 1,
-        error: '',
+        error: usageError,
       }))
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
@@ -876,7 +879,7 @@ export const register: Register = (on, options) => {
             ? `reading the vault… ${scanInfo.loaded}/${scanInfo.total}`
             : scanInfo.phase === 'error'
               ? `error: ${scanInfo.error}`
-              : `updated ${clock(scanInfo.at)} · every ${Math.round(refreshMs / 1000)}s · ${scanInfo.files} nodes cached`}
+              : `updated ${clock(scanInfo.at)} · every ${Math.round(refreshMs / 1000)}s · ${scanInfo.files} nodes cached${scanInfo.error ? ` · ${scanInfo.error}` : ''}`}
         </Text>
       </Box>
     )

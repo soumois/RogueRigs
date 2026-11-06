@@ -58,3 +58,6 @@ desktop.ini
 
 # Python bytecode (Blender scripts)
 __pycache__/
+
+# compact agent records for the crew-board mod, rebuilt by agent-usage.js --snapshot
+vault/scripts/usage-agents.json

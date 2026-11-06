@@ -308,6 +308,9 @@ for (const r of scanned) records.set(r.kind + ':' + r.id, r);
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
   fs.writeFileSync(SNAP_FILE, '{"version":5,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
+  // The crew-board mod reads at most 4 MiB per file and the snapshot passed that with the debug traces: it reads this
+  // compact copy instead (agent records without traces; git-ignored, rebuilt with every snapshot).
+  fs.writeFileSync(path.join(__dirname, 'usage-agents.json'), '[\n' + all.filter(r => r.kind === 'agent').map(({ plannerTrace, agentTrace, ...r }) => JSON.stringify(r)).join(',\n') + '\n]\n');
 }
 
 // 3. derive the reports
