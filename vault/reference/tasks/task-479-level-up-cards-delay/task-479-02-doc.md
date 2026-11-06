@@ -3,7 +3,7 @@ id: task-479-02-doc
 description: "Doc: The level-up system doc gives the new delay."
 parent: task-479-level-up-cards-delay
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up cards after 1.2 s instead of 1.8 s: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T20:53:52Z
 - waiting_for: none
 - result: open
 
