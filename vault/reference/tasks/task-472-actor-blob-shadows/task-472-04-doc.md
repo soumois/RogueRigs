@@ -3,7 +3,7 @@ id: task-472-04-doc
 description: "Doc: Docs describe the shadow component, its settings and the material."
 parent: task-472-actor-blob-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Light-independent purple-grey shadows under actors: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T18:19:45Z
 - waiting_for: none
 - result: open
 
