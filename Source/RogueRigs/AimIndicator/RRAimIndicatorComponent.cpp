@@ -42,7 +42,7 @@ URRAimIndicatorComponent::URRAimIndicatorComponent(const FObjectInitializer& Obj
 	// After the miner's tick (aim and yaw, TG_PrePhysics), its movement and the hand pose: placed on this frame's Muzzle and aim.
 	PrimaryComponentTick.TickGroup = TG_PostPhysics;
 	bCanEverAffectNavigation = false;
-	LaserLength = MaxLength;
+	LaserLength = TraceReach;
 }
 
 UObject* URRAimIndicatorComponent::ResolveAsset(const FSoftObjectPath& Path, const TCHAR* What, FSoftObjectPath& CachedPath, TWeakObjectPtr<UObject>& Cache, bool& bWarned)
@@ -71,7 +71,7 @@ void URRAimIndicatorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	LaserLength = MaxLength;
+	LaserLength = TraceReach;
 
 	UStaticMesh* PlaneMesh = nullptr;
 	UMaterialInterface* LaserMaterial = nullptr;
@@ -143,34 +143,9 @@ void URRAimIndicatorComponent::ApplyParameters()
 	IndicatorMaterialInstance->SetScalarParameterValue(OpacityParameterName, Opacity);
 	IndicatorMaterialInstance->SetScalarParameterValue(CoreFracParameterName, CoreFrac);
 	IndicatorMaterialInstance->SetScalarParameterValue(GlowOpacityParameterName, GlowOpacity);
-	PushedTipFadeFrac = -1.f;
-	UpdateTipFade(LaserLength);
-}
-
-float URRAimIndicatorComponent::ComputeTipFadeFrac(float Length) const
-{
-	// Fixed fade length at the tip (task-423 Q3); a line shorter than twice TipFadeLength fades over its last half.
-	constexpr float MaxTipFadeFrac = 0.5f;
-	if (Length <= KINDA_SMALL_NUMBER)
-	{
-		return MaxTipFadeFrac;
-	}
-	return FMath::Min(FMath::Max(TipFadeLength, 0.f) / Length, MaxTipFadeFrac);
-}
-
-void URRAimIndicatorComponent::UpdateTipFade(float Length)
-{
-	if (!IndicatorMaterialInstance)
-	{
-		return;
-	}
-	const float Frac = ComputeTipFadeFrac(Length);
-	// Written only when the length changed it: no material parameter write per tick while the laser keeps its length.
-	if (Frac != PushedTipFadeFrac)
-	{
-		PushedTipFadeFrac = Frac;
-		IndicatorMaterialInstance->SetScalarParameterValue(TipFadeFracParameterName, Frac);
-	}
+	// No fade at the tip (task-468 Q2): the line ends sharp on the wall, robot or barrel that stops it. M_AimLaser divides by
+	// max(TipFadeFrac, 0.0001), so 0 keeps the whole length opaque.
+	IndicatorMaterialInstance->SetScalarParameterValue(TipFadeFracParameterName, 0.f);
 }
 
 ARRMiner* URRAimIndicatorComponent::GetOwnerMiner() const
@@ -262,8 +237,9 @@ void URRAimIndicatorComponent::RefreshIndicator()
 
 	const FVector Forward = Miner->GetAimDirection().GetSafeNormal2D(UE_SMALL_NUMBER, FVector::ForwardVector);
 
-	// Nearer of the first block cell and the first living robot on the aim line, capped at MaxLength.
-	float Length = MaxLength;
+	// No length cap (task-468): the nearer of the first block cell (rock, ore, barrel; the arena border is rock) and the first
+	// living robot on the aim line, searched over TraceReach (past the screen edge when nothing is in the way).
+	float Length = TraceReach;
 	if (const ARRArenaGrid* Grid = Miner->GetArenaGrid(); IsValid(Grid))
 	{
 		Length = FMath::Min(Length, Grid->GetClearDistance(Origin, Forward, Length));
@@ -282,7 +258,6 @@ void URRAimIndicatorComponent::RefreshIndicator()
 	const FQuat Rotation = FRotationMatrix::MakeFromXZ(Forward, FVector::UpVector).ToQuat();
 	LaserMesh->SetWorldLocationAndRotation(Origin + Forward * (LaserLength * 0.5f), Rotation);
 	LaserMesh->SetWorldScale3D(FVector(LaserLength / LaserMeshSize, Width / LaserMeshSize, 1.f));
-	UpdateTipFade(LaserLength);
 	LaserMesh->SetVisibility(true);
 }
 
