@@ -1,9 +1,9 @@
 ---
 id: task-464-player-shot-colour
 description: "Global task: Player laser shots and muzzle flashes (rifle, turrets) turn a varied green from the owner reference; shotgun and enemy shots unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Player shot colour
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read color-code, readability-rules, weapons-index, burst-rifle, shotgun, turret. Decided by the owner: enemy keeps red; player laser shots green; the shotgun fires projectiles and keeps the normal bullet effect; turrets are laser too; the muzzle flash gets tone variation in the style of the example image; the green of the image is right for now (provisional). Weapon categories (laser versus projectile) are a later idea, not planned. Turret: the GDD said "projectile" and "turret bullets"; it stays a projectile in the rules (rule versus rendering), shown as a laser. Muzzle flash: one shared effect today, white-gold, one per shot of every miner weapon, none for turrets (burst-rifle node); hence Q7 (shotgun flash); Q8 answered: turrets get a muzzle flash too, hence Q10 (one per turret shot, sized to the turret). Conflict: acid green is reserved for enemies (Shooter); the green of the image is a bright, slightly yellowish green, so A8 checks the Shooter still stands out; the owner accepted that green for now. Image stored as keep in Art/Source/muzzle-flash/owner-ref-green-laser-muzzle-2026-11-05.webp (Q9). Edits (color-code rows, readability-rules line, burst-rifle vfx_sfx, turret projectile and vfx_sfx) are applied on confirmation with the defaults. No open value needed. No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-464-06-capture
+- next_step: none
 - started: 2026-11-06T08:53:11Z
 - waiting_for: none
-- executor_tokens: input 292, cache write 259803, cache read 24022335, output 75778
-- executor_usage: runs 1, turns 146, context start 18k peak 272k, resumes 0, 25 min, units 3.11 M
+- executor_tokens: input 342, cache write 292976, cache read 31228502, output 87799
+- executor_usage: runs 1, turns 171, context start 18k peak 305k, resumes 0, 31 min, units 3.93 M
 - planning_tokens: input 68, cache write 78624, cache read 1704871, output 34609
 - planning_usage: ac60e613 "Plan shot colour review" 1/1 (tasks 464), units 0.44 M
-- result: open
+- result: Done. Done, 4 capture launches (task464_after, task464_after_slow, task464_after_shotgun, task464_after_slow2) against the before run task464_before taken at the start with the same fight commands (rr.Debug.AddWeapon shotgun and two turrets, 2 Shooters, 8 Chasers, aim yaw 0). Sheets for the owner: Saved/Captures/task464_compare_fight.png, task464_compare_crop.png, task464_after_details.png. C1 seen for the shots (green dashes with pale centre, were gold), sparks not seen at game size (1-2 uu, as before; one green spark seen in 464-01). C2 seen (turret bolts green). C3 seen (rifle and turret flashes green, pale core, bright blades, seven-spike star, soft dark green glow; turret flash at its barrel). C4 seen: shotgun pellets and flash white-gold; shotgun sparks not seen. C5 seen: red targeting lasers, red robot shot. C6 seen but for the owner to judge: Shooter yellow-lime body stands apart from the small pure green shots. C7 aim laser white-gold seen (task-469 not run yet); drone mining laser not in frame. C8 green shots distinct from cyan XP pickups; heal and ore pickups not in frame. Defect found and fixed once (commit d719a4cf): the dark green glow of M_MuzzleFlashGreen showed the square sprite edge; the glow now fades before the border, rechecked in task464_after_slow2.
 
 ## Questions
 Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -37,7 +37,7 @@ Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accept
 6. task-464-06-capture (vault/reference/tasks/task-464-player-shot-colour/task-464-06-capture.md) — capture: Before/after capture of a fight with rifle, turret, shotgun and enemy shots and flashes, Shooter present, sent to the owner
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-464-01-rifle-laser-green]] — step 1, bp.
 - [[task-464-02-turret-laser-green]] — step 2, bp.
 - [[task-464-03-muzzle-flash-green]] — step 3, bp.
