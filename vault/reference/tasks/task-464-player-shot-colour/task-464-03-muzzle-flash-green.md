@@ -3,7 +3,7 @@ id: task-464-03-muzzle-flash-green
 description: "Bp: Burst rifle muzzle flash green with several tones in the style of the owner reference; shotgun flash stays white-gold"
 parent: task-464-player-shot-colour
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot colour: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:07:41Z
 - waiting_for: none
 - result: open
 
