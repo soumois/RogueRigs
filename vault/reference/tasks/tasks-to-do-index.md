@@ -12,6 +12,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 
 
-- [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status todo.
+- [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status in-progress.
 - [[task-463-aim-assist]] — A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel. Status todo.
 - [[task-464-player-shot-colour]] — The burst rifle laser shots turn green, as vivid as the red enemy lasers; shotgun pellets and enemy shots keep their look. Status wait-answers.

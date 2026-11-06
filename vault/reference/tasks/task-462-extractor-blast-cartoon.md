@@ -3,7 +3,7 @@ id: task-462-extractor-blast-cartoon
 description: "Global task: The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor ground blast redone in cartoon style from references
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
 - next_step: task-462-01-references
-- started: open
+- started: 2026-11-06T04:40:28Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-462-01-references
 description: "Art: Find and record 3 to 5 cartoon ground wind references and the one the effect follows."
 parent: task-462-extractor-blast-cartoon
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor ground blast redone in cartoon style from references: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:40:28Z
 - waiting_for: none
 - result: open
 
