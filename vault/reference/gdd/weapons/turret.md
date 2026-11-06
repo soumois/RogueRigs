@@ -26,7 +26,7 @@ status: approved
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 - Name and texts: "Lance-tourelles" and the current short French weapon descriptions in the level-up cards are kept as working texts (confirmed by the owner after handover-2026-10-06); final wording open.
 - effect pool: none; piercing is a stat (base `Pierce`) upgraded like any weapon stat ([[upgrades]]).
-- vfx_sfx: white + teal + rust body, green laser shots and a green muzzle flash at the barrel, like the burst rifle (owner 2026-11-05, provisional, [[task-464-player-shot-colour]], [[color-code]]); sound open.
+- vfx_sfx: white + teal + rust body, green laser shots and a green muzzle flash at the barrel, like the burst rifle (owner 2026-11-05, provisional, [[task-464-player-shot-colour]], [[color-code]]); the green impact burst of the burst rifle at each hit, sized to the turret shot (owner 2026-11-05, provisional, [[task-465-shot-impact-burst]]); sound open.
 - milestone: M2, pulled into the current work (owner 2026-10-05)
 
 - Size (owner 2026-10-06 third test): the placed turret is drawn 50 % larger; it was barely visible.

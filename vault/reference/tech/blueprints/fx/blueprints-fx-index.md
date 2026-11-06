@@ -39,7 +39,8 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[extractor-blast-references]] — the five cartoon ground wind references of the extractor ground blast and the one it follows.
 - [[bp-muzzle-flash]] — NS_MuzzleFlash (green, rifle and turrets), NS_MuzzleFlashShotgun (white-gold) and their materials, the stylised flash per shot.
 - [[bp-level-up-burst]] — NS_LevelUpText and NS_LevelUpWave, the gold level-up text and floor wave.
-- [[bp-shot-impact-spark]] — NS_ShotImpactSpark and NS_ShotImpactSparkGreen, the one-shot sparks where a player shot hits a robot or a block.
+- [[bp-shot-impact-spark]] — NS_ShotImpactSpark and NS_ShotImpactSparkGreen, the former impact sparks, no longer played by any shot Blueprint.
+- [[bp-shot-impact-burst]] — NS_ShotImpactBurstGreen, GreenSmall and White, the flat cartoon burst where a player shot hits a robot or a block.
 - [[bp-player-laser-shot-material]] — M_PlayerLaserShot, the unlit green material of the rifle and turret shots.
 
 ## Relations

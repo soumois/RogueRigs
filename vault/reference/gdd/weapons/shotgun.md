@@ -15,7 +15,7 @@ status: approved
 - Acquired as a level-up weapon card; the miner starts with the burst rifle only ([[upgrades]]).
 - upgradable_stats: damage, fire rate, reload speed, crit chance, crit damage, magazine size.
 - effect pool: none (4-direction fire does not apply); piercing is a stat (base `Pierce`) and can be upgraded.
-- vfx_sfx: white-gold pellets and muzzle flash ([[color-code]]); sound open.
+- vfx_sfx: white-gold pellets and muzzle flash ([[color-code]]); white flat cartoon impact burst with gold-orange accents at each pellet hit (owner 2026-11-05, provisional, [[task-465-shot-impact-burst]], [[color-code]] player shot impacts row); sound open.
 - look: no visible weapon mesh; the grey placeholder cube is removed and the pellets leave from the same point as every weapon shot (owner 2026-10-30, task-400 Q2: "Tu retires le cube, les autres tirs partiront du même endroit"); that point is the burst rifle Muzzle, with the same vertical capsule collision as the rifle bullets ([[weapons-index]] shown-weapon rule; provisional, owner 2026-10-31, task-412).
 - milestone: M1
 
