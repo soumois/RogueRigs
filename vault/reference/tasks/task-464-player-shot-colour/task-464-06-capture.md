@@ -3,7 +3,7 @@ id: task-464-06-capture
 description: "Capture: Before/after capture of a fight with rifle, turret, shotgun and enemy shots and flashes, Shooter present, sent to the owner"
 parent: task-464-player-shot-colour
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot colour: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:18:29Z
 - waiting_for: none
 - result: open
 

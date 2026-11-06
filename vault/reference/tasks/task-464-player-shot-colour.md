@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read color-code, readability-rules, weapons-index, burst-rifle, shotgun, turret. Decided by the owner: enemy keeps red; player laser shots green; the shotgun fires projectiles and keeps the normal bullet effect; turrets are laser too; the muzzle flash gets tone variation in the style of the example image; the green of the image is right for now (provisional). Weapon categories (laser versus projectile) are a later idea, not planned. Turret: the GDD said "projectile" and "turret bullets"; it stays a projectile in the rules (rule versus rendering), shown as a laser. Muzzle flash: one shared effect today, white-gold, one per shot of every miner weapon, none for turrets (burst-rifle node); hence Q7 (shotgun flash); Q8 answered: turrets get a muzzle flash too, hence Q10 (one per turret shot, sized to the turret). Conflict: acid green is reserved for enemies (Shooter); the green of the image is a bright, slightly yellowish green, so A8 checks the Shooter still stands out; the owner accepted that green for now. Image stored as keep in Art/Source/muzzle-flash/owner-ref-green-laser-muzzle-2026-11-05.webp (Q9). Edits (color-code rows, readability-rules line, burst-rifle vfx_sfx, turret projectile and vfx_sfx) are applied on confirmation with the defaults. No open value needed. No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-464-05-doc
+- next_step: task-464-06-capture
 - started: 2026-11-06T08:53:11Z
 - waiting_for: none
-- executor_tokens: input 268, cache write 238145, cache read 20901310, output 64956
-- executor_usage: runs 1, turns 134, context start 18k peak 250k, resumes 0, 23 min, units 2.71 M
+- executor_tokens: input 292, cache write 259803, cache read 24022335, output 75778
+- executor_usage: runs 1, turns 146, context start 18k peak 272k, resumes 0, 25 min, units 3.11 M
 - planning_tokens: input 68, cache write 78624, cache read 1704871, output 34609
 - planning_usage: ac60e613 "Plan shot colour review" 1/1 (tasks 464), units 0.44 M
 - result: open
