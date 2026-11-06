@@ -1,9 +1,9 @@
 ---
 id: task-476-muzzle-flash-smaller
 description: "Global task: The green burst rifle muzzle flash keeps its look but is shown smaller; turret and shotgun flashes unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Player muzzle flash a little smaller
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read burst-rifle (vfx_sfx: NS_MuzzleFlash, core about 25 uu, turret flash same effect at scale 0.6 since task-464), color-code (player laser row), task-464-player-shot-colour (the flash being shrunk). No conflict: look only, rules unchanged. Not a GDD value: the amount (Q1). Edit to burst-rifle applies on confirmation. No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-476-03-doc
+- next_step: none
 - started: 2026-11-06T19:26:29Z
 - waiting_for: none
-- executor_tokens: input 130, cache write 162670, cache read 6591600, output 25273
-- executor_usage: runs 1, turns 61, context start 17k peak 175k, resumes 3, 7 min, units 0.99 M
+- executor_tokens: input 146, cache write 174363, cache read 8040835, output 30273
+- executor_usage: runs 1, turns 69, context start 17k peak 186k, resumes 3, 8 min, units 1.17 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
-- result: open
+- result: Done. Done (beaa3d6f). bp-muzzle-flash: rifle sizes x0.7 (streak 11.2 x 210-252, shape 119-140, core 35-42, sparks 5.6-8.4 x 35-63 at 280-490), NS_MuzzleFlashTurret at the old sizes, why (sprite size ignores component scale), verified_476 frames, task-476 relation. bp-turret: OnTurretFired spawns NS_MuzzleFlashTurret, scale 0.6. sys-weapons: muzzle flash paragraph. Lint clean (warnings pre-existing).
 
 ## Questions
 Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -32,7 +32,7 @@ Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accept
 3. task-476-03-doc (vault/reference/tasks/task-476-muzzle-flash-smaller/task-476-03-doc.md) — doc: Docs record the new flash size.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-476-01-rifle-flash-size]] — step 1, bp.
 - [[task-476-02-capture]] — step 2, capture.
 - [[task-476-03-doc]] — step 3, doc.

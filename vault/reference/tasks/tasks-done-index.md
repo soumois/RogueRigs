@@ -484,3 +484,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-473-miner-light-calibration]] — The miner light colour, intensity and pool size are tuned in game until the light around the miner matches the warm orange-pink pool of owner image 2. Status done.
 - [[task-474-miner-scale-down]] — The miner is shown 10 % smaller; collision and gameplay values unchanged; everything attached to it follows the new size. Status done.
 - [[task-475-wall-height-miner]] — Rock, ore and heal ore blocks are raised slightly so their top is at the height of the shrunk miner; play and destruction unchanged. Status done.
+- [[task-476-muzzle-flash-smaller]] — The green burst rifle muzzle flash keeps its look but is shown smaller; turret and shotgun flashes unchanged. Status done.
