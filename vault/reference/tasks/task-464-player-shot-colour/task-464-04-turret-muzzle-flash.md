@@ -3,7 +3,7 @@ id: task-464-04-turret-muzzle-flash
 description: "Bp: Turrets show the green muzzle flash of task-464-03 at their barrel on each shot, sized to the turret"
 parent: task-464-player-shot-colour
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot colour: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:13:51Z
 - waiting_for: none
 - result: open
 
