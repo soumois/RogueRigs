@@ -1,4 +1,4 @@
-// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw), rr.Debug.Aim (fixed miner aim yaw), rr.Debug.KillRobots (kills living robots through the normal death path).
+// Rogue Rigs - visual check console commands for unattended -game checks (debug only, compiled out of shipping): rr.Debug.Shots (timed screenshots + damage number state), rr.Debug.CritChance (weapon crit chance override), rr.Debug.Delayed (runs a command later), rr.Debug.DamageMiner (direct hit on the player miner, logs the vignette state for 6 frames), rr.Debug.SpawnNear (actors around the miner), rr.Debug.Objective (miner moved to the console or shuttle), rr.Debug.ScreenText (logs a screen text item through the text subsystem), rr.Debug.BreakShields (drains the shield of living shield chasers, health kept), rr.Debug.DamageCell (block brought to a display damage), rr.Debug.Camera (camera boom pitch, length, yaw), rr.Debug.Aim (fixed miner aim yaw), rr.Debug.KillRobots (kills living robots through the normal death path), rr.Debug.AddWeapon (gives the player miner a weapon, places a turret).
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -38,6 +38,7 @@
 #include "UI/RRHUDWidget.h"
 #include "UObject/UObjectIterator.h"
 #include "Weapons/RRWeapon.h"
+#include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeaponAttributeSet.h"
 #include "World/RRWorld.h"
 
@@ -653,6 +654,49 @@ namespace RRScreenshotCommands
 				Killed += URRStressSubsystem::KillEnemy(Enemy) ? 1 : 0;
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.KillRobots: %d killed of %d living robots."), Killed, Targets.Num());
+		}),
+		ECVF_Cheat);
+
+	/**
+	 * rr.Debug.AddWeapon <ClassPath> [PlaceTurrets]: gives the player miner a weapon of the /Game class ClassPath through
+	 * ARRMiner::AddWeapon (as a new-weapon card; a weapon it already holds is not added twice by this command), then, for a turret
+	 * launcher, places up to PlaceTurrets turrets now (TryPlaceTurret, charges permitting). Visual checks of the shotgun and turret
+	 * shots (task-464).
+	 */
+	FAutoConsoleCommandWithWorldAndArgs AddWeaponCommand(
+		TEXT("rr.Debug.AddWeapon"),
+		TEXT("rr.Debug.AddWeapon <ClassPath> [PlaceTurrets]: gives the player miner a weapon of that /Game class (as a new-weapon card); for a turret launcher, places up to PlaceTurrets turrets now (visual checks)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			World = World ? World : RRCheats::FindCheatWorld();
+			ARRMiner* Miner = RRCheats::FindPlayerMiner(World);
+			UClass* Class = (Miner && Args.Num() > 0) ? LoadClass<ARRWeapon>(nullptr, *Args[0]) : nullptr;
+			if (!Class)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.AddWeapon: needs a player miner and a weapon class path."));
+				return;
+			}
+			ARRWeapon* Weapon = nullptr;
+			for (ARRWeapon* Held : Miner->GetWeapons())
+			{
+				if (Held && Held->IsA(Class))
+				{
+					Weapon = Held;
+				}
+			}
+			const bool bAdded = Weapon == nullptr;
+			Weapon = Weapon ? Weapon : Miner->AddWeapon(Class);
+			int32 Placed = 0;
+			if (ARRTurretLauncher* Launcher = Cast<ARRTurretLauncher>(Weapon))
+			{
+				const int32 Wanted = Args.Num() > 1 ? FMath::Clamp(FCString::Atoi(*Args[1]), 0, 8) : 0;
+				for (int32 Index = 0; Index < Wanted; ++Index)
+				{
+					Placed += Launcher->TryPlaceTurret() ? 1 : 0;
+				}
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.AddWeapon: %s %s, %d turret(s) placed."), *Class->GetName(),
+				Weapon ? (bAdded ? TEXT("added") : TEXT("already held")) : TEXT("failed"), Placed);
 		}),
 		ECVF_Cheat);
 }
