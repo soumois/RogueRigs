@@ -72,3 +72,4 @@ The retained image is the layout and look reference; every piece uses one frame 
 - [[art-prompts-shop-screen-mockup]] — the style reference image.
 - [[kie-image-workflow]] — tool, credits and commit rule.
 - [[wbp-minimap-locator]] — shows the radar frame sprite (task-457).
+- [[wbp-weapons]] — shows the weapon slot frame and base sprites (task-458).
