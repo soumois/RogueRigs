@@ -61,7 +61,7 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - executor_usage: runs 1, turns 61, context start 17k peak 338k, resumes 8, 74 min, units 2.46 M
 - planning_tokens: input 15, cache write 35116, cache read 306038, output 10554
 - planning_usage: aeff9c58 "Plan card delay and rock slab look" 1/2 (tasks 479, 480), units 0.13 M
-- result: Done. bp-rock-slab-material (chamfer_facets with MI values, uv3_trap), bp-arena-grid (variants), tool-unreal-reimport (two scripts, 100x scale trap), rock-render-piece-set, rock-render-damage, rock-state-render-options, perf-rock-slab (triangle counts, frame times) updated. Lint clean.
+- result: Done, 6 rounds of the 7 the owner allowed ("rajoute 3 possible"). Rock slabs have a geometric 8 x 8 uu top chamfer with a thin orange-yellow band and a subtle top glow, and large lit facets on the sides with dark, mid and light violet tints; top, outline and heights kept, generator extended. Round 5 fixed the real cause, proven by a diagnostic: intact pieces read as broken through UV3. A7 not worse (perf-rock-slab). Ambiguous points for the owner: rather regular stripes on far walls, sides magenta near the miner light and indigo far from it, orange patches on sunk plate tops. PIE not run (A9 checked in -game runs). Sheets: Saved/Captures/Wall480Sheets/final_game.png, final_side.png, final_crop_damage.png.
 
 ## Questions
 Decided 2026-11-06 (owner "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )"): every default below is accepted; values provisional, owner 2026-11-06.
