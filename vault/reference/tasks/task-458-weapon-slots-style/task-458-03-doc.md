@@ -3,7 +3,7 @@ id: task-458-03-doc
 description: "Doc: Docs describe the new slot look."
 parent: task-458-weapon-slots-style
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon slots in the unified look: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T03:41:56Z
 - waiting_for: none
 - result: open
 
