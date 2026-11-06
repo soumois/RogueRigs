@@ -35,7 +35,7 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-heavy-slam-impact]] — NS_HeavySlamImpact, the one-shot dust ring (User.Radius) and rock chips of the heavy slam.
 - [[bp-console-hack-complete]] — NS_ConsoleHackComplete, the one-shot green ring and white-gold sparks at the console hack complete.
 - [[bp-bonus-chest-open]] — NS_BonusChestOpen, the one-shot yellow turning rays and floating sparks at the bonus chest lid opening.
-- [[bp-extractor-rotor-wash]] — NS_ExtractorRotorWash, the rotor-wash streaks and floor dust ring under the four extractor rotors, driven by User.Intensity.
+- [[bp-extractor-rotor-wash]] — NS_ExtractorRotorWash, the rotor-wash swirls and cartoon ground blast under the four extractor rotors, driven by User.Intensity and User.HeightAboveFloor.
 - [[extractor-blast-references]] — the five cartoon ground wind references of the extractor ground blast and the one it follows.
 - [[bp-muzzle-flash]] — NS_MuzzleFlash, NS_MuzzleFlashShotgun and M_MuzzleFlash, the stylised white-gold flash that changes shape on each miner shot.
 - [[bp-level-up-burst]] — NS_LevelUpText and NS_LevelUpWave, the gold level-up text and floor wave.
