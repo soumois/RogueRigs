@@ -14,11 +14,11 @@ status: in-progress
 - launch: launched by the owner ("Lance les task to do dans l'ordre"); the earlier "prepared only" no longer holds.
 - confirmed_by_owner: yes (2026-11-06, "Q4 Vérification finale : Tu fais l'écran en 1920 × 1080. Le reste par défaut. ne lance pas la tâche, prépare là")
 - milestone: M2
-- next_step: task-467-05-match-loop
+- next_step: task-467-06-capture
 - started: 2026-11-06T09:54:24Z
 - waiting_for: none
-- executor_tokens: input 184, cache write 218014, cache read 13130978, output 67161
-- executor_usage: runs 1, turns 91, context start 18k peak 230k, resumes 0, 24 min, units 1.92 M
+- executor_tokens: input 196, cache write 226828, cache read 14533787, output 71085
+- executor_usage: runs 1, turns 97, context start 18k peak 239k, resumes 0, 25 min, units 2.09 M
 - planning_tokens: input 42, cache write 70246, cache read 976529, output 19786
 - planning_usage: acbae4b7 "Plan HUD bottom fix loop" 1/1 (tasks 467), units 0.28 M
 - result: open

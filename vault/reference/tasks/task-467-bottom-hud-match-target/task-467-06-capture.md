@@ -3,7 +3,7 @@ id: task-467-06-capture
 description: "Capture: Final independent check of the bottom HUD against the target, at 1920 x 1080 only (Q4, owner 2026-11-06)."
 parent: task-467-bottom-hud-match-target
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:19:45Z
 - waiting_for: none
 - result: open
 
