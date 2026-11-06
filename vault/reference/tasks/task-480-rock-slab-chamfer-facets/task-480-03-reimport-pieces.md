@@ -3,7 +3,7 @@ id: task-480-03-reimport-pieces
 description: "Bp: Reimport the slab meshes and wire the new variants into the existing piece choice."
 parent: task-480-rock-slab-chamfer-facets
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T21:03:56Z
 - waiting_for: none
 - result: open
 
