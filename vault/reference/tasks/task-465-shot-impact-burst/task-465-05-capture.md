@@ -3,7 +3,7 @@ id: task-465-05-capture
 description: "Capture: Before/after capture of a fight with burst rifle, turret and shotgun impacts, enemy shots and the Shooter present, sent to the owner"
 parent: task-465-shot-impact-burst
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact burst: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:49:03Z
 - waiting_for: none
 - result: open
 
