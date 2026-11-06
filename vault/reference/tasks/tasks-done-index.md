@@ -485,3 +485,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-474-miner-scale-down]] — The miner is shown 10 % smaller; collision and gameplay values unchanged; everything attached to it follows the new size. Status done.
 - [[task-475-wall-height-miner]] — Rock, ore and heal ore blocks are raised slightly so their top is at the height of the shrunk miner; play and destruction unchanged. Status done.
 - [[task-476-muzzle-flash-smaller]] — The green burst rifle muzzle flash keeps its look but is shown smaller; turret and shotgun flashes unchanged. Status done.
+- [[task-477-bottom-hud-back-to-mockup]] — The bottom HUD (health strip, weapon slots, XP rail) is redone from the retained art mockup and reworked in a capture loop of at most 6 rounds until it matches it. Status done.

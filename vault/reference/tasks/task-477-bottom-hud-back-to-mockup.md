@@ -1,9 +1,9 @@
 ---
 id: task-477-bottom-hud-back-to-mockup
 description: "Global task: bottom HUD redone from the retained art mockup, reworked in at most 6 capture rounds until it matches."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read task-467-bottom-hud-match-target (same target, loop ended after 2 rounds with tolerance +-15 %, Kie.ai frames: blue-grey gunmetal, thinner block frame, Lv plate 4 rivets vs 8 on the mockup, per art-prompts-hud-unified-mockup critic notes), art-prompts-hud-unified-mockup, umg-layout (via task-467). Image 1 compared visually with Art/Source/hud-unified/reference/owner-hud-target-2026-11-05.webp: same picture, cropped. No GDD conflict: look only. Reading of "Repart de la proposition" and the stricter judging are asked (Q1, Q2); final check resolutions asked (Q3, same choice as task-467 Q4). No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-477-07-doc
+- next_step: none
 - started: 2026-11-06T19:36:24Z
 - waiting_for: none
-- executor_tokens: input 210, cache write 264035, cache read 16655912, output 88883
-- executor_usage: runs 1, turns 102, context start 17k peak 276k, resumes 1, 21 min, units 2.44 M
+- executor_tokens: input 222, cache write 271394, cache read 18333858, output 94573
+- executor_usage: runs 1, turns 108, context start 17k peak 283k, resumes 1, 23 min, units 2.65 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
-- result: open
+- result: Done. wbp-health-status, wbp-weapons, wbp-xp-status: new current layout entries (task-477 pieces, slots, sizes, fonts, colours; 467 entries marked superseded; assets lists say which 467 and 461 sprites are no longer used); wbp-hud: Weapons offset -72 and the HealthStatus instance FillColorStops override trap; art-prompts-hud-unified-mockup already holds the cut pieces and what they replace (task-477-01). Lint clean (warnings only, pre-existing). Commit a73436c6.
 
 ## Questions
 Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -38,7 +38,7 @@ Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accept
 7. task-477-07-doc (vault/reference/tasks/task-477-bottom-hud-back-to-mockup/task-477-07-doc.md) — doc: Docs describe the bottom HUD pieces and layout.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-477-01-art]] — step 1, art.
 - [[task-477-02-health-block]] — step 2, bp.
 - [[task-477-03-slot-cells]] — step 3, bp.
