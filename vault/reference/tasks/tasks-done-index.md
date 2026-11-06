@@ -473,4 +473,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status done.
 - [[task-463-aim-assist]] — A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel. Status done.
 - [[task-464-player-shot-colour]] — Player laser shots and muzzle flashes (rifle, turrets) turn a varied green from the owner reference; shotgun and enemy shots unchanged. Status done.
+- [[task-465-shot-impact-burst]] — Player shot impacts become a flat cartoon burst of spikes and triangles from the owner reference: white for projectiles, green for lasers. Status done.
 - [[task-466-extractor-ground-wind-refs]] — The extractor ground blast is redone after the owner sprite sheet and in-game mockup: flattened swirl rings, curved wind streaks, dust puffs pushed outward. Status cancelled.

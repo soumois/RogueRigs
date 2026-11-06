@@ -1,9 +1,9 @@
 ---
 id: task-465-shot-impact-burst
 description: "Global task: Player shot impacts become a flat cartoon burst of spikes and triangles from the owner reference: white for projectiles, green for lasers."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Player shot impact burst
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read color-code, readability-rules, shotgun, task-464-player-shot-colour (open, confirmed, todo) and its subtasks 01 and 02. Placement: the impact look is a separate owner point from shot and flash colour, so a new global task, not a replan of task-464; task-464 already recolours today's impact sparks green (A1, A2) and is left unchanged; task-465 runs after task-464 and replaces those sparks with the new burst, reusing its green (Q1). Colours: projectile = shotgun pellets (shotgun node: projectile pellets, white-gold); laser = burst rifle and turrets (task-464 decision: turrets are laser in look, projectile in the rules, rule versus rendering). Reference: white and yellow-orange spikes with an orange glow, so "blanc" for projectiles is read as white dominant with the warm accents, consistent with the white-gold bullet look (Q2). The reference burst is large; player shots hit very often, so size and life are bounded (Q3, readability rule: Shooter spotted in under a second). Black triangles are kept as in the reference (owner image) unless the owner says otherwise (Q2). No conflict with readability-rules (green is the task-464 player laser green, not the Shooter acid green). Edit on confirmation: one new color-code row for player shot impacts. Image stored as keep in Art/Source/impact-burst/owner-ref-impact-burst-2026-11-05.png (Q7). In-progress task-462 (extractor blast) unrelated. No open value needed. No code read.
 - confirmed_by_owner: yes (2026-11-06, "prépare la tâche sans lancer, j'accepte les propostions.")
 - milestone: M2
-- next_step: task-465-05-capture
+- next_step: none
 - started: 2026-11-06T09:25:46Z
 - waiting_for: none
-- executor_tokens: input 256, cache write 268909, cache read 20013279, output 81345
-- executor_usage: runs 1, turns 124, context start 18k peak 281k, resumes 2, 24 min, units 2.74 M
+- executor_tokens: input 282, cache write 287530, cache read 23491406, output 88854
+- executor_usage: runs 1, turns 136, context start 18k peak 300k, resumes 3, 28 min, units 3.15 M
 - planning_tokens: input 22, cache write 39693, cache read 359859, output 12653
 - planning_usage: aedb5b0d "Plan player shot impact FX" 1/1 (tasks 465), units 0.15 M
-- result: open
+- result: Done. Done, 4 launches: same fight before and after at full speed (task465_05_before/after: rifle, shotgun, 2 turrets, 2 Shooters, Heavy, 8 Chasers) and in slow motion 0.25 (task465_05_slow_before/after: rifle, shotgun, turrets, Shooter, 2 Heavies, 2 Chasers); before runs set the three shot Blueprints back to the old sparks for the run only, files restored from git. C1 seen: green burst stars on the Heavies at rifle hits (task465_05_compare_detail.png after_s08). C2 seen: small green burst on a Chaser at a turret hit (after_s07, also task465_03_check/turret.png). C3 seen in task465_03_shotgun2/crop.png: white bursts with gold spikes at pellet hits; not singled out in the 05 fight frames (mixed with rifle hits on the same Heavy). C4 seen: red Shooter shots and targeting lasers as before, no burst where they reach the miner (robot shots have no impact system, code unchanged). C5 seen: Shooter green body and red eye stand out, robots and 6/10/15 damage numbers readable during volleys; chaser and heavy death explosions dominate more than the bursts. C6 seen: before frames of both fights. Sheets for the owner: Saved/Captures/task465_05_compare_fight.png, task465_05_compare_detail.png.
 
 ## Questions
 Decided 2026-11-06 (owner "prépare la tâche sans lancer, j'accepte les propostions."): every default below is accepted; values provisional, owner 2026-11-06.
@@ -40,7 +40,7 @@ Decided 2026-11-06 (owner "prépare la tâche sans lancer, j'accepte les propost
 5. task-465-05-capture (vault/reference/tasks/task-465-shot-impact-burst/task-465-05-capture.md) — capture: Before/after capture of a fight with burst rifle, turret and shotgun impacts, enemy shots and the Shooter present, sent to the owner
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-465-01-laser-impact-slice]] — step 1, bp.
 - [[task-465-02-slice-capture]] — step 2, capture.
 - [[task-465-03-impact-expand]] — step 3, bp.
