@@ -15,4 +15,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-463-aim-assist]] — A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel. Status todo.
 - [[task-464-player-shot-colour]] — Player laser shots and muzzle flashes (rifle, turrets) turn a varied green from the owner reference; shotgun and enemy shots unchanged. Status todo.
 - [[task-465-shot-impact-burst]] — Player shot impacts become a flat cartoon burst of spikes and triangles from the owner reference: white for projectiles, green for lasers. Status todo.
-- [[task-466-extractor-ground-wind-refs]] — The extractor ground blast is redone after the owner sprite sheet and in-game mockup: flattened swirl rings, curved wind streaks, dust puffs pushed outward. Status wait-answers.
+- [[task-466-extractor-ground-wind-refs]] — The extractor ground blast is redone after the owner sprite sheet and in-game mockup: flattened swirl rings, curved wind streaks, dust puffs pushed outward. Status todo.
