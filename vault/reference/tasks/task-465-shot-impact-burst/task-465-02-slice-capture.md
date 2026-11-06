@@ -3,7 +3,7 @@ id: task-465-02-slice-capture
 description: "Capture: Capture the burst rifle impact slice in a fight and send it to the owner before expansion"
 parent: task-465-shot-impact-burst
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact burst: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:39:36Z
 - waiting_for: none
 - result: open
 
