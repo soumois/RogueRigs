@@ -3,11 +3,11 @@ id: task-479-level-up-cards-delay
 description: "Global task: The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Level-up cards after 1.2 s instead of 1.8 s
 
-- request: Owner 2026-11-06 (verbatim), two points after tasks 476-478 closed (478 result not explicitly validated; point 2 supersedes it for the walls). Point 1: "fait passé le temps avant de voir les cartes à 1.2 sec au lieu de 1.8 sec". Point 2 (pasted spec): """Amélioration du rendu des socles rocheux
+- request: Owner 2026-11-06 (verbatim), two points after tasks 476-478 closed (478 result not explicitly validated; point 2 supersedes it for the walls). Point 1: "fait passé le temps avant de voir les cartes à 1.2 sec au lieu de 1.8 sec". Point 2 (pasted spec): """Amélioration du rendu des socles rocheux. Owner answer 2026-11-06 (relayed by the main session, verbatim): "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )" = the plan and the defaults of Q1 accepted.
 Le rendu actuel des socles ne correspond pas encore à la direction artistique recherchée.
 La forme générale est correcte, mais deux problèmes doivent être corrigés.
 A. Bord lumineux orange
@@ -52,15 +52,15 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - goal: After a level-up the game pauses and shows the 3 upgrade cards about 1.2 s later instead of 1.8 s.
 - acceptance: A1 the delay between a level-up and the card screen opening is about 1.2 s (measured in a test or PIE, figure in the result); A2 the game keeps running during the delay; several levels gained at once still wait once and then chain their screens; A3 the LEVEL UP text, the gold wave, the heal and the card animation are unchanged; A4 bonus chest choice screens unchanged; A5 build ok, the LevelUp tests pass; tests whose frame budget the shorter delay breaks are updated by budget only; A6 the report gives the token cost per subtask and in total.
 - gdd_check: Read xp-level-up (Level-up sequence: about 1.8 s, owner 2026-11-05, task-459; was 0.8 s). Conflict: the value itself, replaced by 1.2 s via the edit on confirmation. The LEVEL UP text lasts about 0.7 s, so it has ended before the cards at 1.2 s. Targeted read of task-459-01 result (why: to name the role): the delay is the C++ default ChoiceDelay of the level-up component, BP_Miner does not override it, so cpp. No open value. Milestone as task-459.
-- confirmed_by_owner: no (plan and questions handed back 2026-11-06)
+- confirmed_by_owner: yes (2026-11-06, "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )")
 - milestone: M2
 - next_step: task-479-01-delay
 - started: open
-- waiting_for: Owner confirmation of the plan (Q1).
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-06, each with a default; open until the owner answers.
+Decided 2026-11-06 (owner "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )"): every default below is accepted; values provisional, owner 2026-11-06.
 - Q1 Délai des cartes : Default: les cartes s'affichent 1,2 s après le passage de niveau (au lieu de 1,8 s) ; le jeu continue pendant ce temps, l'effet LEVEL UP (0,7 s) a fini avant ; rien d'autre ne change, aucun nouveau test, seuls les tests cassés par le délai sont ajustés.
 
 ## Subtasks

@@ -10,5 +10,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-479-level-up-cards-delay]] — The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged. Status wait-answers.
-- [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status wait-answers.
+- [[task-479-level-up-cards-delay]] — The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged. Status todo.
+- [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status todo.
