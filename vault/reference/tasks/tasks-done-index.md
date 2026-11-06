@@ -486,3 +486,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-475-wall-height-miner]] — Rock, ore and heal ore blocks are raised slightly so their top is at the height of the shrunk miner; play and destruction unchanged. Status done.
 - [[task-476-muzzle-flash-smaller]] — The green burst rifle muzzle flash keeps its look but is shown smaller; turret and shotgun flashes unchanged. Status done.
 - [[task-477-bottom-hud-back-to-mockup]] — The bottom HUD (health strip, weapon slots, XP rail) is redone from the retained art mockup and reworked in a capture loop of at most 6 rounds until it matches it. Status done.
+- [[task-478-wall-lines-emissive-edge]] — The dark lines on wall faces go away so walls read as one continuous surface like owner image 3, and the orange emissive also lights the edge of the top face; up to 4 correction rounds. Status done.

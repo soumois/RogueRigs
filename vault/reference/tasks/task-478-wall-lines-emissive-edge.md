@@ -1,9 +1,9 @@
 ---
 id: task-478-wall-lines-emissive-edge
 description: "Global task: wall sides lose their dark lines and read as one surface (image 3); emissive also on the top face edge; 4 rounds max."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Walls without black lines, emissive on the top edge
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read visual-style (Walls line: "dark stratified sides"), color-code (Breakable rock row: "dark stratified sides"), rock-look-reference (one continuous slab per mass, dark crystalline columns on the sides: image 3 agrees), task-471-wall-look-reference (strata and rim added there; its result already noted the target sides show vertical streaks, not strata). Conflict: GDD "dark stratified sides" vs removing the lines; edits replace it on confirmation. Image 2 reading (owner view, likely the editor viewport: the thin orange outline at the wall foot is the selection outline, not part of the look). "Maille unique sans découpe" read as a look goal, rules per block unchanged (Q1). Emissive and top surface readings asked (Q2, Q3). No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-478-03-doc
+- next_step: none
 - started: 2026-11-06T20:15:51Z
 - waiting_for: none
-- executor_tokens: input 116, cache write 183738, cache read 6458150, output 57509
-- executor_usage: runs 1, turns 57, context start 18k peak 196k, resumes 1, 18 min, units 1.16 M
+- executor_tokens: input 126, cache write 196131, cache read 7461274, output 60837
+- executor_usage: runs 1, turns 62, context start 18k peak 208k, resumes 1, 19 min, units 1.30 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
-- result: open
+- result: Walls lose the dark strata and the facet cuts; the orange glow sits on the top face edge (cap of 4 rounds reached, A8). M_RockSlab and MI_RockSlab changed by Tools/unreal/rock_slab_wall_section.py (4279e647): sides drawn as emissive dark purple with soft vertical streaks and only a 0.03 lit share, bent-up side normal, no side specular; top-edge glow fading inward over 16 uu from the piece outline distance computed from the per-instance solid mask, continuous across pieces; band under the lip reduced. Final capture Saved/Captures/Wall478Final, sheets Saved/Captures/Wall478Sheets (final_game_camera.png, final_low_view.png, rounds_game.png, rounds_low.png). Docs f65e4a0e. Open for the owner: sides lighter and more saturated than the dark purple of image 3; glow thinner and weaker than image 3; streaks softer than the target; small dotted light seams at some side block joints in close views (C2 ambiguous); heal ore not in the frames; gdd visual-style and color-code still say dark stratified sides (Executor may not edit gdd).
 
 ## Questions
 Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -34,7 +34,7 @@ Decided 2026-11-06 (owner "Ok, tout par défaut"): every default below is accept
 3. task-478-03-doc (vault/reference/tasks/task-478-wall-lines-emissive-edge/task-478-03-doc.md) — doc: Docs describe the changed wall material.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-478-01-wall-match-loop]] — step 1, bp.
 - [[task-478-02-capture]] — step 2, capture.
 - [[task-478-03-doc]] — step 3, doc.

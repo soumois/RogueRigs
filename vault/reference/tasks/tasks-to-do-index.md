@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-478-wall-lines-emissive-edge]] — The dark lines on wall faces go away so walls read as one continuous surface like owner image 3, and the orange emissive also lights the edge of the top face; up to 4 correction rounds. Status in-progress.
