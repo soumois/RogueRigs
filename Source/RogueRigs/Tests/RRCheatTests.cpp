@@ -205,7 +205,7 @@ bool FRRCheatPropertyRouteTest::RunTest(const FString& Parameters)
 	TestNearlyEqual(TEXT("x10: 10 s of alert in 1 s"), RunFlow->GetAlertSeconds() - AlertBefore, 10.f, 0.01f);
 	Settings->AlertSpeedMultiplier = 1.f;
 
-	// Finish the 1.8 s level-up delay (task-459): the screen opens within 60 more frames.
+	// Finish the 1.2 s level-up delay (task-479): the screen opens within 60 more frames.
 	for (int32 Frame = 0; Frame < 60 && !LevelUp->IsAwaitingChoice(); ++Frame)
 	{
 		TestWorld.Tick();

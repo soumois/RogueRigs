@@ -1710,7 +1710,7 @@ bool FRRIntegrationUpgradeLoopTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestTrue(TEXT("screen opens after the 1.8 s delay (within one frame)"), DelaySeconds >= LevelUp->GetChoiceDelay() - FrameSeconds - 1e-3 && DelaySeconds <= LevelUp->GetChoiceDelay() + FrameSeconds + 1e-3);
+	TestTrue(TEXT("screen opens after the 1.2 s delay (within one frame)"), DelaySeconds >= LevelUp->GetChoiceDelay() - FrameSeconds - 1e-3 && DelaySeconds <= LevelUp->GetChoiceDelay() + FrameSeconds + 1e-3);
 	TestTrue(TEXT("world paused by the game mode"), World->IsPaused());
 	TestTrue(TEXT("controller reports the pause"), Controller->IsPaused());
 	TestTrue(TEXT("cursor shown on the screen"), Controller->ShouldShowMouseCursor());

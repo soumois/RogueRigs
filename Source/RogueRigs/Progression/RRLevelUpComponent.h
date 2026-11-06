@@ -204,9 +204,9 @@ protected:
 	/** The player controller of the owning pawn, or null (headless tests have none). */
 	APlayerController* GetOwnerPlayerController() const;
 
-	/** Game-time delay between a level-up and the pause on its choice screen, in seconds (xp-level-up, about 1.8 s, provisional, task-459). */
+	/** Game-time delay between a level-up and the pause on its choice screen, in seconds (xp-level-up, about 1.2 s, provisional, task-479). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp", meta = (ClampMin = 0, Units = "s"))
-	float ChoiceDelay = 1.8f;
+	float ChoiceDelay = 1.2f;
 
 	/** Fraction of MaxHealth restored per level gained (xp-level-up, 20 %, provisional). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LevelUp", meta = (ClampMin = 0, ClampMax = 1))

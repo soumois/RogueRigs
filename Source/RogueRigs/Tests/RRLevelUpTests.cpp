@@ -80,7 +80,7 @@ namespace RRLevelUpTests
 			return false;
 		}
 		Out.Upgrades->SetRandomSeed(20261003);
-		Test.TestEqual(TEXT("choice delay 1.8 s"), Out.LevelUp->GetChoiceDelay(), 1.8f);
+		Test.TestEqual(TEXT("choice delay 1.2 s"), Out.LevelUp->GetChoiceDelay(), 1.2f);
 		Test.TestEqual(TEXT("heal fraction 20 %"), Out.LevelUp->GetHealFraction(), 0.2f);
 		Test.TestFalse(TEXT("no choice at start"), Out.LevelUp->IsAwaitingChoice() || Out.LevelUp->IsChoiceDelayActive());
 		Out.LevelUp->OnLevelUpEffect.AddDynamic(Recorder, &URRTestEventRecorder::HandleLevelUpEffect);
@@ -122,9 +122,9 @@ namespace RRLevelUpTests
 		return Needed / FMath::Max(Gain, KINDA_SMALL_NUMBER);
 	}
 
-	/** Frames of the 1.8 s delay at 1/60 s: 107 frames (1.783 s) are before it, 110 frames (1.833 s) after it. */
-	constexpr int32 FramesBeforeDelay = 107;
-	constexpr int32 FramesAfterDelay = 110;
+	/** Frames of the 1.2 s delay at 1/60 s: 71 frames (1.183 s) are before it, 74 frames (1.233 s) after it. */
+	constexpr int32 FramesBeforeDelay = 71;
+	constexpr int32 FramesAfterDelay = 74;
 }
 
 using namespace RRLevelUpTests;
@@ -213,7 +213,7 @@ bool FRRLevelUpBurstOncePerMomentTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("one effect event more"), Recorder->GetLevelUpEffects().Num(), 4);
 	TestEqual(TEXT("still one burst 0.33 s later"), S.LevelUp->GetLevelUpBurstCount(), 1);
 
-	// Past the moment, before the 1.8 s delay ends (25 frames more, 0.75 s from the first level): a second burst.
+	// Past the moment, before the 1.2 s delay ends (25 frames more, 0.75 s from the first level): a second burst.
 	TickFrames(TestWorld, 25);
 	S.Progression->AddXP(LevelUpTestRawXPFor(S.Progression, 1));
 	TestEqual(TEXT("a second burst after 0.75 s"), S.LevelUp->GetLevelUpBurstCount(), 2);
@@ -656,14 +656,14 @@ bool FRRLevelUpDelayTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("not paused at the level-up"), S.LevelUp->IsAwaitingChoice());
 
 	TickFrames(TestWorld, FramesBeforeDelay);
-	TestTrue(TEXT("game time ran during the delay (1.78 s)"), TestWorld.Get()->GetTimeSeconds() - StartTime > 1.78f);
-	TestFalse(TEXT("not paused before 1.8 s"), S.LevelUp->IsAwaitingChoice());
-	TestTrue(TEXT("delay still running at 1.78 s"), S.LevelUp->IsChoiceDelayActive());
-	TestEqual(TEXT("no offer before 1.8 s"), Recorder->GetOfferCardCounts().Num(), 0);
+	TestTrue(TEXT("game time ran during the delay (1.18 s)"), TestWorld.Get()->GetTimeSeconds() - StartTime > 1.18f);
+	TestFalse(TEXT("not paused before 1.2 s"), S.LevelUp->IsAwaitingChoice());
+	TestTrue(TEXT("delay still running at 1.18 s"), S.LevelUp->IsChoiceDelayActive());
+	TestEqual(TEXT("no offer before 1.2 s"), Recorder->GetOfferCardCounts().Num(), 0);
 	TestFalse(TEXT("no upgrade offer built yet"), S.Upgrades->HasOffer());
 
 	TickFrames(TestWorld, FramesAfterDelay - FramesBeforeDelay);
-	TestTrue(TEXT("paused on the choice after 1.8 s"), S.LevelUp->IsAwaitingChoice());
+	TestTrue(TEXT("paused on the choice after 1.2 s"), S.LevelUp->IsAwaitingChoice());
 	TestFalse(TEXT("delay over"), S.LevelUp->IsChoiceDelayActive());
 	TestEqual(TEXT("one offer shown"), Recorder->GetOfferCardCounts().Num(), 1);
 	if (Recorder->GetOfferCardCounts().Num() == 1)
@@ -749,7 +749,7 @@ bool FRRLevelUpChainTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("level 5"), S.Progression->GetLevel(), 5);
 	TestEqual(TEXT("two more choices owed"), S.LevelUp->GetPendingChoices(), 2);
 	TickFrames(TestWorld, FramesAfterDelay - 20);
-	TestTrue(TEXT("screen opens 1.8 s after the first of the two levels"), S.LevelUp->IsAwaitingChoice());
+	TestTrue(TEXT("screen opens 1.2 s after the first of the two levels"), S.LevelUp->IsAwaitingChoice());
 	TestEqual(TEXT("third screen shown"), Recorder->GetOfferCardCounts().Num(), 4);
 	return true;
 }
