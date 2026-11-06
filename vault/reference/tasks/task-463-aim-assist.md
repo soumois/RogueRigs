@@ -1,9 +1,9 @@
 ---
 id: task-463-aim-assist
 description: "Global task: A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Light aim assist on miner shots
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read burst-rifle (projectile, SpreadDeg, Range, pierce, 14 uu collision and Muzzle capsule), shotgun (pellet fan, damages barrels), turret (already locks the nearest enemy), miner (aim), aim-indicator (laser on the raw aim, stops at first robot or block), barrel (has health, shots damage it), gdd-pillars. No conflict. P2 (manual aim) holds because the assist is a few degrees and never overrides a shot already on a robot or a barrel; P3 holds because barrels are never pulled toward. Not specified by the request and decided by Q39 to Q45: weapons affected, max angle, target selection, the meaning of "va toucher", mouse versus stick, laser feedback, player option. miner edited at confirmation. Milestone: not set by the GDD; pulled into current work by the request.
 - confirmed_by_owner: yes (2026-11-06, "Je valide le choix, mais ne lance pas la tâche")
 - milestone: M2
-- next_step: task-463-02-doc
+- next_step: none
 - started: 2026-11-06T05:57:03Z
 - waiting_for: none
-- executor_tokens: input 82, cache write 206953, cache read 3819183, output 37993
-- executor_usage: runs 1, turns 42, context start 17k peak 151k, resumes 1, 174 min, units 0.83 M
+- executor_tokens: input 98, cache write 216902, cache read 5062849, output 42478
+- executor_usage: runs 1, turns 50, context start 17k peak 161k, resumes 1, 175 min, units 0.99 M
 - planning_tokens: input 28, cache write 44937, cache read 468603, output 11453
 - planning_usage: aca5bf7e "Plan aim assist request" 1/1 (tasks 463), units 0.16 M
-- result: open
+- result: Done. Commit 09ab3ce5. New node sys-weapons-aim-assist (child of sys-weapons): rules per bullet, AimAssistDeg column of WeaponStats.csv (0 = off), what is not affected, test RogueRigs.Weapons.AimAssist; sys-weapons links it in Decisions, data and Relations. Lint clean (0 problems).
 
 ## Questions
 Decided 2026-11-06 (owner "Je valide le choix, mais ne lance pas la tâche"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -37,6 +37,6 @@ Decided 2026-11-06 (owner "Je valide le choix, mais ne lance pas la tâche"): ev
 2. task-463-02-doc (vault/reference/tasks/task-463-aim-assist/task-463-02-doc.md) — doc: Record the aim assist and its data value.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-463-01-aim-assist]] — step 1, cpp.
 - [[task-463-02-doc]] — step 2, doc.

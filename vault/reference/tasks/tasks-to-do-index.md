@@ -12,7 +12,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 
 
-- [[task-463-aim-assist]] — A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel. Status in-progress.
 - [[task-464-player-shot-colour]] — Player laser shots and muzzle flashes (rifle, turrets) turn a varied green from the owner reference; shotgun and enemy shots unchanged. Status todo.
 - [[task-465-shot-impact-burst]] — Player shot impacts become a flat cartoon burst of spikes and triangles from the owner reference: white for projectiles, green for lasers. Status todo.
 - [[task-467-bottom-hud-match-target]] — Health strip, weapon slots and XP bar reworked, captured in game and compared with the owner target image, round after round until they match. Status todo.
