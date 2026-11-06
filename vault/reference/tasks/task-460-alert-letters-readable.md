@@ -1,9 +1,9 @@
 ---
 id: task-460-alert-letters-readable
 description: "Global task: alert bar letters C, B, S stay readable when a horde \"!\" sits on or moves over them."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Alert bar letters never hidden by a horde mark
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read level-flow (hordes as icons on the alert bar, console at 40 %), art-prompts-hud-unified-mockup (453: "!" and C, B, S set on the track). No conflict; level-flow edited at confirmation. Moving a letter or a mark sideways would misplace a timing, hence the default of Q36.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-460-02-doc
+- next_step: none
 - started: 2026-11-06T04:18:54Z
 - waiting_for: none
-- result: open
+- result: Done. Commit bbfd441c. wbp-alert-objectives updated: components (letters z 4 in front of marks z 3), layout table (marks Top 48, letters z 4), layering paragraph citing Q36, verified entry for task-460-01. Blueprints-ui-index gloss unchanged (still accurate). Lint clean.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -27,6 +27,6 @@ Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisi
 2. task-460-02-doc (vault/reference/tasks/task-460-alert-letters-readable/task-460-02-doc.md) — doc: Record the letter and mark layering.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-460-01-alert-bar]] — step 1, bp.
 - [[task-460-02-doc]] — step 2, doc.
