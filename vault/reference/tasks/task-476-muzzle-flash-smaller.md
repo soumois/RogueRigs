@@ -13,9 +13,13 @@ status: in-progress
 - gdd_check: Read burst-rifle (vfx_sfx: NS_MuzzleFlash, core about 25 uu, turret flash same effect at scale 0.6 since task-464), color-code (player laser row), task-464-player-shot-colour (the flash being shrunk). No conflict: look only, rules unchanged. Not a GDD value: the amount (Q1). Edit to burst-rifle applies on confirmation. No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-476-01-rifle-flash-size
+- next_step: task-476-02-capture
 - started: 2026-11-06T19:26:29Z
 - waiting_for: none
+- executor_tokens: input 124, cache write 155620, cache read 6086535, output 24106
+- executor_usage: runs 1, turns 58, context start 17k peak 168k, resumes 3, 7 min, units 0.92 M
+- planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
+- planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
 - result: open
 
 ## Questions

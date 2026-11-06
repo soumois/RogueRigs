@@ -3,7 +3,7 @@ id: task-476-02-capture
 description: "Capture: Before/after capture of the rifle flash, with a turret firing."
 parent: task-476-muzzle-flash-smaller
 kind: task
-status: todo
+status: in-progress
 ---
 # Player muzzle flash a little smaller: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:33:25Z
 - waiting_for: none
 - result: open
 
