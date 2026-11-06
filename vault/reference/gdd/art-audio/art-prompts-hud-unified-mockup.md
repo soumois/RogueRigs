@@ -80,8 +80,25 @@ The retained image is the layout and look reference; every piece uses one frame 
 | T_HUD_XPFrame | 1600 x 153 | 0.06, 0.3 | transparent track window y 43..109 |
 | T_HUD_LevelCap | 512 x 179 | 0.2, 0.3 | near-black |
 
+## Thin bottom frames (task-467-01, replace the 461 sprites)
+- Q2 of [[task-467-bottom-hud-match-target]] (owner 2026-11-06, default): owner rejected the 461 look (bulky panel, big bolt heads, rounded wells, arrow XP ends). Two new sheets from crops of the retained mockup, 2 variants each, GPT Image 2 image-to-image, 16:9, 1K, magenta key, 24 credits.
+- Prompt `prompts/11-bottom-block-frames.txt` (run `20261106-015539-hud-unified`): hollow health strip frame, slim block frame with a dark inside, one flat cell. Refs: 2.5x crop of the mockup bottom block (temporary, `Saved/Scratch/hud-467/target-block-target.png`), the mockup.
+- Prompt `prompts/12-xp-rail.txt` (run `20261106-015950-hud-unified`): straight rail with square ends and a hollow window, empty Lv plate. Refs: 3x crop of the mockup bottom-left (temporary, `Saved/Scratch/hud-467/target-xpleft-target.png`), the mockup.
+- Critic (style-guide, task-467-01): run A both pass; picks variant 1 (blue-grey gunmetal, small brass rivets). Run B variant 1 fails A1 (glossy tubes, chrome dome bolts); variant 2 passes and is picked. Notes: block frame thinner than the mockup; Lv plate has 4 rivets, the mockup 8.
+- Labels: keep = `20261106-015539-hud-unified-1.png`, `20261106-015950-hud-unified-2.png`, both logs, prompts 11, 12; temporary = `20261106-015539-hud-unified-2.png`, `20261106-015950-hud-unified-1.png` (moved to `Saved/Scratch/hud-unified/`), the split and cut candidates in `Saved/Scratch/hud-467/`.
+- Cut-outs in `Art/UI/HUD/` (`ui_icon_prepare.js --keep-aspect`, `--check` clean), Draw As Box margins measured on the image:
+
+| Texture | Size | Margins L/R, T/B | Inside |
+|---|---|---|---|
+| T_HUD_HealthStrip | 1024 x 112 | 0.035, 0.27 | transparent window y 27..84 |
+| T_HUD_BlockFrame | 1024 x 205 | 0.035, 0.18 | near-black |
+| T_HUD_SlotCell | 512 x 270 | 0.08, 0.15 | near-black |
+| T_HUD_XPRail | 1600 x 133 | 0.042, 0.35 | transparent window y 45..87 |
+| T_HUD_LevelPlate | 512 x 143 | 0.08, 0.25 | near-black |
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
+- [[task-467-bottom-hud-match-target]] — the task that made the thin bottom frames.
 - [[art-prompts-level-end-screen-mockup]] — T_LevelEnd_Frame, reused for the weapon slot frames (task-458).
 - [[wbp-alert-objectives]] — shows the alert bar sprites (task-453).
 - [[task-451-hud-mockups]] — the task that made these mockups.

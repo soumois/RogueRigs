@@ -1,0 +1,38 @@
+{
+  "run_id": "20261106-015539-hud-unified",
+  "asset": "hud-unified",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/hud-unified/prompts/11-bottom-block-frames.txt",
+  "prompt": "Image 1 is a close crop of the bottom-centre HUD block of Image 2, a full game HUD mockup; both are visual references only. Redraw, as a clean own version at high resolution, three separate flat UI frame sprites on one sheet, far apart from each other, each alone and EMPTY. Keep the exact metal look of Image 1: thin flat gunmetal bars with worn teal paint, light rust chips, small round rivets. No big round bolt heads, no thick raised plate, no rounded corners, no arrow shapes.\n\nSprite 1, across the top of the sheet: ONLY the thin frame of the health strip of Image 1, empty. A long thin rectangular frame made of narrow flat gunmetal bars, with small square corner brackets each holding one small rivet. The window inside the frame is a perfect sharp-cornered rectangle filled with flat magenta FF00FF: no green bar, no text, no glass, no shadow inside. The frame is about fourteen times wider than tall and spans about 90 percent of the sheet width.\n\nSprite 2, in the middle of the sheet: ONLY the outer frame of Image 1 that surrounds the row of four weapon cells, empty. One thin rectangular frame of narrow flat gunmetal bars with small corner brackets and a few small rivets along the bars, the bars no thicker than one twentieth of the frame height. Inside the frame one flat, even, near-black surface with no cell, no divider, no icon, no text. The frame is about four times wider than tall and spans about 75 percent of the sheet width.\n\nSprite 3, at the bottom of the sheet, centred: ONLY one weapon cell of Image 1, empty: a flat rectangle about one and a half times wider than tall, a thin flat gunmetal rim with a tiny rivet in each corner, and a flat, even, near-black inside with nothing in it: no weapon, no padlock, no bar. It is about one quarter of the sheet height.\n\nFlat-shaded low-poly look, visible facets, strong directional light with lifted shadows so everything stays readable. Everything outside the three sprites is flat magenta FF00FF: no scene, no crystals, no shadow, no glow. No text, no letters, no numbers, no icons, no characters.",
+  "refs": [
+    "Saved/Scratch/hud-467/target-block-target.png",
+    "Art/Source/hud-unified/20261105-152627-hud-unified-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "be7a083c5514a5b8c91826ed27c83c2d",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/a2/be7a083c5514a5b8c91826ed27c83c2d_1793959183306.png"
+      ]
+    },
+    {
+      "task_id": "d340bb1ee670893e5e88932c00bc879e",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000005ae481f5ab184a638e6e678e.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/hud-unified/20261106-015539-hud-unified-1.png",
+    "Art/Source/hud-unified/20261106-015539-hud-unified-2.png"
+  ]
+}
