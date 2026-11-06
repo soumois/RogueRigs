@@ -1,0 +1,38 @@
+{
+  "run_id": "20261105-164216-hud-unified",
+  "asset": "hud-unified",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/hud-unified/prompts/08-alert-bar.txt",
+  "prompt": "Image 1 is a close crop of the top-centre HUD piece of Image 2, a full game HUD mockup; both are visual references only. Redraw, as a clean own version at high resolution, two separate UI sprites on one sheet, far apart from each other.\n\nSprite 1, in the upper half of the sheet: ONLY the long horizontal gauge frame of Image 1, alone and empty. A long riveted gunmetal plate frame with chamfered end caps, faceted bolts at both ends, worn teal trims, light rust chips and chamfered edges, as in Image 1. The long inner track window of the gauge is a perfect sharp-cornered rectangle filled with flat magenta FF00FF: no fill, no orange, no marks, no letters, no exclamation marks, no glass, no shadow inside the window. The frame is very wide and thin, about nine times wider than tall, and spans about 92 percent of the sheet width.\n\nSprite 2, in the lower half of the sheet, centred, alone: ONLY one warning mark of Image 1: a small upright rounded capsule tab with a thin worn metal rim and a very dark inside, holding one bold red exclamation mark with a thin dark outline. The tab is about three times taller than wide and about one fifth of the sheet height. Nothing else under or around it.\n\nFlat-shaded low-poly look, visible facets, strong directional light with lifted shadows so everything stays readable. Everything outside the two sprites is flat magenta FF00FF: no scene, no crystals, no shadow, no glow. No text, no letters, no numbers, no icons other than the one red exclamation mark, no characters.",
+  "refs": [
+    "Saved/Scratch/hud-alert/mockup-alert-crop.png",
+    "Art/Source/hud-unified/20261105-152627-hud-unified-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "b19c6edc171bbf60f0c22582cbbe2408",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000249c81fd9b28acaa30be1967.png"
+      ]
+    },
+    {
+      "task_id": "ae875e9fef6d0512097784822b32010c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000065c081f5a73bce59ba3e6672.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/hud-unified/20261105-164216-hud-unified-1.png",
+    "Art/Source/hud-unified/20261105-164216-hud-unified-2.png"
+  ]
+}

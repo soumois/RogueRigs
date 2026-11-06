@@ -3,7 +3,7 @@ id: task-453-alert-bar-redesign
 description: "Global task: The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Alert bar redesigned and better integrated
 
@@ -24,8 +24,8 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-453-01-art
-- started: 2026-11-06T00:41:05Z
-- waiting_for: owner pick of the alert bar sprites: candidate 1 or 2 (frame Saved/Scratch/hud-alert/T_HUD_AlertFrame-c1.png / -c2.png, swarm mark T_HUD_AlertMark-c1.png / -c2.png; sheets Art/Source/hud-unified/20261105-164216-hud-unified-1.png / -2.png); critic prefers 1
+- started: 2026-11-06T00:46:45Z
+- waiting_for: none
 - result: open
 
 ## Questions

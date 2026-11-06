@@ -1,6 +1,6 @@
 ---
 id: art-prompts-hud-unified-mockup
-description: "Unified in-game HUD mockups (task-451) and the radar frame sprite (task-457): Kie.ai prompts, runs, credits, critic reviews, candidates, owner choice, what 452-458 take."
+description: "Unified in-game HUD mockups (task-451), radar frame (task-457) and alert bar sprites (task-453): Kie.ai prompts, runs, credits, critic reviews, candidates, owner choice, what 452-458 take."
 parent: art-prompts
 kind: note
 ---
@@ -54,8 +54,15 @@ The retained image is the layout and look reference; every piece uses one frame 
 - Critic: both pass A1-A18 and the colour code; neither copies the external example. Both are more teal than the mockup's dark gunmetal plates; c1 is the closer one (c2 rust more saturated).
 - Owner 2026-11-05 (verbatim): "Candidat 1". Keep = `Art/Source/hud-unified/20261105-155448-hud-unified-1.png` and its log `20261105-155448-hud-unified.json`; temporary = `-2.png`, moved to `Saved/Scratch/hud-unified/`. Cut-out copied to `Art/UI/HUD/T_HUD_RadarFrame.png` (1024 x 580 RGBA): hole centre 304,288, diameter about 383; plate dark inside x 578..928, y 122..279.
 
+## Alert bar sprites (task-453-01)
+- Prompt `prompts/08-alert-bar.txt`, refs: a 3x crop of the mockup alert bar (Image 1, temporary, `Saved/Scratch/hud-alert/mockup-alert-crop.png`) and the mockup (Image 2). GPT Image 2 image-to-image, 16:9, 1K, magenta key, 2 variants, 12 credits. Run `20261105-164216-hud-unified`. One sheet per variant: the gauge frame with a hollow track window (top) and one swarm mark, red "!" in a dark capsule tab (bottom).
+- Each sheet split at y 470, keyed with `Tools/art/ui_icon_prepare.js --keep-aspect` (frame `--size 1024 --margin 0.01`, mark `--size 256 --margin 0.04`), `--check` clean.
+- Critic (`20261105-164216-hud-unified.review.json`): both pass A1, A2, A6, A7, A14; candidate 1 closer to the mockup (slim rounded capsule, light rust, brass rivets). Reminder on both: the red "!" is a HUD use of red (readability-rules); owner kept it, no colour-code change.
+- Owner 2026-11-05 (verbatim): "Candidat 1". Keep = `20261105-164216-hud-unified-1.png`, its log and review; temporary = `-2.png`, moved to `Saved/Scratch/hud-unified/`. Cut-outs: `Art/UI/HUD/T_HUD_AlertFrame.png` (1024 x 131 RGBA, frame 1004 x 111 at 10,10, transparent window) and `Art/UI/HUD/T_HUD_AlertMark.png` (124 x 256 RGBA). C, B, S stay UMG letters, as in the mockup.
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
+- [[wbp-alert-objectives]] — shows the alert bar sprites (task-453).
 - [[task-451-hud-mockups]] — the task that made these mockups.
 - [[art-prompts-shop-screen-mockup]] — the style reference image.
 - [[kie-image-workflow]] — tool, credits and commit rule.

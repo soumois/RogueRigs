@@ -1,0 +1,61 @@
+{
+  "run_id": "20261105-164216-hud-unified",
+  "items": [
+    {
+      "file": "Art/Source/hud-unified/20261105-164216-hud-unified-1.png",
+      "verdict": "pass",
+      "rule": "A1, A2, A6, A7, A14",
+      "reason": "Chamfered riveted gunmetal-teal plates with flat facets, sparse rust chips and brass rivets, no smoothing, no text, a hollow keyed window and a clean dark-capsule mark: same frame family as the retained mockup.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/hud-unified/20261105-164216-hud-unified-1.png",
+      "verdict": "fail",
+      "rule": "readability-rules (Red means enemy fire or healing)",
+      "reason": "The horde warning mark is a red '!', a third meaning of red (a UI warning) beyond enemy fire and healing; the owner already accepted it in the validated mockup and the 'colour rules are not rigid' line likely covers it, so this is a reminder only.",
+      "correction": "None needed if the owner keeps the red mark on purpose; otherwise ask for the '!' in the same red but state it in the vault as a HUD-only enemy warning colour."
+    },
+    {
+      "file": "Saved/Scratch/hud-alert/T_HUD_AlertFrame-c1.png",
+      "verdict": "pass",
+      "rule": "A1, A2, A6",
+      "reason": "Clean key, fully transparent window, dark inner outline, chamfered end caps with brass rivets and light rust like the mockup; rails a little thinner than the mockup's.",
+      "correction": null
+    },
+    {
+      "file": "Saved/Scratch/hud-alert/T_HUD_AlertMark-c1.png",
+      "verdict": "pass",
+      "rule": "A1, A2",
+      "reason": "Rounded capsule with a dark inside and a slim faceted red '!', the closest shape to the mockup mark; the rim is a thicker rusty gunmetal than the mockup's thin outline.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/hud-unified/20261105-164216-hud-unified-2.png",
+      "verdict": "pass",
+      "rule": "A1, A2, A6, A7, A14",
+      "reason": "Chamfered riveted gunmetal-teal plates with flat facets and rust, no text, hollow keyed window; same family as the mockup but with heavier rust patches, silver hex bolts mixed with brass rivets, and an octagonal mark instead of the mockup's rounded capsule.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/hud-unified/20261105-164216-hud-unified-2.png",
+      "verdict": "fail",
+      "rule": "readability-rules (Red means enemy fire or healing)",
+      "reason": "Same as candidate 1: a red '!' as a UI horde warning is a third meaning of red; already accepted in the mockup, reported as a reminder only.",
+      "correction": "None needed if the owner keeps the red mark on purpose; otherwise record red as a HUD-only enemy warning colour in the vault."
+    },
+    {
+      "file": "Saved/Scratch/hud-alert/T_HUD_AlertFrame-c2.png",
+      "verdict": "pass",
+      "rule": "A1, A2, A6",
+      "reason": "Clean key and transparent window; rails slightly thicker (closer to the mockup) but rust denser and bolts mixed silver and brass (the mockup shows sparse chips and brass rivets only).",
+      "correction": null
+    },
+    {
+      "file": "Saved/Scratch/hud-alert/T_HUD_AlertMark-c2.png",
+      "verdict": "pass",
+      "rule": "A1, A2",
+      "reason": "Chamfered octagonal tab with a dark inside and a wide, chunky red '!': reads well small and matches the chamfer language, but departs from the mockup's slim rounded capsule.",
+      "correction": null
+    }
+  ]
+}

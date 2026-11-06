@@ -11,7 +11,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 
-- [[task-453-alert-bar-redesign]] — The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay. Status wait-answers.
+- [[task-453-alert-bar-redesign]] — The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay. Status in-progress.
 - [[task-455-xp-bar-ticks]] — Thin light ticks split the XP bar into 5 equal parts. Status todo.
 - [[task-456-xp-gain-ghost]] — On an XP gain a pale ghost fill shows the new XP at once and the cyan fill catches up, the mirror of the health damage chunk. Status todo.
 - [[task-458-weapon-slots-style]] — The frames of the 4 weapon slots take the retained unified look; their contents stay. Status todo.

@@ -3,7 +3,7 @@ id: task-453-01-art
 description: "Art: Cut the alert bar frame and mark sprites of the retained mockup."
 parent: task-453-alert-bar-redesign
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Alert bar redesigned and better integrated: art
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-11-06T00:41:05Z
-- waiting_for: owner pick of the alert bar sprites: candidate 1 or 2 (frame Saved/Scratch/hud-alert/T_HUD_AlertFrame-c1.png / -c2.png, swarm mark T_HUD_AlertMark-c1.png / -c2.png; sheets Art/Source/hud-unified/20261105-164216-hud-unified-1.png / -2.png); critic prefers 1
+- started: 2026-11-06T00:46:45Z
+- waiting_for: none
 - result: open
 
 ## Relations
