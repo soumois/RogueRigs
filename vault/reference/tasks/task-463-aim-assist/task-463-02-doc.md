@@ -3,7 +3,7 @@ id: task-463-02-doc
 description: "Doc: Record the aim assist and its data value."
 parent: task-463-aim-assist
 kind: task
-status: todo
+status: in-progress
 ---
 # Light aim assist on miner shots: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T08:51:05Z
 - waiting_for: none
 - result: open
 

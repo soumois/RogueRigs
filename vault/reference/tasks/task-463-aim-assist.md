@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read burst-rifle (projectile, SpreadDeg, Range, pierce, 14 uu collision and Muzzle capsule), shotgun (pellet fan, damages barrels), turret (already locks the nearest enemy), miner (aim), aim-indicator (laser on the raw aim, stops at first robot or block), barrel (has health, shots damage it), gdd-pillars. No conflict. P2 (manual aim) holds because the assist is a few degrees and never overrides a shot already on a robot or a barrel; P3 holds because barrels are never pulled toward. Not specified by the request and decided by Q39 to Q45: weapons affected, max angle, target selection, the meaning of "va toucher", mouse versus stick, laser feedback, player option. miner edited at confirmation. Milestone: not set by the GDD; pulled into current work by the request.
 - confirmed_by_owner: yes (2026-11-06, "Je valide le choix, mais ne lance pas la tâche")
 - milestone: M2
-- next_step: task-463-01-aim-assist
+- next_step: task-463-02-doc
 - started: 2026-11-06T05:57:03Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 82, cache write 206953, cache read 3819183, output 37993
+- executor_usage: runs 1, turns 42, context start 17k peak 151k, resumes 1, 174 min, units 0.83 M
 - planning_tokens: input 28, cache write 44937, cache read 468603, output 11453
 - planning_usage: aca5bf7e "Plan aim assist request" 1/1 (tasks 463), units 0.16 M
 - result: open
