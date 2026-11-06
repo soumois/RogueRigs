@@ -3,7 +3,7 @@ id: task-472-01-shadow-component
 description: "Cpp: One generic shadow component placed under its actor, following it, with per-type and global opacity and scale, and the listed actors stop casting light shadows."
 parent: task-472-actor-blob-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Light-independent purple-grey shadows under actors: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:53:44Z
 - waiting_for: none
 - result: open
 

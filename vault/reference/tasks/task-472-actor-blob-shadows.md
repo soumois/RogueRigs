@@ -3,7 +3,7 @@ id: task-472-actor-blob-shadows
 description: "Global task: Each listed actor gets a soft purple-grey shadow directly beneath it that follows it and ignores every light, with adjustable opacity and scale; their light shadows are turned off."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Light-independent purple-grey shadows under actors
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
 - next_step: task-472-01-shadow-component
-- started: open
+- started: 2026-11-06T17:53:44Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none
