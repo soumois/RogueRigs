@@ -3,7 +3,7 @@ id: task-467-01-art
 description: "Art: Frame sprites for the thin health strip, the flat slot cell, the slim block frame, the straight XP rail and the Lv plate, from the target image."
 parent: task-467-bottom-hud-match-target
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:54:24Z
 - waiting_for: none
 - result: open
 

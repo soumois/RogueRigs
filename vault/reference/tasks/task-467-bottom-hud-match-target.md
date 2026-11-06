@@ -3,7 +3,7 @@ id: task-467-bottom-hud-match-target
 description: "Global task: health strip, weapon slots and XP bar reworked, captured in game and compared with the owner target image until they match."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Q4 Vérification finale : Tu fais l'écran en 1920 × 1080. Le reste par défaut. ne lance pas la tâche, prépare là")
 - milestone: M2
 - next_step: task-467-01-art
-- started: open
+- started: 2026-11-06T09:54:24Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none
