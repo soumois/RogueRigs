@@ -60,8 +60,13 @@ The retained image is the layout and look reference; every piece uses one frame 
 - Critic (`20261105-164216-hud-unified.review.json`): both pass A1, A2, A6, A7, A14; candidate 1 closer to the mockup (slim rounded capsule, light rust, brass rivets). Reminder on both: the red "!" is a HUD use of red (readability-rules); owner kept it, no colour-code change.
 - Owner 2026-11-05 (verbatim): "Candidat 1". Keep = `20261105-164216-hud-unified-1.png`, its log and review; temporary = `-2.png`, moved to `Saved/Scratch/hud-unified/`. Cut-outs: `Art/UI/HUD/T_HUD_AlertFrame.png` (1024 x 131 RGBA, frame 1004 x 111 at 10,10, transparent window) and `Art/UI/HUD/T_HUD_AlertMark.png` (124 x 256 RGBA). C, B, S stay UMG letters, as in the mockup.
 
+## Weapon slot frame sprite (task-458-01)
+- No new sprite, no Kie.ai run, no credit (main session 2026-11-05: reuse a kept sprite that fits, as task-452 did). Each slot frame of the mockup (dark inside, gunmetal edges with small rivets, teal chamfered corner plates, rust chips) is the look of the owner-retained `Art/UI/LevelEnd/T_LevelEnd_Frame.png` (942 x 458 RGBA, keyed, task-380-02, [[art-prompts-level-end-screen-mockup]]), imported as `/Game/RogueRigs/UI/LevelEnd/T_LevelEnd_Frame`; its Draw As Box margins are measured there (0.0955 / 0.1878).
+- The bolted base around the four slots reuses `T_Shop_ButtonReroll`, the plate of the health panel (task-452), so the health plate and the slot row read as one block.
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
+- [[art-prompts-level-end-screen-mockup]] — T_LevelEnd_Frame, reused for the weapon slot frames (task-458).
 - [[wbp-alert-objectives]] — shows the alert bar sprites (task-453).
 - [[task-451-hud-mockups]] — the task that made these mockups.
 - [[art-prompts-shop-screen-mockup]] — the style reference image.

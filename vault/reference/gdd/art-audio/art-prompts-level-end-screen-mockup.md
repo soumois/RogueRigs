@@ -54,3 +54,4 @@ Kie.ai GPT Image 2 image-to-image, refs the sheet (Image 1) and the mockup (Imag
 - [[art-prompts-level-end-screen]] — the ChatGPT prompt these images answer.
 - [[art-prompts-shop-screen-mockup]] — Spare Parts sprites and method this follows.
 - [[task-380-level-end-frame-sprites]] — the task that makes the sprites.
+- [[art-prompts-hud-unified-mockup]] — reuses T_LevelEnd_Frame for the HUD weapon slot frames (task-458).
