@@ -16,8 +16,8 @@ status: cancelled
 - next_step: none
 - started: 2026-11-06T05:27:11Z
 - waiting_for: none
-- executor_tokens: input 88, cache write 137458, cache read 3734365, output 34565
-- executor_usage: runs 1, turns 42, context start 17k peak 137k, resumes 0, 7 min, units 0.72 M
+- executor_tokens: input 228, cache write 253498, cache read 17467430, output 80249
+- executor_usage: runs 1, turns 112, context start 17k peak 254k, resumes 1, 21 min, units 2.47 M
 - planning_tokens: input 22, cache write 51418, cache read 361734, output 10637
 - planning_usage: a8acd422 "Plan extractor ground-wind particle" 1/1 (tasks 466), units 0.15 M
 - result: Cancelled by the owner (2026-11-05) after the executor was stopped during task-466-02; partial ground-wind state left as is.

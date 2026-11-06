@@ -16,6 +16,10 @@ status: todo
 - next_step: task-469-01-green
 - started: open
 - waiting_for: none
+- executor_tokens: none (no executor run)
+- executor_usage: none
+- planning_tokens: input 25, cache write 33914, cache read 560922, output 11927
+- planning_usage: aa81a0a3 "Plan unlimited aim line" 1/2 (tasks 468, 469), units 0.16 M
 - result: open
 
 ## Questions

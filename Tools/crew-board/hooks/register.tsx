@@ -548,6 +548,9 @@ export const register: Register = (on, options) => {
       else throw new Error('usage-snapshot.json is over 4 MiB and usage-agents.json is missing: run node vault/scripts/agent-usage.js --snapshot')
       usageMtime = entry.mtimeMs
       changed = true
+      // a new snapshot holds the agents read from transcripts since the last one: read them again only if they changed after it
+      extras.clear()
+      seenFinished.clear()
       // publish what the file holds right away: the transcript pass below starts processes and may be slow
       for (const r of snapRecords) if (r.role === 'planning' && Array.isArray(r.createdTasks)) plannerTasks.set(String(r.id), (r.createdTasks as unknown[]).map(String))
       await publishCosts([])
@@ -564,9 +567,11 @@ export const register: Register = (on, options) => {
       }
       for (const f of files) {
         const m = f.name.match(/^agent-(.+)\.meta\.json$/)
-        if (!m || snapIds.has(m[1]) || extras.has(m[1]) || seenFinished.has(m[1])) continue
+        if (!m || extras.has(m[1]) || seenFinished.has(m[1])) continue
         const log = files.find(x => x.name === `agent-${m[1]}.jsonl`)
-        if (!log || Date.now() - log.mtimeMs > 2 * DAY_MS) {
+        // an agent already in the snapshot is read again only when its transcript changed after the snapshot was written
+        // (it was still running then: partial tokens, no task created yet)
+        if (!log || Date.now() - log.mtimeMs > 2 * DAY_MS || (snapIds.has(m[1]) && log.mtimeMs <= usageMtime)) {
           seenFinished.add(m[1])
           continue
         }
@@ -577,8 +582,10 @@ export const register: Register = (on, options) => {
         } catch {
           continue
         }
-        if (!meta.finished || (meta.type !== 'planner' && meta.type !== 'executor')) {
-          if (meta.finished) seenFinished.add(m[1])
+        // an agent stopped by the owner is never marked finished: a transcript untouched for 10 minutes counts as ended
+        const ended = meta.finished || Date.now() - log.mtimeMs > 10 * 60 * 1000
+        if (!ended || (meta.type !== 'planner' && meta.type !== 'executor')) {
+          if (ended) seenFinished.add(m[1])
           continue
         }
         const got = await readUsage(`${projDir}/${session.name}/subagents/${log.name}`, log.size)
@@ -630,7 +637,8 @@ export const register: Register = (on, options) => {
       costs[num] = entry2
     }
     // a planner's tasks: the nodes it created, read from its transcript while that exists, else the tasks named in its report
-    const records = [...snapRecords, ...extras.values()]
+    // an agent read again from its transcript replaces its snapshot record
+    const records = [...snapRecords.filter(r => !extras.has(String(r.id))), ...extras.values()]
     for (const r of records) {
       const id = String(r.id)
       if (r.role !== 'planning' || plannerTasks.has(id) || sessions.length === 0) continue

@@ -16,6 +16,10 @@ status: todo
 - next_step: task-470-01-floor-material
 - started: open
 - waiting_for: none
+- executor_tokens: none (no executor run)
+- executor_usage: none
+- planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
+- planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open
 
 ## Questions

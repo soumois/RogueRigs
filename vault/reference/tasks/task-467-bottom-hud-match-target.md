@@ -17,6 +17,10 @@ status: todo
 - next_step: task-467-01-art
 - started: open
 - waiting_for: none
+- executor_tokens: none (no executor run)
+- executor_usage: none
+- planning_tokens: input 42, cache write 70246, cache read 976529, output 19786
+- planning_usage: acbae4b7 "Plan HUD bottom fix loop" 1/1 (tasks 467), units 0.28 M
 - result: open
 
 ## Questions
