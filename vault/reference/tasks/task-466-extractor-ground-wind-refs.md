@@ -13,9 +13,13 @@ status: in-progress
 - gdd_check: Read extraction (ground blast: outward dust, height fade, pale grey-beige, low opacity, task-462 cartoon rework), art-style-guide (A10), extractor-blast-references, task-462. Conflict: task-462 wrote "sharp shapes, no blurry blobs", the owner references have soft painted rings and a soft dust disc; default Q1 lets rings and disc be soft, puffs and streaks crisp. Out of scope by default (Q2): the downwash columns under the fans (task-442 says soft swirls, no thin lines) and the orange glows at the feet seen in the mockup. Size of the rings: no value in the GDD; taken from the mockup, outer ring about twice the extractor width. Owner images kept in Art/Source/extractor-fx/reference/ (owner references, precedent task-462). extraction edited at confirmation. No code read.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-466-01-wind-sprites
+- next_step: task-466-02-ground-wind
 - started: 2026-11-06T05:27:11Z
 - waiting_for: none
+- executor_tokens: input 88, cache write 137458, cache read 3734365, output 34565
+- executor_usage: runs 1, turns 42, context start 17k peak 137k, resumes 0, 7 min, units 0.72 M
+- planning_tokens: input 22, cache write 51418, cache read 361734, output 10637
+- planning_usage: a8acd422 "Plan extractor ground-wind particle" 1/1 (tasks 466), units 0.15 M
 - result: open
 
 ## Questions
