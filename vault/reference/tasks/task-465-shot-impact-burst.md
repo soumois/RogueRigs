@@ -16,6 +16,10 @@ status: todo
 - next_step: task-465-01-laser-impact-slice
 - started: open
 - waiting_for: none
+- executor_tokens: none (no executor run)
+- executor_usage: none
+- planning_tokens: input 22, cache write 39693, cache read 359859, output 12653
+- planning_usage: aedb5b0d "Plan player shot impact FX" 1/1 (tasks 465), units 0.15 M
 - result: open
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-04T17:03:55Z
 - waiting_for: none
+- executor_tokens: input 32, cache write 35475, cache read 443841, output 6533
+- executor_usage: runs 1, turns 13, context start 17k peak 47k, resumes 0, 7 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. mpp-player-light-mask rewritten (parameters, formula, revert, verification state), sys-player notes unused PlayerPosition; lint clean, commit 7aa33a16.
 
 ## Questions

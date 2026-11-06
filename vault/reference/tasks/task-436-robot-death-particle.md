@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T17:37:13Z
 - waiting_for: none
+- executor_tokens: input 74, cache write 173173, cache read 4080927, output 62797
+- executor_usage: runs 1, turns 37, context start 17k peak 185k, resumes 0, 16 min, units 0.94 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, look unverified until the owner has seen it (A7, no capture). NS_RobotDeathPuff and NS_HeavyDeathPuff are the cartoon flash after the owner reference: 18 CPU sprites (core, lines, blobs, burnt puffs), about 0.42 s, flat cel bands white, yellow, orange, red-orange, dark red, three procedural materials, heavy at 3x, pool 40 kept. Kamikaze death unchanged through NS_KamikazeDeathPuff, a copy of the former puff, because BP_Kamikaze shared the system. Docs: bp-robot-death-puff, bp-heavy-death-puff, bp-kamikaze-death-puff, bp-kamikaze.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T23:11:02Z
 - waiting_for: none
+- executor_tokens: input 30, cache write 43689, cache read 361786, output 5046
+- executor_usage: runs 1, turns 12, context start 17k peak 44k, resumes 0, 7 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Three test doc nodes updated (commit 6d9452f4), known failures none left; lint clean.
 
 ## Questions

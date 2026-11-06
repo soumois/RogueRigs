@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T17:56:21Z
 - waiting_for: none
+- executor_tokens: input 14, cache write 35888, cache read 144038, output 2919
+- executor_usage: runs 1, turns 6, context start 18k peak 36k, resumes 0, 1 min, units 0.07 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. art-prompts-miner written (commit 76eed24e), linked from art-prompts, no image generated
 
 ## Questions

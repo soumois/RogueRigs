@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T23:39:47Z
 - waiting_for: none
+- executor_tokens: input 30, cache write 33235, cache read 402479, output 5759
+- executor_usage: runs 1, turns 12, context start 18k peak 45k, resumes 0, 8 min, units 0.11 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. sys-objectives-shuttle, sys-objectives-run-flow, bp-extraction-shuttle updated; commit c29c0886
 
 ## Questions

@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-05T23:36:53Z
 - waiting_for: none
+- executor_tokens: input 82, cache write 113318, cache read 2938074, output 23301
+- executor_usage: runs 1, turns 38, context start 18k peak 113k, resumes 1, 21 min, units 0.55 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done. 9 mockups in 3 directions (Kie.ai GPT Image 2, 54 credits: 36 first round + 18 one correction round), style-guide reviewed twice (no A-rule fail; remaining brief gap: XP tick spacing, set in UMG). Owner 2026-11-05: "A, plaques rivetées"; retained Art/Source/hud-unified/20261105-152627-hud-unified-1.png with its log; others temporary in Saved/Scratch/hud-unified; art-prompts-hud-unified-mockup records prompts, runs, credits, choice and what 452-458 take.
 
 ## Questions

@@ -81,3 +81,5 @@ if (r.resumeReasons['turn-limit']) alerts.push('the agent hit its turn limit and
 else if (r.calls >= rates.alerts.turns) alerts.push(`${r.calls} turns (alert from ${rates.alerts.turns}): close to the turn limit`);
 if (r.resumes > 0 && !r.resumeReasons['turn-limit']) alerts.push(`resumed ${r.resumes} time(s) (${reasons}): write the cause in the subtask result`);
 for (const a of alerts) console.log('ALERT ' + id + ': ' + a);
+// The executor run and the planner share live on the global node (the subtasks done by the executor say "included in the executor run").
+require('./task-cost').write(data, [globalId]);

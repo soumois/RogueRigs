@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T18:35:47Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 61566, cache read 229891, output 4268
+- executor_usage: runs 1, turns 9, context start 17k peak 40k, resumes 0, 12 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. sys-explosions and sys-camera-shake updated for the explosion shake (trigger, strengths, max distances, tuning in ExplosionStats.csv); commit 7932dc64; lint OK
 
 ## Questions

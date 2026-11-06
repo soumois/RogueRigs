@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T18:23:51Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 59798, cache read 194861, output 3860
+- executor_usage: runs 1, turns 8, context start 17k peak 39k, resumes 0, 12 min, units 0.11 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. sys-camera-shake, sys-player, sys-player-classes updated with URRHitCameraShake, HitShakeClass and trigger; lint clean; commit 62efb380
 
 ## Questions

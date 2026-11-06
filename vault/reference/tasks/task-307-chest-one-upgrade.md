@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; launched 2026-10-24)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 20, cache write 147303, cache read 527624, output 5095
+- executor_usage: runs 1, turns 10, context start 51k peak 77k, resumes 0, 9 min, units 0.26 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Bonus chest XPNeedFraction default 0 (AddXP skipped at 0): reward is 5 ore chunks + one +3-luck choice, no level-up from the chest; HackXPBurst asserts one choice with bar at 75 %; spec and docs updated; build green, RunFlow/Console/Progression 13/13 pass; commit 15c2f58c
 
 ## Subtasks

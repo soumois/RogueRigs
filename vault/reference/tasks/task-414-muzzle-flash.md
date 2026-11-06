@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T22:17:02Z
 - waiting_for: none
+- executor_tokens: input 32, cache write 37388, cache read 457579, output 6961
+- executor_usage: runs 1, turns 13, context start 18k peak 49k, resumes 0, 12 min, units 0.13 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp-muzzle-flash created; sys-weapons, sys-weapons-shotgun, bp-burst-rifle updated; lint clean (8a21d3d2)
 
 ## Questions

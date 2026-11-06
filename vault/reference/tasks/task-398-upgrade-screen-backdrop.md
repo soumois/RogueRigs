@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T22:39:27Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 29363, cache read 306967, output 4839
+- executor_usage: runs 1, turns 10, context start 19k peak 41k, resumes 0, 2 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-screen and wbp-upgrade-choice updated, commit 6d93ac06, lint OK
 
 ## Questions

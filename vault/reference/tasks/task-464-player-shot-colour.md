@@ -16,6 +16,10 @@ status: todo
 - next_step: task-464-01-rifle-laser-green
 - started: open
 - waiting_for: none
+- executor_tokens: none (no executor run)
+- executor_usage: none
+- planning_tokens: input 68, cache write 78624, cache read 1704871, output 34609
+- planning_usage: ac60e613 "Plan shot colour review" 1/1 (tasks 464), units 0.44 M
 - result: open
 
 ## Questions

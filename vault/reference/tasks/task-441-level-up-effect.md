@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T20:02:13Z
 - waiting_for: none
+- executor_tokens: input 118, cache write 305871, cache read 12205389, output 101942
+- executor_usage: runs 1, turns 58, context start 17k peak 318k, resumes 0, 33 min, units 2.11 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done. New bp-level-up-burst; updated bp-miner, sys-level-up, bp-damage-numbers, blueprints-fx-index, sys-tests-progression, sys-tests-weapon-types, unreal-mcp-quirks. No doc reviewed describes the disc as current. Lint clean. Critic style-guide on the LEVEL UP text and T_LevelUpText.png (made in subtask 02, launched late, recorded here): text pass, image pass, 0 fail.
 
 ## Questions

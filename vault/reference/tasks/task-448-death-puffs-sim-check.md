@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:33:16Z
 - waiting_for: none
+- executor_tokens: input 124, cache write 150553, cache read 6216427, output 38729
+- executor_usage: runs 1, turns 62, context start 17k peak 163k, resumes 0, 10 min, units 1.00 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, no asset changed (A2): both puffs read alive in PIE on real kills play the task-436 values. NS_RobotDeathPuff (5 kills) and NS_HeavyDeathPuff (1 heavy kill): every emitter spawns (Lines 6, Core 1, Blobs 6, Puffs 5) at t 0, 0.03, 0.06, 0.17, lifetimes, sizes and colours as built, heavy at 3x, alpha = NormalizedAge on every row, no LogNiagara warning. The compiled-script trap of the swirls is absent here. Look in game still the owner's to judge (A5, no capture). Docs: bp-robot-death-puff, bp-heavy-death-puff.
 
 ## Subtasks

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T07:24:20Z
 - waiting_for: none
+- executor_tokens: input 50, cache write 66199, cache read 673501, output 7939
+- executor_usage: runs 1, turns 22, context start 16k peak 48k, resumes 3, 497 min, units 0.19 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-card (BurnOverlay, vars, StartBurn/BurnStep/EndBurn, Tick branch, EndPurchaseFx contract, verified_burn) and m-card-burn (shop card as second user) updated; commit 6d56b0f1; lint OK; burn easing and fade shape left open (binary asset)
 
 ## Subtasks

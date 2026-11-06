@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T17:47:19Z
 - waiting_for: none
+- executor_tokens: input 62, cache write 52576, cache read 1075682, output 10069
+- executor_usage: runs 1, turns 27, context start 17k peak 64k, resumes 4, 18 min, units 0.22 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-card updated (NEED 16, BuyTextBox, BuyPlateBox, verified_need, open minor defects); commit 3e9f336f
 
 ## Questions

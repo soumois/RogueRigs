@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-05T23:43:51Z
 - waiting_for: none
+- executor_tokens: input 172, cache write 155451, cache read 9491427, output 40482
+- executor_usage: runs 1, turns 85, context start 17k peak 167k, resumes 0, 10 min, units 1.35 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done, look unverified on screen (Q26). Health bar and its 100 / 100 text now sit in a riveted plate (reused owner-retained T_Shop_ButtonReroll as 9-slice, no new art) centred just above the 4 weapon slots, 652 x 44, anchored bottom centre (0.5,1, offset -148); drain, chunk, flash, shake, punch and colour still driven by C++ on the same widgets; vignette and GAME OVER unchanged; game over hides the whole panel. Turret line moved above the panel, subtitles up to -240. PIE: hits and deaths ran with no script error. Commits d6be3f29, f9221733, 1d8ad8f6.
 
 ## Questions

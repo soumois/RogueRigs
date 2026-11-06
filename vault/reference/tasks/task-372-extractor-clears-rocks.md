@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T21:42:09Z
 - waiting_for: none
+- executor_tokens: input 42, cache write 67557, cache read 558730, output 7918
+- executor_usage: runs 1, turns 17, context start 18k peak 46k, resumes 3, 18 min, units 0.18 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done: 10 doc nodes updated citing commits de889932 and 0e85c9a0 (doc commit 7598c940); lint clean.
 
 ## Subtasks

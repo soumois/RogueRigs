@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T00:33:47Z
 - waiting_for: none
+- executor_tokens: input 156, cache write 156531, cache read 7937151, output 43071
+- executor_usage: runs 1, turns 75, context start 18k peak 169k, resumes 1, 47 min, units 1.20 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done, look unverified on screen (Q26). The radar now sits in a riveted gunmetal ring with worn teal trims (owner-retained Kie.ai sprite, candidate 1, "Candidat 1", 12 credits) that runs right into an attached plate holding the ore crystal icon and count; nothing floats beside the radar; the external example was not attached nor copied. Frame 524 x 297 at 16,16 (anchors 0,0), disc moved to 72,63 inside the ring hole, markers re-centred; ore icon 322,119 and count 386,119 in the plate; radar graphs, markers, locator and ore binding unchanged. PIE L_ArenaM1: GrantOre 10 (pickup path) logged, no script error. Commits b8842c42, 28c9e3ef, 436ec2b1, 193b562b, 22cd9f29.
 
 ## Questions

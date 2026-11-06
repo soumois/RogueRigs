@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T06:29:53Z
 - waiting_for: none
+- executor_tokens: input 48, cache write 75860, cache read 871405, output 10628
+- executor_usage: runs 1, turns 24, context start 16k peak 56k, resumes 0, 27 min, units 0.24 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. sys-run-shop, wbp-shop-card, wbp-shop-screen updated; commit 2da7b290
 
 ## Subtasks

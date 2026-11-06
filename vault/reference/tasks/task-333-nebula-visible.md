@@ -22,6 +22,10 @@ status: cancelled
 - next_step: none
 - started: 2026-10-27T21:59:10Z
 - waiting_for: none
+- executor_tokens: input 16, cache write 33643, cache read 191200, output 2778
+- executor_usage: runs 1, turns 8, context start 16k peak 34k, resumes 1, 3 min, units 0.08 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Cancelled 2026-10-27, superseded by task-335-space-texture-layers (S1, owner ok): owner judged the procedural nebula not working. 01 done: MI_Space_Nebula Intensity 0.06 to 1.6, commit 975425cf (stays, plane switched by task-335). 02 capture taken, not measured: Saved/Captures/task333_nebula/, used as the before of task-335-05. 03 docs folded into task-335-06.
 
 ## Subtasks

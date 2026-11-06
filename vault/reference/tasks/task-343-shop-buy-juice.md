@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T06:57:24Z
 - waiting_for: none
+- executor_tokens: input 38, cache write 89557, cache read 538531, output 8049
+- executor_usage: runs 1, turns 18, context start 16k peak 46k, resumes 1, 27 min, units 0.21 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-card updated with BuyHost/BuyFlash/Spark0..7, StartJuice/JuiceStep/SparkStep, Q10 values and capture verification (8d093514)
 
 ## Subtasks

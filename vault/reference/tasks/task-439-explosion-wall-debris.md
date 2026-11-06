@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T19:19:14Z
 - waiting_for: none
+- executor_tokens: input 84, cache write 240280, cache read 6906079, output 80765
+- executor_usage: runs 1, turns 41, context start 17k peak 252k, resumes 0, 20 min, units 1.39 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Blocks broken by a barrel or kamikaze explosion throw debris through NS_ExplosionWallDebris: one pooled effect per explosion, at most 60 CPU particles from the broken blocks, block colours, straight away from the centre (spread 8.5 deg), gone within 1.4 s; pool cap 8 bounds chains. Destruction, damage, barrel burst and ring unchanged. Numbers read from the simulation in RogueRigs.Explosions.WallDebrisAsset; look unverified until the owner has seen it.
 
 ## Questions

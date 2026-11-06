@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-27T14:58:21Z
 - waiting_for: none
+- executor_tokens: input 16, cache write 38984, cache read 217620, output 3804
+- executor_usage: runs 1, turns 8, context start 16k peak 39k, resumes 0, 6 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done: commit dbeae895; execution exception in _navigation, script output and Subtasks path form documented, paths added to 308/309/314.
 
 ## Subtasks

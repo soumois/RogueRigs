@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T22:02:49Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 27978, cache read 300635, output 4316
+- executor_usage: runs 1, turns 10, context start 18k peak 40k, resumes 0, 3 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp-miner refreshed (SK_Miner, MI_Miner, BaseColorScale, tune/revert), line in lights-dark-ambient; commit 57d5aa37
 
 ## Questions

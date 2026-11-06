@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T21:58:25Z
 - waiting_for: none
+- executor_tokens: input 60, cache write 69918, cache read 811092, output 11089
+- executor_usage: runs 2, turns 24, context start 18k peak 49k, resumes 0, 9 min, units 0.22 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-alert-objectives and wbp-intermission updated with Duskite labels and ui_check, lint OK, commit 0d68fdd8
 
 ## Questions

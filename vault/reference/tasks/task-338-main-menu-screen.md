@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T01:53:55Z
 - waiting_for: none
+- executor_tokens: input 46, cache write 156908, cache read 765821, output 11431
+- executor_usage: runs 1, turns 23, context start 16k peak 59k, resumes 0, 34 min, units 0.33 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Created sys-main-menu, wbp-main-menu, bp-main-menu-game-mode; updated 3 indexes, sys-cheats, sys-run; lint ok; commit 08114cac
 
 ## Subtasks

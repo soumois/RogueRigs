@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T04:55:16Z
 - waiting_for: none
+- executor_tokens: input 14, cache write 38175, cache read 148253, output 3102
+- executor_usage: runs 1, turns 6, context start 18k peak 38k, resumes 0, 2 min, units 0.08 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Saved FBX (sha256 identical), textures and report in Art/Source/miner-meshy; 25744 tris, 40681 verts, 66 bones, no animation; art-prompts-miner section added; commit d65aff30
 
 ## Questions

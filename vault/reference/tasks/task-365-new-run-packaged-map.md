@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T18:25:40Z
 - waiting_for: none
+- executor_tokens: input 28, cache write 55218, cache read 342341, output 4708
+- executor_usage: runs 1, turns 12, context start 18k peak 43k, resumes 0, 10 min, units 0.13 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. build-toolchain and sys-main-menu updated (commit 78d3ff51): MapsToCook rule, two-map command, packaged New Run verification; lint OK.
 
 ## Questions

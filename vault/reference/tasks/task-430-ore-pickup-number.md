@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-04T20:59:22Z
 - waiting_for: none
+- executor_tokens: input 108, cache write 76961, cache read 1485427, output 15388
+- executor_usage: runs 2, turns 43, context start 17k peak 51k, resumes 3, 25 min, units 0.32 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Four nodes updated (sys-damage-numbers, -niagara, bp-damage-numbers, sys-pickups); gdd and lifecycle/tests nodes untouched; commit 637656d1
 
 ## Questions

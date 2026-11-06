@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T19:01:41Z
 - waiting_for: none
+- executor_tokens: input 58, cache write 207543, cache read 730777, output 11501
+- executor_usage: runs 1, turns 23, context start 17k peak 56k, resumes 3, 182 min, units 0.39 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done: sys-automation-tests documents RRTestStatsRows.h, the single-source rule and 2 known pre-existing failures; 4 sys-tests-* cite CSV rows. Commit 3a98d11c. First doc run cut by usage limit, rerun finished from its uncommitted edits (counted as 2 runs). Rule in _authoring/cpp-standard already present from confirmation.
 
 ## Questions

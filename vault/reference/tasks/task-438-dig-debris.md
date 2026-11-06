@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T18:01:17Z
 - waiting_for: none
+- executor_tokens: input 104, cache write 252115, cache read 8580931, output 66967
+- executor_usage: runs 1, turns 48, context start 17k peak 264k, resumes 1, 78 min, units 1.51 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Each block broken by the drone plays one pooled NS_DigDebris burst (12 CPU sprites, block colour, gone within 0.8 s, cap 16, skipped when full); laser effect, dig speed, explosions and extractor unchanged. Tests pass; look unverified until the owner has seen it in game.
 
 ## Questions

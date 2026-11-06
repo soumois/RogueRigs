@@ -17,6 +17,10 @@ status: done
 - milestone: M2
 - next_step: none
 - started: 2026-10-27T01:00:58Z
+- executor_tokens: input 14, cache write 23084, cache read 163654, output 3459
+- executor_usage: runs 1, turns 7, context start 16k peak 34k, resumes 0, 4 min, units 0.06 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wait-answers status added: lint, task-status.js (waiting_for required, reset on any other status), templates, task-create.js, protocol steps 4 and 5, planner/executor/runbook, indexes, crew-board.js; verified on a throwaway vault copy; step 0 resume of waiting globals left unchanged (outside authorisation). ALERT tokens over ceiling: subagent used 72842 vs 40000, cause = 13 files edited plus a full throwaway-copy test matrix.
 
 Run order: after task-319 closes, then task-320, task-321, task-322, task-323, one at a time (all edit task-status.js; 323 extends the field insertion of 321 and the status list of 322).

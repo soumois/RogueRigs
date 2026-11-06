@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T14:25:15Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 24848, cache read 258230, output 3213
+- executor_usage: runs 1, turns 9, context start 18k peak 37k, resumes 0, 2 min, units 0.07 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. capture agent defined (capture.md, agent-capture), capture rules moved from agent-cpp, routing updated; commits 04937f68, 4467bdee
 
 ## Questions

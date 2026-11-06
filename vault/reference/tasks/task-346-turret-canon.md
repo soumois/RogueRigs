@@ -21,6 +21,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T06:47:37Z
 - waiting_for: none
+- executor_tokens: input 30, cache write 105921, cache read 356701, output 8255
+- executor_usage: runs 2, turns 15, context start 16k peak 39k, resumes 0, 23 min, units 0.21 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Canon rebuilt in Blender (commit 06e565d9): 1,374 canon tris, total 15,748 under 16,000; 15 real round holes in the shroud matching the unoptimised pattern (rows 1,2,2,1,3,5,1); axis/length/radii within 2 pct; body vertices and UVs unchanged. Warnings: hook bracket at canon rear lost, underside arc not searched for holes, normal bake detail unverified.
 
 ## Subtasks

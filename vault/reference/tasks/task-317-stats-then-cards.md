@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-26)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 40, cache write 351185, cache read 1440381, output 12918
+- executor_usage: runs 1, turns 20, context start 55k peak 113k, resumes 0, 42 min, units 0.65 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. -game captures in Saved/StatsCards (contact-sheet.png): L1 stats (Chaser: 8, Burst rifle: 125, Next level), cards on black with 5 priced cards, L4 stats CLAIM EMPTIED / Cash out, then run-won screen, no cards on L4; no defect; unseen: mouse clicks, multi-entry lists, buy/reroll on new screen, nonzero ore. Commit f14a7110.
 
 ## Subtasks

@@ -24,6 +24,10 @@ status: done
 - next_step: none
 - started: 2026-10-27T23:21:20Z
 - waiting_for: none
+- executor_tokens: input 46, cache write 151815, cache read 646268, output 11468
+- executor_usage: runs 2, turns 23, context start 16k peak 54k, resumes 0, 26 min, units 0.31 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp-asteroid-material and bp-asteroid-field written, index, bp-arena-grid, bp-space-background updated (e84bf2c6). Deviation kept on purpose: BP_AsteroidField has a BeginPlay graph with 12 SetUpdatedComponent calls (owner accepted 2026-10-27: "J accepte le cablage SetUpdatedComponent dans BP_AsteroidField (deviation voulue).")
 
 ## Subtasks

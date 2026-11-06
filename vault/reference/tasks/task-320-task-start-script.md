@@ -15,6 +15,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-26): "ok" to every default, Q1-Q9.
 - milestone: M2
 - next_step: none
+- executor_tokens: input 20, cache write 41440, cache read 261373, output 4036
+- executor_usage: runs 1, turns 10, context start 16k peak 41k, resumes 0, 3 min, units 0.10 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done. vault/scripts/task-start.js written; protocol step 5.1 and Roles, agent-executor and runbook name it. Tested on a scratch worktree copy: one run sets in-progress and commits only 3 files, second run no-op exit 0, confirmed_by_owner: no refused. Lint clean.
 
 ## Subtasks

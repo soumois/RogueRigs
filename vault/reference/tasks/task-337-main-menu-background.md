@@ -27,6 +27,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T01:53:18Z
 - waiting_for: none
+- executor_tokens: input 54, cache write 133036, cache read 886101, output 12505
+- executor_usage: runs 1, turns 24, context start 16k peak 57k, resumes 2, 29 min, units 0.32 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Owner kept variant 1 (run 20261027-172530) as vault/assets/main-menu-background.png; 24 credits over 2 runs (18 + 6 unused correction pass 1 made on variant 3). Open style-guide fails of variant 1 accepted for now: A3 squat chasers, A13 floor, cracks on rock tops, A5 worn chasers, lit slope in left third, drone thruster flames.
 
 ## Subtasks

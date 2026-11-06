@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T00:57:36Z
 - waiting_for: none
+- executor_tokens: input 88, cache write 76415, cache read 2552700, output 17554
+- executor_usage: runs 1, turns 42, context start 18k peak 88k, resumes 0, 4 min, units 0.44 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done. A1 4 ticks XPTick20/40/60/80 at 0.2/0.4/0.6/0.8 of XPBarArea, white A 0.75, 2 wide, above the fill (5e101e15); A2 thin light marks as in the retained mockup, exact spacing; A3 XPBar name, fill, Lv text and graphs untouched; A4 Canvas and anchors, follows bar width, no owner edit was pending; A5 compiled, PIE GrantXP 3 then 40 no error; A6 no capture, look unverified until the owner sees it; doc 6ee90430. Cost: both subtasks included in the executor run (cost-log rows 0k each).
 
 ## Questions

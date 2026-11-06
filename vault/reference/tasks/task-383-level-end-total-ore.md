@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T05:19:29Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 30219, cache read 274623, output 3774
+- executor_usage: runs 1, turns 9, context start 18k peak 42k, resumes 0, 1 min, units 0.08 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-intermission updated: Total Ore line, moved anchors, graph; verified section records owner visual validation, no capture; gdd intermission already said one Total Ore line; commit 8038d9b4
 
 ## Questions

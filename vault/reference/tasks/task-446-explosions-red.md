@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:07:12Z
 - waiting_for: none
+- executor_tokens: input 188, cache write 210200, cache read 12724997, output 73575
+- executor_usage: runs 1, turns 94, context start 17k peak 210k, resumes 0, 16 min, units 1.90 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, look unverified until the owner has seen it in game (A8, no capture, no stress run). All three parts of the barrel and kamikaze explosion (BP_ExplosionFX_Barrel, both CSV rows) now follow the cartoon robot death flash: sphere M_CartoonExplosionSphere (flat white, yellow, orange, red-orange bands with jagged edges, cooling to dark red and hollowing out during the fade); burst NS_BarrelExplosion rebuilt from the robot flash (core flash, 20 lines, 14 blobs, 16 dark red puffs = 51 sprites sized by User.Radius, ends by 0.96 s, drawn above the sphere); ground ring M_ExplosionShockwave redrawn as a jagged cel ring that cools and thins as it fades. Radius x 1.05, 0.1 s hold, ring growth to the radius, damage, chains and shake unchanged (no C++ change); telegraphs, fuse and kamikaze pulse untouched. RogueRigs.Explosions 10 of 10 passed. M_BarrelExplosionSprite deleted (unused). Docs: bp-barrel-explosion, bp-explosion-fx-barrel, bp-explosion-fx, bp-explosion-shockwave, sys-explosions.
 
 ## Questions

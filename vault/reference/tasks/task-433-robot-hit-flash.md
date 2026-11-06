@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T16:05:27Z
 - waiting_for: none
+- executor_tokens: input 70, cache write 208637, cache read 5248050, output 60803
+- executor_usage: runs 1, turns 35, context start 17k peak 220k, resumes 0, 19 min, units 1.09 M
+- planning_tokens: input 9, cache write 27137, cache read 205219, output 7560
+- planning_usage: a4982e23 "Plan FX lot 1 tasks" 1/3 (tasks 432, 433, 434), units 0.09 M
 - result: Hit flash built: C++ writes Custom Primitive Data 2 on BodyMesh for 0.08 s through a timer, no tick and no dynamic material; MF_RobotHitFlash is in M_RobotMeshy, M_ShieldChaserV2_Anim and M_RobotEye; shield, emblem and kamikaze core do not flash. A2 to A6 checked by value and test; A1 and the look of A2 to A4 unverified until the owner has seen them in game (A7).
 
 ## Questions

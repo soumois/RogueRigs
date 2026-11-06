@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T17:27:42Z
 - waiting_for: none
+- executor_tokens: input 44, cache write 130309, cache read 2040196, output 24402
+- executor_usage: runs 1, turns 22, context start 17k peak 142k, resumes 0, 9 min, units 0.49 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Robot hit flash removed: no flash value is written on a hit, MF_RobotHitFlash is deleted, the five material assets are back to their pre-flash files (masters recompiled and saved), the test and the docs are gone. RogueRigs.Enemies passes, 12 of 12. A1 and the look of A2 unverified until the owner has seen them in game (A5).
 
 ## Questions

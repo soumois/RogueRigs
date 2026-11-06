@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T17:41:31Z
 - waiting_for: none
+- executor_tokens: input 88, cache write 222492, cache read 1236060, output 15634
+- executor_usage: runs 3, turns 38, context start 18k peak 54k, resumes 0, 29 min, units 0.48 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Not verified by capture: 5 capture launches never framed the latch (default camera too far; C1 not seen, C2-C4 ambiguous/not seen); owner declined an extra cpp rr.Debug framing subtask and checked the chest himself: 'Je valide' (validated visually by the owner, 2026-10-29). Note for the owner: orange blink rate is stepped 2/3/4/6 Hz per hack quarter, not linear. bp-bonus-chest lock_light now notes the C++ runtime override. Cost: capture ~59.9k + ~69.7k, refused cpp attempt ~18k.
 
 ## Subtasks

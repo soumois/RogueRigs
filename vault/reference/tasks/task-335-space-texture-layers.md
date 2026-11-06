@@ -34,6 +34,10 @@ status: done
 - next_step: none
 - started: 2026-10-27T22:40:11Z
 - waiting_for: none
+- executor_tokens: input 134, cache write 251510, cache read 2225390, output 32533
+- executor_usage: runs 6, turns 66, context start 16k peak 69k, resumes 2, 40 min, units 0.70 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. All 9 subtasks done. Final intensities MI_Space_Clouds 0.6, MI_Space_Deep 0.7; void far gain 0.5 (saved FarBrightness 0.06). Recapture: void mean 20.5 below floor strips (pass); cloud p99 116 above the 70-100 band: acceptance deviation chosen by the owner (2026-10-27 'Ok pour ça, passe à la 334'), kept, no more retune or capture. Deep layer not distinguishable in captures.
 
 ## Subtasks

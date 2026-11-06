@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T18:05:08Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 61559, cache read 229866, output 4568
+- executor_usage: runs 1, turns 9, context start 17k peak 40k, resumes 0, 19 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done, commit 7ee85d80: sys-camera-shake documents mixing, same-class restart, 12 uu cap, located call and falloff; Q21 line replaced by pointer to 417-419.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T22:05:28Z
 - waiting_for: none
+- executor_tokens: input 26, cache write 29510, cache read 308399, output 4829
+- executor_usage: runs 1, turns 10, context start 18k peak 41k, resumes 0, 3 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Docs updated (982a8bd8): wbp-shop-screen, wbp-shop-card, wbp-alert-objectives.
 
 ## Subtasks

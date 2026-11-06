@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T14:41:52Z
 - waiting_for: none
+- executor_tokens: input 110, cache write 214388, cache read 7619683, output 52070
+- executor_usage: runs 1, turns 50, context start 17k peak 214k, resumes 1, 35 min, units 1.29 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. The green square was the engine default decal over the barrel fuse zone from the second run of a package: the telegraph default material, cached in a static weak pointer, was collected at the first map change and resolved to null. Fixed by resolving it again when stale (1939e428). Development package, three runs: before 44 of 205 frames green, after 0 of 194. Shipping package staged in Saved/StagedBuilds/Windows for the owner's check, only launched by the agent.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:09:55Z
 - waiting_for: none
+- executor_tokens: input 60, cache write 73299, cache read 1808599, output 13269
+- executor_usage: runs 1, turns 30, context start 17k peak 85k, resumes 0, 9 min, units 0.34 M
+- planning_tokens: input 9, cache write 21164, cache read 215717, output 5892
+- planning_usage: ab92ee9b "Plan owner HUD/levelup/wind feedback" 1/4 (tasks 459, 460, 461, 462), units 0.08 M
 - result: Done. The 3-card screen opens 1.8 s after a level-up (ChoiceDelay 0.8 -> 1.8, b68fc3f9), measured 108 frames = 1.800 s with BP_Miner and the real game mode (Integration.LevelUpUpgradeLoop), game running during the wait; two levels at once wait once then chain (LevelUp.ChainedOffers); burst, push, heal, chest screen unchanged; 19 targeted tests pass; sys-level-up updated (906f3398). Look unverified in game until the owner sees it.
 
 ## Questions

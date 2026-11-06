@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T21:07:22Z
 - waiting_for: none
+- executor_tokens: input 52, cache write 84521, cache read 1722668, output 18910
+- executor_usage: runs 1, turns 25, context start 17k peak 96k, resumes 0, 5 min, units 0.37 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: The whole extractor casts no shadow: CastShadow, dynamic, static and contact flags off on the BP_ExtractionShuttle defaults of the hull and four rotors (f6a0408e), read back false in PIE on a landed and an arrival extractor; docs f15d8b90. No other asset changed, so wall and barrel shadows and rotor spin are untouched. Look not viewed: no capture, unverified until the owner has seen it in game.
 
 ## Questions

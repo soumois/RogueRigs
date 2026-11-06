@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T06:01:10Z
 - waiting_for: none
+- executor_tokens: input 30, cache write 76869, cache read 454372, output 7369
+- executor_usage: runs 1, turns 15, context start 16k peak 46k, resumes 0, 27 min, units 0.18 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done, commit 0ddf4a8e. sys-objectives-ore-counter, sys-run, wbp-ore-counter updated; lint OK.
 
 ## Subtasks

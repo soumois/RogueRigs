@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (owner 2026-10-26: "ok" to questions 1-9, every default accepted; plan task-315 then task-316 confirmed)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 84, cache write 621173, cache read 3276159, output 20476
+- executor_usage: runs 1, turns 38, context start 55k peak 132k, resumes 3, 526 min, units 1.21 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Headless -game capture in Saved/IntermissionShop (contact-sheet.png): 5 priced cards, balance 300, reroll 15, Continue, all within 1920x1080 (Continue 8-10 px from bottom); buy slot 0 Green 40 -> 260 and sold slot shown; reroll 1 paid 15 -> 245, next 20; level 2 log 1/1 cards replayed; debug commands rr.Run.EndLevel, rr.Shop.Buy, rr.Shop.Reroll added (d836701f, docs 17ec2233); greyed states not seen
 
 ## Subtasks

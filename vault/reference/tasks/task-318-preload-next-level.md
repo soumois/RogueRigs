@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-26)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 58, cache write 334030, cache read 1834836, output 12581
+- executor_usage: runs 1, turns 25, context start 55k peak 107k, resumes 4, 36 min, units 0.66 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Rendered -game captures in Saved/PreloadNextLevel (contact_sheet.png): cards screen on black while level 2 prepared (601.8 ms, ready before Continue); fade path darkens cards then level 2 with no loading screen; loading path shows WBP_Loading with orange bar at 0.25 and 0.75, then fade in on level 3; carried state kept (trivial level-1 state). Unseen: fade-in on fade path (hitch), bar at 0.5/1.0, LoadingImage, fallback, restart/death. Fade-ins logged 684-705 ms because of post-switch hitches. Commit cd3bce1f.
 
 ## Subtasks

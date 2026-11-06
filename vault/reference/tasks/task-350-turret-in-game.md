@@ -23,6 +23,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T16:06:37Z
 - waiting_for: none
+- executor_tokens: input 38, cache write 93056, cache read 679181, output 10982
+- executor_usage: runs 1, turns 19, context start 17k peak 59k, resumes 0, 24 min, units 0.24 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done: sys-turret, bp-turret, sys-tests-weapon-types updated, bp-turret-materials created, index, quirks line; lint OK. Commit 77942a95.
 
 ## Subtasks

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-27T14:20:40Z
 - waiting_for: none
+- executor_tokens: input 18, cache write 29713, cache read 256177, output 4492
+- executor_usage: runs 1, turns 9, context start 16k peak 40k, resumes 0, 3 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc agent set M units ceiling in templates, 9 agent nodes, index, cost-log, runbook, executor cost_alerts and 13 todo subtasks of 308/309/314; commit 8f559946
 
 Run order: after task-325 is done (326-02 is run by the doc agent).

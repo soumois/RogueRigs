@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T05:17:52Z
 - waiting_for: none
+- executor_tokens: input 72, cache write 63956, cache read 1218411, output 11512
+- executor_usage: runs 1, turns 28, context start 18k peak 64k, resumes 0, 11 min, units 0.26 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. text-content-files lines row states the caption exception (owner 2026-10-30, task-385); commit 10921d62
 
 ## Questions

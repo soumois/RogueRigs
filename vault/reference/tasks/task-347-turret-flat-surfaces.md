@@ -18,6 +18,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T07:02:17Z
 - waiting_for: none
+- executor_tokens: input 14, cache write 42910, cache read 159845, output 3510
+- executor_usage: runs 1, turns 7, context start 16k peak 35k, resumes 0, 9 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Flattened 1,270 body faces (252 regions, Q3 thresholds relaxed: plane distance 0.25 cm, normal 10 deg, area 0.05 %), canon/UV/tris(15,748)/bbox unchanged, residual 0.0012 cm; bulge cause: off-plane vertices (mean 0.15 cm) plus smooth split normals, not the normal map. Commit 6de440e9.
 
 ## Subtasks

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T04:32:03Z
 - waiting_for: none
+- executor_tokens: input 52, cache write 95565, cache read 953253, output 11105
+- executor_usage: runs 1, turns 22, context start 18k peak 67k, resumes 0, 17 min, units 0.27 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-intermission doc updated (commit f1d57f16): new tree, anchor_rule per widget, textures, graph changes, capture result; node over the 400-word cap; gdd intermission already records the look.
 
 ## Questions

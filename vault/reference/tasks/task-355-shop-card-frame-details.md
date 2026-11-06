@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T21:49:19Z
 - waiting_for: none
+- executor_tokens: input 28, cache write 82683, cache read 418942, output 7959
+- executor_usage: runs 1, turns 13, context start 17k peak 55k, resumes 1, 15 min, units 0.19 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-card and wbp-shop-screen updated (verified_frame_details), commit f90d2e6d
 
 ## Questions

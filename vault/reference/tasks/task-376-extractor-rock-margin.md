@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T23:48:11Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 59305, cache read 263950, output 4320
+- executor_usage: runs 1, turns 10, context start 18k peak 39k, resumes 0, 8 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. ClearMarginCells, GetClearRect and in-band landing documented in 3 nodes; commit c02cf3d6; lint OK
 
 ## Questions

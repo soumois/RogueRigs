@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T20:49:01Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 51282, cache read 284798, output 5828
+- executor_usage: runs 2, turns 11, context start 18k peak 40k, resumes 1, 35 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Body and four rotor FBX cut from re-baked extractor (commit fea17533): 48,154 tris, 0 boundary edges, origins on axes within 0.03 cm, UVs unchanged. Sweep collisions reported, not reshaped (Q6): FL 51, FR 49, RL 5, RR 439 pairs.
 
 ## Subtasks

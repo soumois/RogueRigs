@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T19:07:34Z
 - waiting_for: none
+- executor_tokens: input 34, cache write 99720, cache read 388831, output 5980
+- executor_usage: runs 2, turns 15, context start 18k peak 39k, resumes 1, 51 min, units 0.19 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. SM_Extractor.fbx re-unwrapped (4631 islands, 0 overlap, 0 flipped vs 534 old, L2 stretch 1.0009 vs 1.0802) and four 2048 maps baked from the dense Meshy mesh (commit 2dfff06a); geometry identical (47,000 tri, 0.0 cm). Colour difference to source 3.7 vs 10.5 (old) over 5 views, lower in all 7. Missed rays 1114 px (0.13%) filled from neighbours, 0 left. DEVIATION: mean normal tilt on flat faces 4.44 deg (above the 3.7 limit; 3.18 deg excluding dense-mesh relief pixels over 30 deg, baked on purpose per Q2), reported in warnings. ALERT turn limit: first 3d run hit 60 turns (72 tool calls, ~3000 s) with no report, resumed by SendMessage, work finished and committed; runs 2.
 
 ## Questions

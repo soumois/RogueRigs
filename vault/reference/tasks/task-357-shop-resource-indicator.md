@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T21:37:43Z
 - waiting_for: none
+- executor_tokens: input 26, cache write 78733, cache read 373456, output 8177
+- executor_usage: runs 1, turns 12, context start 17k peak 54k, resumes 2, 11 min, units 0.18 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-screen updated and new node wbp-shop-screen-indicator (08749242); no capture-tool node reachable, --force-res noted in wbp-shop-screen verified_anchors.
 
 ## Questions

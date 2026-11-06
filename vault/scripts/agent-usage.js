@@ -336,12 +336,38 @@ const subtasks = Object.entries(workers).filter(([id]) => taskNum(id) >= fromTas
   });
 
 const pilots = all.filter(r => r.role === 'pilot');
-const taskIds = new Set([...subtasks.map(s => s.id.split('-')[1]), ...pilots.filter(p => p.globalTask && +p.globalTask >= fromTask).map(p => p.globalTask)]);
+// A planner's cost is shared equally by the global tasks it created: the `globals` of the Saved/Planner/*.spec.js files it wrote
+// (writePaths of its --agent-debug trace). A planner with no trace or no spec (legacy, edits only) is attributed to no task.
+const specCache = {};
+const specTasks = rel => {
+  if (!(rel in specCache)) {
+    try {
+      const file = path.join(repo, rel); delete require.cache[require.resolve(file)];
+      const s = require(file); const g = Array.isArray(s) ? s : (s.globals || []);
+      specCache[rel] = g.map(x => String(Array.isArray(x) ? x[0] : x.num)).filter(n => /^\d+$/.test(n)).map(n => n.padStart(3, '0'));
+    } catch { specCache[rel] = []; }
+  }
+  return specCache[rel];
+};
+const plannerShares = {}; // task number -> [{ rec, share, tasks }]
+for (const r of all.filter(x => x.role === 'planning')) {
+  const created = [...new Set(Object.keys((r.plannerTrace && r.plannerTrace.writePaths) || {}).filter(p => /^Saved\/Planner\/.*\.spec\.js$/.test(p)).flatMap(specTasks))].sort();
+  for (const n of created) (plannerShares[n] = plannerShares[n] || []).push({ rec: r, share: 1 / created.length, tasks: created });
+}
+const taskIds = new Set([...subtasks.map(s => s.id.split('-')[1]), ...pilots.filter(p => p.globalTask && +p.globalTask >= fromTask).map(p => p.globalTask),
+  ...Object.keys(plannerShares).filter(n => +n >= fromTask)]);
+const tokFields = s => ({ input: s.input, cacheWrite: s.cacheWrite, cacheRead: s.cacheRead, output: s.output, units: s.units });
 const tasks = [...taskIds].sort().map(n => {
   const w = sumRecs(all.filter(r => r.role === 'worker' && r.sub.split('-')[1] === n));
-  const p = sumRecs(pilots.filter(r => r.globalTask === n));
-  return { task: 'task-' + n, workersUnits: w.units, pilotUnits: p.units, pilotAgents: pilots.filter(r => r.globalTask === n).length, pilotModels: Object.keys(p.byModel), totalUnits: w.units + p.units,
-    usd: w.usd !== null && p.usd !== null ? w.usd + p.usd : null };
+  const pr = pilots.filter(r => r.globalTask === n);
+  const p = sumRecs(pr);
+  const pl = zeroTok();
+  for (const { rec, share } of plannerShares[n] || []) for (const k of Object.keys(pl)) pl[k] += rec[k] * share;
+  const planningUnits = unitsOf(pl);
+  return { task: 'task-' + n, workersUnits: w.units, pilotUnits: p.units, pilotAgents: pr.length, pilotModels: Object.keys(p.byModel), planningUnits, totalUnits: w.units + p.units + planningUnits,
+    usd: w.usd !== null && p.usd !== null ? w.usd + p.usd : null,
+    pilot: { ...tokFields(p), calls: p.calls, resumes: p.resumes, seconds: p.seconds, firstCtx: pr.length ? pr[0].firstCtx : 0, peakCtx: pr.length ? Math.max(...pr.map(r => r.peakCtx)) : 0 },
+    planning: { ...tokFields({ ...pl, units: planningUnits }), planners: (plannerShares[n] || []).map(({ rec, share, tasks }) => ({ id: rec.id, description: rec.desc, share, tasks })) } };
 });
 const planning = all.filter(r => r.role === 'planning').map(r => ({ id: r.id, session: r.session, start: r.start, description: r.desc, models: r.models, calls: r.calls, resumes: r.resumes, resumeReasons: r.resumeReasons, firstCtx: r.firstCtx, peakCtx: r.peakCtx, input: r.input, cacheWrite: r.cacheWrite, cacheRead: r.cacheRead, output: r.output, units: unitsOf(r), promptStart: r.promptStart, handbackTasks: r.handbackTasks, trace: r.plannerTrace || null }));
 const sessions = all.filter(r => r.kind === 'session').map(r => ({ id: r.session, start: r.start, end: r.end, calls: r.calls, firstCtx: r.firstCtx, peakCtx: r.peakCtx, units: unitsOf(r), tasksMentioned: r.tasksMentioned }));

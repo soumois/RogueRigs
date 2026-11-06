@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T04:16:27Z
 - waiting_for: none
+- executor_tokens: input 100, cache write 315406, cache read 1297434, output 19448
+- executor_usage: runs 4, turns 43, context start 18k peak 53k, resumes 0, 47 min, units 0.62 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc done (8bc43286): tick-driven spin, Q5 freeze, unverified first-spin delay line, async preload lead (not decided).
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T17:41:33Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 33953, cache read 378043, output 6967
+- executor_usage: runs 1, turns 12, context start 17k peak 45k, resumes 0, 5 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-screen updated (commit c39fa2c3): new sizes and gaps, defect removed, verified_continue_fit added
 
 ## Questions

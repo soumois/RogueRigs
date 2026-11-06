@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T00:59:57Z
 - waiting_for: none
+- executor_tokens: input 16, cache write 39112, cache read 185543, output 3853
+- executor_usage: runs 1, turns 7, context start 18k peak 39k, resumes 0, 1 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Prompt file and node art-prompts-level-end-screen written and committed (ddb1f566); no generation. Wording of subtitle and ore labels are placeholders, not from screen_texts.json.
 
 ## Questions

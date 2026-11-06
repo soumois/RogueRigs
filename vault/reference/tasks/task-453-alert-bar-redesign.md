@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T00:46:45Z
 - waiting_for: none
+- executor_tokens: input 246, cache write 196970, cache read 15680842, output 67318
+- executor_usage: runs 1, turns 119, context start 18k peak 209k, resumes 1, 16 min, units 2.15 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done. A0 mockup A retained in task-451. A1 alert bar in the riveted frame sprite (owner "Candidat 1", T_HUD_AlertFrame), dark track, orange fill, red "!" swarm marks as T_HUD_AlertMark tabs, C/B/S colour-coded letters on the track (commits 462f00b8, d57f52fe). A2 marks still placed by ShowAlertIcons/PlaceAlertIcon from the run-flow event list (Position x 600, opacity 0.35 when done), colours unchanged, no C++ or rule change. A3 Canvas slots with top-centre anchors, layout table in wbp-alert-objectives (commit 851779a5); no uncommitted owner edit existed. A4 compiled with warnings as errors, PIE without script error; RRPressureIntegrationTests horde icon test not rerun (unchanged contract: UWidget lookup, translation Position x 600). A5 no capture run: look unverified until the owner sees it in game; offline composite Saved/Scratch/hud-alert/layout-check-453.png only.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - owner_decisions_after_done: 2026-10-24, "ok : je garde la commande debug, j'accepte les 3864 tris, le pivot et la pose ouverte se règlent dans 309, et ok pour tous les défauts de la tâche 314." Debug command `rr.Debug.Objective Chest [Distance]` (Source/RogueRigs/Debug/RRVisualCheckCommands.cpp, sys-cheats), added unasked by task-306-04: kept. 3864 tris for body, lid and latch (default Q2 was 3000): accepted. Open-pose defects of the cut_open_* renders (lid pivot on the body back top edge instead of the hinge pins, hinge-block stubs left on the body back wall, dangling latch hasp, flat dark recess behind the latch) and the unmeasured opening sign about X: fixed in task-309 (task-309-07, then task-309-01, task-309-05, task-309-06).
 - milestone: M2
 - next_step: none
+- executor_tokens: input 20, cache write 116027, cache read 563066, output 6457
+- executor_usage: runs 1, turns 10, context start 51k peak 83k, resumes 1, 20 min, units 0.23 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Headless -game capture: new chest at its real drop spot from the game camera and closer, lock face toward the camera, lid and latch in place, flat faces read; before (grey-box cube, task-312 frame) | after sheet Saved/ChestMesh/contact_sheet_chest_before_after.png. Debug tool rr.Debug.Objective now accepts Chest (f37555e5, sys-cheats 5de1b024), kept by the owner 2026-10-24.
 
 ## Subtasks

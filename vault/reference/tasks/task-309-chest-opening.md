@@ -17,6 +17,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T18:32:25Z
 - waiting_for: none
+- executor_tokens: input 100, cache write 311365, cache read 1556175, output 23928
+- executor_usage: runs 3, turns 41, context start 18k peak 76k, resumes 1, 68 min, units 0.66 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Closed on owner visual validation, not on capture (owner 2026-10-29: "je valide ce que j'ai vu pour le 309"). Capture ran 5 launches before the stop: latch/lid order, light, rays, chips, ore seen; latch up direction, overshoot, ground ring, chip scale pop, sparks not seen or ambiguous (default camera, glow washes out). Frames in Saved/ChestOpening/, sheet contact_sheet_owner.png. Missing: rr.Cheat to complete the bonus chest hack. Roll signs never measured in editor, owner validated what he saw.
 
 ## Subtasks

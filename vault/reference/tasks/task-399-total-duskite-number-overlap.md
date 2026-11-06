@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T23:32:52Z
 - waiting_for: none
+- executor_tokens: input 34, cache write 84246, cache read 418422, output 5652
+- executor_usage: runs 1, turns 14, context start 18k peak 45k, resumes 0, 11 min, units 0.18 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-intermission updated (OreRow, anchor_rule, Q1 A exception, verification); commit 9ffae3d0; lint OK
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T06:21:45Z
 - waiting_for: none
+- executor_tokens: input 28, cache write 38552, cache read 346556, output 4195
+- executor_usage: runs 1, turns 12, context start 18k peak 39k, resumes 0, 5 min, units 0.10 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp-burst-rifle, sys-player-classes, bp-miner updated (commit e7b6c3a6); lint clean; unverified PIE items stated in the docs.
 
 ## Questions

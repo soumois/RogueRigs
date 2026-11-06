@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T20:58:58Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 49014, cache read 216004, output 4619
+- executor_usage: runs 1, turns 8, context start 18k peak 40k, resumes 0, 16 min, units 0.11 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Documented the ClearingLevel robot effect clear and its log lines in sys-run-transition-preload, sys-enemies and bp-shield-debris; lint clean. Commit 4d6a8e18.
 
 ## Questions

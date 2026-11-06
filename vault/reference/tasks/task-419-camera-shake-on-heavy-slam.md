@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T18:47:37Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 59138, cache read 228907, output 3822
+- executor_usage: runs 1, turns 9, context start 17k peak 39k, resumes 0, 13 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done 2a540c48: sys-enemies-heavy and sys-camera-shake document the slam shake (8 uu, 0.3 s, 25 Hz, 722 uu max, falloff 0.5 at max).
 
 ## Questions

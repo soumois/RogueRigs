@@ -14,6 +14,7 @@ kind: note
 - Snapshot: `vault/scripts/usage-snapshot.json`, refreshed at each closing, keeps every agent and session record because Claude Code deletes old transcripts (on 2026-10-26, 566 of 665 subtask rows no longer had theirs). Planner traces include per-call usage and tool/path activity when the source transcript is available.
 - Alerts: `record-cost.js` prints an ALERT when the subtask's `units` exceed `token_ceiling` written `<x> M units` (a legacy ceiling without `M units` gives none), a start context over 25k, a turn-limit resume or 55 turns, and any resume (write its cause in the subtask `result`). `task-status.js` refuses `status=done` while `tokens` is `open`.
 - Not covered: tasks 000 to 012 (their agents carry no subtask id in the description).
+- Per global task: a subtask done by the executor itself says `included in the executor run`; the executor run and the task's planner share are written on the global node (`executor_tokens`, `executor_usage`, `planning_tokens`, `planning_usage`) by `task-cost.js`, called by `record-cost.js` at each closing (`--all` rewrites every task). A planner is split equally over the global tasks of the `Saved/Planner/*.spec.js` files it wrote; one without spec is attributed to none. The crew-board mod adds both to the task total.
 - Each finished subtask adds a row ([[orchestration-protocol]] step 5).
 
 ## Per subtask
@@ -1114,10 +1115,10 @@ Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token 
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 209.34 | 0k | 46.62 M | 1048.86 M | 9241k |
 | model sonnet | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 65.05 | 8k | 18.42 M | 292.94 M | 2546k |
+| Executors and legacy orchestrators that ran a task (pilot) | 65.28 | 8k | 18.42 M | 294.86 M | 2551k |
 | Planning runs (planners and legacy planning passes) | 43.02 | 4k | 12.93 M | 155.57 M | 2259k |
 | Agents without a subtask id (other) | 5.67 | 1k | 1.17 M | 32.83 M | 185k |
-| Main sessions (all of them, also chat outside tasks) | 88.06 | 8k | 14.11 M | 583.78 M | 2408k |
+| Main sessions (all of them, also chat outside tasks) | 88.66 | 8k | 14.19 M | 587.72 M | 2429k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.

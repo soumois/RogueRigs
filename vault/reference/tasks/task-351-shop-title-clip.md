@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T17:35:42Z
 - waiting_for: none
+- executor_tokens: input 36, cache write 46463, cache read 562472, output 7580
+- executor_usage: runs 1, turns 17, context start 17k peak 46k, resumes 1, 6 min, units 0.15 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-screen updated (Content anchors, title row alignment, verified_title_clip, defect removed), commit aa6a8143, lint clean.
 
 ## Questions

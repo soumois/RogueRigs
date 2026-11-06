@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T04:33:01Z
 - waiting_for: none
+- executor_tokens: input 36, cache write 46715, cache read 503854, output 6722
+- executor_usage: runs 1, turns 15, context start 18k peak 47k, resumes 0, 5 min, units 0.14 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc nodes updated (bp-burst-rifle, burst-rifle-mesh, unreal-mcp-quirks), commit 71a658bb; cause, fix, compile and capture outcome recorded.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T01:48:54Z
 - waiting_for: none
+- executor_tokens: input 62, cache write 58111, cache read 1033619, output 14805
+- executor_usage: runs 1, turns 22, context start 18k peak 70k, resumes 2, 18 min, units 0.25 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Owner retained H1 + V1 as is (24 credits, runs 20261029-174247 and 174426); T_LevelEnd_DividerH 984x62 margins L 68 / R 65 px (0.069/0.066), T_LevelEnd_DividerV 58x984 margins T 56 / B 57 px (0.057/0.058); Sprites section updated; commit 20ddfe24. Style-guide A6 (cleaner than frame) accepted by owner. Runs 3 = generate, review, close-out.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T14:09:28Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 74181, cache read 231491, output 4650
+- executor_usage: runs 1, turns 9, context start 18k peak 42k, resumes 0, 8 min, units 0.14 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done: efc992a3 runbook, planner, protocol step 4, _navigation, planner.md, task.md, CLAUDE.md, quirks updated; lint clean.
 
 ## Questions

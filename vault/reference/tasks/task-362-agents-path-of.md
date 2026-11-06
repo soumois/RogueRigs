@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T15:22:12Z
 - waiting_for: none
+- executor_tokens: input 16, cache write 35966, cache read 182576, output 2544
+- executor_usage: runs 1, turns 7, context start 18k peak 36k, resumes 0, 3 min, units 0.08 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done, commit 98d28b42: style-guide has its nine read paths, six definitions and nodes use path-of.js. grep -l _paths still lists the seven files because the mandated sentence says 'never open vault/_paths.md'; none tells the agent to read it (intent met).
 
 ## Questions

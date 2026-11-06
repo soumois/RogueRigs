@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T06:30:24Z
 - waiting_for: none
+- executor_tokens: input 12, cache write 22125, cache read 145460, output 2950
+- executor_usage: runs 1, turns 6, context start 16k peak 33k, resumes 0, 2 min, units 0.06 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Zip B ('(1)') is optimised: 15,455 tris, 7,635 verts; zip A unoptimised: 152,107 tris, 75,925 verts (9.8x). Both saved in Art/Source/turret-meshy/, report json, art-prompts-turret created. Optimised mesh exceeds 10,000 budget by 5,455 (for task-346/347). Commit 228003da.
 
 ## Subtasks

@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T01:01:19Z
 - waiting_for: none
+- executor_tokens: input 132, cache write 153925, cache read 7151139, output 40075
+- executor_usage: runs 1, turns 65, context start 18k peak 166k, resumes 0, 12 min, units 1.11 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done. 01 (85013287): URRXPStatusWidget drives XPBar and XPGhostBar: ghost at once, fill catches up after 0.4 s at 7/s, a new gain restarts the wait; level-up: ghost to the end, bar empties, remainder the same way, several levels = one pass; event-armed, no tick; test RogueRigs.HUD.XPGhost; HUD 15 + Progression 4 = 19/19 pass. 02 (441acaae): WBP_XPStatus reparented, XPGhostBar behind XPBar (pale cyan #c8f6ff), XPBar background transparent, ShowXP sets only the level text; ticks and "Lv N" unchanged; PIE gain and level-up no runtime error. 03 (cea4a039): sys-hud-xp-bar created, wbp-xp-status updated. Look unverified on screen (Q26: the owner checks in game). Cost: all subtasks included in the executor run of task-456.
 
 ## Questions

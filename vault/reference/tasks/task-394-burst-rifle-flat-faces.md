@@ -17,6 +17,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T20:47:56Z
 - waiting_for: none
+- executor_tokens: input 34, cache write 37352, cache read 540887, output 6822
+- executor_usage: runs 1, turns 16, context start 18k peak 49k, resumes 0, 6 min, units 0.13 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done 3d9d8cb5: 9,892 tris (not decimated), residual max 0.000291 cm, 60.000 cm along X muzzle +X, pivot at grip, UV0 identical, silhouette max 0.1125 cm. Deviation: 2,231 faces (22.5 %) flat-shaded, 250 region faces left smooth (82 move over 0.25 cm, 168 conflicting planes); owner to judge on renders.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T21:19:20Z
 - waiting_for: none
+- executor_tokens: input 30, cache write 89376, cache read 398193, output 6901
+- executor_usage: runs 1, turns 12, context start 18k peak 54k, resumes 0, 20 min, units 0.19 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done, commit d5ac630e: nine doc nodes updated (capsule root, Muzzle origin, Q3 sweep, fallbacks, shown-weapon principle, tests); BP_Projectile ShotMesh collision discrepancy recorded; lint OK
 
 ## Questions

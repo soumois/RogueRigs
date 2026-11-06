@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:42:52Z
 - waiting_for: none
+- executor_tokens: input 68, cache write 103127, cache read 2735940, output 24216
+- executor_usage: runs 1, turns 34, context start 17k peak 115k, resumes 0, 8 min, units 0.52 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done. Code 6e31c55a: URRLevelUpComponent ticks (TG_PostPhysics) only while its pooled NS_LevelUpWave plays and moves it under the miner's feet each frame; the local-space ring and shards follow; text spawn and push unchanged, no asset changed (A3). A2: RogueRigs.LevelUp under -RenderOffScreen 9/9 pass; new WaveFollowsMiner, miner running 600 uu/s (300 uu during the 29-frame wave): ring 0.00 uu off his feet, shard centroid within 31.5 uu, shards reach 321 uu around him, height error 0.00 uu, 25 sprites, push once and none while following (A4). A5/A6: other LevelUp tests unchanged and passing, no expectation edited. Doc 5e984eb5 (sys-level-up, bp-level-up-burst). A1 look in game unverified (owner, A7); whether the ring of the owner's screenshot was this wave or the kamikaze explosion ring is not settled from one frame (sizes fit both).
 
 ## Questions

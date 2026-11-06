@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T07:09:37Z
 - waiting_for: none
+- executor_tokens: input 66, cache write 108916, cache read 854218, output 11195
+- executor_usage: runs 3, turns 29, context start 18k peak 44k, resumes 0, 7 min, units 0.28 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp-miner and sys-player-classes updated (52670816); unverified items stated; lint clean.
 
 ## Questions

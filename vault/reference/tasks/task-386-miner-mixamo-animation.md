@@ -16,6 +16,10 @@ status: cancelled
 - next_step: none
 - started: 2026-10-30T17:09:39Z
 - waiting_for: none
+- executor_tokens: input 304, cache write 623353, cache read 9428885, output 72306
+- executor_usage: runs 2, turns 123, context start 18k peak 156k, resumes 10, 698 min, units 2.08 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Closed by the owner 2026-10-30 (accumulated context judged to prevent a correct result; to be redone in a fresh task). State: Meshy SK_Miner, SKEL_Miner, nine in-place A_Miner clips, URRMinerAnimInstance (MoveX/MoveY, rr.Debug.MinerAnim, rr.Debug.MinerAnimForce), ABP_Miner (Idle/Run state machine, 4-sample BS_Miner_Locomotion) and BP_Miner on SK_Miner exist and are committed. Seen on screen: idle rifle pose, run forward. Open defect: with the 4-sample blend space the arms are in T-pose while the legs run (RunBwd, RunLeft), cause not found; FBX clips checked fine, forced values inconclusive. Doc step 09 not done. BS_Miner_Locomotion.uasset has an uncommitted change.
 
 ## Questions

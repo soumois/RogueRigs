@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T14:17:36Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 29042, cache read 302409, output 4214
+- executor_usage: runs 1, turns 10, context start 18k peak 41k, resumes 0, 8 min, units 0.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done in c19a342e: tool-capture node created, linked from pipelines-index and agent-cpp; lint clean.
 
 ## Questions

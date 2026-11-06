@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T23:50:36Z
 - waiting_for: none
+- executor_tokens: input 24, cache write 40865, cache read 291848, output 3863
+- executor_usage: runs 1, turns 10, context start 18k peak 41k, resumes 0, 5 min, units 0.10 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done, commit 7503e227: tool-capture, sys-stress, agent-capture, orchestrator-script-quirks, .claude/agents/capture.md state the MSYS repair and MSYS_NO_PATHCONV=1 rule; lint 0 problems.
 
 ## Questions

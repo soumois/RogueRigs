@@ -15,6 +15,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-26): "ok" to every default, Q1-Q9.
 - milestone: M2
 - next_step: none
+- executor_tokens: input 14, cache write 19510, cache read 157445, output 2742
+- executor_usage: runs 1, turns 7, context start 16k peak 30k, resumes 0, 2 min, units 0.05 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. task-status.js writes started (UTC ISO, replace or insert before result) on every move to in-progress; templates and task-create.js carry the field; runbook line added; verified on throwaway vault copy; commit 41f8969d
 
 ## Subtasks

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T21:12:19Z
 - waiting_for: none
+- executor_tokens: input 66, cache write 136232, cache read 3132061, output 33178
+- executor_usage: runs 1, turns 31, context start 17k peak 148k, resumes 0, 20 min, units 0.65 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done. FloorWallLight casts shadows (d7feeaf0); position, intensity, attenuation, falloff and channels unchanged, read back (0, 0, 0), 4, 800, 4, channel 1. No code change: rock pieces cast, everything else is cut by its flag or by the channel, read in code and in PIE. Sun, sky, exposure untouched. Look unverified until the owner sees it (A6): the light sits 10 uu under the block tops, so shadows run to the 800 uu edge. Off switch in bp-miner.
 
 ## Questions

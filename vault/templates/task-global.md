@@ -16,6 +16,10 @@ status: todo
 - next_step: <id of the next subtask to run, or none>
 - started: <ISO date-time UTC, written by task-status.js on every move to in-progress>
 - waiting_for: none | <question or owner action awaited while status is wait-answers; written by task-status.js, reset to none on the next status>
+- executor_tokens: <input N, cache write N, cache read N, output N of the executor run; written by task-cost.js (record-cost.js calls it at each closing)>
+- executor_usage: <runs, turns, context start and peak, resumes, minutes, units; written by task-cost.js>
+- planning_tokens: <this task's share of the planner runs that created it (1/N when one planner created N tasks); written by task-cost.js>
+- planning_usage: <planner id, description, share and tasks of the split, units; written by task-cost.js>
 - result: <filled when done>
 
 ## Subtasks

@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (owner 2026-10-23: "ok pour tous les défauts (Q1 à Q25)"; every default below applies; not launched yet)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 24, cache write 113359, cache read 721507, output 6215
+- executor_usage: runs 1, turns 12, context start 51k peak 81k, resumes 0, 20 min, units 0.24 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. URRCameraShake + own Perlin translation pattern URRCameraShakePattern (engine Perlin pattern sits in EngineCameras plugin, not a dependency) + URRCameraShakeLibrary::PlayCameraShake(WorldContext, Scale=1, ShakeClass=null) on the first local player's camera manager; Duration 0.2 s, TranslationAmplitude (0,4,4) uu, BlendOut 0.08 s, Frequency 25 Hz, all EditDefaultsOnly provisional owner 2026-10-23; no rotation, falloff or time dilation; not wired. Doc sys-camera-shake + relations. Build green; full RogueRigs suite 270/272: JuiceKillDropsStreamingCubes (BP_PickupXP collision) and LevelUpUpgradeLoop (RerollButton) fail, unrelated (new code has no caller). Commits 926e01d1, 0ab7c041.
 
 ## Subtasks

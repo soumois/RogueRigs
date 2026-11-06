@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T06:28:01Z
 - waiting_for: none
+- executor_tokens: input 12, cache write 20435, cache read 135249, output 2661
+- executor_usage: runs 1, turns 6, context start 16k peak 32k, resumes 0, 2 min, units 0.05 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. ChatGPT prompt (French, 7 sections) saved at Art/Source/shop-screen/prompts/chatgpt-shop-design.md; node art-prompts-shop-screen holds a summary (prompt over node size limit); no image generated; lint clean.
 
 ## Subtasks

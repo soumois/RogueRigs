@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 60, cache write 445361, cache read 2095096, output 18581
+- executor_usage: runs 1, turns 29, context start 52k peak 112k, resumes 2, 61 min, units 0.86 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Capture Saved/ConsoleReward/ (contact_sheet_console_reward.png + 12 frames, slomo 0.1): green ring ~200 uu at 0.27 s, ~290 uu at 0.42 s, faded by 0.57 s; white-gold sparks faint, seen at 0.87-1.17 s only; 3 chips fly out, the miner (150 uu away) collected one, 2 rest NE ~290 uu and SE ~210-260 uu; no change, no commit. Owner 2026-10-24: keeps the particle as is ("Non, je garde la particule comme ça"), faint sparks accepted.
 
 ## Subtasks

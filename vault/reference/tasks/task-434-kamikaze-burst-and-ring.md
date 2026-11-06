@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T16:24:11Z
 - waiting_for: none
+- executor_tokens: input 36, cache write 101660, cache read 1360673, output 20252
+- executor_usage: runs 1, turns 18, context start 17k peak 113k, resumes 0, 5 min, units 0.36 M
+- planning_tokens: input 9, cache write 27137, cache read 205219, output 7560
+- planning_usage: a4982e23 "Plan FX lot 1 tasks" 1/3 (tasks 432, 433, 434), units 0.09 M
 - result: Done. The Kamikaze row of ExplosionStats.csv now plays BP_ExplosionFX_Barrel (FXClass only, 7d8dd6a5): sphere, Niagara burst and ground ring at its visual radius of 327.6 uu on every explosion path, since all queue the same row. Barrel row, radius, damage, miner damage, terrain, chain delay and shake unchanged. Defaults read back, 18 tests pass, task-431 cause does not apply to the ring (read in the code). Look unverified: the owner validates in game, no capture run.
 
 ## Questions

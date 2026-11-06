@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T21:01:18Z
 - waiting_for: none
+- executor_tokens: input 44, cache write 97282, cache read 645554, output 9014
+- executor_usage: runs 1, turns 18, context start 18k peak 55k, resumes 0, 16 min, units 0.23 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc: bp-extraction-shuttle, sys-objectives-shuttle, blueprints-world-index updated; commit 83c72430; lint OK.
 
 ## Questions

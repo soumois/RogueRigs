@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T20:44:47Z
 - waiting_for: none
+- executor_tokens: input 100, cache write 246582, cache read 8148632, output 75610
+- executor_usage: runs 1, turns 50, context start 17k peak 258k, resumes 0, 22 min, units 1.50 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, look unverified until the owner sees it. GroundBlast replaces DustRing: world space on the floor, outward flat dust under each rotor, strength saturate(1 - height/400) from the new OnHeightAboveFloorChanged, no 300 cutoff. Particles read in PIE on the floor and fading through the paused takeoff; rotor effects now simulate behind the end screen. Extraction tests 7/7. Found: Swirls of task-442 have compiled alpha 0, left alone, reported.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-02T17:29:01Z
 - waiting_for: none
+- executor_tokens: input 60, cache write 115946, cache read 871340, output 11214
+- executor_usage: runs 2, turns 26, context start 18k peak 55k, resumes 0, 38 min, units 0.29 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Docs written (commit 6c2949e0): sys-aim-indicator rewritten, sys-player, new bp-aim-laser-material, fx index; lint clean; gdd nodes untouched
 
 ## Questions

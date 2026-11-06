@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T20:41:21Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 76484, cache read 239411, output 4758
+- executor_usage: runs 1, turns 9, context start 18k peak 43k, resumes 0, 7 min, units 0.14 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc: sys-player-classes, bp-miner, bp-burst-rifle updated (commit c2be1ed7); no PIE run; gdd burst-rifle line not edited by doc
 
 ## Questions

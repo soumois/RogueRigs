@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:51:16Z
 - waiting_for: none
+- executor_tokens: input 68, cache write 92986, cache read 2189787, output 20620
+- executor_usage: runs 1, turns 34, context start 17k peak 105k, resumes 0, 5 min, units 0.44 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done. A1: the cyan LevelUpText of WBP_XPStatus is removed (commit 00dd6187), so a level-up no longer shows it; look unverified until the owner sees it in game (A5, no capture). A2: XPBar, LevelText and the gold world text (NS_LevelUpText in BP_Miner, untouched) unchanged. A3: OnLevelUp binding, handler, HideLevelUp timer and function, Destruct timer clear and OnLevelUp unbind removed; compiled with no error; PIE level-ups (1 to 9 to 13) logged no runtime error. A4: asset-only change, no C++ or test touched, no test references LevelUpText; no test run. Docs updated (fd80fe7c). Cost: included in the executor run.
 
 ## Questions

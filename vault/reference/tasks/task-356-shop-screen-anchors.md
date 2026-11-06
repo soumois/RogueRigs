@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T21:22:09Z
 - waiting_for: none
+- executor_tokens: input 32, cache write 103066, cache read 509832, output 9673
+- executor_usage: runs 1, turns 15, context start 17k peak 60k, resumes 1, 16 min, units 0.23 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-screen and wbp-shop-card updated with anchor_rule, commit bb3e8fab; old verified lines left, nodes over length, --force-res not documented
 
 ## Questions

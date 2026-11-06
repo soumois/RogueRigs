@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-04T17:41:06Z
 - waiting_for: none
+- executor_tokens: input 34, cache write 35387, cache read 484205, output 6681
+- executor_usage: runs 1, turns 14, context start 18k peak 47k, resumes 0, 9 min, units 0.13 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. mpp-player-light-mask documented (a3ac37c8); gdd visual-style sentence already had clear zone, still says CornerDarkness 0.85 vs owner 1
 
 ## Questions

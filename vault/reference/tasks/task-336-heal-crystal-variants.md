@@ -22,6 +22,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T01:25:15Z
 - waiting_for: none
+- executor_tokens: input 46, cache write 124292, cache read 667325, output 11051
+- executor_usage: runs 2, turns 22, context start 16k peak 55k, resumes 1, 18 min, units 0.28 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Pass 2 sheet picked by the owner (despite style-guide A1 fail), copied to vault/assets/heal-pickup-sheet.png with its review json; prompt node art-prompts-heal-pickup; 18 credits Kie.ai total, 2 correction passes
 
 ## Subtasks

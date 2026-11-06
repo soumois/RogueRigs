@@ -16,6 +16,10 @@ status: done
 - next_step: task-425-04-light-doc
 - started: 2026-11-04T16:52:35Z
 - waiting_for: none
+- executor_tokens: input 170, cache write 156348, cache read 3577431, output 34410
+- executor_usage: runs 2, turns 69, context start 17k peak 82k, resumes 3, 51 min, units 0.73 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Steps 01 cpp, 02 bp, 04 doc done; capture 03 waived on the owner's word (visual check after task-426). Light intensity 4 is a first guess, not render-checked.
 
 ## Questions

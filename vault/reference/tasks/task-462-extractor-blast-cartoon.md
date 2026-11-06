@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:40:28Z
 - waiting_for: none
+- executor_tokens: input 282, cache write 265392, cache read 22745111, output 78513
+- executor_usage: runs 1, turns 139, context start 17k peak 277k, resumes 0, 20 min, units 3.00 M
+- planning_tokens: input 9, cache write 21164, cache read 215717, output 5892
+- planning_usage: ab92ee9b "Plan owner HUD/levelup/wind feedback" 1/4 (tasks 459, 460, 461, 462), units 0.08 M
 - result: Done, look unverified until the owner sees it. A1: five references recorded in extractor-blast-references (links only), Wind Waker hard-edged puffs with a curl + tapered curved strokes followed. A2: GroundBlast uses new M_ExtractorBlastWind, sharp-edged cartoon puffs and curved wind strokes thrown outward on the floor, no blur, style-guide pass after one A10 correction. A3: alpha 0.6 x Intensity x saturate(1 - H/400) read in PIE on the four components down to 0 at 400, wiring unchanged for both takeoffs. A4: Swirls, spin, shadows, timings, wiring untouched, no Event Tick, Extraction 7/7. A5: no capture, no stress run. Cost from agent-usage: executor run 2.87 M units, style-guide 0.06 M (2 rounds, 1 resume), total 2.92 M.
 
 ## Questions

@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 24, cache write 77277, cache read 777037, output 5125
+- executor_usage: runs 1, turns 12, context start 51k peak 82k, resumes 0, 12 min, units 0.20 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. ARRConsole MinMarkedCells 10 / MaxMarkedCells 40 (EditDefaultsOnly, provisional owner 2026-10-23); console picker keeps spots in range, else nearest count with a warning; chest unfiltered; GDD objective-console, sys-objectives-console-chest, sys-objectives-run-flow, bp-objective-console updated; build green; Console.* and RunFlow.* 7/7 pass, no test changed; code 0a357aea, docs 3134b212
 
 ## Subtasks

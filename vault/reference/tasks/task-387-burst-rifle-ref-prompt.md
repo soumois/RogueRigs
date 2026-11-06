@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T18:43:23Z
 - waiting_for: none
+- executor_tokens: input 12, cache write 37038, cache read 111541, output 1636
+- executor_usage: runs 1, turns 5, context start 18k peak 37k, resumes 0, 1 min, units 0.07 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Crop 1065x420 (3x of 355x140 at x205,y300) and turnaround prompt written, node art-prompts-burst-rifle created, no generation; commit 1f0142ca
 
 ## Questions

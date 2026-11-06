@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T15:39:34Z
 - waiting_for: none
+- executor_tokens: input 28, cache write 44258, cache read 376959, output 4517
+- executor_usage: runs 1, turns 12, context start 18k peak 44k, resumes 0, 2 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc committed 790b3efd: 3d.md step 4, agent-3d, blender-asset-route (Shared module section), art-3d-lessons name rr_blender. blender-asset-route was already 533 words by wc before (now 616 with markup); section itself is 3 bullets.
 
 ## Questions

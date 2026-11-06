@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:22:48Z
 - waiting_for: none
+- executor_tokens: input 150, cache write 186248, cache read 8750363, output 53326
+- executor_usage: runs 1, turns 72, context start 17k peak 198k, resumes 0, 18 min, units 1.37 M
+- planning_tokens: input 9, cache write 21164, cache read 215717, output 5892
+- planning_usage: ab92ee9b "Plan owner HUD/levelup/wind feedback" 1/4 (tasks 459, 460, 461, 462), units 0.08 M
 - result: Bottom HUD rebuilt as in image 2 / the retained mockup: health bar and four slot wells inside one riveted panel (T_HUD_BottomPanel in WBP_HealthStatus, connector base plate removed), XP bar in T_HUD_XPFrame rails with Lv in the T_HUD_LevelCap plate, dark empty XP track. Sprites: 2 Kie.ai runs, 24 credits, critic pick c1 of both (commits 5459bd08, 22b01a16, 81462e37, 7705ad12). Compiled, saved, PIE with XP grants and card picks: no runtime error. Look unverified until the owner sees it in game (A6). Cost: style-guide 0.12 M units (6 turns), executor run about 1.23 M units at closure (agent-usage), total about 1.35 M.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T15:40:51Z
 - waiting_for: none
+- executor_tokens: input 102, cache write 523264, cache read 2383888, output 27020
+- executor_usage: runs 1, turns 47, context start 16k peak 100k, resumes 3, 81 min, units 1.03 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. wbp-shop-card and wbp-shop-screen updated (commit 26fcac60) with tree, brushes, labels, textures, verified_redesign and the 5 open layout defects of the capture.
 
 ## Questions

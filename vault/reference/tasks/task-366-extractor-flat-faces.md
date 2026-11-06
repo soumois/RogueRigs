@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T18:18:53Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 82355, cache read 227829, output 4634
+- executor_usage: runs 1, turns 9, context start 18k peak 43k, resumes 0, 12 min, units 0.15 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. 47,000 tris, 190 regions residual 0.000004 cm, bounds 196.55x201x86.1 cm nose +X pivot bottom centre, silhouette max 0.78 cm. DEVIATION: long side not on X (rotors make footprint near-square), only 5.3 pct faces flat-shaded, UV stretch on large panels from 55x decimation. Commit 47e67b5b
 
 ## Questions

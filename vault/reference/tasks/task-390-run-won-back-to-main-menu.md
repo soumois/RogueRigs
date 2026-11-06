@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T21:52:47Z
 - waiting_for: none
+- executor_tokens: input 76, cache write 147098, cache read 884876, output 15464
+- executor_usage: runs 4, turns 33, context start 18k peak 39k, resumes 0, 14 min, units 0.35 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Six doc nodes updated (wbp-alert-objectives, sys-objectives-run-flow, sys-run, sys-run-transition, sys-main-menu, sys-cheats); commit f9ced5ee; lint OK
 
 ## Questions

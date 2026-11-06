@@ -21,6 +21,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T07:14:11Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 45824, cache read 232203, output 4973
+- executor_usage: runs 1, turns 10, context start 16k peak 38k, resumes 1, 503 min, units 0.11 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Base 7,755 + head 8,219 = 15,974 tris; cut z 65.2, axis offset (0.501,0.518,65.2) cm, 0 boundary edges at cut, 0 intersections over 36 angles (min clearance 1.83 cm at 180), vertices/UVs unchanged; commit ef980eb0. First run cut by rate limit (429), resumed once; stale report regenerated (was 16,004 tris).
 
 ## Subtasks

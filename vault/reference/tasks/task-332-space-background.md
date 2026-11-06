@@ -25,6 +25,10 @@ status: done
 - next_step: none
 - started: 2026-10-27T21:27:42Z
 - waiting_for: none
+- executor_tokens: input 32, cache write 84723, cache read 494246, output 8532
+- executor_usage: runs 1, turns 16, context start 16k peak 49k, resumes 0, 24 min, units 0.20 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc nodes bp-space-background-material and bp-space-background written, world index and bp-arena-grid updated; commit 39a566ba.
 
 ## Subtasks

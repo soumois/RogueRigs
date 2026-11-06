@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T21:29:55Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 63248, cache read 210894, output 4793
+- executor_usage: runs 1, turns 8, context start 18k peak 42k, resumes 0, 12 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Done, commit 1a58c95c: arrival placement, mode, trigger, log lines documented in sys-objectives-shuttle, sys-objectives-run-flow, sys-run-transition-fade, sys-player; lint clean.
 
 ## Subtasks

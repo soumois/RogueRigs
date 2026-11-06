@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T22:24:40Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 58852, cache read 232591, output 4159
+- executor_usage: runs 1, turns 9, context start 18k peak 40k, resumes 0, 14 min, units 0.12 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc nodes updated (run-flow, preload, shuttle, cheats); commit e4aad0e8; lint ok
 
 ## Subtasks

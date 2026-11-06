@@ -16,6 +16,10 @@ status: done
 - milestone: M2
 - next_step: none
 - started: 2026-10-27T00:57:16Z
+- executor_tokens: input 14, cache write 21217, cache read 160999, output 2847
+- executor_usage: runs 1, turns 7, context start 16k peak 32k, resumes 0, 4 min, units 0.06 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. cancelled status allowed (authoring, lint, task-status.js moves cancelled globals to done index and cancels open subtasks, indexes, runbook, crew-board.js label and style); extra CRLF fix in crew-board.js parse() (3 live nodes crashed it); tested on throwaway task-999, reverted; commit d54f182d
 
 ## Subtasks

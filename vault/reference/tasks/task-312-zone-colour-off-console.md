@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-24, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 96, cache write 625597, cache read 2995659, output 24268
+- executor_usage: runs 2, turns 44, context start 51k peak 113k, resumes 6, 128 min, units 1.20 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Cause: the deferred zone decal painted every decal receiver in its box (console, bonus chest, drone meshes). Fix: telegraph owners and the drone opt out of decals (8a276ed5). Hacking capture before/after in Saved/ZoneColour/ shows no wash. Not captured: Locked state with miner inside, chest zone (no debug command reaches them); chest covered by unit test only. Owner 2026-10-24: closed as is ("Oui, clos la task-312 telle quelle"), no debug-command follow-up.
 
 ## Subtasks

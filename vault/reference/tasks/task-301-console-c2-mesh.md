@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 90, cache write 585727, cache read 4128277, output 22573
+- executor_usage: runs 1, turns 42, context start 52k peak 152k, resumes 3, 74 min, units 1.26 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Headless -game captures in Saved/ConsoleC2/ (before_*, after_*, contact_sheet_before_after.png): C2 mesh at the console spot, head on the mast, steady amber lamps; mesh looks washed out on the bright hack disc; console drop cell differed between runs despite -FixedSeed; no repo change.
 
 ## Subtasks

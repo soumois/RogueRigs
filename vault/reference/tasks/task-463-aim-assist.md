@@ -16,6 +16,10 @@ status: todo
 - next_step: task-463-01-aim-assist
 - started: open
 - waiting_for: none
+- executor_tokens: none (no executor run)
+- executor_usage: none
+- planning_tokens: input 28, cache write 44937, cache read 468603, output 11453
+- planning_usage: aca5bf7e "Plan aim assist request" 1/1 (tasks 463), units 0.16 M
 - result: open
 
 ## Questions

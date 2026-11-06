@@ -19,6 +19,10 @@ status: done
 - next_step: none
 - started: 2026-10-28T02:34:53Z
 - waiting_for: none
+- executor_tokens: input 60, cache write 159534, cache read 1241044, output 12951
+- executor_usage: runs 1, turns 29, context start 16k peak 71k, resumes 2, 78 min, units 0.39 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp-pickup-heal rewritten for the chunk meshes, materials, collision, Blueprint defaults and capture result; commit fee44db2
 
 ## Subtasks

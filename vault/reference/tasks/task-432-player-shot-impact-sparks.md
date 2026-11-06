@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T15:45:57Z
 - waiting_for: none
+- executor_tokens: input 78, cache write 207401, cache read 5583978, output 60695
+- executor_usage: runs 1, turns 39, context start 17k peak 219k, resumes 0, 19 min, units 1.12 M
+- planning_tokens: input 9, cache write 27137, cache read 205219, output 7560
+- planning_usage: a4982e23 "Plan FX lot 1 tasks" 1/3 (tasks 432, 433, 434), units 0.09 M
 - result: Done, look unverified until the owner sees it in game. Miner and turret shots play NS_ShotImpactSpark (6 CPU sprites, 0.1 to 0.2 s, white-gold) through the Niagara pool, cap 24, on a hit on a robot or a barrel; nothing on rock, ore or for robot shots; a full pool skips the spark. Weapons and Barrel test families pass; no capture and no stress run (A6).
 
 ## Questions

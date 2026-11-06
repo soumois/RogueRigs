@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-03T02:02:14Z
 - waiting_for: none
+- executor_tokens: input 62, cache write 59289, cache read 976273, output 10918
+- executor_usage: runs 1, turns 23, context start 17k peak 59k, resumes 4, 33 min, units 0.23 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc nodes updated (commit d2119732): sys-aim-indicator, bp-aim-laser-material, tool-capture; gdd aim-indicator already carried the values (e572c60c)
 
 ## Questions

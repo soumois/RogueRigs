@@ -16,6 +16,10 @@ m=>m
 - next_step: none
 - started: 2026-10-30T22:14:00Z
 - waiting_for: none
+- executor_tokens: input 42, cache write 136615, cache read 475995, output 9280
+- executor_usage: runs 2, turns 18, context start 18k peak 43k, resumes 0, 31 min, units 0.26 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Seven tech nodes state the balance rule and current code; commit 6045f7c0
 
 ## Questions

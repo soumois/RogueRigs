@@ -16,6 +16,10 @@ status: cancelled
 - next_step: none
 - started: 2026-10-31T07:30:08Z
 - waiting_for: none
+- executor_tokens: input 58, cache write 91473, cache read 736804, output 10715
+- executor_usage: runs 3, turns 26, context start 18k peak 41k, resumes 1, 7 min, units 0.24 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Cancelled 2026-10-31 by owner correction (relayed, verbatim): "attend la correction, je parlais dans l'animation directement" = the right arm correction goes into the animation asset, not ABP offsets. Replaced by task-408-miner-right-arm-in-animation. Left in the repo: 32c5c0ce (offsets, Applied*, rr.Debug.MinerArmFix, rr.Debug.MinerAnimFreeze) and fc07fb0d (ABP_Miner right arm Modify Bone + Two Bone IK, from 407-02 before the stop); task-408 handles both.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T00:40:20Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 75675, cache read 231627, output 4568
+- executor_usage: runs 1, turns 9, context start 18k peak 42k, resumes 0, 9 min, units 0.14 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Five nodes updated (sys-objectives-shuttle, run-flow, bp-extraction-shuttle, console-extraction tests, dig-ore tests); gdd extraction already had box wording; commit 8e331c67
 
 ## Questions

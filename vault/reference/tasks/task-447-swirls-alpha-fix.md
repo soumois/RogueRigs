@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T22:22:52Z
 - waiting_for: none
+- executor_tokens: input 124, cache write 139539, cache read 6160028, output 32331
+- executor_usage: runs 1, turns 62, context start 17k peak 152k, resumes 0, 10 min, units 0.95 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, look unverified until the owner sees it in game. The Swirls of NS_ExtractorRotorWash now carry their task-442 alpha in the simulation (was 0): Particles.Color set plain then the same expression, saved, proven in PIE after an editor restart (landed Intensity 0.6: A 0.003-0.084, error 0.00000; takeoff Intensity 1: up to 0.1396). Look values unchanged; GroundBlast and its height response read as before (A 0.300 landed, 0.389 at 88.9, 0.198 at 241.98). No capture, no stress run.
 
 ## Subtasks

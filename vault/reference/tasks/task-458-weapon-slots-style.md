@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T01:13:02Z
 - waiting_for: none
+- executor_tokens: input 104, cache write 201148, cache read 3908732, output 23612
+- executor_usage: runs 1, turns 51, context start 18k peak 125k, resumes 1, 151 min, units 0.76 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done. The 4 weapon slot frames take the unified riveted look by reusing owner-retained sprites, no generation: Frame0..3 = T_LevelEnd_Frame box brush, bolted base SlotsBase = T_Shop_ButtonReroll as the health plate (commit 5c275436). Icons, reload/ammo bars, padlocks, Frame0..3 variables (card flight) and graphs unchanged; compiled, saved, PIE without error. Root VerticalBox and 150 x 90 cells kept as found. Look unverified on screen (Q26): the owner checks it in game. Docs: wbp-weapons, UI index, art-prompts-hud-unified-mockup.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:18:54Z
 - waiting_for: none
+- executor_tokens: input 72, cache write 82737, cache read 2359453, output 14939
+- executor_usage: runs 1, turns 35, context start 17k peak 95k, resumes 0, 4 min, units 0.41 M
+- planning_tokens: input 9, cache write 21164, cache read 215717, output 5892
+- planning_usage: ab92ee9b "Plan owner HUD/levelup/wind feedback" 1/4 (tasks 459, 460, 461, 462), units 0.08 M
 - result: Done. WBP_AlertObjectives (4eeca4f4): C, B, S letters drawn in front of the horde marks (slot z 4 over 3); marks centred on the bar top (Top 48, was 66) so they rise above it as in the owner target; letter and mark X positions, sprites, colours, fill and horde rule unchanged; compiled, saved, PIE without runtime error. Doc wbp-alert-objectives (bbfd441c). A1-A3 look unverified until the owner sees it in game (A6: no capture).
 
 ## Questions

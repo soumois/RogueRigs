@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T23:27:38Z
 - waiting_for: none
+- executor_tokens: input 46, cache write 42782, cache read 757688, output 9098
+- executor_usage: runs 1, turns 20, context start 18k peak 55k, resumes 0, 12 min, units 0.17 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc done (5bc81dcf): bp-extractor-rotor-wash created, blueprints-fx-index and bp-extraction-shuttle updated, lint clean.
 
 ## Subtasks

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T19:39:46Z
 - waiting_for: none
+- executor_tokens: input 96, cache write 197139, cache read 5998873, output 77572
+- executor_usage: runs 1, turns 45, context start 17k peak 209k, resumes 1, 22 min, units 1.23 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, look unverified until the owner has seen it in game. Stylised white-gold flash on M_MuzzleFlash: forward flame, side wings, crossed blades or star at random per shot, bright core, long thin streak, at most 0.1 s, no light. Rifle 6 sprites, shape up to 200 uu; shotgun NS_MuzzleFlashShotgun 8 sprites, 1.5x. Same spawn rule; Weapons, Shotgun, Turret 29 tests pass, RogueRigs.Weapons.MuzzleFlashAsset added.
 
 ## Questions

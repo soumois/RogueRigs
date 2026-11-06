@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T17:53:42Z
 - waiting_for: none
+- executor_tokens: input 34, cache write 91371, cache read 1195577, output 19615
+- executor_usage: runs 1, turns 17, context start 17k peak 103k, resumes 0, 7 min, units 0.33 M
+- planning_tokens: input 7, cache write 35353, cache read 533294, output 7554
+- planning_usage: aeb73265 "Plan FX list tasks" 1/16 (tasks 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450), units 0.14 M
 - result: Done, look unverified until the owner has seen it (A5, no capture). A miner or turret shot stopped by any grid block (`IsBlockCell`, the test the drone digs by: rock, ore, heal ore, special ore, barrel) plays NS_ShotImpactSpark at the hit point, same system and pool, a full pool skips it. The code holds no block the drone cannot dig. Robots and barrels keep theirs, robot shots show none, the drone laser unchanged. RogueRigs.Weapons passes, only the rock expectation changed.
 
 ## Questions

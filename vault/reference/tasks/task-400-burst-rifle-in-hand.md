@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T02:25:43Z
 - waiting_for: none
+- executor_tokens: input 92, cache write 337681, cache read 1636530, output 20883
+- executor_usage: runs 1, turns 36, context start 18k peak 85k, resumes 1, 168 min, units 0.69 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. 7 doc nodes updated (bp-burst-rifle, bp-shotgun, bp-miner, sys-weapons, sys-player-classes, burst-rifle-mesh, unreal-mcp-quirks). Commit db07da46. Doc agent wrote from summaries, no git show; colour/C4/C5 recorded as open observations
 
 ## Questions

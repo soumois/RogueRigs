@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-27T14:17:20Z
 - waiting_for: none
+- executor_tokens: input 14, cache write 34953, cache read 165396, output 2935
+- executor_usage: runs 1, turns 7, context start 16k peak 35k, resumes 0, 3 min, units 0.07 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc agent created (.claude/agents/doc.md, agent-doc) and wired into executor, planner, cpp, bp, protocol steps 3 and 5, runbook, agents-index; commit c78c7bea. Q3: cpp/bp keep an exception for tasks 308, 309, 314.
 
 Run order: task-325 before task-326 (326-02 is run by the doc agent).

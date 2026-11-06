@@ -26,6 +26,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-05T23:32:49Z
 - waiting_for: none
+- executor_tokens: input 86, cache write 97310, cache read 3202385, output 23102
+- executor_usage: runs 1, turns 43, context start 18k peak 109k, resumes 0, 11 min, units 0.56 M
+- planning_tokens: input 6, cache write 14516, cache read 191373, output 4457
+- planning_usage: a63802cd "Plan unified in-game HUD" 1/8 (tasks 451, 452, 453, 454, 455, 456, 457, 458), units 0.06 M
 - result: Done. A1-A3: until horde 0 front has finished spawning (Q30), kills add no alert so the bar follows time and both swarm marks stay still; afterwards kills add 0.5 s as before (e04554fb, FRRRunFlowConfig::bKillsWaitForFirstHorde, URRRunFlowSubsystem::DoKillsAddAlert). A4: KillCount still counts every kill; console 0.4, pause, extraction and horde run times unchanged. A5: test RogueRigs.HUD.PressureKillsWaitFirstHorde (18 kills before the end of front 0: alert 3.017 s at frame 181 = time alone, marks 0.1000 and 0.2992-0.3000; after, 4 kills add 2 s and move mark 2 to 0.4000); HUD.Pressure, Integration.Pressure, RunFlow, Console, Extraction, Spawner 43/43 passed, no expectation changed. Docs 2b43ff02. A6: no capture run, look unverified in game. Cost: subtask rows 0 (included in the executor run of task-454).
 
 ## Questions

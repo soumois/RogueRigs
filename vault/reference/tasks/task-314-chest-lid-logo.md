@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-05T23:11:43Z
 - waiting_for: none
+- executor_tokens: input 224, cache write 238614, cache read 9506838, output 62650
+- executor_usage: runs 2, turns 110, context start 17k peak 133k, resumes 0, 18 min, units 1.56 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. The 22 x 9.7 cm yellow mark (owner go 2026-11-05) is cut into the lid top as slot Logo (+40 tris, pivot and bounds unchanged, commit faddb143); SM_Chest_Lid reimported with M_ChestLogo (company yellow, roughness 0.45, no emissive) on that slot, Lid transform and the Interior and LockLight slots unchanged (cb5ff37a, bp-bonus-chest updated); in game the mark shows centred on the closed lid at the drop spot from the game camera and closer (before|after sheet Saved/Captures/ChestLogo/before_after_full.png). Not seen on the open lid (it belongs to the lid mesh, so it moves with it). Lid-top shading streaks from the Meshy source remain, out of scope.
 - note: task-314-01 runs after task-309-07, which re-cuts the same lid (pivot on the hinge pins); the mark is cut into that lid.
 

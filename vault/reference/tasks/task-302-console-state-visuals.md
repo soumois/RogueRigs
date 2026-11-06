@@ -14,6 +14,10 @@ status: done
 - confirmed_by_owner: yes (2026-10-23, "ok" to the plan and every default; planned in one planning pass, each task run later by its own orchestrator)
 - milestone: M2
 - next_step: none
+- executor_tokens: input 62, cache write 649071, cache read 1841407, output 18789
+- executor_usage: runs 1, turns 28, context start 52k peak 118k, resumes 4, 70 min, units 1.09 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Saved/ConsoleStates/blink-fix/contact_sheet_antenna_blink.png (+ after-fix/contact_sheet_console_states_after_fix.png): Locked red, Idle orange, Hacking green, Complete steady green; antenna lamp blinks lit/dark in Locked, Idle, Hacking, base lamps steady; head turns in Idle/Hacking, still in Locked/Complete; screen black/black/green/green; no BP errors; inside the light hack disc the console is washed out, lamp and screen readable in zoomed crops, faint at play zoom; no repo change
 
 ## Subtasks

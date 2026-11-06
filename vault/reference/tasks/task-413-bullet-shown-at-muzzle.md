@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T21:58:10Z
 - waiting_for: none
+- executor_tokens: input 44, cache write 88825, cache read 678205, output 9664
+- executor_usage: runs 1, turns 19, context start 18k peak 58k, resumes 2, 19 min, units 0.23 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Rifle bullets and shotgun pellets first draw at the Muzzle (0.0–0.8 uu, previously 26–34 uu); fix 148676a4 and docs b023819a. Owner confirms the task is finished. The GDD records the first-frame rule. Remaining unverified checks from the original run: shotgun in game, 60 fps, visual appearance and motion blur.
 
 ## Questions

@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-30T20:43:17Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 71624, cache read 221729, output 3976
+- executor_usage: runs 1, turns 9, context start 18k peak 40k, resumes 0, 16 min, units 0.13 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc: sys-run-transition-preload, sys-objectives-console-chest, bp-bonus-chest updated (commit 3114f850); look left to owner.
 
 ## Questions

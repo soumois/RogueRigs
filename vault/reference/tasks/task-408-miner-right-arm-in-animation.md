@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-31T07:47:36Z
 - waiting_for: none
+- executor_tokens: input 86, cache write 111681, cache read 1214699, output 17277
+- executor_usage: runs 3, turns 35, context start 18k peak 53k, resumes 4, 14 min, units 0.35 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Doc 1055abab + 391a731f (bp-miner, sys-player-classes, miner-mixamo-clips, miner gdd line). Owner chose V2 (Je prends le v2 applique ça): UpperBodySequence = A_Miner_UpperRifle_V2, correction in the animation itself, no offset; V1, V3, A_Miner_Idle kept. Doc agent resumed once (second pass for the owner choice).
 
 ## Questions

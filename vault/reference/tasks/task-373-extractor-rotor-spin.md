@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T21:59:48Z
 - waiting_for: none
+- executor_tokens: input 34, cache write 63551, cache read 355926, output 5693
+- executor_usage: runs 1, turns 13, context start 18k peak 42k, resumes 3, 88 min, units 0.14 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. Docs updated (commit d12b02a6): sys-objectives-shuttle and bp-extraction-shuttle; GetRotorSpeedAlpha defined as rev/s over FlightRevPerSecond (0.6 ground, 1 flight).
 
 ## Subtasks

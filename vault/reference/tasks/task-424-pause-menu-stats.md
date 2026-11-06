@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-11-03T06:57:57Z
 - waiting_for: none
+- executor_tokens: input 122, cache write 108902, cache read 3442122, output 30308
+- executor_usage: runs 1, turns 48, context start 17k peak 121k, resumes 4, 48 min, units 0.63 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: All 7 subtasks done. Mockup validated by owner ("Ok je valide.") after one change round (4 weapons); 12 Kie.ai credits. C++ pause flow, WBP_PauseMenu, docs written. Unverified: 2 and 4 weapon layouts, real key presses, HUD faintly ghosts through menu, title font plain (no stencil font). 04 closed with zero usage (nothing to import), manual zero row in cost-log.
 
 ## Questions

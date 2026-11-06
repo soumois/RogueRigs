@@ -16,6 +16,10 @@ status: done
 - next_step: none
 - started: 2026-10-29T14:27:34Z
 - waiting_for: none
+- executor_tokens: input 22, cache write 29513, cache read 260846, output 4107
+- executor_usage: runs 1, turns 9, context start 18k peak 40k, resumes 0, 4 min, units 0.08 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: Done. bp.md step 4 rules, agent-bp reads and mcp_rules, bp-mcp-lessons Tool sheet section, unreal-mcp link; commit 23915732
 
 ## Questions
