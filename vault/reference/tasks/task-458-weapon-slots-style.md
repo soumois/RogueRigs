@@ -26,7 +26,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T01:13:02Z
 - waiting_for: none
-- result: Done. wbp-weapons updated (unified look bullet with brushes, margins, image sizes, SlotsBlock/SlotsBase, kept structure, verification; assets line; relations to art-prompts-hud-unified-mockup and wbp-health-status), blueprints-ui-index gloss, back-link in art-prompts-hud-unified-mockup; commit 220ad520; lint clean.
+- result: Done. The 4 weapon slot frames take the unified riveted look by reusing owner-retained sprites, no generation: Frame0..3 = T_LevelEnd_Frame box brush, bolted base SlotsBase = T_Shop_ButtonReroll as the health plate (commit 5c275436). Icons, reload/ammo bars, padlocks, Frame0..3 variables (card flight) and graphs unchanged; compiled, saved, PIE without error. Root VerticalBox and 150 x 90 cells kept as found. Look unverified on screen (Q26): the owner checks it in game. Docs: wbp-weapons, UI index, art-prompts-hud-unified-mockup.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
