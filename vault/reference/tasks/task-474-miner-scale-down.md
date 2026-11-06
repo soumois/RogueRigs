@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read miner (look, asset, sockets, IK), visual-style, art-style-guide A4 (drone about the size of the miner head and shoulders: drone unchanged by default, ratio shifts slightly). No GDD value for the miner size: decided by the owner, 90 % of now. Rules versus rendering (orchestrator-lessons): collision and gameplay values unchanged, provisional, reported to the owner to confirm. Order: runs before task-475 (wall height measured on the shrunk miner) and before task-472 (shadow size from the footprint). No code read.
 - confirmed_by_owner: yes (2026-11-06, his own instruction "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"; A2 hitbox and gameplay unchanged is provisional, to confirm)
 - milestone: M2
-- next_step: task-474-01-miner-scale
-- started: 2026-11-06T17:04:21Z
+- next_step: task-474-02-capture
+- started: 2026-11-06T17:15:11Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 148, cache write 142455, cache read 6787449, output 37744
+- executor_usage: runs 1, turns 73, context start 17k peak 154k, resumes 1, 11 min, units 1.05 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open

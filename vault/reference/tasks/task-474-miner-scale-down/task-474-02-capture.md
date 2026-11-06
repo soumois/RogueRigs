@@ -3,7 +3,7 @@ id: task-474-02-capture
 description: "Capture: Check the smaller miner in game."
 parent: task-474-miner-scale-down
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner 10 % smaller: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:15:11Z
 - waiting_for: none
 - result: open
 
