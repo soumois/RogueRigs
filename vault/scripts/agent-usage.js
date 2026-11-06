@@ -308,9 +308,6 @@ for (const r of scanned) records.set(r.kind + ':' + r.id, r);
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
   fs.writeFileSync(SNAP_FILE, '{"version":5,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
-  // The crew-board mod reads at most 4 MiB per file and the snapshot passed that with the debug traces: it reads this
-  // compact copy instead (agent records without traces; git-ignored, rebuilt with every snapshot).
-  fs.writeFileSync(path.join(__dirname, 'usage-agents.json'), '[\n' + all.filter(r => r.kind === 'agent').map(({ plannerTrace, agentTrace, ...r }) => JSON.stringify(r)).join(',\n') + '\n]\n');
 }
 
 // 3. derive the reports
@@ -356,6 +353,13 @@ const plannerShares = {}; // task number -> [{ rec, share, tasks }]
 for (const r of all.filter(x => x.role === 'planning')) {
   const created = [...new Set(Object.keys((r.plannerTrace && r.plannerTrace.writePaths) || {}).filter(p => /^Saved\/Planner\/.*\.spec\.js$/.test(p)).flatMap(specTasks))].sort();
   for (const n of created) (plannerShares[n] = plannerShares[n] || []).push({ rec: r, share: 1 / created.length, tasks: created });
+  r.createdTasks = created;
+}
+if (doSnapshot) {
+  // The crew-board mod reads at most 4 MiB per file and the snapshot passed that with the debug traces: it reads this
+  // compact copy instead (agent records without traces, planners with the tasks they created; git-ignored, rebuilt with
+  // every snapshot).
+  fs.writeFileSync(path.join(__dirname, 'usage-agents.json'), '[\n' + all.filter(r => r.kind === 'agent').map(({ plannerTrace, agentTrace, ...r }) => JSON.stringify(r)).join(',\n') + '\n]\n');
 }
 const taskIds = new Set([...subtasks.map(s => s.id.split('-')[1]), ...pilots.filter(p => p.globalTask && +p.globalTask >= fromTask).map(p => p.globalTask),
   ...Object.keys(plannerShares).filter(n => +n >= fromTask)]);

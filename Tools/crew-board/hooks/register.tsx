@@ -548,6 +548,9 @@ export const register: Register = (on, options) => {
       else throw new Error('usage-snapshot.json is over 4 MiB and usage-agents.json is missing: run node vault/scripts/agent-usage.js --snapshot')
       usageMtime = entry.mtimeMs
       changed = true
+      // publish what the file holds right away: the transcript pass below starts processes and may be slow
+      for (const r of snapRecords) if (r.role === 'planning' && Array.isArray(r.createdTasks)) plannerTasks.set(String(r.id), (r.createdTasks as unknown[]).map(String))
+      await publishCosts([])
     }
     const snapIds = new Set(snapRecords.map(r => String(r.id)))
     const sessions = projDir === '' ? [] : (await io.list(projDir)).filter(e => e.kind === 'dir')
@@ -598,7 +601,11 @@ export const register: Register = (on, options) => {
       }
     }
     if (!changed) return
+    await publishCosts(sessions)
+  }
 
+  let costTasks = 0
+  const publishCosts = async (sessions: FsEntry[]) => {
     const costs: Record<string, TaskCost> = {}
     const add = (num: string, role: 'executor' | 'planner', r: Record<string, unknown>, share: number) => {
       const t = (r.input === undefined ? ZERO : r) as unknown as Tok
@@ -626,7 +633,7 @@ export const register: Register = (on, options) => {
     const records = [...snapRecords, ...extras.values()]
     for (const r of records) {
       const id = String(r.id)
-      if (r.role !== 'planning' || plannerTasks.has(id)) continue
+      if (r.role !== 'planning' || plannerTasks.has(id) || sessions.length === 0) continue
       const dirName = sessions.find(d => d.name.startsWith(String(r.session)))?.name
       const found = dirName ? await readUsage(`${projDir}/${dirName}/subagents/agent-${id}.jsonl`, 0) : undefined
       plannerTasks.set(id, found ? found.created : [])
@@ -639,6 +646,7 @@ export const register: Register = (on, options) => {
         for (const n of tasks) add(String(n), 'planner', r, tasks.length)
       }
     }
+    costTasks = Object.keys(costs).length
     await io.setCosts(costs)
   }
 
@@ -687,7 +695,8 @@ export const register: Register = (on, options) => {
         files,
         at: Date.now(),
         frame: s.frame + 1,
-        error: usageError,
+        // the cost count tells which build runs and whether the costs loaded
+        error: usageError || `costs v3: ${costTasks} tasks`,
       }))
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
@@ -707,7 +716,7 @@ export const register: Register = (on, options) => {
       patchScan: fn => update($, scanAtom, fn),
       getNav: () => read($, navAtom),
       setCosts: costs => update($, costsAtom, () => costs),
-      run: argv => $.process.run(argv),
+      run: argv => $.process.run(argv, { timeoutMs: 15000 }),
       root: () => Promise.resolve($.plugin.root),
     }
     await $.command.register({ name: 'crew', description: 'Open the crew board: vault tasks, agents, tokens' })
