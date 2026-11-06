@@ -20,7 +20,7 @@ status: done
 - executor_usage: runs 1, turns 54, context start 18k peak 143k, resumes 0, 10 min, units 0.84 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: Done. Done (802345ae). bp-floor-plates-material rewritten: M_FloorCartoon/MI_FloorCartoon current (T_Floor_Cartoon_D from Art/Source/floor-texture/T_Floor_Cartoon_D.png, TileSize 1700, AlbedoBrightness 0.6, single sample), what was removed (rotated second sample and blend, normal map and FloorNormal), task-273 assets kept unused, revert; bp-arena-grid FloorMaterial line and blueprints-world-index gloss updated. visual-style already carried the floor rule (planner). Lint clean.
+- result: Done. Floor shows the owner flagstones (image 1) through M_FloorCartoon/MI_FloorCartoon and T_Floor_Cartoon_D: one world-planar sample, TileSize 1700 (stone 3.5 to 4 miner widths as image 2), AlbedoBrightness 0.6, rotated anti-tiling blend and normal removed, slow value/hue modulation kept; task-273 floor assets kept unused (f3f50669). Capture A1-A6 seen (lit floor sRGB 108,29,62 vs image 2 116,34,67; far floor darker than image 2, left to task-473); sheet Saved/Captures/task470-floor-capture/compare_before_after_ref.png. Docs 802345ae.
 
 ## Questions
 Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"): every default below is accepted; values provisional, owner 2026-11-06.
