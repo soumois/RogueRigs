@@ -1,9 +1,9 @@
 ---
 id: task-471-wall-look-reference
 description: "Global task: Terrain walls get the look of owner image 2: light-lilac tops, a glowing warm orange rim along the top edge, dark stratified sides; checked by capture against the image."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Walls look like the owner in-game reference
 
@@ -14,14 +14,14 @@ status: in-progress
 - gdd_check: Read visual-style, color-code (breakable rock row), readability-rules ("orange means explodes", terrain separates by brightness), rock-look-reference (DRGS slab with a lighter rim, dark crystalline columns), art-style-guide. Conflicts: color-code rock "light grey tinted violet" -> lilac-violet; readability "Orange means explodes" vs an orange rim on walls (Q3); edits in the spec apply on confirmation. Reading of "ré-obtenir": the 2026-11-06 owner in-game capture Art/Source/hud-unified/reference/owner-hud-ingame-2026-11-06.webp shows grey-violet tops, plain dark sides and no orange rim, and image 2 shows the same HUD state, so image 2 may be a retouched target rather than an older build (Q1). No code read. Runs after task-470 (floor) because the wall-floor contrast is judged on the new floor.
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-471-03-doc
+- next_step: none
 - started: 2026-11-06T17:51:01Z
 - waiting_for: none
-- executor_tokens: input 168, cache write 216497, cache read 8865850, output 50972
-- executor_usage: runs 2, turns 83, context start 17k peak 198k, resumes 1, 21 min, units 1.41 M
+- executor_tokens: input 180, cache write 225901, cache read 10079862, output 54483
+- executor_usage: runs 2, turns 89, context start 17k peak 208k, resumes 1, 22 min, units 1.56 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: open
+- result: Done. Commit 1f879054: bp-rock-slab-material gains wall_look (RockRim emissive formula, Add into Emissive, height from the instance bounds centre, side strata, MI_RockSlab and parent default values, in-game observation); description updated; tool-unreal-reimport lists rock_slab_wall_look.py and the no-space path pitfall; relations on both ends. GDD nodes visual-style and color-code NOT edited: the Executor must not change gdd nodes; the Q3 update (rock light lilac-violet, thin orange lip allowed beside 'orange means explodes') is left for the owner or planner. Lint clean.
 
 ## Questions
 Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -37,7 +37,7 @@ Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur (
 3. task-471-03-doc (vault/reference/tasks/task-471-wall-look-reference/task-471-03-doc.md) — doc: Docs describe the new wall materials.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-471-01-wall-match-loop]] — step 1, bp.
 - [[task-471-02-capture]] — step 2, capture.
 - [[task-471-03-doc]] — step 3, doc.
