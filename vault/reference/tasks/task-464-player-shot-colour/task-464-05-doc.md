@@ -3,7 +3,7 @@ id: task-464-05-doc
 description: "Doc: Update the bp-* and sys-* nodes of the changed effects and check the gdd nodes match the result"
 parent: task-464-player-shot-colour
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot colour: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:16:19Z
 - waiting_for: none
 - result: open
 
