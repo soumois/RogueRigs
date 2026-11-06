@@ -3,7 +3,7 @@ id: task-463-aim-assist
 description: "Global task: A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Light aim assist on miner shots
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Je valide le choix, mais ne lance pas la tâche")
 - milestone: M2
 - next_step: task-463-01-aim-assist
-- started: open
+- started: 2026-11-06T05:57:03Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none

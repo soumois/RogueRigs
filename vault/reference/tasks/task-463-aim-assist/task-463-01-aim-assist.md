@@ -3,7 +3,7 @@ id: task-463-01-aim-assist
 description: "Cpp: Burst rifle bullets get the light aim assist decided in the global node; other shots unchanged."
 parent: task-463-aim-assist
 kind: task
-status: todo
+status: in-progress
 ---
 # Light aim assist on miner shots: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T05:57:03Z
 - waiting_for: none
 - result: open
 
