@@ -1,9 +1,9 @@
 ---
 id: task-458-weapon-slots-style
 description: "Global task: The frames of the 4 weapon slots take the retained unified look; their contents stay."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon slots in the unified look
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Not named point by point by the owner; derived from "retravailler les différents UI in game" and "interface unifiée", hence Q34. placeholder-weapon-icons stay as they are.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-458-03-doc
+- next_step: none
 - started: 2026-11-06T01:13:02Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-weapons updated (unified look bullet with brushes, margins, image sizes, SlotsBlock/SlotsBase, kept structure, verification; assets line; relations to art-prompts-hud-unified-mockup and wbp-health-status), blueprints-ui-index gloss, back-link in art-prompts-hud-unified-mockup; commit 220ad520; lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -38,7 +38,7 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 3. task-458-03-doc (vault/reference/tasks/task-458-weapon-slots-style/task-458-03-doc.md) — doc: Docs describe the new slot look.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-458-01-art]] — step 1, art.
 - [[task-458-02-slots]] — step 2, bp.
 - [[task-458-03-doc]] — step 3, doc.

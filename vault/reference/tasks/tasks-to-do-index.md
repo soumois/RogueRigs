@@ -11,5 +11,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 
-- [[task-458-weapon-slots-style]] — The frames of the 4 weapon slots take the retained unified look; their contents stay. Status in-progress.
 

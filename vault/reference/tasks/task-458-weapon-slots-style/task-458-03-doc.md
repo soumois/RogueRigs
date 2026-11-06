@@ -3,7 +3,7 @@ id: task-458-03-doc
 description: "Doc: Docs describe the new slot look."
 parent: task-458-weapon-slots-style
 kind: task
-status: in-progress
+status: done
 ---
 # Weapon slots in the unified look: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-458
+- usage: included in the executor run of task-458
+- runs: 1
 - milestone: M2
 - started: 2026-11-06T03:41:56Z
 - waiting_for: none
-- result: open
+- result: wbp-weapons updated (unified look bullet with brushes, margins, image sizes, SlotsBlock/SlotsBase, kept structure, verification; assets line; relations to art-prompts-hud-unified-mockup and wbp-health-status), blueprints-ui-index gloss, back-link in art-prompts-hud-unified-mockup; commit 220ad520; lint clean.
 
 ## Relations
 - [[task-458-weapon-slots-style]] — parent global task.
