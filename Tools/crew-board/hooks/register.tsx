@@ -538,8 +538,14 @@ export const register: Register = (on, options) => {
     let changed = false
     const entry = (await io.list(scriptsDir)).find(f => f.name === 'usage-snapshot.json')
     if (entry && entry.mtimeMs !== usageMtime) {
+      // the snapshot passes 4 MiB with the agent debug traces (the module's read limit): a helper script strips them
+      if (pluginRoot === '') pluginRoot = fwd(await io.root())
+      const out = await io.run(['node', `${pluginRoot}/snapshot_agents.js`, `${scriptsDir}/usage-snapshot.json`])
+      if (out.exitCode === 0) snapRecords = JSON.parse(out.stdout) as Record<string, unknown>[]
+      else if (entry.size < 4 * 1024 * 1024)
+        snapRecords = ((JSON.parse(await io.read(`${scriptsDir}/usage-snapshot.json`)).records ?? []) as Record<string, unknown>[]).filter(r => r.kind === 'agent')
+      else throw new Error('usage snapshot over 4 MiB and snapshot_agents.js failed')
       usageMtime = entry.mtimeMs
-      snapRecords = ((JSON.parse(await io.read(`${scriptsDir}/usage-snapshot.json`)).records ?? []) as Record<string, unknown>[]).filter(r => r.kind === 'agent')
       changed = true
     }
     const snapIds = new Set(snapRecords.map(r => String(r.id)))
