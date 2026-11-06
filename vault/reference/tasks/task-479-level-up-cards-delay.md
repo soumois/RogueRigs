@@ -3,7 +3,7 @@ id: task-479-level-up-cards-delay
 description: "Global task: The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level-up cards after 1.2 s instead of 1.8 s
 
@@ -55,7 +55,7 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - confirmed_by_owner: yes (2026-11-06, "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )")
 - milestone: M2
 - next_step: task-479-01-delay
-- started: open
+- started: 2026-11-06T20:48:00Z
 - waiting_for: none
 - result: open
 
