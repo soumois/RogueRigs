@@ -37,10 +37,12 @@ Global node: the owner's words, goal, acceptance, GDD check, questions. Add subt
 - Visual check: one subtask `agent: capture` whose `done_when` is a checklist C1..Cn taken from `acceptance`, each point observable on a frame (owner 2026-10-29). For a screen or widget, the default stays the four resolutions of [[umg-layout]]: fewer only if the owner chooses it, asked as a question whose default is the four.
 - Uncertain result (owner 2026-11-01, only when the visual result or integration is materially uncertain): plan one representative slice, for example one shop card with its states or one clip in a game state, then its check, then expansion subtasks that depend on it. Record the expected result, references and rules to preserve. A validated mockup may replace the slice.
 
+- Verification level (owner 2026-11-06): set `level` per global from the criteria of the request ([[verification-levels]]), standard when in doubt, and size `acceptance` and the capture checklist to it.
+
 Plan only what the owner asked: no new tests, bot runs, screenshot sessions or features. Only update existing tests that a requested change breaks. The plan shown lists exactly what will run.
 
 ## 4. Confirm
-Show the plan once. A "no" to every proposed option means no task: ask or wait, never relaunch on a reinterpreted target. The owner confirms the global task; subtasks then run without further confirmation. A second global task requested meanwhile waits for its own confirmation.
+Show the plan once, with the verification level of each global. A one-word answer (leger, standard, exploratoire) changes that level, nothing else; with several globals he names which. A "no" to every proposed option means no task: ask or wait, never relaunch on a reinterpreted target. The owner confirms the global task; subtasks then run without further confirmation. A second global task requested meanwhile waits for its own confirmation.
 
 Status and defaults file: [[task-spec]].
 
@@ -53,3 +55,4 @@ Status and defaults file: [[task-spec]].
 - [[agent-executor]] — runs what it plans.
 - [[tasks-to-do-index]] — read at step 0.
 - [[umg-layout]] — the resolutions a screen is checked at.
+- [[verification-levels]] — the level set at step 3 and shown at step 4.

@@ -29,6 +29,7 @@ Lessons are filed by theme: owner rules for the Planner, [[bp-mcp-lessons]] for 
 - [[orchestration-protocol]] — planning procedure of the Planner for every request, steps 0 to 4.
 - [[execution-protocol]] — execution procedure of the Executor, steps 5 and 6, including resume.
 - [[task-spec]] — how a plan is written: task-create spec, defaults file, confirmation; read before writing a plan.
+- [[verification-levels]] — verification level of a global task: criteria, verification size, indicative executor budget; open to plan or run a task.
 - [[orchestrator-runbook]] — the commands that work: git, editor start and stop, delegation prompt, closing a subtask, dashboard.
 - [[orchestrator-lessons]] — owner rules and planning lessons; read before every plan.
 - [[orchestrator-script-quirks]] — task scripts, git, editor, shells and permission pitfalls; open before closing a subtask or committing.

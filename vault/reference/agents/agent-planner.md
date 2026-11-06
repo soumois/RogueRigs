@@ -12,7 +12,8 @@ status: provisional
 - trigger: a new owner request. One planner run per request, covering all its global tasks.
 - reads: [[root]], [[_navigation]], [[orchestration-protocol]], [[orchestrator-lessons]], [[task-spec]], [[tasks-to-do-index]], then only the gdd nodes the request needs, by descent, and a tech node when a question depends on it. [[_authoring]] only before writing a gdd node by hand. Not read: other `agent-*` nodes, the runbook, lessons of other roles, and earlier tasks, unless the request names one or a question to the owner depends on it (on the task-424 test these took about 12k tokens).
 - produces: global task nodes and subtask nodes in `vault/reference/tasks/`, updated gdd nodes for the decisions, one commit.
-- output_format: to the main session, a short report: task ids, plan (one line per subtask with its role), open questions with defaults, owner confirmation yes or no.
+- output_format: to the main session, a short report: task ids with the verification level of each global, plan (one line per subtask with its role), open questions with defaults, owner confirmation yes or no.
+- verification_level: set per global from the criteria of the request ([[verification-levels]]); see [[orchestration-protocol]] step 3.
 - handoff_contract: the Executor reads only the task nodes. The owner's words and answers (`request`), the checks (`gdd_check`), `confirmed_by_owner`, inputs and a testable `done_when` are written there. A decision left only in the conversation is lost.
 - single_executor: since owner 2026-11-05 one Opus Executor does all the subtasks of a global in one context ([[agent-executor]]), so a subtask's `agent` names the role whose rules apply. Split for checkpoints and commits, not to fit an agent.
 - no_code_exploration: code, tests and assets are not read, and a reported defect is not diagnosed; acceptance describes the symptom gone. Exception and limit: [[orchestration-protocol]] step 2.
@@ -29,3 +30,4 @@ status: provisional
 - [[orchestration-protocol]] — its procedure.
 - [[task-spec]] — how it writes the plan.
 - [[orchestrator-lessons]] — owner rules it applies.
+- [[verification-levels]] — the level it sets per global.

@@ -29,7 +29,7 @@ Agent limits live with each agent: [[bp-mcp-lessons]], [[art-3d-lessons]], [[age
 
 ## Showing and verifying
 - Nobody sees the screen; say plainly what is unverified. Visual checks go to the capture agent (`-game` run, `rr.Debug.Shots`, checklist C1..Cn in `done_when`, see [[agent-capture]]).
-- A task that changes what the player sees (widget layout, HUD, asset on screen) ends with a `-game` capture by the capture agent, compared with the look before, and sent to the owner; this check is part of the task, not unrequested work (owner 2026-10-16: task-203-07 shrank the health bar and was closed unseen).
+- A task that changes what the player sees (widget layout, HUD, asset on screen) ends with a `-game` capture by the capture agent, compared with the look before, and sent to the owner; this check is part of the task, not unrequested work (owner 2026-10-16: task-203-07 shrank the health bar and was closed unseen). This rule stays at every level; only its size varies with the level ([[verification-levels]], owner 2026-11-06).
 
 ## Measuring
 - His everyday profile (browser, Discord, Steam open) is the reference: do not ask him to close apps; only a running game is worth noting. At 60 Hz pacing only game-thread time is usable.
@@ -42,3 +42,4 @@ Agent limits live with each agent: [[bp-mcp-lessons]], [[art-3d-lessons]], [[age
 - [[bp-mcp-lessons]] — bp agent limits.
 - [[art-3d-lessons]] — art and 3D preferences and agent limits.
 - [[agent-capture]] — runs the visual checks these lessons route to it.
+- [[verification-levels]] — the size of those checks per global.

@@ -4,13 +4,14 @@
 // <index-anchor-task-id> (or the spec's `anchor`); without an anchor, or when the anchor is not in tasks-to-do-index,
 // at the end of the list. Ids in inputs are resolved to paths through path-of.js (exact ids, task ids and the ids
 // created by the same spec included), so delegations hand agents direct paths. Refuses, before writing anything,
-// a spec whose node already exists, an unknown id, a missing field, wait-answers without waiting_for.
+// a spec whose node already exists, an unknown id, a missing field, a missing or unknown level, wait-answers without waiting_for.
 // Does not lint or commit: run `node vault/scripts/lint.js --write`, `git add` the printed files, commit by path.
 // Output: `created <global-id> (<n> subtasks)` per global, `defaults: <path>` when a defaults file is written,
 // last `files: <repo-relative paths>` (every file written, for git add / commit).
 //
 // Spec v2 (task-358, Q3): module.exports = { anchor?, edits?, globals: [ <global>, ... ] }
-//   global: { num, slug, title, description, request, goal, acceptance, gdd_check,
+//   global: { num, slug, title, description, level ("light" | "standard" | "exploratory", written `- verification_level:`),
+//     request, goal, acceptance, gdd_check,
 //     confirmed_by_owner? (default "no (plan and questions handed back <today>)"), milestone? ("M2"),
 //     status? ("todo" | "wait-answers", default "todo"), waiting_for? (required with wait-answers),
 //     questions? [ "Q1 ... Default: ...", ... ] (written as `- ` lines under `## Questions`),
@@ -31,7 +32,7 @@
 //   { globals: [ { id, questions: ["Q1", ...] } ], edits } (questions = the Q ids of its `questions` lines).
 //
 // Old form (still accepted): module.exports = [ [num, slug, desc, agent, title, request, [input ids], expected_output,
-//   done_when, editor_state, token_ceiling, confirmed_by_owner (optional, default "yes (<today>)")], ... ]
+//   done_when, editor_state, token_ceiling, confirmed_by_owner (null for the default "yes (<today>)"), level], ... ]
 //   one global with one subtask `task-NNN-01-<slug>` each, status todo; the anchor argument is required.
 // token_ceiling is written as-is: give it as "<x> M units" (weighted units of record-cost.js, e.g. "1.2 M units") or
 // "open"; record-cost.js ignores any other form for its ceiling alert.
@@ -43,6 +44,8 @@ const V = path.resolve(__dirname, '..');
 const ROOT = path.resolve(V, '..');
 const T = path.join(V, 'reference', 'tasks');
 const fail = msg => { console.error('task-create: ' + msg); process.exit(1); };
+const LEVELS = ['light', 'standard', 'exploratory'];
+const checkLevel = (level, who) => { if (!LEVELS.includes(level)) fail(`${who}: level must be ${LEVELS.join(', ')}, not ${level === undefined ? 'missing' : level}. Nothing written.`); };
 const [specFile, anchorArg] = process.argv.slice(2);
 if (!specFile) fail('usage: task-create.js <spec.js> [<index-anchor-task-id>]');
 const spec = require(path.resolve(specFile));
@@ -60,13 +63,14 @@ if (isOld && !anchor) fail('usage: task-create.js <spec.js> <index-anchor-task-i
 
 if (isOld) {
   const res = ids => ids.map(i => { if (!P[i]) fail('no path for ' + i); return `${i} (${P[i]})`; }).join(', ');
-  for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, confirmed] of spec) {
+  for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, confirmed, level] of spec) {
     const gid = `task-${num}-${slug}`, sid = `task-${num}-01-${slug}`;
+    checkLevel(level, gid);
     const conf = confirmed || `yes (${today})`;
     writes.push([path.join(T, gid + '.md'), ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index',
       'kind: task', 'status: todo', '---', `# ${title}`, '', `- request: ${req} (owner, ${today})`, `- goal: ${desc}`,
       `- acceptance: ${done.replace(/\.$/, '')}; committed.`, `- gdd_check: done by the Orchestrator when the task is planned (${today}).`,
-      `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- started: open', '- waiting_for: none', '- result: open', '', '## Subtasks', `1. ${sid} (vault/reference/tasks/${gid}/${sid}.md) — ${agent}: ${desc}`, '',
+      `- verification_level: ${level}`, `- confirmed_by_owner: ${conf}`, '- milestone: M2', `- next_step: ${sid}`, '- started: open', '- waiting_for: none', '- result: open', '', '## Subtasks', `1. ${sid} (vault/reference/tasks/${gid}/${sid}.md) — ${agent}: ${desc}`, '',
       '## Relations', '- [[tasks-to-do-index]] — parent index.', `- [[${sid}]] — step 1, ${agent}.`, ''].join('\n')]);
     writes.push([path.join(T, gid, sid + '.md'), ['---', `id: ${sid}`, `description: "${desc}"`, `parent: ${gid}`, 'kind: task',
       'status: todo', '---', `# ${title}`, '', `- goal: ${desc}`, `- agent: ${agent}`, '- depends_on: none', `- inputs: ${res(inputs)}`,
@@ -97,6 +101,7 @@ if (isOld) {
   for (const g of globals) {
     const { gid, sids } = ids(g);
     need(g, ['num', 'slug', 'title', 'description', 'request', 'goal', 'acceptance', 'gdd_check'], gid);
+    checkLevel(g.level, gid);
     if (!Array.isArray(g.subtasks) || !g.subtasks.length) fail(`${gid}: needs at least one subtask`);
     const status = g.status || 'todo';
     if (!['todo', 'wait-answers'].includes(status)) fail(`${gid}: status must be todo or wait-answers, not ${status}`);
@@ -133,7 +138,7 @@ if (isOld) {
     }
     const body = ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index', 'kind: task', `status: ${status}`, '---',
       `# ${g.title}`, '', `- request: ${g.request}`, `- goal: ${g.goal}`, `- acceptance: ${g.acceptance}`, `- gdd_check: ${g.gdd_check}`,
-      `- confirmed_by_owner: ${g.confirmed_by_owner || `no (plan and questions handed back ${today})`}`, `- milestone: ${milestone}`,
+      `- verification_level: ${g.level}`, `- confirmed_by_owner: ${g.confirmed_by_owner || `no (plan and questions handed back ${today})`}`, `- milestone: ${milestone}`,
       `- next_step: ${sids[0]}`, '- started: open', `- waiting_for: ${status === 'wait-answers' ? g.waiting_for : 'none'}`, '- result: open', ''];
     if (qs.length) body.push('## Questions', g.questions_header || `Asked ${today}, each with a default; open until the owner answers.`, ...qs.map(q => '- ' + q), '');
     body.push('## Subtasks', ...subLines, '', '## Relations', '- [[tasks-to-do-index]] — parent index.', ...relLines, '');
