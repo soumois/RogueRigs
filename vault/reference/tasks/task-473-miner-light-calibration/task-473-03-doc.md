@@ -3,7 +3,7 @@ id: task-473-03-doc
 description: "Doc: Docs record the calibrated miner light values."
 parent: task-473-miner-light-calibration
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light calibrated on the owner in-game reference: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T18:35:32Z
 - waiting_for: none
 - result: open
 

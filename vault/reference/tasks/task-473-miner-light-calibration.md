@@ -14,11 +14,11 @@ status: in-progress
 - gdd_check: Read visual-style (miner light: floor and terrain only, rock shadows, owner height in BP_Miner, warm cream 255/194/158, pool about 400 uu, never burnt below about 205/255; screen darkener 0.2 / 1 with clear zone), handover-2026-10-21-lighting-floor (light history). Conflict: the warm cream colour and the 400 uu pool are replaced by values calibrated on image 2; edit in the spec applies on confirmation. Rules kept by default (Q1). No code read. Runs last, after tasks 470, 471 and 472, because the pool is judged on the new floor and walls (Q2).
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-473-02-capture
+- next_step: task-473-03-doc
 - started: 2026-11-06T18:22:25Z
 - waiting_for: none
-- executor_tokens: input 94, cache write 98181, cache read 3192932, output 20285
-- executor_usage: runs 1, turns 44, context start 18k peak 110k, resumes 3, 11 min, units 0.54 M
+- executor_tokens: input 112, cache write 111370, cache read 4229511, output 23925
+- executor_usage: runs 1, turns 53, context start 18k peak 123k, resumes 3, 13 min, units 0.68 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open
