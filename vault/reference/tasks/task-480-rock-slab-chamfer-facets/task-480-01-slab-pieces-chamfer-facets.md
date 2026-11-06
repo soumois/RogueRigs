@@ -3,7 +3,7 @@ id: task-480-01-slab-pieces-chamfer-facets
 description: "3d: Extend the intact slab piece generator per Q1 and Q2: top chamfer marked for the emissive, faceted sides, variants; FBX and previews."
 parent: task-480-rock-slab-chamfer-facets
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T20:54:57Z
 - waiting_for: none
 - result: open
 

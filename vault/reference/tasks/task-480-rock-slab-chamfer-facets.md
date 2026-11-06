@@ -3,7 +3,7 @@ id: task-480-rock-slab-chamfer-facets
 description: "Global task: Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides
 
@@ -55,7 +55,7 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - confirmed_by_owner: yes (2026-11-06, "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )")
 - milestone: M2
 - next_step: task-480-01-slab-pieces-chamfer-facets
-- started: open
+- started: 2026-11-06T20:54:57Z
 - waiting_for: none
 - result: open
 

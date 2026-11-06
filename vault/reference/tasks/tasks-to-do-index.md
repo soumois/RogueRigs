@@ -10,4 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status todo.
+- [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status in-progress.
