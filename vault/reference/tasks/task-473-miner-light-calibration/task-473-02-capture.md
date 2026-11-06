@@ -3,7 +3,7 @@ id: task-473-02-capture
 description: "Capture: Final independent check of the miner light against image 2."
 parent: task-473-miner-light-calibration
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light calibrated on the owner in-game reference: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T18:32:36Z
 - waiting_for: none
 - result: open
 
