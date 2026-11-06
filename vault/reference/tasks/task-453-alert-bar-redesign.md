@@ -3,7 +3,7 @@ id: task-453-alert-bar-redesign
 description: "Global task: The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Alert bar redesigned and better integrated
 
@@ -25,7 +25,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - milestone: M2
 - next_step: task-453-01-art
 - started: 2026-11-06T00:41:05Z
-- waiting_for: none
+- waiting_for: owner pick of the alert bar sprites: candidate 1 or 2 (frame Saved/Scratch/hud-alert/T_HUD_AlertFrame-c1.png / -c2.png, swarm mark T_HUD_AlertMark-c1.png / -c2.png; sheets Art/Source/hud-unified/20261105-164216-hud-unified-1.png / -2.png); critic prefers 1
 - result: open
 
 ## Questions
