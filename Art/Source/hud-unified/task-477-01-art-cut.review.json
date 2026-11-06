@@ -1,0 +1,40 @@
+{
+  "run_id": "task-477-01-art-cut",
+  "items": [
+    {
+      "file": "Art/UI/HUD/T_HUD_MockStrip.png",
+      "verdict": "fail",
+      "rule": "cleanup (point 3)",
+      "reason": "Traces of the removed '100 / 100' outline stay at the centre: broken dark specks on the top edge of the green window and a ragged dark fringe above the top rail between about 45% and 58% of the width, plus one dark speck at the bottom centre of the window.",
+      "correction": "Rebuild the centre of the top rail from the clean rail on either side (mirror or clone), make the fringe above it fully transparent, and clear the window edge specks to full transparency."
+    },
+    {
+      "file": "Art/UI/HUD/T_HUD_MockBlock.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Teal-green weathered metal with rust chips matches the mockup, stepped shoulder plates and corner rivets are present at mockup size and count, no padlock, icon or ammo-bar trace.",
+      "correction": null
+    },
+    {
+      "file": "Art/UI/HUD/T_HUD_MockCell.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Cell frame matches the mockup (rusty teal frame, corner bolts, dark bevelled inside), padlock fully removed with no visible smear.",
+      "correction": null
+    },
+    {
+      "file": "Art/UI/HUD/T_HUD_MockRail.png",
+      "verdict": "fail",
+      "rule": "cleanup (point 3)",
+      "reason": "Scattered dark specks sit below the lower bar along the left half of the piece, a ragged alpha leftover of the mockup background; colour, rivet plates and right end cap match the mockup and no XP tick remains.",
+      "correction": "Make every pixel below the lower bar's bottom edge fully transparent (hard alpha cut along the bar)."
+    },
+    {
+      "file": "Art/UI/HUD/T_HUD_MockLevelPlate.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Plate frame, rivets and colour match the mockup and the 'Lv 1' text is gone; the inside is a slightly soft interpolated dark, acceptable behind the live label.",
+      "correction": null
+    }
+  ]
+}

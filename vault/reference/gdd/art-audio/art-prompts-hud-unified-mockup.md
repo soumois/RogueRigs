@@ -96,11 +96,28 @@ The retained image is the layout and look reference; every piece uses one frame 
 | T_HUD_XPRail | 840 x 58 | 0.031, 0.31 | transparent window y 18..40 |
 | T_HUD_LevelPlate | 216 x 55 | 0.065, 0.22 | near-black |
 
-- Replaces the four 461 sprites in game (task-467-02 to -04): T_HUD_BottomPanel by T_HUD_BlockFrame and T_HUD_HealthStrip ([[wbp-health-status]]), T_HUD_SlotWell by T_HUD_SlotCell ([[wbp-weapons]]) and by T_HUD_HealthStrip for the health track, T_HUD_XPFrame by T_HUD_XPRail and T_HUD_LevelCap by T_HUD_LevelPlate ([[wbp-xp-status]]). The 461 textures stay in the project, unreferenced by these widgets.
+- Replaces the four 461 sprites in game (task-467-02 to -04). Since task-477 the five 467 sprites are no longer used either (next section).
+
+## Frames cut from the mockup itself (task-477-01, replace the 467 sprites)
+- Q1 of [[task-477-bottom-hud-back-to-mockup]] (owner 2026-11-06, default): the owner found the 467 look drifted from the proposal (blue-grey gunmetal, thinner frame, Lv plate 4 rivets). No Kie.ai run, 0 credits: the pieces are cut out of the retained mockup scaled to 1920 x 1080 (ffmpeg lanczos), at the pixel size and position they have at 1080p, by `Art/Source/hud-unified/cut-477/cut.js` (+ `img.js`, ffmpeg raw RGBA): geometric outline with colour flood for the alpha, text outlines, padlock and "Lv 1" interpolated away, health and XP windows transparent (removes the mockup's misplaced ticks).
+- Pieces in `Art/UI/HUD/` (RGBA, drawn as Image at native size; screen position at 1080p):
+
+| Texture | Size | At (x, y) | Content |
+|---|---|---|---|
+| T_HUD_MockStrip | 705 x 43 | 608, 842 | health strip frame with stepped top corners; transparent window 647..1271 x 859..882 |
+| T_HUD_MockBlock | 739 x 134 | 592, 885 | block frame with stepped riveted shoulder plates, dark inside |
+| T_HUD_MockCell | 163 x 108 | cells at x 628, 796, 963, 1130, y 900 | one cell (mockup cell 3), padlock removed |
+| T_HUD_MockRail | 1765 x 62 | 140, 1012 | XP rail with riveted right end cap; transparent track 166..1861 x 1033..1057 |
+| T_HUD_MockLevelPlate | 156 x 63 | 12, 1012 | Lv plate, 8 rivets, text removed |
+
+- Measured on the mockup at 1080p: green bar #30D22E (vertical gradient 4ADF4C to 27BA2B), 625 x 24.
+- Critic (style-guide, `task-477-01-art-cut.review.json`): all pass A1-A18 and colour code; C2 colour and C3 rivets match the mockup. Fails on cleaning (text-outline specks on the strip, dark specks under the rail) corrected in the same pass (rail rows forced opaque, strip top row trimmed).
+- Labels: keep = the five textures, `cut-477/cut.js`, `cut-477/img.js`, the review; temporary = `Saved/Scratch/hud-477/` (mockup-1080, crops, grids, assembled sheets `sheet-01-pieces.png`, `sheet-01-rail.png`, and the owner crop `owner-target-crop-2026-11-06-temporary.png`).: T_HUD_BottomPanel by T_HUD_BlockFrame and T_HUD_HealthStrip ([[wbp-health-status]]), T_HUD_SlotWell by T_HUD_SlotCell ([[wbp-weapons]]) and by T_HUD_HealthStrip for the health track, T_HUD_XPFrame by T_HUD_XPRail and T_HUD_LevelCap by T_HUD_LevelPlate ([[wbp-xp-status]]). The 461 textures stay in the project, unreferenced by these widgets.
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[task-467-bottom-hud-match-target]] — the task that made the thin bottom frames.
+- [[task-477-bottom-hud-back-to-mockup]] — the task that cut the frames from the mockup itself.
 - [[art-prompts-level-end-screen-mockup]] — T_LevelEnd_Frame, reused for the weapon slot frames (task-458).
 - [[wbp-alert-objectives]] — shows the alert bar sprites (task-453).
 - [[task-451-hud-mockups]] — the task that made these mockups.
