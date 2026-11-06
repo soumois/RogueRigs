@@ -3,7 +3,7 @@ id: task-453-01-art
 description: "Art: Cut the alert bar frame and mark sprites of the retained mockup."
 parent: task-453-alert-bar-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar redesigned and better integrated: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T00:41:05Z
 - waiting_for: none
 - result: open
 

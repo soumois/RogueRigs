@@ -3,7 +3,7 @@ id: task-453-alert-bar-redesign
 description: "Global task: The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar redesigned and better integrated
 
@@ -24,7 +24,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-453-01-art
-- started: open
+- started: 2026-11-06T00:41:05Z
 - waiting_for: none
 - result: open
 
