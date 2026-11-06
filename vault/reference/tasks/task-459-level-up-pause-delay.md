@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:09:55Z
 - waiting_for: none
-- result: Done. sys-level-up data line: ChoiceDelay 1.8 s current (was 0.8 s, task-459); gotchas: LevelUpUpgradeLoop measures 108 frames = 1.800 s with BP_Miner. xp-level-up already said 1.8 s (edited at confirmation). Lint clean. Commit 906f3398.
+- result: Done. The 3-card screen opens 1.8 s after a level-up (ChoiceDelay 0.8 -> 1.8, b68fc3f9), measured 108 frames = 1.800 s with BP_Miner and the real game mode (Integration.LevelUpUpgradeLoop), game running during the wait; two levels at once wait once then chain (LevelUp.ChainedOffers); burst, push, heal, chest screen unchanged; 19 targeted tests pass; sys-level-up updated (906f3398). Look unverified in game until the owner sees it.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
