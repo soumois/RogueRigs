@@ -3,7 +3,7 @@ id: task-482-01-level-rules-and-field
 description: "Doc: Write the level rule in the crew nodes and add the level field to the task scripts."
 parent: task-482-verification-levels
 kind: task
-status: todo
+status: in-progress
 ---
 # Verification levels per global task: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T22:44:09Z
 - waiting_for: none
 - result: open
 

@@ -10,5 +10,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-482-verification-levels]] — Crew rule: the Planner sets a verification level per global task (light, standard, exploratory) with an indicative executor budget. Open to run or review the rule change. Status todo.
+- [[task-482-verification-levels]] — Crew rule: the Planner sets a verification level per global task (light, standard, exploratory) with an indicative executor budget. Open to run or review the rule change. Status in-progress.
 - [[task-483-executor-budget-alert-traces]] — Measures executors against their level: non-blocking budget alert at closing, and executor traces kept in agent-usage.js. Open to run or review the measurement. Status todo.

@@ -3,7 +3,7 @@ id: task-482-verification-levels
 description: "Crew rule: the Planner sets a verification level per global task, with an indicative executor budget. Open to run or review the rule change."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Verification levels per global task
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Ok")
 - milestone: M2
 - next_step: task-482-01-level-rules-and-field
-- started: open
+- started: 2026-11-06T22:44:09Z
 - waiting_for: none
 - result: open
 
