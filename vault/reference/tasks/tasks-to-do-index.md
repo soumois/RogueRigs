@@ -10,3 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-481-shipping-compile-fix]] — Removes the C2027 on ARRWeapon that stops RogueRigs Win64 Shipping from compiling. Open to run the fix behind the v0.1.3 build; gameplay unchanged. Status todo.

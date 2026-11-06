@@ -1,0 +1,28 @@
+---
+id: task-481-01-cpp
+description: "Cpp: Remove the ARRWeapon compile error so both the Shipping game target and the Development editor target compile."
+parent: task-481-shipping-compile-fix
+kind: task
+status: todo
+---
+# Fix the compile error that blocks the Shipping build: cpp
+
+- goal: Remove the ARRWeapon compile error so both the Shipping game target and the Development editor target compile.
+- agent: cpp
+- depends_on: none
+- inputs: build-toolchain (vault/reference/tech/pipelines/build-toolchain.md), Source/RogueRigs/Upgrades/RRUpgradeCard.h
+- expected_output: see done_when
+- done_when: RogueRigs Win64 Shipping and RogueRigsEditor Win64 Development both compile, with no C2027 or C2672 on ARRWeapon; no gameplay behaviour changed; no test run, packaging or capture added.
+- editor_state: decided by the Executor
+- token_ceiling: open
+- model: open
+- tokens: open
+- usage: open
+- runs: open
+- milestone: M2
+- started: open
+- waiting_for: none
+- result: open
+
+## Relations
+- [[task-481-shipping-compile-fix]] — parent global task.
