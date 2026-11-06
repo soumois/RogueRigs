@@ -3,7 +3,7 @@ id: task-480-02-broken-pieces-facets
 description: "3d: Per Q3, give the broken variants the faceted outer sides of their intact shape, plates and tilt unchanged."
 parent: task-480-rock-slab-chamfer-facets
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides: 3d
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T21:01:41Z
 - waiting_for: none
 - result: open
 
