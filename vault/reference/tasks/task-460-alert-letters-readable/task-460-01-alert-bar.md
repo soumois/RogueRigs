@@ -3,7 +3,7 @@ id: task-460-01-alert-bar
 description: "Bp: The alert bar draws event letters whole in front of horde marks, the marks rising above the bar top."
 parent: task-460-alert-letters-readable
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar letters never hidden by a horde mark: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:18:54Z
 - waiting_for: none
 - result: open
 

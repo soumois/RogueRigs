@@ -12,7 +12,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[tasks-index]] — parent index.
 
 
-- [[task-460-alert-letters-readable]] — On the alert bar the C, B and S letters stay readable when a red horde "!" is at or moves over their position. Status todo.
+- [[task-460-alert-letters-readable]] — On the alert bar the C, B and S letters stay readable when a red horde "!" is at or moves over their position. Status in-progress.
 - [[task-461-bottom-hud-panel]] — Health bar and the four weapon slots in one riveted panel, XP bar in its own riveted frame with a framed Lv cap, as in the retained mockup. Status todo.
 - [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status todo.
 - [[task-463-aim-assist]] — A rifle bullet is deflected a few degrees toward a nearby robot, unless the shot already hits a robot or a barrel. Status todo.

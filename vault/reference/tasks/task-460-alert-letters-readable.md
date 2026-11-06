@@ -3,7 +3,7 @@ id: task-460-alert-letters-readable
 description: "Global task: alert bar letters C, B, S stay readable when a horde \"!\" sits on or moves over them."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar letters never hidden by a horde mark
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
 - next_step: task-460-01-alert-bar
-- started: open
+- started: 2026-11-06T04:18:54Z
 - waiting_for: none
 - result: open
 
