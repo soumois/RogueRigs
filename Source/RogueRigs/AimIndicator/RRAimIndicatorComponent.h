@@ -1,4 +1,4 @@
-// Rogue Rigs - aim indicator (gdd aim-indicator): a thin white-gold laser from the shown rifle Muzzle along the miner's aim, stopped at the first robot or block.
+// Rogue Rigs - aim indicator (gdd aim-indicator): a thin lime-green laser from the shown rifle Muzzle along the miner's aim, stopped at the first robot or block.
 
 #pragma once
 
@@ -143,9 +143,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0", Units = "cm"))
 	float RobotSweepRadius = 9.5f;
 
-	/** Laser colour, linear RGB (white-gold sRGB (255, 236, 170), M_AimLaser default). Material Color. */
+	/** Laser colour, linear RGB: lime green sRGB (160, 255, 40), sampled from the owner capture
+	 *  Art/Source/aim-indicator/owner-capture-green-unlimited-2026-11-06.webp (task-469, provisional; was white-gold
+	 *  linear (1, 0.84, 0.40), still the M_AimLaser default). Material Color. */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator")
-	FLinearColor Color = FLinearColor(1.f, 0.84f, 0.40f, 1.f);
+	FLinearColor Color = FLinearColor(0.35f, 1.f, 0.02f, 1.f);
 
 	/** Emissive multiplier of the colour (M_AimLaser default 1). Material EmissiveGain. */
 	UPROPERTY(EditDefaultsOnly, Category = "Aim Indicator", meta = (ClampMin = "0"))

@@ -1,4 +1,4 @@
-// Rogue Rigs - aim indicator (gdd aim-indicator): a thin white-gold laser from the shown rifle Muzzle along the miner's aim, stopped at the first robot or block.
+// Rogue Rigs - aim indicator (gdd aim-indicator): a thin lime-green laser from the shown rifle Muzzle along the miner's aim, stopped at the first robot or block.
 
 #include "AimIndicator/RRAimIndicatorComponent.h"
 
