@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read arena-grid ("Blocks are always low, so nothing hides a unit from the near-vertical camera"), visual-style ("Blocks are always low (no occlusion)"), miner. Conflict decided by the owner himself (his request goes against the vault): blocks rise to the miner height; the no-occlusion intent is kept as acceptance A6; arena-grid and visual-style updated by hand at planning, provisional. Barrels and the void edge are not walls (provisional, to confirm). Order: after task-474 (miner height) and before task-471 (wall look judged on the final geometry) and task-473 (light). No code read.
 - confirmed_by_owner: yes (2026-11-06, his own instruction "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"; scope rock, ore, heal ore only is provisional, to confirm)
 - milestone: M2
-- next_step: task-475-02-capture
+- next_step: task-475-03-doc
 - started: 2026-11-06T17:29:44Z
 - waiting_for: none
-- executor_tokens: input 148, cache write 150163, cache read 6680758, output 40021
-- executor_usage: runs 1, turns 74, context start 18k peak 162k, resumes 0, 12 min, units 1.06 M
+- executor_tokens: input 162, cache write 155500, cache read 7663855, output 42420
+- executor_usage: runs 1, turns 80, context start 18k peak 168k, resumes 1, 13 min, units 1.17 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open

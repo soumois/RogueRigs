@@ -3,7 +3,7 @@ id: task-475-03-doc
 description: "Doc: Docs record the new block height."
 parent: task-475-wall-height-miner
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls raised to the miner height: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:30:09Z
 - waiting_for: none
 - result: open
 
