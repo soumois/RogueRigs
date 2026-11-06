@@ -3,7 +3,7 @@ id: task-453-02-alert-bar
 description: "Bp: The alert bar widget takes the retained look, marks driven as before."
 parent: task-453-alert-bar-redesign
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar redesigned and better integrated: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T00:47:15Z
 - waiting_for: none
 - result: open
 
