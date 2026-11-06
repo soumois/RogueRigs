@@ -54,11 +54,11 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - gdd_check: Read visual-style (Walls line, task-478: dark sides, "no visible cut between facets or blocks, read as one continuous wall"), color-code (Breakable rock row, same), art-style-guide A1 (large flat facets stay visible: agrees with the request), rock-look-reference (dark crystalline columns on the sides in DRGS: agrees), bp-rock-slab-material and handover-2026-10-18-rock-slab (why: point D asks for a technical proposal, built here from the documented system, no asset read). Facts used: slabs are dual-grid display pieces (5 intact shapes + 10 broken FBX) from Tools/art/blender/rock_slab_pieces.py and rock_slab_broken.py, Nanite, instanced, vertex colour R marks rim triangles; M_RockSlab draws the top glow from the outline distance (EdgeParams) and, since 478, sides as emissive with almost no lighting (SideParams.x 0.03), which blocks the requested lit/shaded alternance; heal deposits share MI_RockSlab. Conflicts: 478 "no visible cut between facets" and smooth emissive sides vs visible facets and lit/shaded sides: superseded by the owner spec, edits on visual-style and color-code on confirmation. The top continuity rule of 478 is kept. No open value. Before image kept: Art/Source/cartoon-look/reference/owner-2026-11-06-wall-after-478.png. No target image: the spec text is the reference; image 3 of 478 is no longer the side target.
 - confirmed_by_owner: yes (2026-11-06, "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )")
 - milestone: M2
-- next_step: task-480-03-reimport-pieces
+- next_step: task-480-04-material-loop
 - started: 2026-11-06T20:54:57Z
 - waiting_for: none
-- executor_tokens: input 34, cache write 183546, cache read 2158030, output 51670
-- executor_usage: runs 1, turns 17, context start 17k peak 195k, resumes 0, 9 min, units 0.70 M
+- executor_tokens: input 54, cache write 222105, cache read 4258893, output 75977
+- executor_usage: runs 1, turns 27, context start 17k peak 234k, resumes 0, 18 min, units 1.08 M
 - planning_tokens: input 15, cache write 35116, cache read 306038, output 10554
 - planning_usage: aeff9c58 "Plan card delay and rock slab look" 1/2 (tasks 479, 480), units 0.13 M
 - result: open

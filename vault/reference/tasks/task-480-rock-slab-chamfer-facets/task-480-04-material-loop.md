@@ -3,7 +3,7 @@ id: task-480-04-material-loop
 description: "Bp: Loop on M_RockSlab/MI_RockSlab: chamfer emissive band with intensity variation, subtle top glow, lit faceted sides with facet tints; capture and compare per Q5."
 parent: task-480-rock-slab-chamfer-facets
 kind: task
-status: todo
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T21:13:21Z
 - waiting_for: none
 - result: open
 
