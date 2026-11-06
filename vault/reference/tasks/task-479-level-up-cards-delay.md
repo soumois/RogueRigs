@@ -1,9 +1,9 @@
 ---
 id: task-479-level-up-cards-delay
 description: "Global task: The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level-up cards after 1.2 s instead of 1.8 s
 
@@ -54,14 +54,14 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - gdd_check: Read xp-level-up (Level-up sequence: about 1.8 s, owner 2026-11-05, task-459; was 0.8 s). Conflict: the value itself, replaced by 1.2 s via the edit on confirmation. The LEVEL UP text lasts about 0.7 s, so it has ended before the cards at 1.2 s. Targeted read of task-459-01 result (why: to name the role): the delay is the C++ default ChoiceDelay of the level-up component, BP_Miner does not override it, so cpp. No open value. Milestone as task-459.
 - confirmed_by_owner: yes (2026-11-06, "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )")
 - milestone: M2
-- next_step: task-479-02-doc
+- next_step: none
 - started: 2026-11-06T20:48:00Z
 - waiting_for: none
-- executor_tokens: input 24, cache write 83190, cache read 575112, output 9868
-- executor_usage: runs 1, turns 11, context start 17k peak 83k, resumes 0, 6 min, units 0.21 M
+- executor_tokens: input 26, cache write 88464, cache read 658302, output 10827
+- executor_usage: runs 1, turns 12, context start 17k peak 88k, resumes 0, 6 min, units 0.23 M
 - planning_tokens: input 15, cache write 35116, cache read 306038, output 10554
 - planning_usage: aeff9c58 "Plan card delay and rock slab look" 1/2 (tasks 479, 480), units 0.13 M
-- result: open
+- result: Done. sys-level-up gives ChoiceDelay 1.2 s with task-479 and the 72 frames (1.200 s) measure; lint clean; commit 5ee49665.
 
 ## Questions
 Decided 2026-11-06 (owner "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -72,6 +72,6 @@ Decided 2026-11-06 (owner "Je valide, mais ne lance pas les tâches ( prépare l
 2. task-479-02-doc (vault/reference/tasks/task-479-level-up-cards-delay/task-479-02-doc.md) — doc: The level-up system doc gives the new delay.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-479-01-delay]] — step 1, cpp.
 - [[task-479-02-doc]] — step 2, doc.
