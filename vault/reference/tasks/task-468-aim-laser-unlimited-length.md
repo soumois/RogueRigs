@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read aim-indicator, miner, color-code, task-464-player-shot-colour. Conflicts: aim-indicator Length caps the line at 600 uu (task-423) and fades the last 150 uu; the owner removes the cap. "Mur ou robot": barrels stop shots too (miner, aim assist), so Q1 asks whether they stop the line (default yes) and states that border cliffs count as walls (the capture shows the line over them). Tip fade (task-423) lost its purpose without a range end: Q2, default removed. No open value. Owner image kept in Art/Source/aim-indicator/owner-capture-green-unlimited-2026-11-06.webp (Q5 in task-469). aim-indicator Length and Look edited at confirmation. Milestone of aim-indicator: M3. No code read; the crossing of the wall is not diagnosed.
 - confirmed_by_owner: yes (2026-11-06, "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche")
 - milestone: M2
-- next_step: task-468-01-unlimited-stop
+- next_step: task-468-02-doc
 - started: 2026-11-06T10:23:22Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 72, cache write 83926, cache read 2267444, output 23058
+- executor_usage: runs 1, turns 36, context start 18k peak 96k, resumes 0, 5 min, units 0.45 M
 - planning_tokens: input 25, cache write 33914, cache read 560922, output 11927
 - planning_usage: aa81a0a3 "Plan unlimited aim line" 1/2 (tasks 468, 469), units 0.16 M
 - result: open

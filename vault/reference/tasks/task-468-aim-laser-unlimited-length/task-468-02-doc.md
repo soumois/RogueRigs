@@ -3,7 +3,7 @@ id: task-468-02-doc
 description: "Doc: The aim indicator tech doc describes the unlimited line and what stops it."
 parent: task-468-aim-laser-unlimited-length
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser without length limit, stopping at walls and robots: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:28:21Z
 - waiting_for: none
 - result: open
 
