@@ -3,7 +3,7 @@ id: task-473-miner-light-calibration
 description: "Global task: The miner light colour, intensity and pool size are tuned in game until the light around the miner matches the warm orange-pink pool of owner image 2."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light calibrated on the owner in-game reference
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
 - next_step: task-473-01-light-match-loop
-- started: open
+- started: 2026-11-06T18:22:25Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none

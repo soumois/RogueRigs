@@ -3,7 +3,7 @@ id: task-473-01-light-match-loop
 description: "Bp: Loop: tune the miner light colour, intensity and radius, -game capture, side-by-side with image 2, rework until it matches or the Q2 cap."
 parent: task-473-miner-light-calibration
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner light calibrated on the owner in-game reference: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T18:22:25Z
 - waiting_for: none
 - result: open
 
