@@ -3,7 +3,7 @@ id: task-468-01-unlimited-stop
 description: "Cpp: Aim laser without length cap, ending on the first wall, robot or barrel, never over a wall, sharp tip."
 parent: task-468-aim-laser-unlimited-length
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser without length limit, stopping at walls and robots: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:23:22Z
 - waiting_for: none
 - result: open
 

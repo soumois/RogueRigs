@@ -3,7 +3,7 @@ id: task-468-aim-laser-unlimited-length
 description: "Global task: The aim laser loses its 600 uu cap and ends on the first wall, robot or barrel, never drawn over a wall."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser without length limit, stopping at walls and robots
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche")
 - milestone: M2
 - next_step: task-468-01-unlimited-stop
-- started: open
+- started: 2026-11-06T10:23:22Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none
