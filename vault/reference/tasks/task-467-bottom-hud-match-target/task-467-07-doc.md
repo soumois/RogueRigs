@@ -3,7 +3,7 @@ id: task-467-07-doc
 description: "Doc: Docs describe the reworked bottom HUD and its sprites."
 parent: task-467-bottom-hud-match-target
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:21:06Z
 - waiting_for: none
 - result: open
 
