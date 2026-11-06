@@ -3,7 +3,7 @@ id: task-469-aim-laser-green
 description: "Global task: The aim laser turns from white-gold to the bright lime green of the owner in-game capture; only the colour changes."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser in the lime green of the owner capture
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche")
 - milestone: M2
 - next_step: task-469-01-green
-- started: open
+- started: 2026-11-06T10:29:46Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none

@@ -3,7 +3,7 @@ id: task-469-01-green
 description: "Bp: Aim laser colour set to the lime green of the owner capture, look otherwise unchanged."
 parent: task-469-aim-laser-green
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser in the lime green of the owner capture: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:29:46Z
 - waiting_for: none
 - result: open
 
