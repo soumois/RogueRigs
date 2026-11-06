@@ -3,7 +3,7 @@ id: task-465-01-laser-impact-slice
 description: "Bp: Burst rifle impacts become the green flat cartoon burst of the owner reference (representative slice)"
 parent: task-465-shot-impact-burst
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact burst: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:25:46Z
 - waiting_for: none
 - result: open
 

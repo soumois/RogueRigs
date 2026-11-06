@@ -3,7 +3,7 @@ id: task-465-shot-impact-burst
 description: "Global task: Player shot impacts become a flat cartoon burst of spikes and triangles from the owner reference: white for projectiles, green for lasers."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact burst
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "prépare la tâche sans lancer, j'accepte les propostions.")
 - milestone: M2
 - next_step: task-465-01-laser-impact-slice
-- started: open
+- started: 2026-11-06T09:25:46Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none
