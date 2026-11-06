@@ -1,0 +1,38 @@
+---
+id: task-471-wall-look-reference
+description: "Global task: Terrain walls get the look of owner image 2: light-lilac tops, a glowing warm orange rim along the top edge, dark stratified sides; checked by capture against the image."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Walls look like the owner in-game reference
+
+- request: Owner 2026-11-05 (verbatim): "J'aimerais faire des changements sur le design (donc ça va aller à l'encontre de ce qu'il y a dans le vault). - On va passer plus en cartoon * (image 1 au sol) change la texture du sol * Changer le système d'ombre (voilà ce qu'on va tester) : --- Each shadow must: * Be positioned directly beneath its associated actor. * Follow the actor's world position. * Remain independent of directional lights and other light sources. * Use a dark desaturated purple-grey colour, never pure black. * Have adjustable opacity and scale. * Have slightly softened edges, while retaining a clearly readable silhouette. * Avoid excessive transparency or overly blurred edges. --- * Essaye de calibrer la lumière comme la lumière du joueur sur l'image * Essaye de ré-obtenir le rendu sur l'image concernant les murs Ne lance aucune tâche". Image 1 kept (owner image): Art/Source/floor-texture/owner-2026-11-05-floor-cartoon.webp (seamless hand-painted cartoon magenta-purple flagstones, dark cracks with a pink rim highlight). Image 2 kept (owner image): Art/Source/cartoon-look/reference/owner-2026-11-05-ingame-light-walls.webp (in-game view: warm orange-pink light pool around the miner on the purple floor; raised purple plateaus with light-lilac tops, a glowing orange rim along the cliff lip, dark stratified cliff faces, pink crystals). The request is split into four global tasks (one per owner point): task-470 floor, task-471 walls, task-472 actor shadows, task-473 miner light. "Ne lance aucune tâche": planned only. This task: "Essaye de ré-obtenir le rendu sur l'image concernant les murs".
+- goal: In game the walls look like those of image 2, judged on side-by-side captures with it.
+- acceptance: A1 the target is Art/Source/cartoon-look/reference/owner-2026-11-05-ingame-light-walls.webp (walls only); the look before is Art/Source/hud-unified/reference/owner-hud-ingame-2026-11-06.webp; A2 wall tops are a light lilac-violet, more saturated than the current grey-violet, lighter than the floor; A3 a thin glowing warm orange rim runs along the top edge of every wall facing the floor (the cliff lip), visible far from the miner too, not a wide band; A4 wall sides are dark with horizontal strata as on the image; A5 per Q2 rock, ore and heal ore blocks share the look; ore crystals and heal ore keep their colours; damage cracks and tilted plates still show and still mean damaged rock; void asteroids unchanged; A6 terrain still separates from the floor by brightness, and the orange rim does not read as a barrel or a kamikaze; A7 the work runs as a loop: change, -game capture at 1920 x 1080, side-by-side sheet with image 2, list of failing points, rework; it stops when every point passes, at the round cap of Q5, or when the owner says "je valide"; each round is written in the loop subtask result; A8 per Q1 git history is checked first for an earlier wall setting matching image 2, and the finding (commit or none) is written in the result; A9 image generation only per Q4, recorded with keep and temporary labels; A10 compiles, no new runtime error in PIE, wall shadows from the miner light (task-445) unchanged; A11 the final side-by-side sheets are sent to the owner; the report gives the token cost per subtask and in total.
+- gdd_check: Read visual-style, color-code (breakable rock row), readability-rules ("orange means explodes", terrain separates by brightness), rock-look-reference (DRGS slab with a lighter rim, dark crystalline columns), art-style-guide. Conflicts: color-code rock "light grey tinted violet" -> lilac-violet; readability "Orange means explodes" vs an orange rim on walls (Q3); edits in the spec apply on confirmation. Reading of "ré-obtenir": the 2026-11-06 owner in-game capture Art/Source/hud-unified/reference/owner-hud-ingame-2026-11-06.webp shows grey-violet tops, plain dark sides and no orange rim, and image 2 shows the same HUD state, so image 2 may be a retouched target rather than an older build (Q1). No code read. Runs after task-470 (floor) because the wall-floor contrast is judged on the new floor.
+- confirmed_by_owner: no (plan and questions handed back 2026-11-06)
+- milestone: M2
+- next_step: task-471-01-wall-match-loop
+- started: open
+- waiting_for: Owner answers to Q1-Q5 (meaning of image 2, scope, orange rim, image generation, loop cap).
+- result: open
+
+## Questions
+Asked 2026-11-06, each with a default; open until the owner answers.
+- Q1 Image 2 : ta capture en jeu du 2026-11-06 montre des murs gris-violet sans liseré orange, avec le même HUD que l'image 2, donc je la lis comme une image cible (peut-être retouchée), pas comme une ancienne version. Default: on reproduit ce rendu ; l'historique git est d'abord regardé et un ancien réglage est repris s'il correspond. Autre : si c'est une vraie capture d'une ancienne version du jeu, donne-moi la date ou la tâche.
+- Q2 Périmètre : Default: tous les blocs de terrain (roche, minerai, minerai de soin) prennent dessus lilas clair, liseré orange lumineux le long du bord supérieur et flancs sombres en strates ; cristaux, fissures de dégâts et plaques inclinées gardés et lisibles ; astéroïdes du vide non touchés.
+- Q3 Orange sur les murs : le GDD dit "orange = ça explose" (barils, kamikaze) et "roche gris clair teinté violet". Default: le liseré orange est un détail fin, pas la couleur principale du mur, donc autorisé ; la roche passe en violet-lilas ; le GDD est mis à jour dans ce sens.
+- Q4 Génération d'image : Default: matériaux seulement ; si les strates des flancs demandent une texture, au plus 1 planche x 2 variantes Kie.ai (environ 12 crédits). Autre : aucune génération.
+- Q5 Boucle : Default: au plus 3 tours capture -> comparaison côte à côte avec l'image 2 -> retouche, en 1920 x 1080 ; arrêt dès que tous les points passent ; sinon je t'envoie les comparaisons et la liste des écarts sans relancer ; ton "je valide" arrête la boucle. Autre : un autre nombre de tours.
+
+## Subtasks
+1. task-471-01-wall-match-loop (vault/reference/tasks/task-471-wall-look-reference/task-471-01-wall-match-loop.md) — bp: Loop: check git history for a matching wall setting, then change the wall look, -game capture, side-by-side with image 2, rework until it matches or the Q5 cap.
+2. task-471-02-capture (vault/reference/tasks/task-471-wall-look-reference/task-471-02-capture.md) — capture: Final independent check of the walls against image 2.
+3. task-471-03-doc (vault/reference/tasks/task-471-wall-look-reference/task-471-03-doc.md) — doc: Docs describe the new wall materials.
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-471-01-wall-match-loop]] — step 1, bp.
+- [[task-471-02-capture]] — step 2, capture.
+- [[task-471-03-doc]] — step 3, doc.
