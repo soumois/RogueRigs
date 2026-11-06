@@ -374,7 +374,9 @@ ARRWeapon* ARRMiner::AddWeapon(TSubclassOf<ARRWeapon> WeaponClass)
 	}
 	else
 	{
-		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachSocketName);
+		// task-474: scale included, so a hand-held weapon takes the miner mesh scale (socket world scale 1 at mesh scale 1;
+		// 0.9 since the miner shrink). Its relative scale stays 1, which the left-hand IK grip math assumes.
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, AttachSocketName);
 	}
 	// The weapon is carried inside the capsule: never let it block the miner's own moves.
 	GetCapsuleComponent()->IgnoreActorWhenMoving(Weapon, true);
