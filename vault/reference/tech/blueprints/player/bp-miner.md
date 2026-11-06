@@ -18,6 +18,14 @@ kind: doc
 - weapons (task-024-05): StartingWeapons = [BP_BurstRifle_C] only; GuaranteedWeaponClasses empty; WeaponCatalogue = BP_BurstRifle_C, BP_Shotgun_C, BP_TurretLauncher_C with English descriptions since task-032-02 ("Precise bursts that pierce through robots.", "A short-range spray of pellets that knocks robots back.", "Places turrets that fire at nearby robots on their own."); MaxWeapons 4. task-400: skeletal mesh asset SK_Miner has socket WeaponSocket_R on bone RightHand (location (0.005868, -0.065782, -0.001565), rotation pitch -17.502942 yaw -79.928061 roll 17.606433, scale 0.01; the RightHand bone scale is about 100 in component space, so the socket gives world scale 1). Added on the mesh asset, not SKEL_Miner (no socket tool). Mesh relative yaw -90, location z -88; mesh forward = component +Y. Derived in PIE from A_Miner_Idle (socket X along mesh forward, grip midway between RightHand and RightHandMiddle1); PIE check with the ABP in idle and run fwd/back/left/right: rifle at the socket, scale 1, X axis within about 16 deg pitch and 10 deg yaw in strafes, 0 in idle. Values provisional, the owner can retouch in the Skeleton editor. Mixamo rifle stance puts the right hand at the cheek/shoulder (rifle shouldered beside the head); the left hand was about 14 cm off the handguard, fixed by the left-hand IK below (task-401). BP_BurstRifle sets HandSocketName to this socket ([[bp-burst-rifle]]). Earlier: WeaponAttachSocketName = None (attached to the capsule at WeaponAttachOffset (0, 20, -40), task-008-03) ([[bp-burst-rifle]]).
 - verified: PIE (task-024-05): starts with BP_BurstRifle_C_0 only; new-weapon cards for the shotgun and the turret launcher appeared in the offer (CurrentOffer) and picking them added BP_Shotgun_C_0 and BP_TurretLauncher_C_0. Task-441-05: compiled with warnings as errors; PIE GrantXP 5 and ChooseUpgrade 0 logged no Blueprint runtime error and no Niagara warning. Earlier: PIE on L_ArenaM1 spawns BP_Miner_C at (8100, 8100, 90.15); MaxWalkSpeed 600; Health 100, MaxHealth 100, MoveSpeed 600, MiningSpeed 1, PickupRadius 300, XPGain 1, Luck 0.
 
+## Mesh scale 0.9 (task-474, provisional)
+Owner 2026-11-06 "réduit la taille du joueur de 10 pourcent" ([[task-474-miner-scale-down]]). Commit 39732c16.
+- Mesh (CharacterMesh0) RelativeScale3D 1 -> 0.9; location (0, 0, -88) and yaw -90 kept, so the feet (mesh origin) stay on the floor. Top of head at rest 170 uu -> 153 uu (SK_Miner bind pose and idle frames measured in Blender, times 0.9).
+- Unchanged (provisional, to confirm): capsule half height 88, radius 34, every gameplay value; camera, drone, FloorWallLight, ABP_Miner.
+- Follows the scale: the burst rifle (world scale 0.9 through the C++ attach rule, [[sys-player-classes]]), its Muzzle (about 110 uu above the capsule bottom instead of about 122), aim laser and muzzle flash at the Muzzle, the hand offset and the left-hand grip. Damage, heal and level-up numbers stay at their capsule-based height.
+- Capture: `Saved/Captures/MinerScale474Before/`, `MinerScale474After/`, sheets in `MinerScale474Sheets/` (local, gitignored).
+- Revert: set Mesh RelativeScale3D back to 1 in BP_Miner, compile, save (the attach rule gives the rifle scale 1 again).
+
 ## Left hand IK in ABP_Miner (task-401-03, provisional)
 Owner "Ok, par défaut" 2026-10-30 ([[task-401-miner-hands-fit-rifle]]). AnimGraph (since task-406 the upper body layer sits before LocalToComponent, see the section below): Locomotion state machine -> Layered blend per bone -> LocalToComponent -> Two Bone IK -> ComponentToLocal -> Output Pose.
 - Two Bone IK: IK bone LeftHand (chain LeftHand, LeftForeArm, LeftArm); effector location = `LeftHandIKTarget` in Bone Space of bone RightHand; alpha = `LeftHandIKAlpha` (both from [[sys-player-classes]]). Joint target (45, 10, 95) cm in Component Space (mesh forward is component +Y, left is +X; elbow down and out), provisional. Stretching on with defaults (from 1.0, max 1.2); twist defaults; the end bone takes no effector rotation (hand orientation not matched to the grip).
@@ -92,6 +100,7 @@ Owner 2026-11-04 "Tout par défaut" ([[task-425-miner-floor-wall-light]]): a lig
 - Unverified: no capture (the owner looks in game, A6); GPU cost not measured (Q17, [[perf-risks]]).
 
 ## Relations
+- [[task-474-miner-scale-down]] — set the mesh scale 0.9.
 - [[task-425-miner-floor-wall-light]] — added FloorWallLight.
 - [[task-445-miner-light-wall-shadows]] — turned on its wall shadows.
 - [[task-410-right-hand-offset-live]] — added the right arm IK and hand rotation nodes.
