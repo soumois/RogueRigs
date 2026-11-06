@@ -50,8 +50,9 @@ The retained image is the layout and look reference; every piece uses one frame 
 
 ## Radar frame sprite (task-457-01)
 - Prompt `prompts/07-radar-frame.txt`, refs: a 3x crop of the mockup top-left piece (Image 1, temporary, `Saved/Scratch/hud-radar/mockup-radar-crop.png`) and the mockup (Image 2); the external example not attached. GPT Image 2 image-to-image, 16:9, 1K, magenta key, 2 variants, 12 credits. Run `20261105-155448-hud-unified`.
-- Candidates (pending the owner's choice): `-1.png` and `-2.png`. Keyed with `Tools/art/ui_icon_prepare.js --size 1024 --keep-aspect --margin 0.02`, `--check` clean, to `Saved/Scratch/hud-radar/T_HUD_RadarFrame-c1.png` (1024 x 580, hole 386 x 381 centred at 304,288) and `-c2.png` (1024 x 560, hole 385 x 374 at 292,278).
+- Candidates `-1.png` and `-2.png`. Keyed with `Tools/art/ui_icon_prepare.js --size 1024 --keep-aspect --margin 0.02`, `--check` clean, to `Saved/Scratch/hud-radar/T_HUD_RadarFrame-c1.png` (1024 x 580, hole 386 x 381 centred at 304,288) and `-c2.png` (1024 x 560, hole 385 x 374 at 292,278).
 - Critic: both pass A1-A18 and the colour code; neither copies the external example. Both are more teal than the mockup's dark gunmetal plates; c1 is the closer one (c2 rust more saturated).
+- Owner 2026-11-05 (verbatim): "Candidat 1". Keep = `Art/Source/hud-unified/20261105-155448-hud-unified-1.png` and its log `20261105-155448-hud-unified.json`; temporary = `-2.png`, moved to `Saved/Scratch/hud-unified/`. Cut-out copied to `Art/UI/HUD/T_HUD_RadarFrame.png` (1024 x 580 RGBA): hole centre 304,288, diameter about 383; plate dark inside x 578..928, y 122..279.
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
