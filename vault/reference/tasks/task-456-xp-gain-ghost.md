@@ -3,7 +3,7 @@ id: task-456-xp-gain-ghost
 description: "Global task: on an XP gain a pale ghost fill shows the new XP at once; the cyan fill then catches up."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP gain ghost on the XP bar
 
@@ -24,7 +24,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-456-01-ghost-logic
-- started: open
+- started: 2026-11-06T01:01:19Z
 - waiting_for: none
 - result: open
 

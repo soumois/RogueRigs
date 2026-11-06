@@ -3,7 +3,7 @@ id: task-456-01-ghost-logic
 description: "Cpp: The XP bar drives a ghost fill and a delayed catch-up from XP events."
 parent: task-456-xp-gain-ghost
 kind: task
-status: todo
+status: in-progress
 ---
 # XP gain ghost on the XP bar: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T01:01:19Z
 - waiting_for: none
 - result: open
 
