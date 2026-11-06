@@ -3,7 +3,7 @@ id: task-470-03-doc
 description: "Doc: Docs describe the new floor material and texture."
 parent: task-470-cartoon-floor-texture
 kind: task
-status: todo
+status: in-progress
 ---
 # Floor uses the owner cartoon flagstone texture: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:41:39Z
 - waiting_for: none
 - result: open
 
