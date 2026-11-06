@@ -11,9 +11,9 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 ## Children
 - [[wbp-hud]] — WBP_HUD, health bar and Game Over text.
 - [[wbp-subtitles]] — WBP_Subtitles, the company subtitle line, a sub-widget of WBP_HUD.
-- [[wbp-health-status]] — WBP_HealthStatus, health bar and text in a riveted plate just above the weapon slots, Game Over text and damage vignette, a sub-widget of WBP_HUD.
-- [[wbp-xp-status]] — WBP_XPStatus, XP bar and level text, a sub-widget of WBP_HUD.
-- [[wbp-weapons]] — WBP_Weapons, weapon slots in riveted frames on a bolted base, ammo, reload and turret line, a sub-widget of WBP_HUD.
+- [[wbp-health-status]] — WBP_HealthStatus, the riveted bottom panel holding health bar and weapon row, Game Over text and damage vignette, a sub-widget of WBP_HUD.
+- [[wbp-xp-status]] — WBP_XPStatus, XP bar in its riveted frame and level text in a framed cap, a sub-widget of WBP_HUD.
+- [[wbp-weapons]] — WBP_Weapons, weapon slot wells inside the bottom panel, ammo, reload and turret line, a sub-widget of WBP_HUD.
 - [[wbp-upgrade-choice]] — WBP_UpgradeChoice, level-up cards and reroll, a sub-widget of WBP_HUD.
 - [[wbp-alert-objectives]] — WBP_AlertObjectives, riveted alert bar with track marks (layout table), horde banner, objective, shuttle and end screen, a sub-widget of WBP_HUD.
 - [[wbp-minimap-locator]] — WBP_MinimapLocator, minimap in its riveted frame, markers and locator arrow with distance, a sub-widget of WBP_HUD.

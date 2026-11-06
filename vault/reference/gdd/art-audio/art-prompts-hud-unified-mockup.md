@@ -89,3 +89,5 @@ The retained image is the layout and look reference; every piece uses one frame 
 - [[kie-image-workflow]] — tool, credits and commit rule.
 - [[wbp-minimap-locator]] — shows the radar frame sprite (task-457).
 - [[wbp-weapons]] — shows the weapon slot frame and base sprites (task-458).
+- [[wbp-xp-status]] — shows the XP frame and level cap sprites (task-461).
+- [[wbp-health-status]] — shows the bottom panel and the health track well (task-461).

@@ -15,18 +15,22 @@ kind: doc
 
 | Widget | Parent | Anchors min / max | Offsets (L, T, R, B) | Size mode |
 |---|---|---|---|---|
-| XPBarArea | Root | 0,1 / 1,1 | 90, -36, 20, 16 | width stretches with the screen, 16 tall |
+| XPBarArea | Root | 0,1 / 1,1 | 122, -36, 26, 16 (task-461; was 90, -36, 20, 16) | width stretches with the screen, 16 tall |
 | XPGhostBar | XPBarArea | 0,0 / 1,1 | 0, 0, 0, 0 | fills XPBarArea |
 | XPBar | XPBarArea | 0,0 / 1,1 | 0, 0, 0, 0 | fills XPBarArea |
 | XPTick20 / 40 / 60 / 80 | XPBarArea | x 0.2 / 0.4 / 0.6 / 0.8, y 0 to 1 | -1, 3, 2, 3 | 2 wide (centred on the fraction), height stretches with 3 inset top and bottom |
-| LevelText | Root | 0,1 / 0,1 | 20, -42 | auto size |
+| XPFrame | Root | 0,1 / 1,1 | 103, -47, 7, 37 | width stretches, 37 tall (y 1033..1070 at 1080p) |
+| LevelCap | Root | 0,1 / 0,1 | 8, -50, 108, 44 | 108 x 44, auto size off |
+| LevelText | Root | 0,1 / 0,1, alignment 0.5,0.5 | 62, -28 (task-461; was 20, -42, alignment 0,0) | auto size, centred on LevelCap |
+
+- frame (task-461-03, commit 81462e37, owner 2026-11-05 image 2, Q37): Root children in order XPBarArea, XPFrame, LevelCap, LevelText. XPFrame (Image, variable, HitTestInvisible): /Game/RogueRigs/UI/HUD/T_HUD_XPFrame Draw As Box, ImageSize 384 x 37, margins L/R 0.06, T/B 0.3, tint 0.8 grey (the critic found the sprite teal lighter than the panel): riveted rails above and below the bar, bolted end caps, transparent track window over the bar. LevelCap (Image, variable, HitTestInvisible): T_HUD_LevelCap Box, ImageSize 126 x 44, margins 0.2 / 0.3, tint 0.8: framed plate drawn over the frame start, LevelText ("Lv N", justification centre) on it. XPGhostBar background tint #0B0C14 (linear 0.0033465 / 0.0036765 / 0.0069954, was white): the empty track is dark as in the mockup; ghost fill, XPBar and ticks unchanged. Owner retouch points: XPFrame and LevelCap slots and ImageSize, XPBarArea offsets. Verified: compiled, saved; PIE GrantXP 3 and 40, two card picks, no runtime error. Look not seen (A6: the owner checks in game); "Lv 10" and above may be tight in the 108 wide cap.
 - variables: none besides the widgets.
 - events: hook BindToMiner(Miner, PreviousMiner): UnbindXP(Previous), then for a valid miner assigns the progression component's OnXPChanged to OnXPChanged_Event_2 and calls ShowXP(GetXP, GetXPToNextLevel, GetLevel) to read the current values; null miner shows 0 / 0 and "Lv 1". Handler (editor name with the "_2" suffix from MCP authoring): OnXPChanged_Event_2(Current, Needed, Level) calls ShowXP. The C++ parent binds the same progression natively for the bars ([[sys-hud-xp-bar]]). The level shown follows OnXPChanged, which carries the level. Destruct unbinds the miner (UnbindXP of GetMiner). Two empty stray custom events OnXPChanged_Event and OnXPChanged_Event_0 remain, unbound.
 - functions: ShowXP(Current, Needed, Level): LevelText "Lv " + Level only (task-456-02 removed the XPBar SetPercent branch and 25 stray nodes: the C++ parent owns both bar percents; Current and Needed stay as unused inputs). UnbindXP(M): for a valid miner, unbinds only this widget's own handler from its progression: UnbindEvent from OnXPChanged fed by a Create Event node bound to OnXPChanged_Event_2 (task-319-02; the earlier ClearDelegate nodes removed every listener, including the level-up flow's, when the HUD was destroyed). (UnbindXP is not named UnbindMiner: a call by that name resolved to the WBP_HealthStatus function of the same name through MCP.)
 - removed (task-450-01, owner 2026-11-05): the cyan LevelUpText TextBlock ("LEVEL UP", Roboto Bold 56), its OnLevelUp binding and handler, the one-shot HideLevelUp timer and function, the Destruct timer clear and the OnLevelUp UnbindEvent.
 - tick: none in the Blueprint; the C++ parent arms a next-tick update only while the ghost or fill moves ([[sys-hud-xp-bar]]).
 - logic_in_bp: display only.
-- assets: none.
+- assets: T_HUD_XPFrame, T_HUD_LevelCap (task-461, [[art-prompts-hud-unified-mockup]]).
 - owner_agent: agent-bp
 - verified: task-456-02 (commit 441acaae): reparented, compiled true, saved; tree read back (XPBarArea: XPGhostBar, XPBar, XPTick20..80), XPGhostBar slot and XPBar background alpha read back, ShowXP DSL read back (one SetText chain, 6 nodes). PIE L_ArenaM1 with GrantXP 3 (level 1, 3 / 4) then 40 (level 3, 19 / 25) and two card picks: no Accessed None nor script error. Ghost and catch-up not seen on screen (Q26: no capture): the owner checks the look in game. Earlier, task-455-01 (commit 5e101e15): compiled with no error, saved, widget tree read back with the values above; graphs untouched; PIE L_ArenaM1 with GrantXP 3 then 40 (level 1 to 3) logged no Accessed None nor script error. The ticks are not seen on screen (Q26: no capture): the owner checks the look in game. Earlier, task-450-01: compiled with no error, saved, graphs and widget tree read back; PIE with two GrantXP cheats (level 1 to 9, then 13, two card picks) logged no Accessed None nor script error. Not seen on screen: the owner checks the look in game. Earlier: task-319-02 UnbindXP rewrite and task-104-01 guard, compiled and read back. The C++ source has no lookup of XPBar or LevelText.
 
@@ -38,3 +42,4 @@ kind: doc
 - [[sys-level-up]] — the gold LEVEL UP text in the world, the only level-up text.
 - [[umg-layout]] — the layout rule its anchors table follows.
 - [[sys-hud-xp-bar]] — the C++ parent that drives the fill and the ghost.
+- [[art-prompts-hud-unified-mockup]] — the XP frame and level cap sprites (task-461).
