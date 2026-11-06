@@ -461,5 +461,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-450-remove-hud-level-up-text]] — The cyan LEVEL UP text of the HUD is removed; the gold text in the world stays the only one. Status done.
 - [[task-451-hud-mockups]] — Image proposals of one unified in-game HUD, made with Kie.ai GPT Image from the current screenshot; the owner retains one before any build. Status done.
 - [[task-452-health-above-weapons]] — The health bar leaves the top left and sits just above the weapon slots, in the retained unified look. Status done.
+- [[task-453-alert-bar-redesign]] — The alert bar with its swarm, console, bonus and shuttle marks is redrawn in the retained unified look; its rules stay. Status done.
 - [[task-454-swarm-icons-fixed]] — Until the first horde front is over, kills no longer move the swarms on the alert bar; afterwards they do as now. Status done.
 - [[task-457-radar-frame-ore]] — The radar gets a frame in the unified look, and the ore count moves into that frame instead of floating beside it. Status done.
