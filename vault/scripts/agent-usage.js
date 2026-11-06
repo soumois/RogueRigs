@@ -11,6 +11,9 @@
 // Unit: input-token equivalents, weights in cost-rates.json (cache write 1.25, cache read 0.1, output 5). USD only when prices are set there.
 // --snapshot merges the records into vault/scripts/usage-snapshot.json (committed): Claude Code deletes old transcripts, the
 //   snapshot keeps their numbers. A record found in a transcript wins over the snapshot copy.
+// --agent-debug keeps a trace per turn for planners, executors, bp and cpp (sizes, tools and paths, never content), saved in the
+//   snapshot so --agent-detail still shows it once the transcript is gone. Over snapshotMaxBytes (cost-rates.json) the oldest
+//   executor traces are removed, their numbers stay. usage-agents.json never holds a trace.
 const fs = require('fs'), path = require('path'), os = require('os');
 
 const args = process.argv.slice(2);
@@ -103,7 +106,7 @@ function textMetrics(content) {
 
 function scan(file, meta, kind, session, id) {
   const agentType = (meta && meta.agentType) || '';
-  const captureDebug = agentDebug && kind === 'agent' && ['planner', 'orchestrator', 'bp', 'cpp'].includes(agentType);
+  const captureDebug = agentDebug && kind === 'agent' && ['planner', 'orchestrator', 'executor', 'bp', 'cpp'].includes(agentType);
   const byId = new Map();
   const toolUsesById = new Map();
   const toolResultsById = new Map();
@@ -280,7 +283,7 @@ function scan(file, meta, kind, session, id) {
     turns: turnDetails,
   };
   if (role === 'planning') rec.plannerTrace = trace;
-  if (['bp', 'cpp'].includes(type) && captureDebug) rec.agentTrace = trace;
+  if (['executor', 'bp', 'cpp'].includes(type) && captureDebug) rec.agentTrace = trace;
   if (kind === 'session') rec.tasksMentioned = Object.entries(mentions).filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
   return rec;
 }
@@ -304,10 +307,28 @@ if (fs.existsSync(projDir)) {
 // 2. merge with the snapshot: transcripts win, vanished transcripts keep their saved numbers
 const records = new Map();
 if (fs.existsSync(SNAP_FILE)) for (const r of JSON.parse(fs.readFileSync(SNAP_FILE, 'utf8')).records) records.set(r.kind + ':' + r.id, r);
-for (const r of scanned) records.set(r.kind + ':' + r.id, r);
+for (const r of scanned) {
+  const key = r.kind + ':' + r.id, saved = records.get(key);
+  // A scan without --agent-debug builds no trace: it must not erase one already saved.
+  if (saved && !agentDebug) for (const f of ['plannerTrace', 'agentTrace']) if (saved[f] && !r[f]) r[f] = saved[f];
+  records.set(key, r);
+}
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
 if (doSnapshot) {
-  fs.writeFileSync(SNAP_FILE, '{"version":5,"updated":"' + new Date().toISOString() + '","records":[\n' + all.map(r => JSON.stringify(r)).join(',\n') + '\n]}\n');
+  // Size limit of the committed snapshot (snapshotMaxBytes in cost-rates.json): over it, the traces of the oldest executors go,
+  // their numbers stay. A trace rebuilt from a transcript still on disk is removed again here at each run.
+  const lines = all.map(r => JSON.stringify(r));
+  const head = '{"version":5,"updated":"' + new Date().toISOString() + '","records":[\n', tail = '\n]}\n';
+  let size = Buffer.byteLength(head + tail) + lines.reduce((n, l) => n + Buffer.byteLength(l) + 2, 0);
+  for (let i = 0; i < all.length && size > RATES.snapshotMaxBytes; i++) {
+    if (all[i].type !== 'executor' || !all[i].agentTrace) continue;
+    delete all[i].agentTrace;
+    const line = JSON.stringify(all[i]);
+    size -= Buffer.byteLength(lines[i]) - Buffer.byteLength(line);
+    lines[i] = line;
+  }
+  if (size > RATES.snapshotMaxBytes) console.error(`ALERT usage-snapshot.json: ${size} bytes is still over snapshotMaxBytes ${RATES.snapshotMaxBytes} with no executor trace left`);
+  fs.writeFileSync(SNAP_FILE, head + lines.join(',\n') + tail);
 }
 
 // 3. derive the reports
@@ -389,7 +410,7 @@ if (plannerDetailId || agentDetailId) {
   const requestedId = agentDetailId || plannerDetailId;
   const matches = r => (agentDetailId ? Boolean(r.plannerTrace || r.agentTrace) : r.role === 'planning') && (r.id === requestedId || r.session === requestedId);
   const rec = all.find(r => matches(r) && r.id === requestedId) || all.find(matches);
-  if (!rec) { console.error(`No ${agentDetailId ? 'agent' : 'planner'} record matches ${requestedId}`); process.exit(2); }
+  if (!rec) { console.error(`No ${agentDetailId ? 'agent trace' : 'planner record'} matches ${requestedId}: unknown id, type without traces, transcript gone before its trace was saved, or trace removed by the snapshot size limit`); process.exit(2); }
   const trace = rec.plannerTrace || rec.agentTrace;
   if (!trace) { console.error('This saved record has no detailed trace; refresh the snapshot while its transcript is still available.'); process.exit(2); }
   const detail = { id: rec.id, session: rec.session, start: rec.start, description: rec.desc, type: rec.type, role: rec.role, model: rec.models, calls: rec.calls, resumes: rec.resumes, input: rec.input, cacheWrite: rec.cacheWrite, cacheRead: rec.cacheRead, output: rec.output, units: unitsOf(rec), ...(rec.plannerTrace ? { plannerTrace: trace } : { agentTrace: trace }) };

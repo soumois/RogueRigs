@@ -1,6 +1,7 @@
 {
-  "note": "weights turn the four token kinds into one unit (input-token equivalents): cache write 1.25x, cache read 0.1x, output 5x of the uncached input price. usdPerMillionInputTokens is the uncached input price per model family in USD: null = unknown, nothing is invented; fill it from the provider's price page and agent-usage.js then prints USD too. alerts.ceilingRatio: record-cost.js alerts when a subtask's units (M, as on its usage line) exceed token_ceiling times this ratio; token_ceiling is written '<x> M units' (e.g. 1.2 M units), a legacy value without 'M units' or 'open' gives no ceiling alert.",
+  "note": "weights turn the four token kinds into one unit (input-token equivalents): cache write 1.25x, cache read 0.1x, output 5x of the uncached input price. usdPerMillionInputTokens is the uncached input price per model family in USD: null = unknown, nothing is invented; fill it from the provider's price page and agent-usage.js then prints USD too. alerts.ceilingRatio: record-cost.js alerts when a subtask's units (M, as on its usage line) exceed token_ceiling times this ratio; token_ceiling is written '<x> M units' (e.g. 1.2 M units), a legacy value without 'M units' or 'open' gives no ceiling alert. snapshotMaxBytes: agent-usage.js removes the oldest executor traces from usage-snapshot.json over this size (20 MB, provisional, owner 2026-11-06).",
   "weights": { "input": 1, "cacheWrite": 1.25, "cacheRead": 0.1, "output": 5 },
   "usdPerMillionInputTokens": { "opus": null, "sonnet": null, "haiku": null, "fable": null },
-  "alerts": { "startContextTokens": 25000, "turns": 55, "ceilingRatio": 1 }
+  "alerts": { "startContextTokens": 25000, "turns": 55, "ceilingRatio": 1 },
+  "snapshotMaxBytes": 20000000
 }
