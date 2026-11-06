@@ -3,7 +3,7 @@ id: task-459-01-delay
 description: "Cpp: The card screen opens about 1.8 s after a level-up; nothing else in the sequence changes."
 parent: task-459-level-up-pause-delay
 kind: task
-status: todo
+status: in-progress
 ---
 # One more second before the level-up cards: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:09:56Z
 - waiting_for: none
 - result: open
 

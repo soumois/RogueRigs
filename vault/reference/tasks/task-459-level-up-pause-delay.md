@@ -3,7 +3,7 @@ id: task-459-level-up-pause-delay
 description: "Global task: The upgrade cards open 1 s later after a level-up, so the level-up effect can be seen."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # One more second before the level-up cards
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
 - next_step: task-459-01-delay
-- started: open
+- started: 2026-11-06T04:09:55Z
 - waiting_for: none
 - result: open
 
