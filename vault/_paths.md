@@ -199,6 +199,7 @@ execution-protocol  reference/agents/execution-protocol.md
 explosions  reference/gdd/terrain/explosions.md
 external-tools-index  reference/external-tools/external-tools-index.md
 extraction  reference/gdd/run/extraction.md
+extractor-blast-references  reference/tech/blueprints/fx/extractor-blast-references.md
 fictional-films  reference/gdd/fictional-films.md
 gas-api-notes  reference/tech/systems/core/gas-api-notes.md
 gas-engine-facts  reference/tech/systems/core/gas-engine-facts.md
