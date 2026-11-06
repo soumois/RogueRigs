@@ -15,7 +15,7 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[wbp-xp-status]] — WBP_XPStatus, XP bar and level text, a sub-widget of WBP_HUD.
 - [[wbp-weapons]] — WBP_Weapons, weapon slots, ammo, reload and turret line, a sub-widget of WBP_HUD.
 - [[wbp-upgrade-choice]] — WBP_UpgradeChoice, level-up cards and reroll, a sub-widget of WBP_HUD.
-- [[wbp-alert-objectives]] — WBP_AlertObjectives, alert bar and icons, horde banner, objective, shuttle and end screen, a sub-widget of WBP_HUD.
+- [[wbp-alert-objectives]] — WBP_AlertObjectives, riveted alert bar with track marks (layout table), horde banner, objective, shuttle and end screen, a sub-widget of WBP_HUD.
 - [[wbp-minimap-locator]] — WBP_MinimapLocator, minimap in its riveted frame, markers and locator arrow with distance, a sub-widget of WBP_HUD.
 - [[wbp-ore-counter]] — WBP_OreCounter, ore icon and number in the radar frame plate, a sub-widget of WBP_HUD.
 - [[wbp-loading]] — WBP_Loading, full-screen loading screen between levels, not a sub-widget of WBP_HUD.
