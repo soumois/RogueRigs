@@ -19,7 +19,7 @@ status: approved
 Throughout the level, robot waves spawn just outside the miner's field of view, and killed robots drop XP cubes ([[xp-level-up]]).
 
 ## M1 (provisional, owner 2026-10-03)
-- One fixed sequence instead of a drawn pool: the alert bar fills in about 4 min of time alone, each kill adds 0.5 s, except until the first horde front is over: before that kills add nothing to the bar, so the horde icons stay still (owner 2026-11-05, provisional, [[task-454-swarm-icons-fixed]]; threat still counts kills); one console at 40 %; extraction when full. Swarms come from the wave director ([[enemies-index]]): hordes are announced by a banner and shown as icons on the alert bar, like DRGS.
+- One fixed sequence instead of a drawn pool: the alert bar fills in about 4 min of time alone, each kill adds 0.5 s, except until the first horde front is over: before that kills add nothing to the bar, so the horde icons stay still (owner 2026-11-05, provisional, [[task-454-swarm-icons-fixed]]; threat still counts kills); one console at 40 %; extraction when full. Swarms come from the wave director ([[enemies-index]]): hordes are announced by a banner and shown as icons on the alert bar, like DRGS; a horde "!" never hides an event letter (C, B, S): the letter stays whole and in front, the "!" rising above the bar top (owner 2026-11-05, provisional, [[task-460-alert-letters-readable]]).
 
 ## Open values
 - Draw weights and conditions of tier events. Events are drawn from a pool with conditions; swarms are the most frequent; at least one console per level.
