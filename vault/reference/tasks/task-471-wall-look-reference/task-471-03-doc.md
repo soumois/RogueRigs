@@ -3,7 +3,7 @@ id: task-471-03-doc
 description: "Doc: Docs describe the new wall materials."
 parent: task-471-wall-look-reference
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls look like the owner in-game reference: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:52:07Z
 - waiting_for: none
 - result: open
 
