@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read visual-style (Walls line: "dark stratified sides"), color-code (Breakable rock row: "dark stratified sides"), rock-look-reference (one continuous slab per mass, dark crystalline columns on the sides: image 3 agrees), task-471-wall-look-reference (strata and rim added there; its result already noted the target sides show vertical streaks, not strata). Conflict: GDD "dark stratified sides" vs removing the lines; edits replace it on confirmation. Image 2 reading (owner view, likely the editor viewport: the thin orange outline at the wall foot is the selection outline, not part of the look). "Maille unique sans découpe" read as a look goal, rules per block unchanged (Q1). Emissive and top surface readings asked (Q2, Q3). No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-478-02-capture
+- next_step: task-478-03-doc
 - started: 2026-11-06T20:15:51Z
 - waiting_for: none
-- executor_tokens: input 94, cache write 167093, cache read 4603694, output 53238
-- executor_usage: runs 1, turns 47, context start 18k peak 179k, resumes 0, 16 min, units 0.94 M
+- executor_tokens: input 116, cache write 183738, cache read 6458150, output 57509
+- executor_usage: runs 1, turns 57, context start 18k peak 196k, resumes 1, 18 min, units 1.16 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
 - result: open

@@ -3,7 +3,7 @@ id: task-478-03-doc
 description: "Doc: Docs describe the changed wall material."
 parent: task-478-wall-lines-emissive-edge
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls without black lines, emissive on the top edge: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T20:17:23Z
 - waiting_for: none
 - result: open
 
