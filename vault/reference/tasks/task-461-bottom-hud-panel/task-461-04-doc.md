@@ -3,7 +3,7 @@ id: task-461-04-doc
 description: "Doc: Docs describe the bottom panel and the XP frame."
 parent: task-461-bottom-hud-panel
 kind: task
-status: in-progress
+status: done
 ---
 # Bottom HUD built as one riveted panel and a framed XP bar: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Nodes state the current look and assets; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-461
+- usage: included in the executor run of task-461
+- runs: 1
 - milestone: M2
 - started: 2026-11-06T04:37:39Z
 - waiting_for: none
-- result: open
+- result: wbp-health-status, wbp-weapons, wbp-xp-status, wbp-hud, blueprints-ui-index and art-prompts-hud-unified-mockup state the current look and assets (bottom panel, slot wells, XP frame, Lv cap, positions at 1080p); lint clean. Commit 7705ad12.
 
 ## Relations
 - [[task-461-bottom-hud-panel]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-461-bottom-hud-panel
 description: "Global task: health bar and weapon slots in one riveted panel, XP bar in a riveted frame with a Lv cap, as in the mockup."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Bottom HUD built as one riveted panel and a framed XP bar
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read xp-level-up, art-prompts-hud-unified-mockup (retained A direction; 452 health plate and 458 slots reused T_Shop_ButtonReroll and T_LevelEnd_Frame, the result the owner now says is not integrated), task-458. No conflict; xp-level-up edited at confirmation. Image 2 matches the retained mockup. Source of the frame sprites: Q37.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-461-04-doc
+- next_step: none
 - started: 2026-11-06T04:22:48Z
 - waiting_for: none
-- result: open
+- result: Done. wbp-health-status, wbp-weapons, wbp-xp-status, wbp-hud, blueprints-ui-index and art-prompts-hud-unified-mockup state the current look and assets (bottom panel, slot wells, XP frame, Lv cap, positions at 1080p); lint clean. Commit 7705ad12.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -29,7 +29,7 @@ Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisi
 4. task-461-04-doc (vault/reference/tasks/task-461-bottom-hud-panel/task-461-04-doc.md) — doc: Docs describe the bottom panel and the XP frame.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-461-01-art]] — step 1, art.
 - [[task-461-02-health-slots-panel]] — step 2, bp.
 - [[task-461-03-xp-frame]] — step 3, bp.
