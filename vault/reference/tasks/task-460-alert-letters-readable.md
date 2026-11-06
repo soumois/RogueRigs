@@ -16,7 +16,7 @@ status: done
 - next_step: none
 - started: 2026-11-06T04:18:54Z
 - waiting_for: none
-- result: Done. Commit bbfd441c. wbp-alert-objectives updated: components (letters z 4 in front of marks z 3), layout table (marks Top 48, letters z 4), layering paragraph citing Q36, verified entry for task-460-01. Blueprints-ui-index gloss unchanged (still accurate). Lint clean.
+- result: Done. WBP_AlertObjectives (4eeca4f4): C, B, S letters drawn in front of the horde marks (slot z 4 over 3); marks centred on the bar top (Top 48, was 66) so they rise above it as in the owner target; letter and mark X positions, sprites, colours, fill and horde rule unchanged; compiled, saved, PIE without runtime error. Doc wbp-alert-objectives (bbfd441c). A1-A3 look unverified until the owner sees it in game (A6: no capture).
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
