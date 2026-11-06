@@ -470,3 +470,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-459-level-up-pause-delay]] — The upgrade cards open 1 s later after a level-up, so the level-up effect can be seen. Status done.
 - [[task-460-alert-letters-readable]] — On the alert bar the C, B and S letters stay readable when a red horde "!" is at or moves over their position. Status done.
 - [[task-461-bottom-hud-panel]] — Health bar and the four weapon slots in one riveted panel, XP bar in its own riveted frame with a framed Lv cap, as in the retained mockup. Status done.
+- [[task-462-extractor-blast-cartoon]] — The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions. Status done.

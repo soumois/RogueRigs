@@ -1,9 +1,9 @@
 ---
 id: task-462-extractor-blast-cartoon
 description: "Global task: The extractor ground blast, today blurry white blobs, is redone from found references in the cartoon style of the explosions."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Extractor ground blast redone in cartoon style from references
 
@@ -13,10 +13,10 @@ status: in-progress
 - gdd_check: Read extraction (ground blast of task-443: outward dust, height fade, pale grey-beige, low opacity), art-style-guide (A10 cartoon explosions), task-443. Possible conflict: task-442 set "no thin lines" for the rotor swirls; cartoon wind usually uses strokes; default of Q38 keeps that rule on the swirls and allows strokes on the ground blast only. extraction and art-style-guide A10 edited at confirmation. Owner image kept: Art/Source/extractor-fx/reference/owner-ground-blast-2026-11-05.webp.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-462-03-doc
+- next_step: none
 - started: 2026-11-06T04:40:28Z
 - waiting_for: none
-- result: open
+- result: Done. Done (d5b11415): bp-extractor-rotor-wash states the current GroundBlast (M_ExtractorBlastWind puffs and strokes, MaterialRandom split, sizes, alpha 0.6 x Intensity x S, rate 32/s, PIE check values, unverified look) and links extractor-blast-references and task-462; bp-extraction-shuttle assets and the fx index gloss updated; lint clean.
 
 ## Questions
 Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -28,7 +28,7 @@ Decided 2026-11-06 (owner "ok"): every default below is accepted; values provisi
 3. task-462-03-doc (vault/reference/tasks/task-462-extractor-blast-cartoon/task-462-03-doc.md) — doc: Docs describe the new ground blast and its references.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-462-01-references]] — step 1, art.
 - [[task-462-02-ground-blast]] — step 2, bp.
 - [[task-462-03-doc]] — step 3, doc.
