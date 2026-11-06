@@ -21,7 +21,7 @@ status: done
 - executor_usage: runs 1, turns 58, context start 18k peak 129k, resumes 3, 14 min, units 0.76 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: Done. bp-miner updated (84ad9e80): new FloorWallLight values 6.5 / 700 / 3 / 255,175,60, setter script Tools/unreal/miner_floor_light.py, revert values 4 / 800 / 4 / 255,194,158; Relations on both ends; lint clean. visual-style (gdd) not edited: it still says warm cream 255/194/158 and pool about 400 uu; changing a gdd node is outside the Executor's limits, left to the owner or Planner.
+- result: Done at the Q2 cap (3 rounds). FloorWallLight in BP_Miner: intensity 6.5, radius 700, falloff exponent 4->3, colour 255/175/60 (was 4 / 800 / 4 / 255,194,158); location (0,0,0) kept (A7). A2 pass with gap (outer ring redder than image 2 pink-violet), A3 pass, A4 gap: floor R p95 about 219 near the miner vs the 205 rule (image 2 itself about 252), owner call; A5 robots and pickups unlit seen, wall-shadow on floor ambiguous (castShadows true read back); A8 no new error lines. Sheets Saved/Captures/task473-capture/final_sheet.png, final_sheet_crop.png. Open: gdd visual-style still holds the old cream colour and 400 uu pool. Commits d2415904, 84ad9e80.
 
 ## Questions
 Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"): every default below is accepted; values provisional, owner 2026-11-06.
