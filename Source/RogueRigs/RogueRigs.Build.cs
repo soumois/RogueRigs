@@ -28,7 +28,9 @@ public class RogueRigs : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] {
 			"Json",
 			"Niagara",
-			"JsonUtilities"
+			"JsonUtilities",
+			// URRBlobShadowSettings (task-472-01): global actor shadow multipliers in Project Settings.
+			"DeveloperSettings"
 		});
 
 		PublicIncludePaths.AddRange(new string[] {

@@ -80,8 +80,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnWeaponSlotChangedSignature, in
  * OnDeath (single death, State.Dead added by the set) it stops moving, ignores move and aim input, stops its weapons
  * firing and broadcasts OnDeath. At BeginPlay it registers with the run game mode (ARRGameMode::RegisterMiner), which
  * turns OnDeath into the game over.
- * Blob shadow (task-264-02): BlobShadow, a flat dark disc attached under the capsule (diameter = capsule radius x
- * BlobShadowDiameterScale); the i-frames blink (mesh and its children) leaves it alone.
+ * Actor shadow (task-264-02, task-472-01): BlobShadow, a light-independent soft disc attached under the capsule (footprint =
+ * capsule diameter, sized and faded by the component); the i-frames blink (mesh and its children) leaves it alone.
  * Light mask (task-272-07): LightMask (URRPlayerLightMaskComponent) writes the miner position and the mask tunables into
  * MPC_PlayerLight each tick (radial post-process brightening, neutral by default).
  * Aim indicator (task-415-02): AimIndicator (URRAimIndicatorComponent), a white-gold laser from the shown rifle Muzzle along
@@ -417,7 +417,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRLevelUpComponent> LevelUp;
 
-	/** Flat dark disc on the floor under the miner (task-264-02): attached to the capsule, absolute zero rotation, no collision or shadow. */
+	/** Light-independent shadow under the miner (task-264-02, task-472-01): attached to the capsule; opacity and size on this component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRBlobShadowComponent> BlobShadow;
 
@@ -428,10 +428,6 @@ protected:
 	/** Aim laser from the shown rifle Muzzle along the aim (task-415-02): placed each tick, hidden at death. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<URRAimIndicatorComponent> AimIndicator;
-
-	/** Blob shadow diameter = capsule radius x this (2.2, like the robots). 0 = no disc. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Blob Shadow", meta = (ClampMin = "0"))
-	float BlobShadowDiameterScale = 2.2f;
 
 	/** Row of PlayerBaseStats.csv applied as base stats at BeginPlay. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Miner|Stats")

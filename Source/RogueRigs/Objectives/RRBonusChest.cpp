@@ -17,6 +17,8 @@
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Weapons/RRWeapon.h"
+#include "World/RRBlobShadowComponent.h"
+#include "World/RRShadows.h"
 #include "RogueRigs.h"
 
 namespace RRChestLockLight
@@ -48,11 +50,22 @@ ARRBonusChest::ARRBonusChest()
 	InnerLight->SetRelativeLocation(FVector(0.f, 0.f, 30.f)); // inside the cavity (floor 19.25, rim 41.25 uu); the Blueprint may move it
 	InnerLight->SetVisibleFlag(false);
 	InnerLight->SetCastShadows(false);
+
+	// task-472-01: light-independent shadow, fitted to the chest meshes at BeginPlay (consoles have none, Q1).
+	BlobShadow = CreateDefaultSubobject<URRBlobShadowComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(RootComponent);
+}
+
+void ARRBonusChest::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	RRShadows::DisableCastShadows(this);
 }
 
 void ARRBonusChest::BeginPlay()
 {
 	Super::BeginPlay();
+	BlobShadow->FitToOwnerMeshes();
 	if (InnerLight)
 	{
 		InnerLightOnIntensity = InnerLight->Intensity;

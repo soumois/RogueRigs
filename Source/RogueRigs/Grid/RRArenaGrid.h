@@ -9,6 +9,7 @@
 
 class ARRPickup;
 class URRBarrelSource;
+class URRBlobShadowComponent;
 class URRGroundTelegraphComponent;
 class UHierarchicalInstancedStaticMeshComponent;
 class UInstancedStaticMeshComponent;
@@ -600,6 +601,12 @@ public:
 
 	/** Telegraph components created so far for barrel fuses (in use and free); for tests and stress checks. */
 	int32 GetBarrelTelegraphPoolSize() const { return BarrelTelegraphs.Num(); }
+
+	/** Light-independent shadow under the barrel of Cell (task-472-01); nullptr when the cell holds no barrel (or once it is destroyed). */
+	URRBlobShadowComponent* GetBarrelShadow(FIntPoint Cell) const;
+
+	/** Barrel shadows alive (one per barrel cell still standing). */
+	int32 GetBarrelShadowCount() const { return BarrelShadows.Num(); }
 
 	/**
 	 * Starts or stops the jitter of the block in Cell (dig feedback). Only the rendering instance moves (barrels, ore crystals);
@@ -1419,6 +1426,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Visuals")
 	TObjectPtr<UMaterialInterface> BarrelMaterial;
 
+	/** Opacity of the barrel shadows before the global multiplier (task-472-01, 0.6, owner 2026-11-06 Q3, provisional). Read at BuildInstances. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Barrel Shadow", meta = (ClampMin = "0", ClampMax = "1"))
+	float BarrelShadowOpacity = 0.6f;
+
+	/** Barrel shadow size as a multiple of the barrel width before the global multiplier (task-472-01, 1.2, provisional). Read at BuildInstances. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid|Barrel Shadow", meta = (ClampMin = "0", UIMax = "3"))
+	float BarrelShadowScale = 1.2f;
+
 	// --- Components ---
 
 	/** Root: the grid origin (cell (0, 0) corner, floor top). */
@@ -1579,6 +1594,16 @@ protected:
 	/** Hidden telegraphs of BarrelTelegraphs ready for the next fuse. */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<URRGroundTelegraphComponent>> FreeBarrelTelegraphs;
+
+	/** One light-independent shadow per standing barrel cell (task-472-01): built with the instances, destroyed with the barrel. */
+	UPROPERTY(Transient)
+	TMap<FIntPoint, TObjectPtr<URRBlobShadowComponent>> BarrelShadows;
+
+	/** Creates the shadow of every barrel cell (end of BuildInstances): on the floor top at the cell centre, barrel width footprint. */
+	void BuildBarrelShadows();
+
+	/** Destroys the shadow of the barrel in Cell, if any. */
+	void RemoveBarrelShadow(FIntPoint Cell);
 
 	/** Block cells marked as objective rocks (SetCellMarked). Reset on rebuild; a destroyed block leaves the set. */
 	TSet<FIntPoint> MarkedCells;

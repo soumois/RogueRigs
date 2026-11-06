@@ -134,7 +134,8 @@ void ARREnemy::PostInitializeComponents()
 	BodyRadius = Capsule->GetScaledCapsuleRadius();
 	HitCapsule->SetCapsuleSize(Capsule->GetUnscaledCapsuleRadius(), Capsule->GetUnscaledCapsuleHalfHeight());
 	// Unscaled sizes: the disc is a child of the capsule, so the actor scale applies to both alike.
-	BlobShadow->SetFootprintDiameter(Capsule->GetUnscaledCapsuleRadius() * BlobShadowDiameterScale);
+	// task-472-01: footprint = own capsule diameter; the component applies its SizeScale and the global multiplier.
+	BlobShadow->SetFootprintDiameter(Capsule->GetUnscaledCapsuleRadius() * 2.f);
 	BlobShadow->PlaceUnderCapsule(Capsule->GetUnscaledCapsuleHalfHeight());
 	if (TerrainCapsuleRadius > 0.f && TerrainCapsuleRadius < Capsule->GetUnscaledCapsuleRadius())
 	{

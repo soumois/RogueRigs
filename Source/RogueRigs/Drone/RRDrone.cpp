@@ -123,7 +123,7 @@ void ARRDrone::PostInitializeComponents()
 	RRShadows::DisableCastShadows(this);
 	// task-312-01: ground telegraph decals (hack zone) stay on the ground and never tint the drone.
 	URRGroundTelegraphComponent::DisableDecalsOn(this);
-	BlobShadow->SetFootprintDiameter(BlobShadowDiameter);
+	BlobShadow->SetFootprintDiameter(BlobShadowFootprint);
 }
 
 void ARRDrone::OnConstruction(const FTransform& Transform)
@@ -611,17 +611,8 @@ void ARRDrone::UpdateBlobShadow()
 	}
 	const FVector Location = GetActorLocation();
 	const double FloorZ = OwnerMiner->GetActorLocation().Z - OwnerMiner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	BlobShadow->PlaceOnFloor(Location, FloorZ, GetBlobShadowHeightScale(static_cast<float>(Location.Z - FloorZ)));
-}
-
-float ARRDrone::GetBlobShadowHeightScale(float Height) const
-{
-	if (BlobShadowHighHeight <= BlobShadowFullSizeHeight)
-	{
-		return Height > BlobShadowFullSizeHeight ? BlobShadowHighScale : 1.f;
-	}
-	const float Alpha = FMath::Clamp((Height - BlobShadowFullSizeHeight) / (BlobShadowHighHeight - BlobShadowFullSizeHeight), 0.f, 1.f);
-	return FMath::Lerp(1.f, BlobShadowHighScale, Alpha);
+	// Same size at every height (owner 2026-11-06 Q3, task-472-01).
+	BlobShadow->PlaceOnFloor(Location, FloorZ);
 }
 
 void ARRDrone::UpdateThrusters(float DeltaSeconds)

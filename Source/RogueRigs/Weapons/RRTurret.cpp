@@ -13,6 +13,7 @@
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeaponAttributeSet.h"
+#include "World/RRBlobShadowComponent.h"
 #include "World/RRWorld.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRTurret)
@@ -30,6 +31,16 @@ ARRTurret::ARRTurret(const FObjectInitializer& ObjectInitializer)
 	HeadPivot = CreateDefaultSubobject<USceneComponent>(TEXT("HeadPivot"));
 	HeadPivot->SetupAttachment(Root);
 	Muzzle->SetupAttachment(HeadPivot);
+
+	// task-472-01: light-independent shadow, fitted to the Blueprint meshes at BeginPlay.
+	BlobShadow = CreateDefaultSubobject<URRBlobShadowComponent>(TEXT("BlobShadow"));
+	BlobShadow->SetupAttachment(Root);
+}
+
+void ARRTurret::BeginPlay()
+{
+	Super::BeginPlay();
+	BlobShadow->FitToOwnerMeshes();
 }
 
 bool ARRTurret::InitFromLauncher(const ARRTurretLauncher& Launcher)

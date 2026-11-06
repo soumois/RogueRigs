@@ -55,8 +55,8 @@ struct FOnAttributeChangeData;
  * life) restored, separation registration. OnPoolReleased leaves the separation and cancels latent actions. A released robot
  * keeps State.Dead while idle, so every IsDead filter also skips it. Each hit (the killing one too) is sent to
  * URRDamageNumberSubsystem at DamageNumberHeight above the capsule top (one pooled number per hit, starting in a DamageNumberSpawnRadius disc).
- * Blob shadow (task-264-02): BlobShadow, a flat dark disc attached under the capsule (diameter = own capsule radius x
- * BlobShadowDiameterScale), hidden when the death starts, shown again with the visual parts on pool reuse; never blinks with
+ * Actor shadow (task-264-02, task-472-01): BlobShadow, a light-independent soft disc attached under the capsule (footprint = own
+ * capsule diameter, sized and faded by the component, per robot type in its Blueprint), hidden when the death starts, shown again with the visual parts on pool reuse; never blinks with
  * the wind-up flash.
  * Baked animation clips (task-284-05, moved from ARRChaser): the static mesh component named AnimatedMeshName plays clips baked in
  * a texture (MF_RobotAnimWPO). The robot writes Custom Primitive Data 0 (clip id) and 1 (clip start, world seconds) on events
@@ -474,13 +474,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Collision")
 	TObjectPtr<UCapsuleComponent> HitCapsule;
 
-	/** Flat dark disc on the floor under the robot (task-264-02): attached to the root, absolute zero rotation, no collision or shadow. */
+	/** Light-independent shadow under the robot (task-264-02, task-472-01): attached to the root; opacity and size per robot type on this component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Blob Shadow")
 	TObjectPtr<URRBlobShadowComponent> BlobShadow;
-
-	/** Blob shadow diameter = own capsule radius (before the terrain shrink) x this (2.2: a bit wider than the body). 0 = no disc. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Blob Shadow", meta = (ClampMin = "0"))
-	float BlobShadowDiameterScale = 2.2f;
 
 	/** Own capsule radius before the shrink (uu). */
 	UPROPERTY(VisibleInstanceOnly, Transient, Category = "Enemy|Collision")

@@ -13,6 +13,7 @@ class UFXSystemComponent;
 class UMaterialInstanceDynamic;
 class UPointLightComponent;
 class UStaticMeshComponent;
+class URRBlobShadowComponent;
 
 /**
  * Bonus chest (objective-bonus-chest). Dropped by URRRunFlowSubsystem once per level when the alert reaches
@@ -158,8 +159,11 @@ protected:
 	/** Completes the hack (ARRConsole), then starts the opening sequence (the reward comes at the lid opening). */
 	virtual void CompleteHack() override;
 
-	/** Reads the InnerLight Blueprint intensity (the on value) and hides the light. */
+	/** Reads the InnerLight Blueprint intensity (the on value) and hides the light; fits BlobShadow to the chest meshes (task-472-01). */
 	virtual void BeginPlay() override;
+
+	/** No mesh of the chest or its Blueprint casts a light shadow (task-472-01, owner 2026-11-06 Q2). */
+	virtual void PostInitializeComponents() override;
 
 	/** Finds the Lid and Latch components by name and keeps their closed relative rotations (once, at the completion). */
 	void SetupOpeningComponents();
@@ -273,6 +277,10 @@ protected:
 	/** Point light inside the chest (attached to Mesh), hidden until the lid opening; colour, intensity, radius and place set in Blueprint (task-309-05). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UPointLightComponent> InnerLight;
+
+	/** Light-independent shadow under the chest (task-472-01): fitted at BeginPlay to the closed chest; opacity and size on this component. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRBlobShadowComponent> BlobShadow;
 
 	/** Name of the Blueprint StaticMeshComponent of the lid (BP_BonusChest: Lid, origin on the hinge axis). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Bonus Chest|Opening")

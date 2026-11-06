@@ -9,6 +9,7 @@
 class ARRArenaGrid;
 class ARREnemy;
 class ARRTurretLauncher;
+class URRBlobShadowComponent;
 
 /**
  * Turret placed by ARRTurretLauncher (turret gdd, sys-weapons). An ARRWeapon with its own ASC and URRWeaponAttributeSet, not held
@@ -26,6 +27,7 @@ class ARRTurretLauncher;
  * robots, projectiles and the miner pass through it. Destroyed after the launcher's TurretLifetime (actor life span).
  * Blueprintable for the meshes (base under Root, head under HeadPivot), the Muzzle position and the muzzle flash (OnTurretFired).
  * No native muzzle flash (task-414 Q3): the constructor clears MuzzleFlashSystem, and SpawnMuzzleFlash needs a hand weapon anyway.
+ * Actor shadow (task-472-01): BlobShadow under Root, fitted at BeginPlay to the turret meshes (URRBlobShadowComponent::FitToOwnerMeshes).
  */
 UCLASS(Blueprintable)
 class ROGUERIGS_API ARRTurret : public ARRWeapon
@@ -88,6 +90,9 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
+	/** Fits BlobShadow to the turret meshes (task-472-01). */
+	virtual void BeginPlay() override;
+
 	/** Turns HeadPivot toward the locked robot, then one bullet from the canon tip (ARRWeapon::FireOnce), then OnTurretFired; skipped without a valid target. */
 	virtual void FireOnce() override;
 
@@ -110,6 +115,10 @@ protected:
 	 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USceneComponent> HeadPivot;
+
+	/** Light-independent shadow under the turret (task-472-01): fitted at BeginPlay; opacity and size for turrets on this component. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URRBlobShadowComponent> BlobShadow;
 
 	/** Seconds between two searches for a target while none is locked (a lost target triggers an immediate search). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Turret", meta = (ClampMin = 0, Units = "s"))

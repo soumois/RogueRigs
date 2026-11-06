@@ -134,7 +134,8 @@ void ARRMiner::PostInitializeComponents()
 
 	// Unscaled sizes: the disc is a child of the capsule, so the actor scale applies to both alike.
 	const UCapsuleComponent* Capsule = GetCapsuleComponent();
-	BlobShadow->SetFootprintDiameter(Capsule->GetUnscaledCapsuleRadius() * BlobShadowDiameterScale);
+	// task-472-01: footprint = capsule diameter; the component scales it (SizeScale x global multiplier).
+	BlobShadow->SetFootprintDiameter(Capsule->GetUnscaledCapsuleRadius() * 2.f);
 	BlobShadow->PlaceUnderCapsule(Capsule->GetUnscaledCapsuleHalfHeight());
 }
 

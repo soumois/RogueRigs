@@ -26,6 +26,7 @@
 #include "Pickups/RRPulseDesync.h"
 #include "Run/RRRunSubsystem.h"
 #include "Telegraph/RRGroundTelegraphComponent.h"
+#include "World/RRBlobShadowComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRArenaGrid)
@@ -547,10 +548,18 @@ UInstancedStaticMeshComponent* ARRArenaGrid::CreateChunkComponent(TSubclassOf<UI
 		Component->bCastDynamicShadow = false;
 	}
 	else if (Template == RockInstances || Template == OreInstances || Template == HealOreInstances
-		|| Template == SpecialOreInstances || Template == BarrelInstances)
+		|| Template == SpecialOreInstances)
 	{
 		Component->SetCastShadow(bBlocksCastShadows);
 		Component->bCastDynamicShadow = bBlocksCastShadows;
+	}
+	// Barrels cast no light shadow (task-472-01, owner 2026-11-06 Q2): a light-independent disc lies under each (BarrelShadows).
+	else if (Template == BarrelInstances)
+	{
+		Component->SetCastShadow(false);
+		Component->bCastDynamicShadow = false;
+		Component->bCastStaticShadow = false;
+		Component->bCastContactShadow = false;
 	}
 	// Ore and heal ore crystals (per-cell cluster chunks and deposit formation ISMs, both built from these templates) cast no
 	// shadow at all unless bDepositCrystalsCastShadow (task-237-01). Rock pieces, barrels and collision ISMs are untouched.
@@ -666,6 +675,14 @@ void ARRArenaGrid::ClearAllInstances()
 		}
 	}
 	DepositVisuals.Reset();
+	for (const TPair<FIntPoint, TObjectPtr<URRBlobShadowComponent>>& Pair : BarrelShadows)
+	{
+		if (IsValid(Pair.Value))
+		{
+			Pair.Value->DestroyComponent();
+		}
+	}
+	BarrelShadows.Reset();
 	DepositCrystalVisual.Reset();
 	DepositCrystalInstance.Reset();
 	CornerPieceVisual.Reset();
@@ -967,6 +984,62 @@ void ARRArenaGrid::BuildInstances()
 	WriteDepositColors();
 	WriteCellCrystalPulseData();
 	BuildDepositCrystals();
+	BuildBarrelShadows();
+}
+
+void ARRArenaGrid::BuildBarrelShadows()
+{
+	for (int32 Y = 0; Y < GridHeight; ++Y)
+	{
+		for (int32 X = 0; X < GridWidth; ++X)
+		{
+			const FIntPoint Cell(X, Y);
+			if (Cells[GetCellIndex(Cell)] != ERRCellType::Barrel)
+			{
+				continue;
+			}
+			// Footprint: the barrel width as drawn (render transform scale x mesh width), at most one cell.
+			float Width = CellSize;
+			if (BarrelMesh)
+			{
+				const FVector MeshSize = BarrelMesh->GetBoundingBox().GetSize();
+				const float MeshWidth = static_cast<float>(FMath::Max(MeshSize.X, MeshSize.Y));
+				const float RenderScale = static_cast<float>(GetBlockRenderTransform(Cell).GetScale3D().X);
+				if (MeshWidth > UE_KINDA_SMALL_NUMBER && RenderScale > UE_KINDA_SMALL_NUMBER)
+				{
+					Width = FMath::Min(CellSize, MeshWidth * RenderScale);
+				}
+			}
+			URRBlobShadowComponent* Shadow = NewObject<URRBlobShadowComponent>(this, MakeUniqueObjectName(this, URRBlobShadowComponent::StaticClass(),
+				*FString::Printf(TEXT("BarrelShadow_%d_%d"), X, Y)), RF_Transient);
+			Shadow->SetupAttachment(GridRoot);
+			// Floor top is z = 0 in actor space (barrels stand on their floor slab).
+			Shadow->SetRelativeLocation(FVector((X + 0.5f) * CellSize, (Y + 0.5f) * CellSize, Shadow->GetFloorOffset()));
+			Shadow->SetShadowOpacity(BarrelShadowOpacity);
+			Shadow->SetShadowScale(BarrelShadowScale);
+			Shadow->SetFootprintDiameter(Width);
+			if (GetWorld())
+			{
+				Shadow->RegisterComponent();
+			}
+			BarrelShadows.Add(Cell, Shadow);
+		}
+	}
+}
+
+void ARRArenaGrid::RemoveBarrelShadow(FIntPoint Cell)
+{
+	TObjectPtr<URRBlobShadowComponent> Shadow;
+	if (BarrelShadows.RemoveAndCopyValue(Cell, Shadow) && IsValid(Shadow))
+	{
+		Shadow->DestroyComponent();
+	}
+}
+
+URRBlobShadowComponent* ARRArenaGrid::GetBarrelShadow(FIntPoint Cell) const
+{
+	const TObjectPtr<URRBlobShadowComponent>* Shadow = BarrelShadows.Find(Cell);
+	return Shadow ? Shadow->Get() : nullptr;
 }
 
 void ARRArenaGrid::BuildCornerPieces()
@@ -2262,6 +2335,11 @@ bool ARRArenaGrid::DestroySingleCell(FIntPoint Cell, ERRTerrainDamageSource Sour
 		CellDepositId[Index] = INDEX_NONE;
 	}
 
+	// The barrel shadow leaves with its barrel (task-472-01).
+	if (Type == ERRCellType::Barrel)
+	{
+		RemoveBarrelShadow(Cell);
+	}
 	if (CellInstanceIndex.IsValidIndex(Index) && CellInstanceIndex[Index] != INDEX_NONE)
 	{
 		RemoveCellInstance(Type, Cell, CellInstanceIndex[Index]);
