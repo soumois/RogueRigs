@@ -3,7 +3,7 @@ id: task-464-02-turret-laser-green
 description: "Bp: Turret shots and their impact sparks in the same green look as the rifle laser"
 parent: task-464-player-shot-colour
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot colour: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:06:28Z
 - waiting_for: none
 - result: open
 
