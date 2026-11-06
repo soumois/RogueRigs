@@ -1,9 +1,9 @@
 ---
 id: task-467-bottom-hud-match-target
 description: "Global task: health strip, weapon slots and XP bar reworked, captured in game and compared with the owner target image until they match."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image
 
@@ -14,14 +14,14 @@ status: in-progress
 - launch: launched by the owner ("Lance les task to do dans l'ordre"); the earlier "prepared only" no longer holds.
 - confirmed_by_owner: yes (2026-11-06, "Q4 Vérification finale : Tu fais l'écran en 1920 × 1080. Le reste par défaut. ne lance pas la tâche, prépare là")
 - milestone: M2
-- next_step: task-467-07-doc
+- next_step: none
 - started: 2026-11-06T09:54:24Z
 - waiting_for: none
-- executor_tokens: input 208, cache write 235361, cache read 15980125, output 73471
-- executor_usage: runs 1, turns 103, context start 18k peak 247k, resumes 0, 27 min, units 2.26 M
+- executor_tokens: input 218, cache write 244204, cache read 17233524, output 80225
+- executor_usage: runs 1, turns 108, context start 18k peak 256k, resumes 0, 28 min, units 2.43 M
 - planning_tokens: input 42, cache write 70246, cache read 976529, output 19786
 - planning_usage: acbae4b7 "Plan HUD bottom fix loop" 1/1 (tasks 467), units 0.28 M
-- result: open
+- result: Done. wbp-health-status (HealthPanel 730 x 169 at 0.5,1 / -62, BlockCanvas with four canvas slots, sprites, why canvas, Box-border pixel-size finding), wbp-weapons (flat cells T_HUD_SlotCell, 162 x 96, centred content), wbp-xp-status (table: XPBarArea, ticks, XPFrame, LevelCap, LevelText offsets; rail and plate sprites), wbp-hud (Weapons -76, task-467 layout check seen at 1920 x 1080) updated; art-prompts-hud-unified-mockup lists which 461 sprites are replaced. Lint clean. Commit 7771aaff.
 
 ## Questions
 Decided 2026-11-06 (owner "Q4 Vérification finale : Tu fais l'écran en 1920 × 1080. Le reste par défaut. ne lance pas la tâche, prépare là"): Q1, Q2, Q3 defaults accepted; Q4 decided by the owner: final capture at 1920 x 1080 only (the other choice), not the four resolutions. Task prepared, not launched: the Executor starts only when the owner says so. Values provisional, owner 2026-11-06.
@@ -40,7 +40,7 @@ Decided 2026-11-06 (owner "Q4 Vérification finale : Tu fais l'écran en 1920 ×
 7. task-467-07-doc (vault/reference/tasks/task-467-bottom-hud-match-target/task-467-07-doc.md) — doc: Docs describe the reworked bottom HUD and its sprites.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-467-01-art]] — step 1, art.
 - [[task-467-02-health-strip]] — step 2, bp.
 - [[task-467-03-slot-cells]] — step 3, bp.
