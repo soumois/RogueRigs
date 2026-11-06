@@ -1,9 +1,9 @@
 ---
 id: task-473-miner-light-calibration
 description: "Global task: The miner light colour, intensity and pool size are tuned in game until the light around the miner matches the warm orange-pink pool of owner image 2."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Miner light calibrated on the owner in-game reference
 
@@ -14,14 +14,14 @@ status: in-progress
 - gdd_check: Read visual-style (miner light: floor and terrain only, rock shadows, owner height in BP_Miner, warm cream 255/194/158, pool about 400 uu, never burnt below about 205/255; screen darkener 0.2 / 1 with clear zone), handover-2026-10-21-lighting-floor (light history). Conflict: the warm cream colour and the 400 uu pool are replaced by values calibrated on image 2; edit in the spec applies on confirmation. Rules kept by default (Q1). No code read. Runs last, after tasks 470, 471 and 472, because the pool is judged on the new floor and walls (Q2).
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-473-03-doc
+- next_step: none
 - started: 2026-11-06T18:22:25Z
 - waiting_for: none
-- executor_tokens: input 112, cache write 111370, cache read 4229511, output 23925
-- executor_usage: runs 1, turns 53, context start 18k peak 123k, resumes 3, 13 min, units 0.68 M
+- executor_tokens: input 122, cache write 116931, cache read 4860016, output 26186
+- executor_usage: runs 1, turns 58, context start 18k peak 129k, resumes 3, 14 min, units 0.76 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: open
+- result: Done. bp-miner updated (84ad9e80): new FloorWallLight values 6.5 / 700 / 3 / 255,175,60, setter script Tools/unreal/miner_floor_light.py, revert values 4 / 800 / 4 / 255,194,158; Relations on both ends; lint clean. visual-style (gdd) not edited: it still says warm cream 255/194/158 and pool about 400 uu; changing a gdd node is outside the Executor's limits, left to the owner or Planner.
 
 ## Questions
 Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -34,7 +34,7 @@ Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur (
 3. task-473-03-doc (vault/reference/tasks/task-473-miner-light-calibration/task-473-03-doc.md) — doc: Docs record the calibrated miner light values.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-473-01-light-match-loop]] — step 1, bp.
 - [[task-473-02-capture]] — step 2, capture.
 - [[task-473-03-doc]] — step 3, doc.
