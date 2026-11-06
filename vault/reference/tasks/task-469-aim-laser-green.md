@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read aim-indicator, color-code, task-464-player-shot-colour. Conflicts: aim-indicator and color-code say the aim laser is white-gold and never acid green; task-464 (todo) A6 checks the aim laser stays white-gold. The owner reference is a bright lime green close to the green of the player laser shots of task-464 and not far from the Shooter acid green; the owner accepted a similar green for shots (task-464 A8 checks the Shooter); Q4 default: the lime green of his capture, single colour core plus glow, A3 checks the Shooter. Edits at confirmation: aim-indicator Colour, color-code (aim laser leaves the white-gold row, own row), task-464 A6. Owner image kept in Art/Source/aim-indicator/owner-capture-green-unlimited-2026-11-06.webp (Q5). No open value. No code read.
 - confirmed_by_owner: yes (2026-11-06, "Pas de capture, ok pour le reste. ne lance rien, prépare juste la tâche")
 - milestone: M2
-- next_step: task-469-01-green
+- next_step: task-469-02-doc
 - started: 2026-11-06T10:29:46Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 40, cache write 44398, cache read 747082, output 8195
+- executor_usage: runs 1, turns 19, context start 18k peak 56k, resumes 0, 3 min, units 0.17 M
 - planning_tokens: input 25, cache write 33914, cache read 560922, output 11927
 - planning_usage: aa81a0a3 "Plan unlimited aim line" 1/2 (tasks 468, 469), units 0.16 M
 - result: open

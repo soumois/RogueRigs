@@ -3,7 +3,7 @@ id: task-469-02-doc
 description: "Doc: The aim indicator tech doc states the new colour values."
 parent: task-469-aim-laser-green
 kind: task
-status: todo
+status: in-progress
 ---
 # Aim laser in the lime green of the owner capture: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:32:41Z
 - waiting_for: none
 - result: open
 
