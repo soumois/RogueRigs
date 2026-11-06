@@ -3,7 +3,7 @@ id: task-476-03-doc
 description: "Doc: Docs record the new flash size."
 parent: task-476-muzzle-flash-smaller
 kind: task
-status: todo
+status: in-progress
 ---
 # Player muzzle flash a little smaller: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:33:45Z
 - waiting_for: none
 - result: open
 
