@@ -3,7 +3,7 @@ id: task-474-miner-scale-down
 description: "Global task: The miner is shown 10 % smaller; collision and gameplay values unchanged; everything attached to it follows the new size."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner 10 % smaller
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, his own instruction "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"; A2 hitbox and gameplay unchanged is provisional, to confirm)
 - milestone: M2
 - next_step: task-474-01-miner-scale
-- started: open
+- started: 2026-11-06T17:04:21Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none

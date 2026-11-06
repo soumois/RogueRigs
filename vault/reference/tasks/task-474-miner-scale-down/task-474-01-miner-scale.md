@@ -3,7 +3,7 @@ id: task-474-01-miner-scale
 description: "Bp: The miner mesh is shown at 90 % with every attachment and effect following, collision and gameplay unchanged."
 parent: task-474-miner-scale-down
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner 10 % smaller: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:04:21Z
 - waiting_for: none
 - result: open
 
