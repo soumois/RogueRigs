@@ -1,9 +1,9 @@
 ---
 id: task-482-verification-levels
 description: "Crew rule: the Planner sets a verification level per global task, with an indicative executor budget. Open to run or review the rule change."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Verification levels per global task
 
@@ -13,10 +13,14 @@ status: in-progress
 - gdd_check: No gdd node touched: this is crew process, outside the game milestones, so no gdd conflict and no milestone scope issue. Crew nodes read: agent-planner, agent-executor, orchestration-protocol, orchestrator-lessons, task-spec. Rule conflicts found: orchestration-protocol step 3 keeps four resolutions for a screen or widget unless the owner chooses fewer, and asks for a capture checklist per visual check: the levels must stay compatible (Q3). agent-executor must_not forbids changing a kind: rule node, and orchestration-protocol and execution-protocol are kind: rule: this task is authorised to change them (Q5). agent-executor token_ceiling is open: the owner decides it through the budgets (Q1). Exploratory round count not given by the proposal (Q4). Two targeted code reads, reason: whether an executor can see its consumption during a run decides how the budget rule is worded: task-cost.js writes executor_usage (turns, units) on the global at each closed subtask, so a task with one subtask has no measure before its end and relies on the Executor counting its turns. This task and task-483 are confirmed together; 482 runs first.
 - confirmed_by_owner: yes (2026-11-06, "Ok")
 - milestone: M2
-- next_step: task-482-01-level-rules-and-field
+- next_step: none
 - started: 2026-11-06T22:44:09Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 16, cache write 71464, cache read 352446, output 19391
+- executor_usage: runs 1, turns 8, context start 17k peak 83k, resumes 0, 4 min, units 0.22 M
+- planning_tokens: input 7, cache write 23040, cache read 106026, output 9799
+- planning_usage: a38e0f5c "Plan verification levels and cost alerts" 1/2 (tasks 482, 483), units 0.09 M
+- result: Done. Done. New rule node verification-levels (table of levels, light shortening with the 474 example, layout never light, exploratory 3 rounds, known limits), linked from agent-planner, agent-executor, agent-capture, orchestration-protocol, execution-protocol, orchestrator-lessons, task-spec; task-create.js takes level per global (spec v2 and old form), writes verification_level, refuses none or another value; template updated. Tested on a throwaway vault copy: light, standard, exploratory accepted; none, leger and old form without level refused with nothing written; task-confirm, task-start and cancel keep the level; lint OK. No game code, Blueprint or asset, no capture. An older node without the field counts as standard. Cost: executor run.
 
 ## Questions
 Decided 2026-11-06 (owner "Ok"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -30,5 +34,5 @@ Decided 2026-11-06 (owner "Ok"): every default below is accepted; values provisi
 1. task-482-01-level-rules-and-field (vault/reference/tasks/task-482-verification-levels/task-482-01-level-rules-and-field.md) — doc: Write the level rule in the crew nodes and add the level field to the task scripts.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-482-01-level-rules-and-field]] — step 1, doc.

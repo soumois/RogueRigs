@@ -490,3 +490,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-479-level-up-cards-delay]] — The upgrade card screen opens about 1.2 s after a level-up instead of 1.8 s; the rest of the sequence is unchanged. Status done.
 - [[task-480-rock-slab-chamfer-facets]] — Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept. Status done.
 - [[task-481-shipping-compile-fix]] — Removes the C2027 on ARRWeapon that stops RogueRigs Win64 Shipping from compiling. Open to run the fix behind the v0.1.3 build; gameplay unchanged. Status done.
+- [[task-482-verification-levels]] — Crew rule: the Planner sets a verification level per global task (light, standard, exploratory) with an indicative executor budget. Open to run or review the rule change. Status done.
