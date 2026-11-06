@@ -3,7 +3,7 @@ id: task-474-03-doc
 description: "Doc: Docs record the new miner scale."
 parent: task-474-miner-scale-down
 kind: task
-status: todo
+status: in-progress
 ---
 # Miner 10 % smaller: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:15:31Z
 - waiting_for: none
 - result: open
 
