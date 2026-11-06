@@ -1,9 +1,9 @@
 ---
 id: task-457-radar-frame-ore
 description: "Global task: the radar gets a frame that runs on into an attached panel holding the ore count."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Radar frame holding the ore count
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read umg-layout. No gdd node places the radar or the ore count; nothing conflicts.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-457-04-doc
+- next_step: none
 - started: 2026-11-06T00:33:47Z
 - waiting_for: none
-- result: open
+- result: Done. Commit 22cd9f29. Updated wbp-minimap-locator (layout table: anchors 0,0, alignments, offsets, z of RadarFrame, MinimapImage, markers, locator; T_HUD_RadarFrame asset; verified), wbp-ore-counter (purpose, layout of OreIcon and OreText in the plate, verified), wbp-hud (task-457 layout check), blueprints-ui-index glosses, art-prompts-hud-unified-mockup back relation. Lint clean (pre-existing warnings only).
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -39,7 +39,7 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 4. task-457-04-doc (vault/reference/tasks/task-457-radar-frame-ore/task-457-04-doc.md) — doc: Docs describe the framed radar and the ore count place.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-457-01-art]] — step 1, art.
 - [[task-457-02-radar-frame]] — step 2, bp.
 - [[task-457-03-ore-in-frame]] — step 3, bp.
