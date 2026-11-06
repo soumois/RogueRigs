@@ -3,7 +3,7 @@ id: task-465-04-doc
 description: "Doc: Update the bp-* and sys-* nodes of the impact effects and check color-code, burst-rifle, shotgun and turret match the result"
 parent: task-465-shot-impact-burst
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot impact burst: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T09:47:35Z
 - waiting_for: none
 - result: open
 

@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read color-code, readability-rules, shotgun, task-464-player-shot-colour (open, confirmed, todo) and its subtasks 01 and 02. Placement: the impact look is a separate owner point from shot and flash colour, so a new global task, not a replan of task-464; task-464 already recolours today's impact sparks green (A1, A2) and is left unchanged; task-465 runs after task-464 and replaces those sparks with the new burst, reusing its green (Q1). Colours: projectile = shotgun pellets (shotgun node: projectile pellets, white-gold); laser = burst rifle and turrets (task-464 decision: turrets are laser in look, projectile in the rules, rule versus rendering). Reference: white and yellow-orange spikes with an orange glow, so "blanc" for projectiles is read as white dominant with the warm accents, consistent with the white-gold bullet look (Q2). The reference burst is large; player shots hit very often, so size and life are bounded (Q3, readability rule: Shooter spotted in under a second). Black triangles are kept as in the reference (owner image) unless the owner says otherwise (Q2). No conflict with readability-rules (green is the task-464 player laser green, not the Shooter acid green). Edit on confirmation: one new color-code row for player shot impacts. Image stored as keep in Art/Source/impact-burst/owner-ref-impact-burst-2026-11-05.png (Q7). In-progress task-462 (extractor blast) unrelated. No open value needed. No code read.
 - confirmed_by_owner: yes (2026-11-06, "prépare la tâche sans lancer, j'accepte les propostions.")
 - milestone: M2
-- next_step: task-465-03-impact-expand
+- next_step: task-465-04-doc
 - started: 2026-11-06T09:25:46Z
 - waiting_for: none
-- executor_tokens: input 194, cache write 214809, cache read 12709509, output 61366
-- executor_usage: runs 1, turns 95, context start 18k peak 227k, resumes 1, 18 min, units 1.85 M
+- executor_tokens: input 238, cache write 249350, cache read 17585720, output 72944
+- executor_usage: runs 1, turns 115, context start 18k peak 261k, resumes 2, 23 min, units 2.44 M
 - planning_tokens: input 22, cache write 39693, cache read 359859, output 12653
 - planning_usage: aedb5b0d "Plan player shot impact FX" 1/1 (tasks 465), units 0.15 M
 - result: open
