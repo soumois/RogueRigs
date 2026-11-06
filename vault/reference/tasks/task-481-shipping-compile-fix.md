@@ -3,7 +3,7 @@ id: task-481-shipping-compile-fix
 description: "Global task: Removes the C2027 on ARRWeapon that stops RogueRigs Win64 Shipping from compiling. Open to run the fix behind the v0.1.3 build; gameplay unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the compile error that blocks the Shipping build
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Oui, corrige", relayed by the main session)
 - milestone: M2
 - next_step: task-481-01-cpp
-- started: open
+- started: 2026-11-06T22:31:15Z
 - waiting_for: none
 - result: open
 

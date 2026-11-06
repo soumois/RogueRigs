@@ -3,7 +3,7 @@ id: task-481-01-cpp
 description: "Cpp: Remove the ARRWeapon compile error so both the Shipping game target and the Development editor target compile."
 parent: task-481-shipping-compile-fix
 kind: task
-status: todo
+status: in-progress
 ---
 # Fix the compile error that blocks the Shipping build: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T22:31:15Z
 - waiting_for: none
 - result: open
 
