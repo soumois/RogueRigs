@@ -3,7 +3,7 @@ id: task-477-06-capture
 description: "Capture: Final independent check of the bottom HUD against the mockup at the resolutions of Q3."
 parent: task-477-bottom-hud-back-to-mockup
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:56:07Z
 - waiting_for: none
 - result: open
 
