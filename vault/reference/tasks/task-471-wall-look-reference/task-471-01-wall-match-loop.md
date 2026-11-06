@@ -3,7 +3,7 @@ id: task-471-01-wall-match-loop
 description: "Bp: Loop: check git history for a matching wall setting, then change the wall look, -game capture, side-by-side with image 2, rework until it matches or the Q5 cap."
 parent: task-471-wall-look-reference
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls look like the owner in-game reference: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:31:35Z
 - waiting_for: none
 - result: open
 
