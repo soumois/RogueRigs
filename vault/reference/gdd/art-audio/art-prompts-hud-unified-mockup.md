@@ -96,6 +96,8 @@ The retained image is the layout and look reference; every piece uses one frame 
 | T_HUD_XPRail | 840 x 58 | 0.031, 0.31 | transparent window y 18..40 |
 | T_HUD_LevelPlate | 216 x 55 | 0.065, 0.22 | near-black |
 
+- Replaces the four 461 sprites in game (task-467-02 to -04): T_HUD_BottomPanel by T_HUD_BlockFrame and T_HUD_HealthStrip ([[wbp-health-status]]), T_HUD_SlotWell by T_HUD_SlotCell ([[wbp-weapons]]) and by T_HUD_HealthStrip for the health track, T_HUD_XPFrame by T_HUD_XPRail and T_HUD_LevelCap by T_HUD_LevelPlate ([[wbp-xp-status]]). The 461 textures stay in the project, unreferenced by these widgets.
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[task-467-bottom-hud-match-target]] — the task that made the thin bottom frames.
