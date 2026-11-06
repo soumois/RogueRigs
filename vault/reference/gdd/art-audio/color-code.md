@@ -9,7 +9,7 @@ status: approved
 
 | Element | Color |
 |---|---|
-| Breakable rock | light grey tinted violet; intact rock has a smooth top with no cracks; cracks, then tilted plates, show damage (owner 2026-10-17, task-219, [[rock-look-reference]]) |
+| Breakable rock | light lilac-violet top, a thin glowing warm orange rim along the top edge, dark stratified sides (owner 2026-11-05, provisional, [[task-471-wall-look-reference]]; was light grey tinted violet; the orange rim is a detail, not "explodes"); intact rock has a smooth top with no cracks; cracks, then tilted plates, show damage (owner 2026-10-17, task-219, [[rock-look-reference]]) |
 | Ore rock (Duskite) | same base + glowing violet crystals (kept, owner 2026-10-10) |
 | Barrel | orange |
 | Heal ore and heal pickups | red |
@@ -36,6 +36,7 @@ status: approved
 | Heal number ("+N" on the miner) | green, linear (0.1, 1, 0.2), the heal ring green; a small detail, so the Shooter keeps acid green as main colour (owner 2026-10-27, provisional, [[task-324-heal-numbers]], [[damage-numbers]]) |
 | Level-up text and floor wave | gold, linear (1, 0.72, 0.15), a brief event, not a rarity colour (owner 2026-11-05, provisional, [[task-441-level-up-effect]]) |
 | Ore number (Duskite icon + "+N" on the miner) | icon in its own violet colours (the HUD ore icon), "+N" white like a normal damage number (owner 2026-11-04, provisional, [[task-430-ore-pickup-number]], [[damage-numbers]]) |
+| Actor shadows (miner, drone, robots, turrets, barrels, bonus chest) | dark desaturated purple-grey, about sRGB (45, 35, 55), never pure black (owner 2026-11-05, provisional, [[task-472-actor-blob-shadows]]) |
 
 Exception (owner 2026-10-11): the explosion warning sign on the barrel is a yellow triangle with a black border and a black burst, chosen by the owner after a reference sign; the yellow and black hazard stripes stay reserved for the heavy ([[barrel-asset]]).
 

@@ -26,8 +26,8 @@ Derived from the four approved reference images and their prompts ([[art-prompts
 - A11. Nobody fires over a block: shooters and targets are positioned with a clear line.
 
 ## Scene composition
-- A12. Steep near-vertical camera, miner centered, strong directional light with lifted shadows.
-- A13. Floor of large cracked faceted plates, painted look, fine crack lines and plate edges that catch the light, dark violet-magenta base; no scattered rubble (A14); the arena edge is a cliff into space with stars and a planet (owner 2026-10-21, provisional, task-273; replaces "clean flat floor with subtle large facets and no pebbles").
+- A12. Steep near-vertical camera, miner centered, strong directional light with lifted shadows; actors get a light-independent purple-grey shadow beneath them instead of a cast shadow (owner 2026-11-05, provisional, [[task-472-actor-blob-shadows]]).
+- A13. Floor of hand-painted cartoon flagstones from the owner texture `Art/Source/floor-texture/owner-2026-11-05-floor-cartoon.webp`, dark cracks with a pink rim highlight, magenta-purple base (owner 2026-11-05, provisional, [[task-470-cartoon-floor-texture]]; was large cracked faceted plates with a dark violet-magenta base, task-273); no scattered rubble (A14); the arena edge is a cliff into space with stars and a planet (owner 2026-10-21, provisional, task-273; replaces "clean flat floor with subtle large facets and no pebbles").
 
 ## Forbidden
 - A14. UI inside reference art, small scattered rubble on the floor, grey rock walls as arena borders. Text is allowed only on logos, stickers and advertising panels, never as UI or captions in a reference image (owner 2026-10-11).
