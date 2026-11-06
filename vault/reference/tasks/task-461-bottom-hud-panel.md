@@ -3,7 +3,7 @@ id: task-461-bottom-hud-panel
 description: "Global task: health bar and weapon slots in one riveted panel, XP bar in a riveted frame with a Lv cap, as in the mockup."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD built as one riveted panel and a framed XP bar
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
 - next_step: task-461-01-art
-- started: open
+- started: 2026-11-06T04:22:48Z
 - waiting_for: none
 - result: open
 

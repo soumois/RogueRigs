@@ -3,7 +3,7 @@ id: task-461-01-art
 description: "Art: Frame sprites of the bottom panel and of the XP bar with its Lv cap, from the retained mockup."
 parent: task-461-bottom-hud-panel
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD built as one riveted panel and a framed XP bar: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:22:48Z
 - waiting_for: none
 - result: open
 
