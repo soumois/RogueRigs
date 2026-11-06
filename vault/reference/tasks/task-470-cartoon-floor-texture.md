@@ -1,9 +1,9 @@
 ---
 id: task-470-cartoon-floor-texture
 description: "Global task: The arena floor shows the owner hand-painted cartoon magenta-purple flagstone texture (image 1) instead of the task-273 cracked plates; first step of the cartoon direction."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Floor uses the owner cartoon flagstone texture
 
@@ -13,14 +13,14 @@ status: in-progress
 - gdd_check: Read visual-style, art-style-guide (A12, A13), color-code, readability-rules, rock-look-reference, handover-2026-10-21-lighting-floor (floor task-273, light history). Conflicts (owner said the request goes against the vault): visual-style floor line and A13 (task-273 cracked faceted plates) are replaced by image 1; "plus cartoon" recorded as direction in visual-style (Q1). Edits in the spec apply on confirmation. No open value used. No code read; Art/Source listed only to place the owner images (image 1 kept as Art/Source/floor-texture/owner-2026-11-05-floor-cartoon.webp, image 2 kept as Art/Source/cartoon-look/reference/owner-2026-11-05-ingame-light-walls.webp) and to compare image 2 with the 2026-11-06 owner in-game capture Art/Source/hud-unified/reference/owner-hud-ingame-2026-11-06.webp (current walls grey-violet with no orange rim). Order of the four globals: 470 floor, 471 walls, 472 shadows, 473 light (light is calibrated last on the final floor and walls). task-466 in progress (extractor FX) does not touch floor, walls, shadows or the miner light.
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-470-03-doc
+- next_step: none
 - started: 2026-11-06T10:33:53Z
 - waiting_for: none
-- executor_tokens: input 82, cache write 113678, cache read 3249471, output 27086
-- executor_usage: runs 1, turns 41, context start 18k peak 126k, resumes 0, 8 min, units 0.60 M
+- executor_tokens: input 108, cache write 130933, cache read 5023791, output 34682
+- executor_usage: runs 1, turns 54, context start 18k peak 143k, resumes 0, 10 min, units 0.84 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
-- result: open
+- result: Done. Done (802345ae). bp-floor-plates-material rewritten: M_FloorCartoon/MI_FloorCartoon current (T_Floor_Cartoon_D from Art/Source/floor-texture/T_Floor_Cartoon_D.png, TileSize 1700, AlbedoBrightness 0.6, single sample), what was removed (rotated second sample and blend, normal map and FloorNormal), task-273 assets kept unused, revert; bp-arena-grid FloorMaterial line and blueprints-world-index gloss updated. visual-style already carried the floor rule (planner). Lint clean.
 
 ## Questions
 Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste"): every default below is accepted; values provisional, owner 2026-11-06.
@@ -34,7 +34,7 @@ Decided 2026-11-06 (owner "Mur : Q1 : voir image. Rélevé légerement les mur (
 3. task-470-03-doc (vault/reference/tasks/task-470-cartoon-floor-texture/task-470-03-doc.md) — doc: Docs describe the new floor material and texture.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-470-01-floor-material]] — step 1, bp.
 - [[task-470-02-capture]] — step 2, capture.
 - [[task-470-03-doc]] — step 3, doc.

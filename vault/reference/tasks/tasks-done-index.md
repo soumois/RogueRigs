@@ -478,3 +478,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-467-bottom-hud-match-target]] — Health strip, weapon slots and XP bar reworked, captured in game and compared with the owner target image, round after round until they match. Status done.
 - [[task-468-aim-laser-unlimited-length]] — The aim laser loses its 600 uu cap and ends on the first wall, robot or barrel, never drawn over a wall. Status done.
 - [[task-469-aim-laser-green]] — The aim laser turns from white-gold to the bright lime green of the owner in-game capture; only the colour changes. Status done.
+- [[task-470-cartoon-floor-texture]] — The arena floor shows the owner hand-painted cartoon magenta-purple flagstone texture (image 1) instead of the task-273 cracked plates; first step of the cartoon direction. Status done.
