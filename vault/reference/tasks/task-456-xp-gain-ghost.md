@@ -26,7 +26,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - next_step: none
 - started: 2026-11-06T01:01:19Z
 - waiting_for: none
-- result: Done. Done (commit cea4a039). New sys-hud-xp-bar (child of sys-hud): URRXPStatusWidget rules, event-armed update, values CatchUpDelay 0.4 s, CatchUpRate 7/s, snap 0.001, GhostColor #c8f6ff (provisional, Q32), test RogueRigs.HUD.XPGhost. wbp-xp-status updated: parent class, XPGhostBar row in the anchors table, XPBar background alpha 0, draw order ghost/fill/ticks, ShowXP level text only, verified task-456-02. Lint clean (vault OK, no problem).
+- result: Done. 01 (85013287): URRXPStatusWidget drives XPBar and XPGhostBar: ghost at once, fill catches up after 0.4 s at 7/s, a new gain restarts the wait; level-up: ghost to the end, bar empties, remainder the same way, several levels = one pass; event-armed, no tick; test RogueRigs.HUD.XPGhost; HUD 15 + Progression 4 = 19/19 pass. 02 (441acaae): WBP_XPStatus reparented, XPGhostBar behind XPBar (pale cyan #c8f6ff), XPBar background transparent, ShowXP sets only the level text; ticks and "Lv N" unchanged; PIE gain and level-up no runtime error. 03 (cea4a039): sys-hud-xp-bar created, wbp-xp-status updated. Look unverified on screen (Q26: the owner checks in game). Cost: all subtasks included in the executor run of task-456.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
