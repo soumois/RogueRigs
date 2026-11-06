@@ -59,3 +59,4 @@ The retained image is the layout and look reference; every piece uses one frame 
 - [[task-451-hud-mockups]] — the task that made these mockups.
 - [[art-prompts-shop-screen-mockup]] — the style reference image.
 - [[kie-image-workflow]] — tool, credits and commit rule.
+- [[wbp-minimap-locator]] — shows the radar frame sprite (task-457).
