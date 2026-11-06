@@ -3,7 +3,7 @@ id: task-458-01-art
 description: "Art: Cut the weapon slot frame sprite of the retained mockup."
 parent: task-458-weapon-slots-style
 kind: task
-status: todo
+status: in-progress
 ---
 # Weapon slots in the unified look: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T01:13:02Z
 - waiting_for: none
 - result: open
 
