@@ -3,7 +3,7 @@ id: task-480-rock-slab-chamfer-facets
 description: "Global task: Rock slabs get a slight top chamfer carrying a thin orange-yellow emissive band and faceted, tinted low-poly sides; top, outline and heights kept."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Rock slabs: chamfered glowing top edge and faceted low-poly sides
 
@@ -55,8 +55,8 @@ Présenter d'abord une proposition technique avant de modifier les ressources ex
 - confirmed_by_owner: yes (2026-11-06, "Je valide, mais ne lance pas les tâches ( prépare les je vais passer sur un autre compte )")
 - milestone: M2
 - next_step: task-480-04-material-loop
-- started: 2026-11-06T20:54:57Z
-- waiting_for: Q5 cap of 4 rounds reached with the emissive band still not showing (A1). Owner: authorise a round 5 for the likely cause (intact pieces read as broken in the material), or say je valide, or give another direction. Sheets in Saved/Captures/Wall480Sheets.
+- started: 2026-11-06T21:56:35Z
+- waiting_for: none
 - executor_tokens: input 54, cache write 222105, cache read 4258893, output 75977
 - executor_usage: runs 1, turns 27, context start 17k peak 234k, resumes 0, 18 min, units 1.08 M
 - planning_tokens: input 15, cache write 35116, cache read 306038, output 10554
