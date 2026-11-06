@@ -14,11 +14,11 @@ status: in-progress
 - gdd_check: Read visual-style (miner light casts only rock, ore, heal ore shadows, task-445; sun and sky unchanged), art-style-guide A12 (strong directional light with lifted shadows), handover-2026-10-21-lighting-floor (task-264 blob shadows, owner decision 2026-10-21 "blob disc only, no sun shadow" for robots, miner and drone, then task-275 put sun shadows back on). Conflicts: A12 and visual-style gain the actor shadow rule; edits in the spec apply on confirmation. Not in the GDD, decided by questions: which actors (Q1), what happens to their light shadows and the task-264 discs (Q2), start values (Q3). No code read.
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-472-02-shadow-material-wiring
+- next_step: task-472-03-capture
 - started: 2026-11-06T17:53:44Z
 - waiting_for: none
-- executor_tokens: input 128, cache write 166941, cache read 7039841, output 57217
-- executor_usage: runs 1, turns 64, context start 18k peak 179k, resumes 0, 15 min, units 1.20 M
+- executor_tokens: input 222, cache write 238651, cache read 17453162, output 84356
+- executor_usage: runs 1, turns 111, context start 18k peak 251k, resumes 0, 25 min, units 2.47 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open

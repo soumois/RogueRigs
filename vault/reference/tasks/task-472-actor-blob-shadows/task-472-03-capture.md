@@ -3,7 +3,7 @@ id: task-472-03-capture
 description: "Capture: Check the shadows in game against the seven owner points."
 parent: task-472-actor-blob-shadows
 kind: task
-status: todo
+status: in-progress
 ---
 # Light-independent purple-grey shadows under actors: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T18:18:21Z
 - waiting_for: none
 - result: open
 
