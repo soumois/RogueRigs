@@ -133,6 +133,7 @@ bp-pickup-heal  reference/tech/blueprints/fx/bp-pickup-heal.md
 bp-pickup-ore  reference/tech/blueprints/fx/bp-pickup-ore.md
 bp-pickup-sparkle  reference/tech/blueprints/fx/bp-pickup-sparkle.md
 bp-pickup-xp  reference/tech/blueprints/fx/bp-pickup-xp.md
+bp-player-laser-shot-material  reference/tech/blueprints/fx/bp-player-laser-shot-material.md
 bp-projectile  reference/tech/blueprints/player/bp-projectile.md
 bp-robot-death-puff  reference/tech/blueprints/fx/bp-robot-death-puff.md
 bp-robot-debris  reference/tech/blueprints/fx/bp-robot-debris.md
