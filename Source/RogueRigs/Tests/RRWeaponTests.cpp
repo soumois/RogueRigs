@@ -1,4 +1,4 @@
-// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on a still chaser, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a still chaser, projectile hit filter, pierce (robots per bullet, rock stop, no double hit, piercing upgrade).
+// Rogue Rigs - automation tests of the weapon rules (RogueRigs.Weapons.*): burst timing, magazine and reload, projectile stop on rock, GAS damage and crits on a still chaser, miner starting weapon and shot origin, miner moving while firing, miner shots hitting a still chaser, projectile hit filter, pierce (robots per bullet, rock stop, no double hit, piercing upgrade), light aim assist (task-463).
 
 #include "CoreMinimal.h"
 #include "Misc/AutomationTest.h"
@@ -40,6 +40,7 @@
 #include "Upgrades/RRUpgradeCard.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "UObject/StrongObjectPtr.h"
+#include "Weapons/RRAimAssist.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeapon.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -1779,6 +1780,160 @@ bool FRRWeaponMuzzleFlashAssetTest::RunTest(const FString& Parameters)
 		}
 	}
 	TestTrue(TEXT("the shotgun flash is larger"), ShapeSize[1] >= ShapeSize[0] * 1.3);
+	return true;
+}
+
+namespace RRWeaponTests
+{
+	/** Open row 42 of arena_m1: the rifle fires east from AssistShooterCell at a still chaser on AssistTargetCell, 4 cells (800 uu) away. */
+	const FIntPoint AssistShooterCell(42, 42);
+	const FIntPoint AssistTargetCell(46, 42);
+
+	/** Barrel (48, 41) seen from the open cell (48, 44), three cells south. */
+	const FIntPoint AssistBarrelCell(48, 41);
+	const FIntPoint AssistBarrelShooterCell(48, 44);
+
+	/** Turns the rifle (no miner: aim = its forward vector) to Yaw and puts its muzzle at half the block height over the centre of Cell. */
+	FVector AimRifleFrom(ARRWeapon* Rifle, const ARRArenaGrid* Grid, FIntPoint Cell, float Yaw)
+	{
+		Rifle->SetActorRotation(FRotator(0.f, Yaw, 0.f), ETeleportType::TeleportPhysics);
+		const FVector Muzzle = Grid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.f, 0.f, 0.5f * Grid->GetBlockHeight());
+		PlaceMuzzleAt(Rifle, Muzzle);
+		return Muzzle;
+	}
+
+	/** Assisted yaw of a shot fired now along Yaw (GetAimAssistedRotation on the rifle's current placement); OutTarget the chosen robot. */
+	float AssistedYaw(const ARRWeapon* Rifle, float Yaw, const ARREnemy*& OutTarget)
+	{
+		return Rifle->GetAimAssistedRotation(Rifle->GetShotPlacement(), FRotator(0.f, Yaw, 0.f), &OutTarget).Yaw;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponAimAssistTest, "RogueRigs.Weapons.AimAssist",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRWeaponAimAssistTest::RunTest(const FString& Parameters)
+{
+	// task-463: data value per weapon, only the burst rifle assisted.
+	const FRRWeaponStatsRow RifleRow = ReadRifleRow(*this);
+	TestTrue(TEXT("BurstRifle AimAssistDeg above 0"), RifleRow.AimAssistDeg > 0.f);
+	TestTrue(TEXT("BurstRifle AimAssistDeg at most 5 (Q40)"), RifleRow.AimAssistDeg <= 5.f + KINDA_SMALL_NUMBER);
+	TestEqual(TEXT("Shotgun AimAssistDeg 0"), RRTestStats::WeaponRow(*this, RRTestStats::ShotgunRow).AimAssistDeg, 0.f);
+	TestEqual(TEXT("TurretLauncher AimAssistDeg 0"), RRTestStats::WeaponRow(*this, RRTestStats::TurretLauncherRow).AimAssistDeg, 0.f);
+
+	FTestWorld TestWorld(TEXT("RRWeaponTestWorld"));
+	ARRArenaGrid* Grid = SpawnGrid(*this, TestWorld);
+	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
+	if (!Rifle)
+	{
+		return false;
+	}
+	Rifle->GetAutoFireComponent()->StopFiring();
+	TestEqual(TEXT("rifle AimAssistDeg read from the CSV"), Rifle->GetAimAssistDeg(), RifleRow.AimAssistDeg);
+	const float MaxDeg = Rifle->GetAimAssistDeg();
+	// No random spread: the shot leaves exactly along the aim, so each case is deterministic.
+	FWeaponAccess::SpreadDegOf(Rifle) = 0.f;
+	for (int32 X = AssistShooterCell.X; X <= AssistTargetCell.X; ++X)
+	{
+		TestFalse(FString::Printf(TEXT("(%d, %d) is open"), X, AssistShooterCell.Y), Grid->IsBlockCell(FIntPoint(X, AssistShooterCell.Y)));
+	}
+
+	ARRChaser* Target = SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(AssistTargetCell.X, AssistTargetCell.Y));
+	if (!Target)
+	{
+		return false;
+	}
+	const float HitReach = Target->GetHitCapsule()->GetScaledCapsuleRadius() + ARRProjectile::GetDefaultCollisionRadius(Rifle->GetProjectileClass());
+	const float Distance = 4.f * Grid->GetCellSize();
+	// Near miss: the straight shot passes HitReach + 15 uu beside the robot centre, inside the cone.
+	const float NearMissYaw = FMath::RadiansToDegrees(FMath::Atan((HitReach + 15.f) / Distance));
+	AddInfo(FString::Printf(TEXT("hit reach %.1f uu, distance %.0f uu, near-miss yaw %.2f deg, cone %.2f deg"), HitReach, Distance, NearMissYaw, MaxDeg));
+	TestTrue(TEXT("near-miss yaw inside the cone"), NearMissYaw < MaxDeg);
+
+	const ARREnemy* Chosen = nullptr;
+
+	// A1: near miss, deflected straight at the robot by at most MaxDeg, and the fired bullet hits it.
+	AimRifleFrom(Rifle, Grid, AssistShooterCell, NearMissYaw);
+	{
+		RRAimAssist::FShotQuery Query;
+		Query.Origin = Rifle->GetShotPlacement().Origin;
+		Query.Radius = ARRProjectile::GetDefaultCollisionRadius(Rifle->GetProjectileClass());
+		Query.HalfHeight = Query.Radius;
+		Query.Range = Rifle->GetRange();
+		Query.Responses = FCollisionResponseParams(Rifle->GetProjectileClass()->GetDefaultObject<ARRProjectile>()->GetCollisionCapsule()->GetCollisionResponseToChannels());
+		Query.IgnoredActors.Add(Rifle);
+		TestTrue(TEXT("A1 the straight shot misses the robot"), RRAimAssist::PredictFirstHit(*TestWorld.Get(), Query, FRotator(0.f, NearMissYaw, 0.f).Vector()) != RRAimAssist::EFirstHit::Robot);
+	}
+	const float NearMissAssisted = AssistedYaw(Rifle, NearMissYaw, Chosen);
+	AddInfo(FString::Printf(TEXT("A1 near miss: yaw %.2f -> %.2f deg"), NearMissYaw, NearMissAssisted));
+	TestEqual(TEXT("A1 the robot is chosen"), Chosen, static_cast<const ARREnemy*>(Target));
+	TestTrue(TEXT("A1 turned by at most AimAssistDeg"), FMath::Abs(FMath::FindDeltaAngleDegrees(NearMissYaw, NearMissAssisted)) <= MaxDeg + 0.01f);
+	TestTrue(TEXT("A1 aimed at the robot centre (yaw 0)"), FMath::Abs(NearMissAssisted) < 0.5f);
+
+	const float HealthBefore = TargetHealth(Target);
+	FVector LastLocation;
+	const int32 HitFrame = TickUntilDestroyed(TestWorld, FireSingleShot(*this, Rifle), 60, LastLocation);
+	AddInfo(FString::Printf(TEXT("A1 fired bullet: destroyed at frame %d near %s; robot health %.1f -> %.1f"), HitFrame, *LastLocation.ToCompactString(), HealthBefore, TargetHealth(Target)));
+	TestTrue(TEXT("A1 the fired near-miss bullet hits the still robot"), TargetHealth(Target) < HealthBefore);
+
+	// A2: a shot already on the robot is not turned.
+	const float OnTargetYaw = 1.f;
+	TestEqual(TEXT("A2 shot already on the robot unchanged"), AssistedYaw(Rifle, OnTargetYaw, Chosen), OnTargetYaw);
+	TestNull(TEXT("A2 no robot chosen"), Chosen);
+
+	// A3: outside the cone.
+	const float OutsideYaw = MaxDeg + 2.f;
+	TestEqual(TEXT("A3 robot outside the cone: unchanged"), AssistedYaw(Rifle, OutsideYaw, Chosen), OutsideYaw);
+	TestNull(TEXT("A3 outside the cone: no robot chosen"), Chosen);
+
+	// A3: beyond range (range cut to 3 cells for this case).
+	{
+		const float SavedRange = Rifle->GetRange();
+		FWeaponAccess::RangeOf(Rifle) = 3.f * Grid->GetCellSize();
+		TestEqual(TEXT("A3 robot beyond range: unchanged"), AssistedYaw(Rifle, NearMissYaw, Chosen), NearMissYaw);
+		FWeaponAccess::RangeOf(Rifle) = SavedRange;
+	}
+
+	// A7: AimAssistDeg 0 turns the assist off.
+	FWeaponAccess::AimAssistDegOf(Rifle) = 0.f;
+	TestEqual(TEXT("A7 AimAssistDeg 0: unchanged"), AssistedYaw(Rifle, NearMissYaw, Chosen), NearMissYaw);
+	FWeaponAccess::AimAssistDegOf(Rifle) = MaxDeg;
+	Target->Destroy();
+
+	// A3: a robot behind a rock block is not targeted (rock (43, 38), robot on the floor cell (45, 38) behind it).
+	TestTrue(TEXT("(43, 38) is rock"), Grid->GetCellType(RockCell) == ERRCellType::Rock);
+	const FIntPoint BehindRockCell(RockCell.X + 2, RockCell.Y);
+	TestFalse(TEXT("(45, 38) is open"), Grid->IsBlockCell(BehindRockCell));
+	ARRChaser* Hidden = SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(BehindRockCell.X, BehindRockCell.Y));
+	if (Hidden)
+	{
+		AimRifleFrom(Rifle, Grid, RockWestFloorCell, NearMissYaw);
+		TestEqual(TEXT("A3 robot behind rock: unchanged"), AssistedYaw(Rifle, NearMissYaw, Chosen), NearMissYaw);
+		TestNull(TEXT("A3 behind rock: no robot chosen"), Chosen);
+		Hidden->Destroy();
+	}
+
+	// A2: a shot aimed at a barrel with a robot beside it still goes to the barrel (cone widened so the robot is inside it).
+	TestTrue(TEXT("(48, 41) is a barrel"), Grid->GetCellType(AssistBarrelCell) == ERRCellType::Barrel);
+	for (int32 Y = AssistBarrelCell.Y + 1; Y <= AssistBarrelShooterCell.Y; ++Y)
+	{
+		TestFalse(FString::Printf(TEXT("(%d, %d) is open"), AssistBarrelCell.X, Y), Grid->IsBlockCell(FIntPoint(AssistBarrelCell.X, Y)));
+	}
+	const FVector BarrelCentre = Grid->GetCellCenter(AssistBarrelCell.X, AssistBarrelCell.Y);
+	// Just south of the barrel cell, HitReach + 12 uu east of the shot line: the straight shot misses it and meets the barrel.
+	const FVector BesideBarrel = BarrelCentre + FVector(HitReach + 12.f, 0.5f * Grid->GetCellSize() + 40.f, 0.f);
+	ARRChaser* Beside = SpawnStillChaser(*this, TestWorld, BesideBarrel);
+	if (Beside)
+	{
+		FWeaponAccess::AimAssistDegOf(Rifle) = 15.f;
+		const FVector Muzzle = AimRifleFrom(Rifle, Grid, AssistBarrelShooterCell, -90.f);
+		const float RobotAngle = FMath::RadiansToDegrees(FMath::Atan((HitReach + 12.f) / (Muzzle.Y - BesideBarrel.Y)));
+		AddInfo(FString::Printf(TEXT("A2 barrel case: robot %.2f deg off the shot, cone %.1f deg"), RobotAngle, 15.f));
+		TestEqual(TEXT("A2 shot on a barrel beside a robot: unchanged"), AssistedYaw(Rifle, -90.f, Chosen), -90.f);
+		TestNull(TEXT("A2 barrel shot: no robot chosen"), Chosen);
+		FWeaponAccess::AimAssistDegOf(Rifle) = MaxDeg;
+		Beside->Destroy();
+	}
 	return true;
 }
 

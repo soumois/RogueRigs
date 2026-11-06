@@ -19,6 +19,7 @@
 #include "Player/RRMiner.h"
 #include "Projectiles/RRProjectile.h"
 #include "Upgrades/RRUpgradeComponent.h"
+#include "Weapons/RRAimAssist.h"
 #include "RogueRigs.h"
 #include "Weapons/RRAutoFireComponent.h"
 #include "Weapons/RRWeaponAttributeSet.h"
@@ -149,6 +150,7 @@ void ARRWeapon::ApplyStatsRow(const FRRWeaponStatsRow& Row)
 	ProjectileSpeed = Row.ProjectileSpeed;
 	Range = Row.Range;
 	SpreadDeg = Row.SpreadDeg;
+	AimAssistDeg = Row.AimAssistDeg;
 	DisplayName = Row.DisplayName;
 }
 
@@ -308,6 +310,43 @@ ARRProjectile* ARRWeapon::SpawnShot(const FRRShotPlacement& Placement, const FRo
 	return Projectile;
 }
 
+FRotator ARRWeapon::GetAimAssistedRotation(const FRRShotPlacement& Placement, const FRotator& ShotRotation, const ARREnemy** OutTarget) const
+{
+	if (OutTarget)
+	{
+		*OutTarget = nullptr;
+	}
+	const UWorld* World = GetWorld();
+	const ARRProjectile* ProjectileDefault = ProjectileClass ? ProjectileClass->GetDefaultObject<ARRProjectile>() : nullptr;
+	if (AimAssistDeg <= 0.f || World == nullptr || ProjectileDefault == nullptr || ProjectileDefault->GetCollisionCapsule() == nullptr)
+	{
+		return ShotRotation;
+	}
+
+	RRAimAssist::FShotQuery Query;
+	Query.SweepStart = Placement.SweepStart;
+	Query.bSweepFromMiner = Placement.bSweepFromMiner;
+	Query.Origin = Placement.Origin;
+	Query.Radius = ProjectileDefault->GetCollisionCapsule()->GetUnscaledCapsuleRadius();
+	Query.HalfHeight = FMath::Max(Placement.CapsuleHalfHeight, Query.Radius);
+	Query.Range = Range;
+	Query.Responses = FCollisionResponseParams(ProjectileDefault->GetCollisionCapsule()->GetCollisionResponseToChannels());
+	// What the projectile ignores (ARRProjectile::IsIgnoredActor): this weapon (its owner), the weapon owner and the instigator.
+	Query.IgnoredActors.Add(this);
+	if (GetOwner())
+	{
+		Query.IgnoredActors.Add(GetOwner());
+	}
+	Query.IgnoredActors.Add(OwnerMiner ? static_cast<const AActor*>(OwnerMiner) : GetInstigator());
+
+	FVector Direction;
+	if (!RRAimAssist::FindAssistedDirection(*World, Query, ShotRotation.Vector(), AimAssistDeg, Direction, OutTarget))
+	{
+		return ShotRotation;
+	}
+	return FRotator(0.f, Direction.Rotation().Yaw, 0.f);
+}
+
 FGameplayEffectSpecHandle ARRWeapon::MakeDamageSpec() const
 {
 	if (!DamageEffectClass)
@@ -344,8 +383,10 @@ void ARRWeapon::FireOnce()
 
 	// Flat shot: aim yaw plus a uniform spread in [-SpreadDeg, SpreadDeg].
 	const float SpreadYaw = SpreadDeg > 0.f ? FMath::FRandRange(-SpreadDeg, SpreadDeg) : 0.f;
-	const FRotator ShotRotation(0.f, GetAimDirection().Rotation().Yaw + SpreadYaw, 0.f);
-	if (SpawnShot(GetShotPlacement(), ShotRotation, Spec, GetPierceCount(), 0.f))
+	const FRRShotPlacement Placement = GetShotPlacement();
+	// task-463: light aim assist on the shot as fired (spread included), each bullet decided on its own.
+	const FRotator ShotRotation = GetAimAssistedRotation(Placement, FRotator(0.f, GetAimDirection().Rotation().Yaw + SpreadYaw, 0.f));
+	if (SpawnShot(Placement, ShotRotation, Spec, GetPierceCount(), 0.f))
 	{
 		// task-414 Q3: one flash per bullet (3 per rifle burst); none for a turret (no hand weapon).
 		SpawnMuzzleFlash(ShotRotation);

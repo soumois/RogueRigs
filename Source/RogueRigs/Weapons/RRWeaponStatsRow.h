@@ -69,6 +69,13 @@ struct ROGUERIGS_API FRRWeaponStatsRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	float SpreadDeg = 0.f;
 
+	/**
+	 * Light aim assist (task-463): largest yaw turn in degrees toward a robot given to a shot that would miss (constant; read by
+	 * ARRWeapon::FireOnce, so the burst rifle; 0 = no assist for this weapon).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	float AimAssistDeg = 0.f;
+
 	/** Name shown in the UI (upgrade card target), French (constant). Empty = the row name. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	FString DisplayName;

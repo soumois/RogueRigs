@@ -8,6 +8,7 @@
 #include "GameplayEffectTypes.h"
 #include "RRWeapon.generated.h"
 
+class ARREnemy;
 class ARRMiner;
 class ARRProjectile;
 class UAbilitySystemComponent;
@@ -182,6 +183,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
 	float GetSpreadDeg() const { return SpreadDeg; }
 
+	/** Light aim assist: largest yaw turn in degrees toward a robot (CSV constant AimAssistDeg; 0 = no assist). */
+	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
+	float GetAimAssistDeg() const { return AimAssistDeg; }
+
+	/**
+	 * Light aim assist (task-463, RRAimAssist): rotation of a shot fired with Placement along ShotRotation. Unchanged when
+	 * AimAssistDeg <= 0, when the straight shot (real capsule, up to Range) meets a living robot or a barrel first, or when no robot
+	 * qualifies; else the flat rotation straight at the current position of the living robot within Range and within AimAssistDeg
+	 * of the shot that needs the smallest turn and whose turned shot meets a robot first (no rock block or barrel in the way).
+	 * OutTarget (optional) receives that robot, null when unchanged.
+	 */
+	FRotator GetAimAssistedRotation(const FRRShotPlacement& Placement, const FRotator& ShotRotation, const ARREnemy** OutTarget = nullptr) const;
+
 	/** Name shown in the UI (CSV column DisplayName, or StatsRowName when empty or before acquisition). */
 	UFUNCTION(BlueprintPure, Category = "Weapon|Stats")
 	FText GetDisplayName() const;
@@ -245,7 +259,8 @@ protected:
 	 * by a random yaw in [-SpreadDeg, SpreadDeg], with speed ProjectileSpeed and lifetime Range / ProjectileSpeed (Owner: this
 	 * weapon, Instigator: the miner). Logged and skipped if ProjectileClass is unset or ProjectileSpeed or Range is <= 0.
 	 * When the projectile spawned, one muzzle flash along ShotRotation (SpawnMuzzleFlash; none for a turret).
-	 * Weapons that fire differently (shotgun) override it.
+	 * Weapons that fire differently (shotgun) override it. Light aim assist (task-463): the rotation goes through
+	 * GetAimAssistedRotation after the spread (per bullet; AimAssistDeg 0 leaves it as is, turrets keep 0).
 	 */
 	virtual void FireOnce();
 
@@ -382,6 +397,10 @@ protected:
 	/** Half-angle of the random spread in degrees, copied from the CSV at acquisition. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Stats")
 	float SpreadDeg = 0.f;
+
+	/** Light aim assist, largest yaw turn in degrees, copied from the CSV column AimAssistDeg at acquisition (0 = none; task-463). */
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Stats")
+	float AimAssistDeg = 0.f;
 
 	/** UI name, copied from the CSV column DisplayName at acquisition. */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Weapon|Stats")

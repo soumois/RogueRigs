@@ -351,6 +351,8 @@ namespace RRTestAccess
 	{
 		static USceneComponent* MuzzleOf(const ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Muzzle); }
 		static float& SpreadDegOf(ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::SpreadDeg); }
+		static float& AimAssistDegOf(ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::AimAssistDeg); }
+		static float& RangeOf(ARRWeapon* Weapon) { return Weapon->*(&FWeaponAccess::Range); }
 	};
 
 	/** URRNiagaraPoolSubsystem: the pool of one system. */
