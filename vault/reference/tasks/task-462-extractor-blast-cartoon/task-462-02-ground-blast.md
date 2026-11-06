@@ -3,7 +3,7 @@ id: task-462-02-ground-blast
 description: "Bp: The ground blast becomes the cartoon wind of the chosen reference, height fade kept."
 parent: task-462-extractor-blast-cartoon
 kind: task
-status: todo
+status: in-progress
 ---
 # Extractor ground blast redone in cartoon style from references: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:43:47Z
 - waiting_for: none
 - result: open
 

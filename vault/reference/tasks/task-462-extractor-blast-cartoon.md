@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read extraction (ground blast of task-443: outward dust, height fade, pale grey-beige, low opacity), art-style-guide (A10 cartoon explosions), task-443. Possible conflict: task-442 set "no thin lines" for the rotor swirls; cartoon wind usually uses strokes; default of Q38 keeps that rule on the swirls and allows strokes on the ground blast only. extraction and art-style-guide A10 edited at confirmation. Owner image kept: Art/Source/extractor-fx/reference/owner-ground-blast-2026-11-05.webp.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-462-01-references
+- next_step: task-462-02-ground-blast
 - started: 2026-11-06T04:40:28Z
 - waiting_for: none
 - result: open
