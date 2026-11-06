@@ -3,7 +3,7 @@ id: task-456-02-ghost-bar
 description: "Bp: The XP widget gets the ghost bar behind the fill, in the retained look."
 parent: task-456-xp-gain-ghost
 kind: task
-status: todo
+status: in-progress
 ---
 # XP gain ghost on the XP bar: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T01:07:07Z
 - waiting_for: none
 - result: open
 

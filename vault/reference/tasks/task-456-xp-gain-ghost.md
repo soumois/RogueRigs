@@ -23,7 +23,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read xp-level-up, sys-hud-health-bar (chunk: delay 0.4 s, rate 7 per s, event armed): the ghost mirrors it. No conflict; xp-level-up edited at confirmation.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-456-01-ghost-logic
+- next_step: task-456-02-ghost-bar
 - started: 2026-11-06T01:01:19Z
 - waiting_for: none
 - result: open
