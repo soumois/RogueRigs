@@ -3,7 +3,7 @@ id: task-467-05-match-loop
 description: "Bp: Loop: -game capture, side-by-side with the target, rework the failing points, until all pass or the round cap of Q3."
 parent: task-467-bottom-hud-match-target
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:18:01Z
 - waiting_for: none
 - result: open
 
