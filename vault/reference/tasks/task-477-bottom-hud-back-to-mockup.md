@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read task-467-bottom-hud-match-target (same target, loop ended after 2 rounds with tolerance +-15 %, Kie.ai frames: blue-grey gunmetal, thinner block frame, Lv plate 4 rivets vs 8 on the mockup, per art-prompts-hud-unified-mockup critic notes), art-prompts-hud-unified-mockup, umg-layout (via task-467). Image 1 compared visually with Art/Source/hud-unified/reference/owner-hud-target-2026-11-05.webp: same picture, cropped. No GDD conflict: look only. Reading of "Repart de la proposition" and the stricter judging are asked (Q1, Q2); final check resolutions asked (Q3, same choice as task-467 Q4). No code read.
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-477-06-capture
+- next_step: task-477-07-doc
 - started: 2026-11-06T19:36:24Z
 - waiting_for: none
-- executor_tokens: input 202, cache write 257073, cache read 15574687, output 86975
-- executor_usage: runs 1, turns 98, context start 17k peak 269k, resumes 1, 20 min, units 2.31 M
+- executor_tokens: input 210, cache write 264035, cache read 16655912, output 88883
+- executor_usage: runs 1, turns 102, context start 17k peak 276k, resumes 1, 21 min, units 2.44 M
 - planning_tokens: input 11, cache write 29692, cache read 298315, output 7823
 - planning_usage: af36ec5b "Plan owner request: muzzle, HUD, walls" 1/3 (tasks 476, 477, 478), units 0.11 M
 - result: open
