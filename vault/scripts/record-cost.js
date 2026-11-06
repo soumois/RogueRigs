@@ -2,7 +2,8 @@
 // Fills model, tokens, usage and runs in the subtask node from agent-usage.js, adds or updates its row in cost-log, refreshes the
 // cost-log totals and the usage snapshot (vault/scripts/usage-snapshot.json), and prints an ALERT line for each budget overrun
 // (thresholds in cost-rates.json): weighted units over token_ceiling (field written `- token_ceiling: <x> M units`, decimal allowed;
-// a legacy integer or `k` value, or `open`, gives no ceiling alert), start context too large, turn limit near or hit.
+// a legacy integer or `k` value, or `open`, gives no ceiling alert), start context too large, turn limit near or hit, and the
+// executor run of the global over the budget of its verification level (task-cost.js budgetAlert; never blocks).
 const fs = require('fs'), { execSync } = require('child_process');
 const R = require('path').resolve(__dirname, '..', '..').split(require('path').sep).join('/') + '/';
 process.chdir(R);
@@ -82,4 +83,8 @@ else if (r.calls >= rates.alerts.turns) alerts.push(`${r.calls} turns (alert fro
 if (r.resumes > 0 && !r.resumeReasons['turn-limit']) alerts.push(`resumed ${r.resumes} time(s) (${reasons}): write the cause in the subtask result`);
 for (const a of alerts) console.log('ALERT ' + id + ': ' + a);
 // The executor run and the planner share live on the global node (the subtasks done by the executor say "included in the executor run").
-require('./task-cost').write(data, [globalId]);
+const taskCost = require('./task-cost');
+taskCost.write(data, [globalId]);
+// Non-blocking: the executor run so far against the budget of the level of its global (task-483).
+const budget = taskCost.budgetAlert(data, globalId);
+if (budget) console.log(budget);

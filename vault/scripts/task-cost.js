@@ -7,6 +7,7 @@
 const fs = require('fs'), path = require('path'), { execSync } = require('child_process');
 const R = path.resolve(__dirname, '..', '..');
 const T = path.join(R, 'vault', 'reference', 'tasks');
+const LEVELS = path.join(R, 'vault', 'reference', 'agents', 'verification-levels.md');
 const r0 = n => Math.round(n);
 const k = n => Math.round(n / 1000) + 'k';
 const Mu = n => (n / 1e6).toFixed(2);
@@ -42,7 +43,31 @@ function write(data, ids) {
   }
   return changed;
 }
-module.exports = { write };
+
+// Budget of a verification level: read from the table of the rule node verification-levels, the only place the figures live.
+function budgetOf(level) {
+  const row = fs.readFileSync(LEVELS, 'utf8').split(/\r?\n/).map(l => l.match(/^\|\s*([a-z]+)\s*\|.*\|\s*(\d+) turns, (\d*\.?\d+) M units\s*\|\s*$/)).find(m => m && m[1] === level);
+  return row ? { turns: +row[2], unitsM: +row[3] } : null;
+}
+
+// ALERT line when the executor run of a global, as far as it has gone, has passed the turns or the units of its level's budget;
+// null otherwise, and for a global without a level or without an executor run. Never throws: the alert must not block a closing.
+function budgetAlert(data, id) {
+  const num = id.split('-')[1], task = 'task-' + num;
+  try {
+    const t = data.tasks.find(x => x.task === task);
+    const f = fs.readdirSync(T).find(x => new RegExp('^task-' + num + '-.*\\.md$').test(x));
+    if (!t || !t.pilotAgents || !f) return null;
+    const m = fs.readFileSync(path.join(T, f), 'utf8').match(/^- verification_level: ([a-z]+)\s*$/m);
+    if (!m || m[1] === 'open') return null;
+    const b = budgetOf(m[1]);
+    if (!b) return `ALERT ${task}: level ${m[1]} has no budget in verification-levels, executor run not compared`;
+    const unitsM = parseFloat(Mu(t.pilot.units)); // same rounded figure as the executor_usage line
+    if (t.pilot.calls <= b.turns && unitsM <= b.unitsM) return null;
+    return `ALERT ${task}: executor run over the budget of level ${m[1]} (${b.turns} turns, ${b.unitsM} M units): ${t.pilot.calls} turns, ${Mu(t.pilot.units)} M units so far; write the cause in result and list it in the final report`;
+  } catch (e) { return `ALERT ${task}: budget not compared (${e.message})`; }
+}
+module.exports = { write, budgetAlert };
 
 if (require.main === module) {
   const args = process.argv.slice(2);

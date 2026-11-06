@@ -39,7 +39,7 @@ The Executor launches only `style-guide` since owner 2026-11-05 ([[agent-executo
 
 ## Closing a subtask
 1. Check the result against `done_when`.
-2. `node vault/scripts/task-next.js <global> <subtask> <runs> "<result>" [<next-global> <next-subtask>]`: records the cost, closes the subtask (and the global when it was the last one), starts the next one, lints and commits only those vault files. Pass the same global as next to continue its next subtask. Same filtered output and `left:` lines as `task-start.js`; the last line is `next: <absolute path of next-global/next-subtask.md>` or `next: none`. It prints an ALERT line per budget overrun (units over `token_ceiling`, large start context, turn limit, resume): write the cause in the subtask `result` and tell the main session. `task-status.js` refuses `status=done` on a subtask whose `tokens` is still `open`.
+2. `node vault/scripts/task-next.js <global> <subtask> <runs> "<result>" [<next-global> <next-subtask>]`: records the cost, closes the subtask (and the global when it was the last one), starts the next one, lints and commits only those vault files. Pass the same global as next to continue its next subtask. Same filtered output and `left:` lines as `task-start.js`; the last line is `next: <absolute path of next-global/next-subtask.md>` or `next: none`. It prints an ALERT line per budget overrun (units over `token_ceiling`, large start context, turn limit, resume, executor run over the budget of the level of the global, read from the table of [[verification-levels]]; it never blocks the closing): write the cause in the subtask `result` and tell the main session. `task-status.js` refuses `status=done` on a subtask whose `tokens` is still `open`.
 3. `node vault/scripts/crew-board.js "<note in French>"` writes `Saved/CrewBoard/crew-board.html`; publish it as an artifact for the owner when asked.
 
 ## Pitfalls
@@ -52,3 +52,4 @@ Script, git, editor, shell and permission pitfalls: [[orchestrator-script-quirks
 - [[cost-log]] — filled by record-cost.js.
 - [[orchestrator-script-quirks]] — defects of the scripts used here and their workarounds.
 - [[agent-doc]] — the agent the doc brief goes to.
+- [[verification-levels]] — the budget table the closing alert reads.
