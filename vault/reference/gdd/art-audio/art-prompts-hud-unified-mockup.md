@@ -1,6 +1,6 @@
 ---
 id: art-prompts-hud-unified-mockup
-description: "Unified in-game HUD mockups (task-451), radar frame (task-457) and alert bar sprites (task-453): Kie.ai prompts, runs, credits, critic reviews, candidates, owner choice, what 452-458 take."
+description: "Unified HUD mockups (task-451), radar, alert bar, bottom panel and XP frame sprites (453, 457, 461): Kie.ai prompts, runs, credits, critic reviews, labels, margins."
 parent: art-prompts
 kind: note
 ---
@@ -63,6 +63,22 @@ The retained image is the layout and look reference; every piece uses one frame 
 ## Weapon slot frame sprite (task-458-01)
 - No new sprite, no Kie.ai run, no credit (main session 2026-11-05: reuse a kept sprite that fits, as task-452 did). Each slot frame of the mockup (dark inside, gunmetal edges with small rivets, teal chamfered corner plates, rust chips) is the look of the owner-retained `Art/UI/LevelEnd/T_LevelEnd_Frame.png` (942 x 458 RGBA, keyed, task-380-02, [[art-prompts-level-end-screen-mockup]]), imported as `/Game/RogueRigs/UI/LevelEnd/T_LevelEnd_Frame`; its Draw As Box margins are measured there (0.0955 / 0.1878).
 - The bolted base around the four slots reuses `T_Shop_ButtonReroll`, the plate of the health panel (task-452), so the health plate and the slot row read as one block.
+
+## Bottom panel and XP frame sprites (task-461-01)
+- Q37 (owner "ok" 2026-11-06): two new Kie.ai sheets from the retained mockup, 2 variants each, critic keeps the closest. GPT Image 2 image-to-image, 16:9, 1K, magenta key, 24 credits.
+- Prompt `prompts/09-bottom-panel.txt` (run `20261105-202435-hud-unified`): one empty riveted panel (health and four slots go inside in UMG) and one slot well. Refs: 2.4x crop of the mockup bottom-centre piece (Image 1, temporary, `Saved/Scratch/hud-bottom/mockup-panel-crop.png`), the mockup (Image 2).
+- Prompt `prompts/10-xp-frame.txt` (run `20261105-202647-hud-unified`): XP bar frame with a hollow track window, and an empty level plate. Refs: 2.8x crop of the mockup bottom-left (temporary, `Saved/Scratch/hud-bottom/mockup-xp-crop.png`), the mockup.
+- Sheets split and keyed with `Tools/art/ui_icon_prepare.js --keep-aspect`, `--check` clean (no magenta, no pink spill).
+- Critic (`<run-id>.review.json`): all four pass A1, A2, A6, A7, A14, colour code, readability. Picks c1 on both runs (closest to the mockup: darker gunmetal, rust streaks). Notes: rivets along the panel long edges stretch in a 9-slice (drawn near the source aspect to limit it); the XP frame teal is lighter than the panel.
+- Labels: keep = `20261105-202435-hud-unified-1.png`, `20261105-202647-hud-unified-1.png`, their logs, reviews and prompts 09, 10; temporary = both `-2.png`, moved to `Saved/Scratch/hud-unified/`, and the cut candidates in `Saved/Scratch/hud-bottom/`.
+- Cut-outs in `Art/UI/HUD/` (RGBA), Draw As Box margins measured on the image:
+
+| Texture | Size | Margins L/R, T/B | Inside |
+|---|---|---|---|
+| T_HUD_BottomPanel | 1024 x 273 | 0.095, 0.28 | dark plate face |
+| T_HUD_SlotWell | 512 x 198 | 0.14, 0.28 | near-black |
+| T_HUD_XPFrame | 1600 x 153 | 0.06, 0.3 | transparent track window y 43..109 |
+| T_HUD_LevelCap | 512 x 179 | 0.2, 0.3 | near-black |
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.

@@ -1,0 +1,38 @@
+{
+  "run_id": "20261105-202435-hud-unified",
+  "asset": "hud-unified",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/hud-unified/prompts/09-bottom-panel.txt",
+  "prompt": "Image 1 is a close crop of the bottom-centre HUD piece of Image 2, a full game HUD mockup; both are visual references only. Redraw, as a clean own version at high resolution, two separate UI sprites on one sheet, far apart from each other.\n\nSprite 1, in the upper two thirds of the sheet: ONLY the outer riveted metal panel of Image 1 that holds the health bar and the four weapon slots, alone and EMPTY. One continuous wide rectangular riveted gunmetal plate with chamfered corners, a thick raised rim with worn teal trims, faceted bolts at the four corners and small rivets spaced evenly along the rim, light rust chips and chamfered edges, as in Image 1. Inside the rim the face of the plate is one flat, even, plain dark gunmetal surface with no window, no bar, no slot, no divider, no icon, no text, no pattern. The panel is about four and a half times wider than tall and spans about 90 percent of the sheet width.\n\nSprite 2, in the lower third of the sheet, centred, alone: ONLY one weapon slot well of Image 1, empty: a recessed rectangular window about one and a half times wider than tall, a thin worn gunmetal rim with small teal corner brackets and a tiny rivet in each corner, and a flat, even, near-black inside with nothing in it: no weapon, no padlock, no bar. It is about one quarter of the sheet height.\n\nFlat-shaded low-poly look, visible facets, strong directional light with lifted shadows so everything stays readable. Everything outside the two sprites is flat magenta FF00FF: no scene, no crystals, no shadow, no glow. No text, no letters, no numbers, no icons, no characters.",
+  "refs": [
+    "Saved/Scratch/hud-bottom/mockup-panel-crop.png",
+    "Art/Source/hud-unified/20261105-152627-hud-unified-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "ecc04e16b05dd055330973ec7cf52789",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_0000000011a081f8ba7c45e5458a1d73.png"
+      ]
+    },
+    {
+      "task_id": "0e53992d0af38526f7a4c2b2723c4efd",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/a2/0e53992d0af38526f7a4c2b2723c4efd_1793939185344.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/hud-unified/20261105-202435-hud-unified-1.png",
+    "Art/Source/hud-unified/20261105-202435-hud-unified-2.png"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "run_id": "20261105-202435-hud-unified",
+  "reference": "Art/Source/hud-unified/20261105-152627-hud-unified-1.png (direction A), crop Saved/Scratch/hud-bottom/mockup-panel-crop.png",
+  "entity_node": "none named in the brief; closeness judged against the retained mockup only",
+  "items": [
+    {
+      "file": "Art/Source/hud-unified/20261105-202435-hud-unified-1.png",
+      "cutouts": ["Saved/Scratch/hud-bottom/T_HUD_BottomPanel-c1.png", "Saved/Scratch/hud-bottom/T_HUD_SlotWell-c1.png"],
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Desaturated teal gunmetal plates with chamfered outer and inner corners, hex corner bolts, domed rivets, rust chips and streaks, flat dark insides, no text; facets read on every bevel.",
+      "correction": null,
+      "rule_checks": [
+        { "rule": "A1", "verdict": "pass", "note": "painted metal allowed (level 3); bevel facets stay visible, nothing smoothed into blobs" },
+        { "rule": "A2", "verdict": "pass", "note": "rigid plates, bolts and rivets only" },
+        { "rule": "A6", "verdict": "pass", "note": "worn teal plates, rust chips, rivets: Rigs-side wear" },
+        { "rule": "A7", "verdict": "pass", "note": "no red, acid green, steel blue or company yellow; the grey-teal stays teal, not steel blue" },
+        { "rule": "A14", "verdict": "pass", "note": "no text or caption anywhere" },
+        { "rule": "color-code", "verdict": "pass", "note": "player-side teal + rust; rust is a detail colour" },
+        { "rule": "readability-rules", "verdict": "pass", "note": "dark insides leave room for the green health fill, icons and red reload bars" }
+      ],
+      "not_applicable": "A3-A5, A8-A13, A15-A18 (UI sprite, not a robot, effect, scene or 3D source)",
+      "closeness_to_mockup": "high for the panel: same dark gunmetal-teal value, rust streak pattern, hex bolts on chamfered corner plates and slim trims as the mockup. Differences: the mockup bottom block is two-tier (health strip above the slot row, with a step in the outline); this is a single frame, which is fine if UMG builds the two tiers. Slot well: chamfered octagonal window, while the mockup slot wells have a rounded-rectangle window with a thin inner bevel (c2 is closer on that point).",
+      "nine_slice": "Panel: 8 evenly spaced rivets on each long edge sit in the stretched middle band, so they will smear into ovals and spread apart when the panel is wider than the source; the side plates carry their rivets near the corners (keep them inside the corner margins, about 130 px at 1024 wide). Slot well: one rivet in the middle of each short side, fine at native size, stretched if the slot height changes."
+    },
+    {
+      "file": "Art/Source/hud-unified/20261105-202435-hud-unified-2.png",
+      "cutouts": ["Saved/Scratch/hud-bottom/T_HUD_BottomPanel-c2.png", "Saved/Scratch/hud-bottom/T_HUD_SlotWell-c2.png"],
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Chunky cel-shaded teal plates with heavy black outline, copper rivets, rust chips and dark insides; no rule broken, but it drifts from the mockup look.",
+      "correction": null,
+      "rule_checks": [
+        { "rule": "A1", "verdict": "pass", "note": "large flat facets, clearly visible" },
+        { "rule": "A2", "verdict": "pass", "note": "rigid plates and rivets" },
+        { "rule": "A6", "verdict": "pass", "note": "worn teal, rust chips, rivets" },
+        { "rule": "A7", "verdict": "pass", "note": "copper rivets read as rust/brass detail, not orange 'explodes' main colour; no enemy colours" },
+        { "rule": "A14", "verdict": "pass", "note": "no text" },
+        { "rule": "color-code", "verdict": "pass", "note": "teal + rust, brighter teal than c1" },
+        { "rule": "readability-rules", "verdict": "pass", "note": "dark insides" }
+      ],
+      "not_applicable": "A3-A5, A8-A13, A15-A18 (UI sprite)",
+      "closeness_to_mockup": "medium-low for the panel: bulging side tabs at the middle of each short edge and 4-5 rivet clusters at each corner are absent from the mockup; teal is lighter and more saturated, outline thicker and more cartoon than the mockup's painted gunmetal. Slot well: closest of the two to the mockup slot (rounded-rectangle window with an inner bevel, bolted corner plates), but its copper rivets and heavy outline do not match the c1 panel.",
+      "nine_slice": "Panel: evenly spaced rivets on the long edges (same smearing as c1); the side tabs sit in the middle of the vertical edges and will stretch if the panel height changes; the corner clusters force wide margins (about 120 px at 1024 wide). Slot well: one small rivet beside each corner bolt on the top and bottom edges falls just outside a tight corner margin."
+    }
+  ],
+  "pick": {
+    "file": "Art/Source/hud-unified/20261105-202435-hud-unified-1.png",
+    "why": "c1 panel matches the mockup palette, wear and bolt style closely and its slot well matches its panel; c2 slot well has the mockup's rounded window but clashes with c1 in outline weight and rivet colour.",
+    "ask_next_if_regenerated": "keep c1 as is but make the long top and bottom edges plain riveted-free trim (rivets only on the corner plates), and give the slot well a rounded-rectangle inner window with a thin inner bevel like the mockup"
+  }
+}

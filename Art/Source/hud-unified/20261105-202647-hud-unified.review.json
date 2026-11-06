@@ -1,0 +1,52 @@
+{
+  "run_id": "20261105-202647-hud-unified",
+  "reference": "Art/Source/hud-unified/20261105-152627-hud-unified-1.png (direction A), crop Saved/Scratch/hud-bottom/mockup-xp-crop.png",
+  "entity_node": "none named in the brief; closeness judged against the retained mockup only",
+  "items": [
+    {
+      "file": "Art/Source/hud-unified/20261105-202647-hud-unified-1.png",
+      "cutouts": ["Saved/Scratch/hud-bottom/T_HUD_XPFrame-c1.png", "Saved/Scratch/hud-bottom/T_HUD_LevelCap-c1.png"],
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Two thin faceted teal rails closed by chamfered end caps with two bolts each, plenty of orange rust chips, transparent track window; empty chamfered level plate with four corner bolts and a dark inside; no text.",
+      "correction": null,
+      "rule_checks": [
+        { "rule": "A1", "verdict": "pass", "note": "blotchy painted texture, but rail and cap bevels stay visible" },
+        { "rule": "A2", "verdict": "pass", "note": "rigid rails, plates, bolts" },
+        { "rule": "A6", "verdict": "pass", "note": "worn teal, rust chips" },
+        { "rule": "A7", "verdict": "pass", "note": "no enemy colours" },
+        { "rule": "A14", "verdict": "pass", "note": "level plate left empty, no text" },
+        { "rule": "color-code", "verdict": "pass", "note": "teal + rust" },
+        { "rule": "readability-rules", "verdict": "pass", "note": "frame does not compete with the track fill" }
+      ],
+      "not_applicable": "A3-A5, A8-A13, A15-A18 (UI sprite)",
+      "closeness_to_mockup": "medium-high: rails and chamfered end caps follow the mockup XP bar, rust chips are orange like the mockup's. Differences: teal is lighter and more saturated than the mockup's dark gunmetal-teal (and than run 20261105-202435 c1, so the XP bar would look brighter than the panel above it); the mockup's mid-rail bolted clamps are absent (good for 9-slice). Level plate: chamfered octagon like the mockup, but the mockup has extra small rivets on the short sides and a rounded inner window.",
+      "nine_slice": "Good: rails are uniform along their length and bolts sit only in the end caps, so horizontal stretch is clean; keep the horizontal margins at the cap width (about 90 px at 1600 wide). Level plate: bolts only in the corners, plain edges, stretches cleanly both ways."
+    },
+    {
+      "file": "Art/Source/hud-unified/20261105-202647-hud-unified-2.png",
+      "cutouts": ["Saved/Scratch/hud-bottom/T_HUD_XPFrame-c2.png", "Saved/Scratch/hud-bottom/T_HUD_LevelCap-c2.png"],
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Same rail-and-cap frame with four brass bolts per cap and an eight-bolt level plate; cleaner, lighter teal with sparse tan rust; no rule broken.",
+      "correction": null,
+      "rule_checks": [
+        { "rule": "A1", "verdict": "pass", "note": "crisp bevels, facets visible" },
+        { "rule": "A2", "verdict": "pass", "note": "rigid parts only" },
+        { "rule": "A6", "verdict": "pass", "note": "teal with rust stains, though wear is lighter than the mockup" },
+        { "rule": "A7", "verdict": "pass", "note": "brass bolts are a small detail; no enemy colours" },
+        { "rule": "A14", "verdict": "pass", "note": "no text" },
+        { "rule": "color-code", "verdict": "pass", "note": "teal + rust" },
+        { "rule": "readability-rules", "verdict": "pass", "note": "frame does not compete with the track fill" }
+      ],
+      "not_applicable": "A3-A5, A8-A13, A15-A18 (UI sprite)",
+      "closeness_to_mockup": "medium: the eight-bolt level plate is closer to the mockup's bolt count, but the rails are the brightest, cleanest teal of all candidates and the rust reads as pale tan stains rather than the mockup's orange chips, so it looks less worn and further from both the mockup and the run 1 pick.",
+      "nine_slice": "XP frame: as c1, clean horizontal stretch; the caps' four stacked bolts need the full cap height inside the vertical margins (fine if the bar height stays fixed). Level plate: the side bolts sit on the short vertical edges and stretch if the plate height changes; horizontal edges are plain and stretch cleanly."
+    }
+  ],
+  "pick": {
+    "file": "Art/Source/hud-unified/20261105-202647-hud-unified-1.png",
+    "why": "its orange rust chips and wear are closer to the mockup and to the run 1 pick; c2 is cleaner and paler-rusted.",
+    "ask_next_if_regenerated": "darken and desaturate the teal toward the dark gunmetal-teal of the mockup and of panel c1 so the XP bar matches the bottom panel"
+  }
+}
