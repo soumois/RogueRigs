@@ -3,7 +3,7 @@ id: task-464-player-shot-colour
 description: "Global task: Player laser shots and muzzle flashes (rifle, turrets) turn a varied green from the owner reference; shotgun and enemy shots unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Player shot colour
 
@@ -14,7 +14,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-06, "Ok, tout par défaut")
 - milestone: M2
 - next_step: task-464-01-rifle-laser-green
-- started: open
+- started: 2026-11-06T08:53:11Z
 - waiting_for: none
 - executor_tokens: none (no executor run)
 - executor_usage: none
