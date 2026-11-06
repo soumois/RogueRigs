@@ -414,6 +414,7 @@ sys-text-content  reference/tech/systems/ui/sys-text-content.md
 sys-turret  reference/tech/systems/combat/sys-turret.md
 sys-upgrades  reference/tech/systems/core/sys-upgrades.md
 sys-weapons  reference/tech/systems/combat/sys-weapons.md
+sys-weapons-aim-assist  reference/tech/systems/combat/sys-weapons/sys-weapons-aim-assist.md
 sys-weapons-shotgun  reference/tech/systems/combat/sys-weapons/sys-weapons-shotgun.md
 sys-world-queries  reference/tech/systems/core/sys-world-queries.md
 systems-combat-index  reference/tech/systems/combat/systems-combat-index.md
