@@ -3,7 +3,7 @@ id: task-467-04-xp-rail
 description: "Bp: The XP bar becomes a thin straight rail along the bottom edge with a framed Lv plate and clearly visible ticks."
 parent: task-467-bottom-hud-match-target
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:16:07Z
 - waiting_for: none
 - result: open
 
