@@ -3,7 +3,7 @@ id: task-455-xp-bar-ticks
 description: "Global task: Thin light ticks split the XP bar into 5 equal parts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # XP bar split in 5 by light ticks
 
@@ -24,7 +24,7 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
 - next_step: task-455-01-ticks
-- started: open
+- started: 2026-11-06T00:57:36Z
 - waiting_for: none
 - result: open
 

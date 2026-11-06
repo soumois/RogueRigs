@@ -3,7 +3,7 @@ id: task-455-01-ticks
 description: "Bp: The XP bar shows the 5-part ticks."
 parent: task-455-xp-bar-ticks
 kind: task
-status: todo
+status: in-progress
 ---
 # XP bar split in 5 by light ticks: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T00:57:36Z
 - waiting_for: none
 - result: open
 

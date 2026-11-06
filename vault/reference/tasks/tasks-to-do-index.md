@@ -11,7 +11,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 
-- [[task-455-xp-bar-ticks]] — Thin light ticks split the XP bar into 5 equal parts. Status todo.
+- [[task-455-xp-bar-ticks]] — Thin light ticks split the XP bar into 5 equal parts. Status in-progress.
 - [[task-456-xp-gain-ghost]] — On an XP gain a pale ghost fill shows the new XP at once and the cyan fill catches up, the mirror of the health damage chunk. Status todo.
 - [[task-458-weapon-slots-style]] — The frames of the 4 weapon slots take the retained unified look; their contents stay. Status todo.
 
