@@ -86,15 +86,15 @@ The retained image is the layout and look reference; every piece uses one frame 
 - Prompt `prompts/12-xp-rail.txt` (run `20261106-015950-hud-unified`): straight rail with square ends and a hollow window, empty Lv plate. Refs: 3x crop of the mockup bottom-left (temporary, `Saved/Scratch/hud-467/target-xpleft-target.png`), the mockup.
 - Critic (style-guide, task-467-01): run A both pass; picks variant 1 (blue-grey gunmetal, small brass rivets). Run B variant 1 fails A1 (glossy tubes, chrome dome bolts); variant 2 passes and is picked. Notes: block frame thinner than the mockup; Lv plate has 4 rivets, the mockup 8.
 - Labels: keep = `20261106-015539-hud-unified-1.png`, `20261106-015950-hud-unified-2.png`, both logs, prompts 11, 12; temporary = `20261106-015539-hud-unified-2.png`, `20261106-015950-hud-unified-1.png` (moved to `Saved/Scratch/hud-unified/`), the split and cut candidates in `Saved/Scratch/hud-467/`.
-- Cut-outs in `Art/UI/HUD/` (`ui_icon_prepare.js --keep-aspect`, `--check` clean), Draw As Box margins measured on the image:
+- Cut-outs in `Art/UI/HUD/` (`ui_icon_prepare.js --keep-aspect`, margin 0.002 to 0.004, `--check` clean), cut at the pixel size they are drawn at 1080p: in game the Box border is drawn at the texture's own pixel size, not at the brush ImageSize (task-467-02 capture; the 461 sprites, 512 to 1600 px wide, drew huge borders and bolts for this reason). Draw As Box margins measured on the image:
 
 | Texture | Size | Margins L/R, T/B | Inside |
 |---|---|---|---|
-| T_HUD_HealthStrip | 1024 x 112 | 0.035, 0.27 | transparent window y 27..84 |
-| T_HUD_BlockFrame | 1024 x 205 | 0.035, 0.18 | near-black |
-| T_HUD_SlotCell | 512 x 270 | 0.08, 0.15 | near-black |
-| T_HUD_XPRail | 1600 x 133 | 0.042, 0.35 | transparent window y 45..87 |
-| T_HUD_LevelPlate | 512 x 143 | 0.08, 0.25 | near-black |
+| T_HUD_HealthStrip | 470 x 45 | 0.028, 0.22 | transparent window y 9..35 |
+| T_HUD_BlockFrame | 750 x 141 | 0.03, 0.16 | near-black |
+| T_HUD_SlotCell | 160 x 82 | 0.075, 0.15 | near-black |
+| T_HUD_XPRail | 840 x 58 | 0.031, 0.31 | transparent window y 18..40 |
+| T_HUD_LevelPlate | 216 x 55 | 0.065, 0.22 | near-black |
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
