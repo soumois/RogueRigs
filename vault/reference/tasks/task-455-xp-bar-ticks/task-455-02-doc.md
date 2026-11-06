@@ -3,7 +3,7 @@ id: task-455-02-doc
 description: "Doc: Docs describe the ticks."
 parent: task-455-xp-bar-ticks
 kind: task
-status: in-progress
+status: done
 ---
 # XP bar split in 5 by light ticks: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: Anchors listed per umg-layout; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-455
+- usage: included in the executor run of task-455
+- runs: 1
 - milestone: M2
 - started: 2026-11-06T00:59:49Z
 - waiting_for: none
-- result: open
+- result: Commit 6ee90430: wbp-xp-status updated (tree XPBarArea > XPBar + XPTick20/40/60/80, ticks decision Q31, anchors table per umg-layout for each widget, verified line, umg-layout relation). Lint clean.
 
 ## Relations
 - [[task-455-xp-bar-ticks]] — parent global task.

@@ -1,9 +1,9 @@
 ---
 id: task-455-xp-bar-ticks
 description: "Global task: Thin light ticks split the XP bar into 5 equal parts."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # XP bar split in 5 by light ticks
 
@@ -23,10 +23,10 @@ Le but va d'être faire une interface unifiée plutôt que chaque des petits mor
 - gdd_check: Read xp-level-up (HUD: cyan XP bar across the bottom, level on its left). No conflict; xp-level-up edited at confirmation. "par 5" has two readings, asked as Q31.
 - confirmed_by_owner: yes (2026-11-05, "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )")
 - milestone: M2
-- next_step: task-455-02-doc
+- next_step: none
 - started: 2026-11-06T00:57:36Z
 - waiting_for: none
-- result: open
+- result: Done. Commit 6ee90430: wbp-xp-status updated (tree XPBarArea > XPBar + XPTick20/40/60/80, ticks decision Q31, anchors table per umg-layout for each widget, verified line, umg-layout relation). Lint clean.
 
 ## Questions
 Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le radar devra englober le nombre de minerai. ( voir ex en image ) Je répéte, c'est un exemple, pas à reprendre tel quel. Ok pour le reste ( les valeurs par défaut )"): every default below is accepted; values provisional, owner 2026-11-05.
@@ -37,6 +37,6 @@ Decided 2026-11-05 (owner "Q33 - Pas dedans, il faudrait que ce qui enveloppe le
 2. task-455-02-doc (vault/reference/tasks/task-455-xp-bar-ticks/task-455-02-doc.md) — doc: Docs describe the ticks.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-455-01-ticks]] — step 1, bp.
 - [[task-455-02-doc]] — step 2, doc.
