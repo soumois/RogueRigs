@@ -20,7 +20,7 @@ status: done
 - executor_usage: runs 1, turns 50, context start 17k peak 161k, resumes 1, 175 min, units 0.99 M
 - planning_tokens: input 28, cache write 44937, cache read 468603, output 11453
 - planning_usage: aca5bf7e "Plan aim assist request" 1/1 (tasks 463), units 0.16 M
-- result: Done. Commit 09ab3ce5. New node sys-weapons-aim-assist (child of sys-weapons): rules per bullet, AimAssistDeg column of WeaponStats.csv (0 = off), what is not affected, test RogueRigs.Weapons.AimAssist; sys-weapons links it in Decisions, data and Relations. Lint clean (0 problems).
+- result: Done, owner feel check pending. 463-01 (d7210d03): burst rifle bullets get the light aim assist, per bullet after the spread; AimAssistDeg column in WeaponStats.csv (rifle 5, shotgun 0, turret launcher 0; 0 = off); shot already on a robot or a barrel, robot outside the cone, beyond range or behind rock left unchanged; laser unchanged. Build ok, RogueRigs.Weapons 16/16 incl. new AimAssist test (near miss 3.79 deg -> 0.00, fired bullet hits). 463-02 (09ab3ce5): sys-weapons-aim-assist node. Feel unverified until the owner plays it.
 
 ## Questions
 Decided 2026-11-06 (owner "Je valide le choix, mais ne lance pas la tâche"): every default below is accepted; values provisional, owner 2026-11-06.
