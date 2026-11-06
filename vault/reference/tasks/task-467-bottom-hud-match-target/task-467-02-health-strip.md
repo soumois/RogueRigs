@@ -3,7 +3,7 @@ id: task-467-02-health-strip
 description: "Bp: the health bar becomes a thin framed strip on the slot row, its value text inside the green bar."
 parent: task-467-bottom-hud-match-target
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD reworked in a capture loop until it matches the target image: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:04:13Z
 - waiting_for: none
 - result: open
 

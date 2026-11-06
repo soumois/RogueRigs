@@ -14,11 +14,11 @@ status: in-progress
 - launch: launched by the owner ("Lance les task to do dans l'ordre"); the earlier "prepared only" no longer holds.
 - confirmed_by_owner: yes (2026-11-06, "Q4 Vérification finale : Tu fais l'écran en 1920 × 1080. Le reste par défaut. ne lance pas la tâche, prépare là")
 - milestone: M2
-- next_step: task-467-01-art
+- next_step: task-467-02-health-strip
 - started: 2026-11-06T09:54:24Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 72, cache write 114366, cache read 2757887, output 18611
+- executor_usage: runs 1, turns 35, context start 18k peak 126k, resumes 0, 10 min, units 0.51 M
 - planning_tokens: input 42, cache write 70246, cache read 976529, output 19786
 - planning_usage: acbae4b7 "Plan HUD bottom fix loop" 1/1 (tasks 467), units 0.28 M
 - result: open
