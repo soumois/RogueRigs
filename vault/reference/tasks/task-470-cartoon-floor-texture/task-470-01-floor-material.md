@@ -3,7 +3,7 @@ id: task-470-01-floor-material
 description: "Bp: The floor material shows image 1 as its painted colour at the flagstone size of image 2, no added relief."
 parent: task-470-cartoon-floor-texture
 kind: task
-status: todo
+status: in-progress
 ---
 # Floor uses the owner cartoon flagstone texture: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:33:53Z
 - waiting_for: none
 - result: open
 
