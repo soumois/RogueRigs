@@ -90,7 +90,7 @@
         "top_tris_0": 2,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -149,7 +149,7 @@
         "top_tris_0": 7,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -209,7 +209,7 @@
         "top_tris_0": 7,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -269,7 +269,7 @@
         "top_tris_0": 6,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -329,7 +329,7 @@
         "top_tris_0": 6,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -389,7 +389,7 @@
         "top_tris_0": 10,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -449,7 +449,7 @@
         "top_tris_0": 10,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -509,7 +509,7 @@
         "top_tris_0": 14,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [
@@ -569,7 +569,7 @@
         "top_tris_0": 14,
         "inconsistent_faces": 0,
         "pass": true,
-        "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"
+        "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"
       },
       "all_flat_shaded": true,
       "top_and_chamfer_z": [

@@ -7,9 +7,11 @@ Canonical orientations (Blender axes, corners A(-,-) B(+,-) C(+,+) D(-,+)); the 
 Seams: every outline crosses a piece border at the middle of the border, perpendicular to it, and the side rows and the chamfer
 inner point at that crossing are fixed offsets along the border (no jitter), so any two pieces and variants share exact vertices.
 Top edge (task-480): the outer edge of the top drops CHAMFER_H along the outline (same outline seen from above, top height kept) and
-rises to the top over RIM_W inward; these chamfer triangles carry vertex colour R = 1 (the emissive mark of M_RockSlab).
+rises to the top over RIM_W inward; these chamfer triangles carry vertex colour R = 1 (the emissive mark of M_RockSlab) and B going from
+0 at the top to 1 at the outer edge (position across the chamfer).
 Sides (task-480): large facets of irregular width between columns on outline vertices, interior columns offset and skewed, end
-columns fixed. Side faces carry G = 1 and a per-facet random value in R that M_RockSlab turns into the facet tint."""
+columns fixed. Side faces carry G = 1, a per-facet random value in R that M_RockSlab turns into the facet tint, and B = 1 - z / TOP
+(foot darkening). The material reads these instead of world heights: ObjectPositionWS does not give the piece height reliably."""
 import bpy, bmesh, math, os, sys, json, random
 from mathutils import Vector, Euler
 
@@ -198,7 +200,12 @@ def build_piece(shape, variant=1, flat_rim=False):
     outlines = outline_pts(shape, n)
     body_chains = []
     for pts, ref in outlines:
-        ins = inward_normals(pts, ref)
+        raw_ins = inward_normals(pts, ref)
+        # the test against ref can turn a normal outward where the wobble leans far from ref (a chamfer wing outside the outline):
+        # along the chain each normal keeps the side of the previous one. The flat footprint of the broken cut keeps the raw normals.
+        ins = [raw_ins[0]]
+        for nn in raw_ins[1:]:
+            ins.append(nn if nn.dot(ins[-1]) >= 0 else -nn)
         # variant 2 draws after variant 1 from the same stream, so it never repeats its columns
         cols = None
         for v in range(1, variant + 1):
@@ -209,7 +216,7 @@ def build_piece(shape, variant=1, flat_rim=False):
         zp = TOP if flat_rim else Z_CHAMFER
         P = [Vector((p.x, p.y, zp)) for p in pts]
         rw = RIM_FLAT_W if flat_rim else RIM_W
-        Q = [Vector((p.x + rw * nn.x, p.y + rw * nn.y, TOP)) for p, nn in zip(pts, ins)]
+        Q = [Vector((p.x + rw * nn.x, p.y + rw * nn.y, TOP)) for p, nn in zip(pts, raw_ins if flat_rim else ins)]
         def at(i, off, tx, z):
             p, nn = pts[i], ins[i]
             tang = Vector((-nn.y, nn.x))
@@ -222,7 +229,10 @@ def build_piece(shape, variant=1, flat_rim=False):
                 dl, dm, df, dz, tm, tf, ridge = state[i]
                 col[i] = (at(i, LIP_OFF + dl + ridge, 0.0, Z_CHAMFER - LIP_DROP), at(i, ROW_OFF[1] + dm + ridge, tm, ROW_Z_MID + dz), at(i, ROW_OFF[2] + df + ridge, tf, 0.0))
         for i in range(n):
-            b.face([P[i], P[i + 1], Q[i + 1], Q[i]], RIMC, up=1, kind="rim")
+            fr = b.face([P[i], P[i + 1], Q[i + 1], Q[i]], RIMC, up=1, kind="rim")
+            if not flat_rim:
+                for l in fr.loops:
+                    l[b.col] = (1.0, 0.0, 1.0 if l.vert.co.z < TOP - 1e-3 else 0.0, 1.0)
         foot = [None] * (n + 1)
         for fi in range(len(cols) - 1):
             c0, c1 = cols[fi], cols[fi + 1]
@@ -233,17 +243,25 @@ def build_piece(shape, variant=1, flat_rim=False):
                 t = (i - c0) / (c1 - c0)
                 f = col[c0][2].lerp(col[c1][2], t)
                 foot[i] = (f.x, f.y)
+            # one winding for the whole facet, read from its large quad: a lip triangle can lean almost flat, and forcing each
+            # triangle outward by its own normal turned some of them face down, leaving a hole seen from above
+            e1, e2 = col[c1][0] - col[c0][0], col[c1][2] - col[c0][0]
+            flip = e1.cross(e2).dot(outd) < 0
+            def side_tri(tr):
+                fs = b.face(tr[::-1] if flip else tr, colr, kind="side")
+                for l in fs.loops:
+                    l[b.col] = (colr[0], 1.0, 1.0 - l.vert.co.z / TOP, 1.0)
             # lip: the outline polyline fans onto the straight start of the facet, just under the chamfer
             m = (c0 + c1) // 2
             for i in range(c0, c1):
-                b.face([P[i], P[i + 1], col[c0][0] if i < m else col[c1][0]], colr, out=outd, kind="side")
-            b.face([P[m], col[c0][0], col[c1][0]], colr, out=outd, kind="side")
+                side_tri([P[i], P[i + 1], col[c0][0] if i < m else col[c1][0]])
+            side_tri([P[m], col[c1][0], col[c0][0]])
             # the facet itself: two rows, the kink height differs per column
             for r in range(2):
                 a0, a1, b0, b1 = col[c0][r], col[c1][r], col[c0][r + 1], col[c1][r + 1]
                 tris = ([a0, a1, b1], [a0, b1, b0]) if (fi + r) % 2 == 0 else ([a0, a1, b0], [a1, b1, b0])
                 for tr in tris:
-                    b.face(tr, colr, out=outd, kind="side")
+                    side_tri(tr)
         for i in cols:
             b.seam_pts += [tuple(v) for v in col[i]]
         b.seam_pts += [tuple(v) for v in P] + [tuple(v) for v in Q]
@@ -357,10 +375,10 @@ def main():
         ca = me.color_attributes["Color"].data
         bad = 0; rim_tris = side_tris = top_tris = 0
         for p in me.polygons:
-            cs = [tuple(round(c, 3) for c in ca[li].color[:3]) for li in p.loop_indices]
+            cs = [tuple(round(c, 3) for c in ca[li].color[:2]) for li in p.loop_indices]     # B varies inside a face
             if len(set(cs)) != 1:
                 bad += 1
-            r, g, _ = cs[0]
+            r, g = cs[0]
             if g == 1: side_tris += 1
             elif r == 1 and g == 0: rim_tris += 1
             elif r == 0 and g == 0: top_tris += 1
@@ -398,7 +416,7 @@ def main():
             "uv_checks": {"UVMap": "planar top-down projection, x and y / 100 (world position drives the top in the material)",
                           "LightMap": {"triangles": tris, "overlapping_pairs": overlaps, "bounds": [round(bmin, 4), round(bmax, 4)], "min_gap_px_at_256": round(mingap * 256, 3), "min_border_px_at_256": round(min(bmin, 1 - bmax) * 256, 3), "pass": bool(uv_ok)}},
             "vertex_colour": {"attribute": "Color (corner, float)", "export": "colors_type=LINEAR", "rim_tris_R1": rim_tris, "side_tris_G1": side_tris, "top_tris_0": top_tris, "inconsistent_faces": bad, "pass": bad == 0,
-                              "rule": "R=1, G=0 only on the chamfer along the outline; G=1 only on side faces, whose R is the facet random value; top body 0,0"},
+                              "rule": "R=1, G=0 only on the chamfer along the outline, B = position across it (0 top, 1 outer edge); G=1 only on side faces, R = facet random value, B = 1 - z / 100; top body 0,0,0"},
             "all_flat_shaded": all(not p.use_smooth for p in me.polygons),
             "top_and_chamfer_z": sorted(set(round(me.vertices[i].co.z, 4) for p in me.polygons if ca[p.loop_indices[0]].color[1] < 0.5 for i in p.vertices)),
             "outline_seen_from_above": "the chamfer foot is the outline of task-230-02 (outline_pts unchanged)",
