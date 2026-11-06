@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UI/RRHUDPanelWidget.h"
 #include "UI/RRHUDWidget.h"
+#include "UI/RRXPStatusWidget.h"
 #include "RRTestHUDWidget.generated.h"
 
 /**
@@ -51,6 +52,13 @@ protected:
 /** Native HUD panel for the tests: URRHUDPanelWidget counts its Bind hook calls (GetMinerBindCount...). Never used by gameplay code. */
 UCLASS(Transient, NotBlueprintable, NotBlueprintType, HideDropdown)
 class ROGUERIGS_API URRTestHUDPanelWidget : public URRHUDPanelWidget
+{
+	GENERATED_BODY()
+};
+
+/** Native XP status panel for the tests (URRXPStatusWidget is Abstract, its Blueprint is WBP_XPStatus). Never used by gameplay code. */
+UCLASS(Transient, NotBlueprintable, NotBlueprintType, HideDropdown)
+class ROGUERIGS_API URRTestXPStatusWidget : public URRXPStatusWidget
 {
 	GENERATED_BODY()
 };
