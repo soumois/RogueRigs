@@ -13,11 +13,11 @@ status: in-progress
 - gdd_check: Read visual-style, art-style-guide (A12, A13), color-code, readability-rules, rock-look-reference, handover-2026-10-21-lighting-floor (floor task-273, light history). Conflicts (owner said the request goes against the vault): visual-style floor line and A13 (task-273 cracked faceted plates) are replaced by image 1; "plus cartoon" recorded as direction in visual-style (Q1). Edits in the spec apply on confirmation. No open value used. No code read; Art/Source listed only to place the owner images (image 1 kept as Art/Source/floor-texture/owner-2026-11-05-floor-cartoon.webp, image 2 kept as Art/Source/cartoon-look/reference/owner-2026-11-05-ingame-light-walls.webp) and to compare image 2 with the 2026-11-06 owner in-game capture Art/Source/hud-unified/reference/owner-hud-ingame-2026-11-06.webp (current walls grey-violet with no orange rim). Order of the four globals: 470 floor, 471 walls, 472 shadows, 473 light (light is calibrated last on the final floor and walls). task-466 in progress (extractor FX) does not touch floor, walls, shadows or the miner light.
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-470-01-floor-material
+- next_step: task-470-02-capture
 - started: 2026-11-06T10:33:53Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 56, cache write 88171, cache read 1786859, output 19805
+- executor_usage: runs 1, turns 28, context start 18k peak 100k, resumes 0, 5 min, units 0.39 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open

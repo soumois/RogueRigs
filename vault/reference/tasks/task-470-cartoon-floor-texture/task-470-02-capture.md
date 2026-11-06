@@ -3,7 +3,7 @@ id: task-470-02-capture
 description: "Capture: Check the new floor in game against image 2 and the look before."
 parent: task-470-cartoon-floor-texture
 kind: task
-status: todo
+status: in-progress
 ---
 # Floor uses the owner cartoon flagstone texture: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T10:39:04Z
 - waiting_for: none
 - result: open
 
