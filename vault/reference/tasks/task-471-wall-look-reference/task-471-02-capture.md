@@ -3,7 +3,7 @@ id: task-471-02-capture
 description: "Capture: Final independent check of the walls against image 2."
 parent: task-471-wall-look-reference
 kind: task
-status: todo
+status: in-progress
 ---
 # Walls look like the owner in-game reference: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T17:51:01Z
 - waiting_for: none
 - result: open
 

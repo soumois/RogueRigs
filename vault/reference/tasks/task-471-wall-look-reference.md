@@ -14,11 +14,11 @@ status: in-progress
 - gdd_check: Read visual-style, color-code (breakable rock row), readability-rules ("orange means explodes", terrain separates by brightness), rock-look-reference (DRGS slab with a lighter rim, dark crystalline columns), art-style-guide. Conflicts: color-code rock "light grey tinted violet" -> lilac-violet; readability "Orange means explodes" vs an orange rim on walls (Q3); edits in the spec apply on confirmation. Reading of "ré-obtenir": the 2026-11-06 owner in-game capture Art/Source/hud-unified/reference/owner-hud-ingame-2026-11-06.webp shows grey-violet tops, plain dark sides and no orange rim, and image 2 shows the same HUD state, so image 2 may be a retouched target rather than an older build (Q1). No code read. Runs after task-470 (floor) because the wall-floor contrast is judged on the new floor.
 - confirmed_by_owner: yes (2026-11-06, "Mur : Q1 : voir image. Rélevé légerement les mur ( il faut que ça fasse la taille du joueur - Mais réduit la taille du joueur de 10 pourcent ). Ok pour tout le reste")
 - milestone: M2
-- next_step: task-471-01-wall-match-loop
-- started: 2026-11-06T17:31:35Z
+- next_step: task-471-02-capture
+- started: 2026-11-06T17:51:01Z
 - waiting_for: none
-- executor_tokens: none (no executor run)
-- executor_usage: none
+- executor_tokens: input 150, cache write 205187, cache read 7149158, output 47910
+- executor_usage: runs 2, turns 74, context start 17k peak 187k, resumes 1, 20 min, units 1.21 M
 - planning_tokens: input 9, cache write 16900, cache read 306744, output 7019
 - planning_usage: adacf5eb "Plan cartoon art direction change" 1/6 (tasks 470, 471, 472, 473, 474, 475), units 0.09 M
 - result: open
