@@ -9,7 +9,7 @@ solid blocks (about 10 per 67 x 67 cell of area, a minimum inscribed size, seeds
     end points are the intact ones); the broken top keeps the flat 4 uu rim footprint of task-230, so the cut does not change;
   - the only vertices allowed on a piece border are -H, -12, 0, 12, H on every side (the cut snaps to them), plus the rim ends
     already on the intact border, so neighbouring pieces match exactly; border faces exist too, so a block is closed on its own;
-  - the rim band is part of the block top: R = 1 on every top (task-480, no chamfer glow mark), side faces G = 1 with the block seed in R (facet tint of M_RockSlab), bottoms B = 1;
+  - the rim band is part of the block top: every top is (0, 0, 0) like an intact top (task-480, no chamfer glow mark), side faces G = 1 with the block seed in R (facet tint of M_RockSlab), bottoms B = 1;
   - per block rigid-motion data in UV2 (BlockA), UV3 (BlockB), UV4 (BlockC), see CHANNELS.
 The sag is NOT modelled: the material does it (WPO). It is simulated here for the previews only, block by block (rigid)."""
 import os, sys
@@ -39,7 +39,7 @@ CHANNELS = {
     "UV2 'BlockA'": "(block centre X / 100, block centre Y / 100) in piece-local XY (before the instance rotation) = the block pivot position; identical on every vertex of a block (top, sides, bottom)",
     "UV3 'BlockB'": "(block seed 0..1, block radius / 100) with radius = largest distance centre -> block top vertex; identical on every vertex of a block; every face belongs to a block (UV3.x >= 0 everywhere)",
     "UV4 'BlockC'": "(rim flag, block index / 16): rim flag 1 = the block touches the void outline (its wall faces the void and slumps), 0 = inner block; index = order of the block in the piece",
-    "vertex colour 'Color'": "R = 1 block tops including the rim band (no chamfer mark, task-480), G = 1 side faces with R = block seed (facet tint), B = 1 bottoms (all others 0)",
+    "vertex colour 'Color'": "(0, 0, 0) block tops including the rim band (no chamfer mark, task-480), G = 1 side faces with R = block seed (facet tint), B = 1 bottoms",
     "import": "enable full precision UVs in the Unreal static mesh import (UV2 holds values in [-0.5, 0.5], half precision would give ~0.05 uu error); keep 5 UV channels (UV0..UV4); the importer's auto lightmap channel must not overwrite UV4",
 }
 
@@ -390,7 +390,7 @@ def build_broken(shape, variant):
     for idx, blk in enumerate(blocks):
         sd = rng.random()
         for (p0, p1, p2, kind) in blk["tris"]:
-            tri3(((1.0, 0, 0),), [(p[0], p[1], TOP) for p in (p0, p1, p2)], blk, sd, idx, up=1, kind="top")
+            tri3(((0, 0, 0),), [(p[0], p[1], TOP) for p in (p0, p1, p2)], blk, sd, idx, up=1, kind="top")
         for (a, c) in blk["bnd"]:
             da, dc = foot_disp(a, outl), foot_disp(c, outl)
             A, C = (a[0], a[1], TOP), (c[0], c[1], TOP)
@@ -553,7 +553,7 @@ def main():
                 c = next(iter(cs))
                 zc = [me.vertices[i].co.z for i in p.vertices]
                 flat = max(zc) - min(zc) < 1e-4
-                if c == (1.0, 0.0, 0.0): cnt["R1"] += 1; bad += 0 if flat and p.normal.z > 0 and abs(zc[0] - TOP) < 1e-4 else 1
+                if c == (0.0, 0.0, 0.0): cnt["R1"] += 1; bad += 0 if flat and p.normal.z > 0 and abs(zc[0] - TOP) < 1e-4 else 1
                 elif c[1] == 1.0 and c[2] == 0.0: cnt["G"] += 1
                 elif c == (0.0, 0.0, 1.0): cnt["B"] += 1   # a skewed facet foot may fold a bottom triangle: hidden, so not an error
                 else: bad += 1
@@ -573,7 +573,7 @@ def main():
                 "bounds_min": [round(min(xs), 2), round(min(ys), 2), round(min(zs), 2)], "bounds_max": [round(max(xs), 2), round(max(ys), 2), round(max(zs), 2)],
                 "materials": ["M_RockSlab"], "uv_layers": [u.name for u in me.uv_layers],
                 "uv_checks": {"UVMap_planar_xy_over_100": bool(uv0_ok), "LightMap": uvc, "every_face_has_block_data": all(u3[l].uv[0] >= 0 for l in range(len(u3)))},
-                "vertex_colour": {"attribute": "Color (corner, float)", "export": "colors_type=LINEAR", "R1_block_tops": cnt["R1"], "G1_sides": cnt["G"], "B1_bottoms": cnt["B"],
+                "vertex_colour": {"attribute": "Color (corner, float)", "export": "colors_type=LINEAR", "block_tops_000": cnt["R1"], "G1_sides": cnt["G"], "B1_bottoms": cnt["B"],
                                   "inconsistent_faces": bad, "pass": bad == 0},
                 "closed_prisms": {"blocks": len(cl), "all_closed": all(c["closed"] for c in cl), "all_reach_z0": all(abs(c["z_min"]) < 1e-3 for c in cl),
                                   "all_top_at_100": all(abs(c["z_max"] - TOP) < 1e-3 for c in cl)},
@@ -724,7 +724,7 @@ def mat_broken():
         n = nt.nodes.new("ShaderNodeMath"); n.operation = "GREATER_THAN"; n.inputs[1].default_value = v
         nt.links.new(sep.outputs["Red"], n.inputs[0]); return n
     rimf, topf = gt(0.25), gt(0.75)
-    m1 = nt.nodes.new("ShaderNodeMix"); m1.data_type = "RGBA"; m1.inputs[6].default_value = srgb("#55516F"); m1.inputs[7].default_value = srgb("#C4BFDB")
+    m1 = nt.nodes.new("ShaderNodeMix"); m1.data_type = "RGBA"; m1.inputs[6].default_value = srgb("#8E89A8"); m1.inputs[7].default_value = srgb("#8E89A8")
     nt.links.new(rimf.outputs[0], m1.inputs[0])
     m1b = nt.nodes.new("ShaderNodeMix"); m1b.data_type = "RGBA"; m1b.inputs[7].default_value = srgb("#8E89A8")
     nt.links.new(m1.outputs[2], m1b.inputs[6]); nt.links.new(topf.outputs[0], m1b.inputs[0])

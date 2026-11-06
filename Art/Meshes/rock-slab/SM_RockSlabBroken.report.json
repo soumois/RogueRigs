@@ -22,7 +22,7 @@
     "UV2 'BlockA'": "(block centre X / 100, block centre Y / 100) in piece-local XY (before the instance rotation) = the block pivot position; identical on every vertex of a block (top, sides, bottom)",
     "UV3 'BlockB'": "(block seed 0..1, block radius / 100) with radius = largest distance centre -> block top vertex; identical on every vertex of a block; every face belongs to a block (UV3.x >= 0 everywhere)",
     "UV4 'BlockC'": "(rim flag, block index / 16): rim flag 1 = the block touches the void outline (its wall faces the void and slumps), 0 = inner block; index = order of the block in the piece",
-    "vertex colour 'Color'": "R = 1 block tops including the rim band (no chamfer mark, task-480), G = 1 side faces with R = block seed (facet tint), B = 1 bottoms (all others 0)",
+    "vertex colour 'Color'": "(0, 0, 0) block tops including the rim band (no chamfer mark, task-480), G = 1 side faces with R = block seed (facet tint), B = 1 bottoms",
     "import": "enable full precision UVs in the Unreal static mesh import (UV2 holds values in [-0.5, 0.5], half precision would give ~0.05 uu error); keep 5 UV channels (UV0..UV4); the importer's auto lightmap channel must not overwrite UV4"
   },
   "shapes": {
@@ -87,7 +87,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 41,
+        "block_tops_000": 41,
         "G1_sides": 126,
         "B1_bottoms": 41,
         "inconsistent_faces": 0,
@@ -320,7 +320,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 39,
+        "block_tops_000": 39,
         "G1_sides": 122,
         "B1_bottoms": 39,
         "inconsistent_faces": 0,
@@ -553,7 +553,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 50,
+        "block_tops_000": 50,
         "G1_sides": 104,
         "B1_bottoms": 50,
         "inconsistent_faces": 0,
@@ -716,7 +716,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 56,
+        "block_tops_000": 56,
         "G1_sides": 116,
         "B1_bottoms": 56,
         "inconsistent_faces": 0,
@@ -879,7 +879,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 32,
+        "block_tops_000": 32,
         "G1_sides": 56,
         "B1_bottoms": 32,
         "inconsistent_faces": 0,
@@ -1000,7 +1000,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 32,
+        "block_tops_000": 32,
         "G1_sides": 56,
         "B1_bottoms": 32,
         "inconsistent_faces": 0,
@@ -1121,7 +1121,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 91,
+        "block_tops_000": 91,
         "G1_sides": 190,
         "B1_bottoms": 91,
         "inconsistent_faces": 0,
@@ -1326,7 +1326,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 116,
+        "block_tops_000": 116,
         "G1_sides": 188,
         "B1_bottoms": 116,
         "inconsistent_faces": 0,
@@ -1531,7 +1531,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 105,
+        "block_tops_000": 105,
         "G1_sides": 198,
         "B1_bottoms": 105,
         "inconsistent_faces": 0,
@@ -1708,7 +1708,7 @@
       "vertex_colour": {
         "attribute": "Color (corner, float)",
         "export": "colors_type=LINEAR",
-        "R1_block_tops": 93,
+        "block_tops_000": 93,
         "G1_sides": 174,
         "B1_bottoms": 93,
         "inconsistent_faces": 0,

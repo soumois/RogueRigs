@@ -13,7 +13,7 @@ Idempotent. Runs after rock_slab_wall_section.py (task-478). On M_RockSlab it:
     z band softness, w intensity variation along the edge);
   - rewrites RockColor (sides: SideColor x facet tint x foot darkening, fully lit), RockRim (band on the chamfer triangles,
     glow on the top near the edge, side emissive share SideParams.x), RockNormal (real side normals unless SideParams.y) and
-    RockSpec; intact sides are read from vertex colour G (Blender marks them), broken sides as before from derivatives;
+    RockSpec; sides are read from vertex colour G (Blender marks them), meshes without colours from derivatives;
 then recompiles, saves and writes the values on MI_RockSlab.
 SideParams now: x emissive share of the side colour, y side normal flatten 0..1, z period of the band variation uu, w unused.
 Override values: environment ROCKCHAMFER_PARAMS="Name=r,g,b,a;Name=r,g,b,a". Lines tagged ROCKCHAMFER, also written to the
@@ -30,11 +30,13 @@ PATH = "/Game/RogueRigs/Environment/Rock/M_RockSlab"
 MI_PATH = "/Game/RogueRigs/Environment/Rock/MI_RockSlab"
 
 SIDE_TEST = r"""
-float broken = UV3.y > 0.0005 ? 1.0 : 0.0;
+// Never test UV3 here: intact pieces have 2 UV channels and read UV3.y above 0 (task-480 diagnostic: all pieces read as broken).
+// Rock pieces mark side faces G = 1 (a lip face can lean past a normal test). Meshes without vertex colours read white
+// (rock slot of the heal deposits): derivatives.
 float3 gN = cross(ddx(WP), ddy(WP));
 float gz = abs(gN.z) / max(length(gN), 0.000001);
-// Intact: Blender marks side faces G = 1 (a lip face can lean past the normal test). Broken: derivatives (task-230-22).
-float isSide = (broken > 0.5 ? gz < 0.5 : VC.g > 0.5) ? 1.0 : 0.0;
+float noVC = (VC.r > 0.99 && VC.g > 0.99 && VC.b > 0.99) ? 1.0 : 0.0;
+float isSide = (noVC > 0.5 ? gz < 0.5 : VC.g > 0.5) ? 1.0 : 0.0;
 """
 
 FACET = r"""
@@ -64,7 +66,7 @@ float3 c = lerp(float3(lum, lum, lum), tex, 1.0 - Desat);
 c = lerp(float3(lum, lum, lum), c, Sat);
 c = c * Bright * TopTint;
 """ + SIDE_TEST + r"""
-float isRim = (broken < 0.5 && VC.g < 0.5 && VC.r > 0.75) ? 1.0 : 0.0;
+float isRim = (VC.g < 0.5 && VC.r > 0.75) ? 1.0 : 0.0;
 c = c * lerp(1.0, TopP.z, isRim);
 float2 rel = WP.xy - OP.xy;
 int q = (rel.x >= 0.0 ? 1 : 0) + (rel.y >= 0.0 ? 2 : 0);
@@ -81,7 +83,7 @@ return isSide > 0.5 ? sideC : topC;
 RIM_CODE = r"""// M_RockSlab emissive (task-480): thin orange-yellow band on the chamfer triangles with a slow variation along the edge,
 // subtle glow on the top face near the outline (distance from the per-instance solid mask), small emissive share of the sides.
 """ + SIDE_TEST + r"""
-float isRim = (broken < 0.5 && VC.g < 0.5 && VC.r > 0.75) ? 1.0 : 0.0;
+float isRim = (VC.g < 0.5 && VC.r > 0.75) ? 1.0 : 0.0;
 """ + FACET + r"""
 float2 nq = WP.xy / max(SideP.z, 1.0);
 float nA = sin(nq.x + 1.7 * sin(nq.y * 0.63 + 0.4));
@@ -90,7 +92,7 @@ float nv = saturate(0.5 + 0.25 * (nA + nB));
 float gain = 1.0 + BandP.w * (2.0 * nv - 1.0);
 // Band across the chamfer: u (vertex colour B) = 0 at the top, 1 at the outer edge; its start moves a little along the edge.
 float u = saturate(VC.b);
-float st = BandP.y + 0.25 * (nB * 0.5);
+float st = BandP.y + 0.3 * nB;
 float bandT = smoothstep(st, st + max(BandP.z, 0.01), u);
 float cs = max(EdgeP.w, 1.0);
 float H = 0.5 * cs;
@@ -118,7 +120,7 @@ if (n > 0.5 && n < 1.5) {
     else d = min(length(rel - c0), length(rel - c3)) - H;
 }
 float e = 1.0 - smoothstep(EdgeP.x, EdgeP.x + max(EdgeP.y, 0.1), d);
-float topGlow = (1.0 - isSide) * EdgeP.z * e * e * gain * (1.0 - 0.5 * broken);
+float topGlow = (1.0 - isSide) * EdgeP.z * e * e * gain;
 float band = RimP.x * isRim * bandT * gain;
 float3 bandCol = RimCol * float3(1.0, 0.85 + 0.5 * nv, 1.0);
 float3 sideE = SideCol * facet * foot * SideP.x * isSide;
@@ -139,17 +141,17 @@ return isSide > 0.5 ? 0.0 : 0.5;
 # Parent defaults (M_RockSlab) and MI_RockSlab values. All provisional, owner 2026-11-06.
 DEFAULTS = {
     "SideParams": (0.20, 0.0, 90.0, 0.0),
-    "EdgeParams": (9.0, 14.0, 0.1, 67.0),
-    "RimParams": (2.0, 0.0, 5.0, 153.0),
+    "EdgeParams": (8.0, 16.0, 0.14, 67.0),
+    "RimParams": (1.5, 0.0, 5.0, 153.0),
     "FacetParams": (0.55, 1.7, 0.38, 0.16),
-    "BandParams": (8.0, 0.55, 0.3, 0.3),
+    "BandParams": (8.0, 0.45, 0.4, 0.5),
 }
 
 # Instance-only values, on parameters that already exist.
 MI_ONLY = {
-    "SideColor": (0.04, 0.016, 0.15, 1.0),
+    "SideColor": (0.05, 0.016, 0.13, 1.0),
     "RimColor": (1.0, 0.2, 0.015, 1.0),
-    "TopParams": (0.5, 0.4, 0.25, 0.55),
+    "TopParams": (0.5, 0.4, 0.55, 0.55),
 }
 
 LOG_LINES = []
