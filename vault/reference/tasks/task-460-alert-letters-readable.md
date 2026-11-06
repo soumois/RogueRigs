@@ -13,7 +13,7 @@ status: in-progress
 - gdd_check: Read level-flow (hordes as icons on the alert bar, console at 40 %), art-prompts-hud-unified-mockup (453: "!" and C, B, S set on the track). No conflict; level-flow edited at confirmation. Moving a letter or a mark sideways would misplace a timing, hence the default of Q36.
 - confirmed_by_owner: yes (2026-11-06, "ok")
 - milestone: M2
-- next_step: task-460-01-alert-bar
+- next_step: task-460-02-doc
 - started: 2026-11-06T04:18:54Z
 - waiting_for: none
 - result: open

@@ -3,7 +3,7 @@ id: task-460-02-doc
 description: "Doc: Record the letter and mark layering."
 parent: task-460-alert-letters-readable
 kind: task
-status: todo
+status: in-progress
 ---
 # Alert bar letters never hidden by a horde mark: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T04:20:45Z
 - waiting_for: none
 - result: open
 
