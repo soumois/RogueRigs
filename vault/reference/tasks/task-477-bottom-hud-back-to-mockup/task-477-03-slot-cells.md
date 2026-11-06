@@ -3,7 +3,7 @@ id: task-477-03-slot-cells
 description: "Bp: The four weapon cells use the new cell piece as on the mockup, contents unchanged."
 parent: task-477-bottom-hud-back-to-mockup
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:49:42Z
 - waiting_for: none
 - result: open
 
