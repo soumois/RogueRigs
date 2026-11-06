@@ -3,7 +3,7 @@ id: task-477-05-match-loop
 description: "Bp: Loop: -game capture, zoomed side-by-side with the mockup, rework failing points; at most 6 rounds."
 parent: task-477-bottom-hud-back-to-mockup
 kind: task
-status: todo
+status: in-progress
 ---
 # Bottom HUD redone from the art proposal, up to 6 correction rounds: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-06T19:54:22Z
 - waiting_for: none
 - result: open
 
