@@ -3,7 +3,7 @@ id: task-485-03-run-lost
 description: "Bp: Same hover on WBP_RunLost Retry and Main Menu."
 parent: task-485-ui-button-hover
 kind: task
-status: todo
+status: in-progress
 ---
 # Hover effect on every button of every screen: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T02:30:38Z
 - waiting_for: none
 - result: open
 
