@@ -3,7 +3,7 @@ id: task-484-07-doc
 description: "Doc: Doc nodes of the new widget, the changed HUD widgets and the run-flow system updated."
 parent: task-484-death-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Death screen with Retry and Main Menu: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T01:47:19Z
 - waiting_for: none
 - result: open
 
