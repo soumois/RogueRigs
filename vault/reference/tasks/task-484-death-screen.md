@@ -14,11 +14,11 @@ status: wait-answers
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-484-05-hud-loss-path
+- next_step: task-484-06-capture
 - started: 2026-11-07T00:57:21Z
 - waiting_for: owner je valide on task-484-01-mockup round 1
-- executor_tokens: input 366, cache write 456690, cache read 39951609, output 150918
-- executor_usage: runs 2, turns 179, context start 17k peak 402k, resumes 0, 41 min, units 5.32 M
+- executor_tokens: input 396, cache write 486484, cache read 46247536, output 160746
+- executor_usage: runs 2, turns 194, context start 17k peak 432k, resumes 0, 45 min, units 6.04 M
 - planning_tokens: input 42, cache write 85956, cache read 1026467, output 24255
 - planning_usage: ac67649c "Plan death screen request" 1/1 (tasks 484), units 0.33 M
 - result: open

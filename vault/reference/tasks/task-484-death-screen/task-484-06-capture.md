@@ -3,7 +3,7 @@ id: task-484-06-capture
 description: "Capture: -game capture of the death sequence, the appearance and the final screen at the four resolutions, plus Retry and Main Menu."
 parent: task-484-death-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Death screen with Retry and Main Menu: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T01:44:22Z
 - waiting_for: none
 - result: open
 
