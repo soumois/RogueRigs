@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "GameFramework/PlayerController.h"
 #include "RogueRigs.h"
+#include "UI/RRButtonHover.h"
 
 void URRRunLostWidget::NativeOnInitialized()
 {
@@ -19,6 +20,9 @@ void URRRunLostWidget::NativeOnInitialized()
 	{
 		MainMenuButton->OnClicked.AddUniqueDynamic(this, &URRRunLostWidget::HandleMainMenuClicked);
 	}
+	// Mouse hover of both plates (ui-button-hover, task-485-03); the invisible SkipButton gets none.
+	URRButtonHoverSubsystem::Attach(RetryButton);
+	URRButtonHoverSubsystem::Attach(MainMenuButton);
 }
 
 void URRRunLostWidget::ShowRunLost(const FRRRunLostRecap& InRecap)
