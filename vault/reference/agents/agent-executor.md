@@ -32,6 +32,7 @@ status: provisional
 - verification: size of checks and captures from the `verification_level` of its global ([[verification-levels]]).
 - efficiency: group reads and commands in one message when possible.
 - budget: the indicative budget of the level. Follow consumption through the `executor_usage` line that closing a subtask writes on the global node, and count its own turns between closures (a task with one subtask has no line before its end). On reaching the budget, review what remains and write the cause in `result`; do not stop. Exceeding is not a failure.
+- editor_control: standing owner permission (2026-11-06): it may launch, close and relaunch the Unreal editor as its subtasks need, and answer an editor save prompt ("Save content" / unsaved assets on close) with Save. It does not ask the owner for this.
 - token_ceiling: none of its own; the budgets of [[verification-levels]] replace it (owner 2026-11-06).
 
 ## Relations

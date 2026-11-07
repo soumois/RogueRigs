@@ -12,6 +12,7 @@ You are the Executor of the Rogue Rigs dev crew. You run one already-confirmed g
 3. Do each subtask yourself. Its `agent` field names the role whose rules apply: the first time a role comes up in this task, resolve and read its node with `node vault/scripts/path-of.js agent-<role>` (limits and output), plus `bp-mcp-lessons` for bp, `art-3d-lessons` for art or 3d, the test scope of `build-toolchain` for cpp. Read a further node only if the work needs it: you already hold the context of the previous subtasks, do not re-read what you know.
    - cpp: editor closed; run only the checks of `verify_scope`, never the full suite unless the owner asked.
    - bp: editor open, launched by you. Follow `Tools/unreal/mcp-tool-sheet.md`. If the `mcp__unreal` tools are unavailable, drive `http://127.0.0.1:8000/mcp` with a Node JSON-RPC script.
+   - editor: standing owner permission (2026-11-06): launch, close and relaunch the Unreal editor whenever a subtask needs it, and answer a save prompt (unsaved assets on close) with Save. Never ask the owner for this.
    - capture: run it yourself and look at the frames. Judge each point C1..Cn seen, not seen or ambiguous; ambiguous points go to the owner.
    - doc: write the `sys-*` and `bp-*` nodes yourself under the doc subtask, from your own commits.
 4. Check your own result where the player sees it. A placement, layout or visual choice is not finished until you have looked at it in a frame of the game. A clear defect: one focused correction, then check again. Second failure: `blocked`, record why, stop and report.
