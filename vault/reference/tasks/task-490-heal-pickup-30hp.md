@@ -1,9 +1,9 @@
 ---
 id: task-490-heal-pickup-30hp
 description: "Global task: HealValue of the heal pickup (one per broken heal-ore block) set to 30 HP."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Each heal pickup restores 30 HP
 
@@ -17,10 +17,14 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: light
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-490-01-heal-value
+- next_step: none
 - started: 2026-11-07T06:06:33Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 40, cache write 71571, cache read 852747, output 7767
+- executor_usage: runs 1, turns 20, context start 17k peak 72k, resumes 0, 6 min, units 0.21 M
+- planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
+- planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
+- result: Done. A1 OreTypes.csv row Heal HealValue = 30 (commit 2fc8f9e0), read back by the game grid loader in RogueRigs.Ore.HealVein (pickups worth the row value). A2 headless game world: HealFullHealthWaits 70 -> 100 with one pickup (30, capped at max 100), HealVein 10 -> 130 of 200 with the 4 vein pickups (4 x 30). A3 HealFullHealthWaits (no pickup at full health), HealPartialClamp, PickupPool.OreAndHealValuesReset pass; drop and dig code untouched; HealVein test updated (max 200, expects 10 + 4 x HealValue). Build OK, 4 tests pass; no -game run (data value only, light level).
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -35,5 +39,5 @@ Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; v
 1. task-490-01-heal-value (vault/reference/tasks/task-490-heal-pickup-30hp/task-490-01-heal-value.md) — cpp: Set HealValue of the Heal row to 30 and check one pickup heals 30 HP in game.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-490-01-heal-value]] — step 1, cpp.

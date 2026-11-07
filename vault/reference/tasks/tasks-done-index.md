@@ -498,3 +498,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-487-main-menu-buttons-plate]] — rework the main menu New Run, Options and Exit buttons so they fit the menu look instead of bare floating text. Open to run or review it. Status done.
 - [[task-488-loading-screen-rework]] — replace the plain dark loading screen (New Run and between levels) with an illustrated, framed screen in the game style. Open to run or review it. Status done.
 - [[task-489-main-menu-b-preview]] — one temporary mockup of the main menu with option B buttons (dark metal plates, white text, orange edge) so the owner can choose task-487 Q1. Status done.
+- [[task-490-heal-pickup-30hp]] — HealValue of the heal pickup (one per broken heal-ore block) set to 30 HP. Status done.
