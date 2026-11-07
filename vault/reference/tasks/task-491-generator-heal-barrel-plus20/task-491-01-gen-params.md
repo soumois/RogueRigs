@@ -3,7 +3,7 @@ id: task-491-01-gen-params
 description: "Cpp: Raise heal vein and barrel counts in the Node generator params by 20 % and check two seeds with the validator."
 parent: task-491-generator-heal-barrel-plus20
 kind: task
-status: todo
+status: in-progress
 ---
 # Generator rules: 20 % more heal veins and barrels: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T06:13:06Z
 - waiting_for: none
 - result: open
 

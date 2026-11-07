@@ -3,7 +3,7 @@ id: task-491-generator-heal-barrel-plus20
 description: "Global task: generator parameters give 14 heal veins (56 cells) and 17 to 22 barrels per 240 x 240 layout; committed layouts unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Generator rules: 20 % more heal veins and barrels
 
@@ -18,7 +18,7 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
 - next_step: task-491-01-gen-params
-- started: open
+- started: 2026-11-07T06:13:06Z
 - waiting_for: none
 - result: open
 
