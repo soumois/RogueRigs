@@ -3,7 +3,7 @@ id: task-494-01-test-mode-command
 description: "Cpp: Enemy-free test mode (no robot spawn, objectives, shuttle or alert) and the rr.Level.New [seed] command that generates, saves and reloads a layout through the async loader."
 parent: task-494-generator-test-map
 kind: task
-status: todo
+status: in-progress
 ---
 # Enemy-free test map with a command to generate and reload a new level: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T08:11:11Z
 - waiting_for: none
 - result: open
 
