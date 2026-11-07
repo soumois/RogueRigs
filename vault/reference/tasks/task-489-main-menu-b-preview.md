@@ -1,9 +1,9 @@
 ---
 id: task-489-main-menu-b-preview
 description: "Global task: one temporary mockup of the main menu with option B buttons (dark metal plates, white text, orange edge) so the owner can choose task-487 Q1."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Preview image of main menu button option B (discussion only)
 
@@ -14,14 +14,18 @@ status: in-progress
 - verification_level: light
 - confirmed_by_owner: yes, 2026-11-07 ("montre moi une image du b je suis curieux")
 - milestone: M2
-- next_step: task-489-01-b-mockup
+- next_step: none
 - started: 2026-11-07T04:21:17Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 36, cache write 48397, cache read 685327, output 5808
+- executor_usage: runs 1, turns 17, context start 17k peak 59k, resumes 0, 4 min, units 0.16 M
+- planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
+- planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
+- result: Done. Temporary mockup Saved/Scratch/task-489/TEMPORARY-01-main-menu-b-mockup.png (GPT Image 2 image-to-image from Saved/Captures/task485_b1080/mmrest_00.png, 1 variant, 1672x941 16:9), prompt TEMPORARY-01-b-plates-prompt.txt and run log alongside; nothing in Art/Source, Content or gdd. Dark metal plates, orange edge, white New Run/Exit, Options greyed; title, gradient, background kept. style-guide: 1 fail A1 by analogy (glossy brushed sheen, not flat); noted: no focus state on New Run, Options edge still dim orange, plates look nearly opaque, image re-rendered at 1672x941. Left to the owner (task-487 Q1).
 
 ## Subtasks
 1. task-489-01-b-mockup (vault/reference/tasks/task-489-main-menu-b-preview/task-489-01-b-mockup.md) — art: One temporary image-to-image mockup of the current main menu with the buttons drawn as option B, shown to the owner.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-489-01-b-mockup]] — step 1, art.
