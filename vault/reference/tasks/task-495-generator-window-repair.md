@@ -3,7 +3,7 @@ id: task-495-generator-window-repair
 description: "Global task: the C++ layout generator enforces every layout review rule (24 x 24 windows, straight lanes, pocket distance) by repair and acceptance checks."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ generator enforces the layout review rules (windows, straight lanes, pocket distance)
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-07, "Oui")
 - milestone: M2
 - next_step: task-495-01-repair-pass
-- started: open
+- started: 2026-11-07T07:13:43Z
 - waiting_for: none
 - result: open
 
