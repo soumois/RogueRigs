@@ -14,9 +14,13 @@ status: in-progress
 - verification_level: exploratory
 - confirmed_by_owner: yes (2026-11-07, "Menu q1- montre moi une image du b je suis curieux. Le reste par défaut")
 - milestone: M2
-- next_step: task-488-01-loading-image
+- next_step: task-488-02-loading-layout
 - started: 2026-11-07T04:21:16Z
 - waiting_for: none
+- executor_tokens: input 78, cache write 112459, cache read 2784885, output 16449
+- executor_usage: runs 1, turns 36, context start 17k peak 123k, resumes 0, 9 min, units 0.50 M
+- planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
+- planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
 - result: open
 
 ## Questions

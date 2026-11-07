@@ -3,7 +3,7 @@ id: task-488-02-loading-layout
 description: "Bp: WBP_Loading rebuilt to the intermission look: image, bottom gradient, riveted frame holding the texts and the restyled bar or spinner."
 parent: task-488-loading-screen-rework
 kind: task
-status: todo
+status: in-progress
 ---
 # Richer loading screen (illustration and framed texts): bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:30:21Z
 - waiting_for: none
 - result: open
 
