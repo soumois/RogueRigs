@@ -21,6 +21,7 @@ Values provisional: the owner accepted the defaults of task-485 Q1 to Q7 (his wo
 - Main menu text buttons: keep the orange of [[main-menu]] and grow to 1.05.
 - Ease in and out over 0.1 s, real time, so it works on paused screens. The growth never moves or resizes neighbouring widgets: layouts and anchors are unchanged.
 - Pressed look unchanged.
+- No grey engine-default button remains (task-486, provisional, owner 2026-11-07): the level-up Reroll and the run-won Main Menu use the cream rusty plate of the run-lost and pause buttons, dark brown label, so they take the plate hover above instead of the x1.25 grey tint.
 
 ## Focus and sound (Q5, Q6)
 - Keyboard or gamepad focus alone shows no hover look (the main menu keeps its focus colour).
