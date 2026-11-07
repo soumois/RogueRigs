@@ -17,11 +17,11 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-494-02-test-map
+- next_step: task-494-03-capture
 - started: 2026-11-07T08:36:35Z
 - waiting_for: none
-- executor_tokens: input 162, cache write 215380, cache read 11360744, output 70040
-- executor_usage: runs 1, turns 81, context start 17k peak 227k, resumes 0, 25 min, units 1.76 M
+- executor_tokens: input 184, cache write 232808, cache read 13948206, output 76708
+- executor_usage: runs 1, turns 92, context start 17k peak 245k, resumes 0, 27 min, units 2.07 M
 - planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
 - planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
 - result: open

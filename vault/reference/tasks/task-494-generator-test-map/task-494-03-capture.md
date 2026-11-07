@@ -3,7 +3,7 @@ id: task-494-03-capture
 description: "Capture: Visual check of the test map and of one reload."
 parent: task-494-generator-test-map
 kind: task
-status: todo
+status: in-progress
 ---
 # Enemy-free test map with a command to generate and reload a new level: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T08:37:42Z
 - waiting_for: none
 - result: open
 
