@@ -3,7 +3,7 @@ id: task-487-02-capture
 description: "Capture: -game capture of the main menu at rest and hovered at the four resolutions, compared with the task-485 capture."
 parent: task-487-main-menu-buttons-plate
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu buttons that fit the screen (plate buttons): capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:49:38Z
 - waiting_for: none
 - result: open
 
