@@ -10,3 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
+- [[task-486-grey-buttons-plate]] — give the level-up Reroll button and the run-won Main Menu button the cream plate look of the other screen buttons. Open to run or review it. Status wait-answers.
