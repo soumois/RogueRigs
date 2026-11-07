@@ -1,9 +1,9 @@
 ---
 id: task-488-loading-screen-rework
 description: "Global task: replace the plain dark loading screen (New Run and between levels) with an illustrated, framed screen in the game style. Open to run or review it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Richer loading screen (illustration and framed texts)
 
@@ -14,14 +14,14 @@ status: in-progress
 - verification_level: exploratory
 - confirmed_by_owner: yes (2026-11-07, "Menu q1- montre moi une image du b je suis curieux. Le reste par défaut")
 - milestone: M2
-- next_step: task-488-04-doc
+- next_step: none
 - started: 2026-11-07T04:21:16Z
 - waiting_for: none
-- executor_tokens: input 154, cache write 182501, cache read 8613556, output 40139
-- executor_usage: runs 1, turns 72, context start 17k peak 193k, resumes 2, 18 min, units 1.29 M
+- executor_tokens: input 162, cache write 188661, cache read 9393452, output 43756
+- executor_usage: runs 1, turns 76, context start 17k peak 199k, resumes 2, 19 min, units 1.39 M
 - planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
 - planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
-- result: open
+- result: Done. wbp-loading updated (commit d082d554): canvas tree with anchors, alignment, offsets and size mode per umg-layout, assets T_LoadingBackground and T_Loading_BottomGradient, restyled bar (flat brushes, riveted strip) and spinner in the frame, LoadingImage now the background image, verified line with the task-488 captures, owner retouch points; relations added in art-prompts-loading-screen and wbp-intermission. Lint clean.
 
 ## Questions
 Decided 2026-11-07 (owner "Menu q1- montre moi une image du b je suis curieux. Le reste par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -38,7 +38,7 @@ Decided 2026-11-07 (owner "Menu q1- montre moi une image du b je suis curieux. L
 4. task-488-04-doc (vault/reference/tasks/task-488-loading-screen-rework/task-488-04-doc.md) — doc: Doc node of the loading widget updated.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-488-01-loading-image]] — step 1, art.
 - [[task-488-02-loading-layout]] — step 2, bp.
 - [[task-488-03-capture]] — step 3, capture.
