@@ -3,7 +3,7 @@ id: task-492-02-gen-place-json
 description: "Cpp: C++ generator, second slice: heal veins, barrels, spawn, recipe seed acceptance, JSON writer and an entry point usable outside a play session."
 parent: task-492-cpp-layout-generator
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T06:22:51Z
 - waiting_for: none
 - result: open
 

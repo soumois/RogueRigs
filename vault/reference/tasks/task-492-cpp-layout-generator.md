@@ -17,9 +17,13 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-492-01-gen-carve
+- next_step: task-492-02-gen-place-json
 - started: 2026-11-07T06:14:54Z
 - waiting_for: none
+- executor_tokens: input 40, cache write 102577, cache read 1350793, output 39909
+- executor_usage: runs 1, turns 20, context start 17k peak 115k, resumes 0, 8 min, units 0.46 M
+- planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
+- planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
 - result: open
 
 ## Questions
