@@ -1,9 +1,9 @@
 ---
 id: task-486-grey-buttons-plate
 description: "Global task: cream plate look for the level-up Reroll and run-won Main Menu buttons, like the other screen buttons. Open to run or review it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Cream plate look for the two grey buttons (level-up Reroll, run-won Main Menu)
 
@@ -14,14 +14,14 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
-- next_step: task-486-04-doc
+- next_step: none
 - started: 2026-11-07T03:29:08Z
 - waiting_for: none
-- executor_tokens: input 90, cache write 173804, cache read 5060100, output 30716
-- executor_usage: runs 1, turns 43, context start 18k peak 186k, resumes 2, 15 min, units 0.88 M
+- executor_tokens: input 98, cache write 183510, cache read 5817246, output 35176
+- executor_usage: runs 1, turns 47, context start 18k peak 196k, resumes 2, 15 min, units 0.99 M
 - planning_tokens: input 26, cache write 70317, cache read 572496, output 11275
 - planning_usage: a77b1cf1 "Plan grey buttons retouch" 1/1 (tasks 486), units 0.20 M
-- result: open
+- result: Done. Done (26ad1c83). wbp-upgrade-choice: components line, button_hover rewritten (plate hover, no x1.25 tint), new reroll_plate line (RerollSize 440x110, style, fonts, Panel offset 18.5, captures), relation to wbp-run-lost. wbp-alert-objectives: components line, button_hover rewritten, new restart_plate line (RestartSize 440x108, style, Bold 30, EndPanel offset 25, captures). sys-button-hover: untextured grey mode now used by no attached button, kept as fallback. ui-button-hover already held the task-486 line (planner). Lint clean.
 
 ## Questions
 Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -38,7 +38,7 @@ Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; 
 4. task-486-04-doc (vault/reference/tasks/task-486-grey-buttons-plate/task-486-04-doc.md) — doc: Doc nodes of the two changed widgets and of the hover mechanism updated.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-486-01-reroll-plate]] — step 1, bp.
 - [[task-486-02-end-screen-plate]] — step 2, bp.
 - [[task-486-03-capture]] — step 3, capture.
