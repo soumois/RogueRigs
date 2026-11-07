@@ -39,6 +39,7 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 - Validation rules: [[level-layout-schema]].
 - Done in [[sys-layout-generator]] ([[task-492-cpp-layout-generator]]): same steps and params file, `RRLayoutGen` commandlet.
 - Level-Design verdict on 24 passing C++ seeds ([[task-492-03-ld-validation]]): all pass the validator with passage 3; 4 keep every 24 × 24 window in 0.05–0.95, the rest show a dead or too-open window; comparable to the Node generator (the difference is only the random stream).
+- Since [[task-495-generator-window-repair]] the C++ generator also repairs and checks the [[layout-review-rules]] (windows, straight lanes, pocket distance); the Node script does not. Level-Design verdict ([[task-495-02-ld-review]]): 24 of 24 of the same starts meet every review rule and the validator, repaired areas look like the rest of the terrain.
 
 ## Relations
 - [[sys-layout-generator]] — the C++ port of this recipe.
@@ -50,3 +51,4 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 - [[task-088-01-heal-veins-2x2]] — heal veins shrunk to 2 × 2.
 - [[task-205-01-direct-240-generator]] — the direct 240 generator task.
 - [[task-491-generator-heal-barrel-plus20]] — heal veins and barrels raised by 20 % in the params.
+- [[task-495-02-ld-review]] — Level-Design verdict on the review repairs.
