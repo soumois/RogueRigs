@@ -1,9 +1,9 @@
 ---
 id: task-487-main-menu-buttons-plate
 description: "Global task: rework the main menu New Run, Options and Exit buttons so they fit the menu look instead of bare floating text. Open to run or review it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu buttons that fit the screen (plate buttons)
 
@@ -14,14 +14,14 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Prends la solution a")
 - milestone: M2
-- next_step: task-487-03-doc
+- next_step: none
 - started: 2026-11-07T04:41:16Z
 - waiting_for: none
-- executor_tokens: input 102, cache write 129402, cache read 4701657, output 30631
-- executor_usage: runs 1, turns 50, context start 17k peak 142k, resumes 1, 11 min, units 0.79 M
+- executor_tokens: input 110, cache write 137530, cache read 5279432, output 35060
+- executor_usage: runs 1, turns 54, context start 17k peak 150k, resumes 1, 12 min, units 0.88 M
 - planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
 - planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
-- result: open
+- result: Done. Main menu New Run, Options, Exit are cream rusty plates (T_Shop_ButtonContinue as the pause menu), dark brown Roboto Bold 36 labels, one width, Options greyed; New Run and Exit take the plate hover (C++ attach now brightens the plate, 663c7c6a); keyboard focus shown by an orange outline image toggled in RefreshColours. A1 to A5 seen on -game captures at the four resolutions (Saved/Captures/task487_sheets/rest_sheet.png, hover_sheet.png); A6 build clean, widget compiled with warnings as errors. Note: the taller column puts the centred title about 60 px higher at 1080p. Not exercised on screen: Enter and clicks (graph events unchanged). Docs 671aa742.
 
 ## Questions
 Decided 2026-11-07 (owner "Prends la solution a"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -36,7 +36,7 @@ Decided 2026-11-07 (owner "Prends la solution a"): every default below is accept
 3. task-487-03-doc (vault/reference/tasks/task-487-main-menu-buttons-plate/task-487-03-doc.md) — doc: Doc nodes of the main menu widget and of the hover mechanism updated.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-487-01-menu-plates]] — step 1, bp.
 - [[task-487-02-capture]] — step 2, capture.
 - [[task-487-03-doc]] — step 3, doc.

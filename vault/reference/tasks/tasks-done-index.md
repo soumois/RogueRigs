@@ -495,5 +495,6 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-484-death-screen]] — Run-lost screen when the miner's health reaches 0: death sequence, appearance animation, mockup look, recap, Retry and Main Menu. Open to run or review it. Status done.
 - [[task-485-ui-button-hover]] — Visible mouse hover effect on all clickable buttons of the main menu, pause, run-lost, stats, shop, level-up and run-won screens. Open to run or review it. Status done.
 - [[task-486-grey-buttons-plate]] — give the level-up Reroll button and the run-won Main Menu button the cream plate look of the other screen buttons. Open to run or review it. Status done.
+- [[task-487-main-menu-buttons-plate]] — rework the main menu New Run, Options and Exit buttons so they fit the menu look instead of bare floating text. Open to run or review it. Status done.
 - [[task-488-loading-screen-rework]] — replace the plain dark loading screen (New Run and between levels) with an illustrated, framed screen in the game style. Open to run or review it. Status done.
 - [[task-489-main-menu-b-preview]] — one temporary mockup of the main menu with option B buttons (dark metal plates, white text, orange edge) so the owner can choose task-487 Q1. Status done.

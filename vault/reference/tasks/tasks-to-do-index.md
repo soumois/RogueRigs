@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-487-main-menu-buttons-plate]] — rework the main menu New Run, Options and Exit buttons so they fit the menu look instead of bare floating text. Open to run or review it. Status in-progress.
