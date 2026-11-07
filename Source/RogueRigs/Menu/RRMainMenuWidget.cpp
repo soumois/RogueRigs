@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "RogueRigs.h"
+#include "UI/RRButtonHover.h"
 #include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
@@ -15,6 +16,9 @@ void URRMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	SetIsFocusable(true);
+	// Text buttons: growth only, the orange stays the widget's own focus colour (ui-button-hover, task-485-09). Options is disabled
+	// and not attached.
+	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("NewRunButton"), TEXT("ExitButton")}, false);
 }
 
 bool URRMainMenuWidget::StartNewRun()

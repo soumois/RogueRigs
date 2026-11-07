@@ -48,7 +48,8 @@ public:
 	static void QuitGameInWorld(UWorld* World);
 
 protected:
-	/** Makes the widget focusable, so the UI-only input mode can focus it and forward the focus to DesiredFocusWidget. */
+	/** Makes the widget focusable, so the UI-only input mode can focus it and forward the focus to DesiredFocusWidget; gives New Run
+	 * and Exit the hover growth of ui-button-hover. */
 	virtual void NativeOnInitialized() override;
 
 	/** True once StartNewRun requested the travel: guards against a double press. */
