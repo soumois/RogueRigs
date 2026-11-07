@@ -37,8 +37,11 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 ## For the C++ port
 - Replace the LCG with `FRandomStream`; keep every parameter as data.
 - Validation rules: [[level-layout-schema]].
+- Done in [[sys-layout-generator]] ([[task-492-cpp-layout-generator]]): same steps and params file, `RRLayoutGen` commandlet.
+- Level-Design verdict on 24 passing C++ seeds ([[task-492-03-ld-validation]]): all pass the validator with passage 3; 4 keep every 24 × 24 window in 0.05–0.95, the rest show a dead or too-open window; comparable to the Node generator (the difference is only the random stream).
 
 ## Relations
+- [[sys-layout-generator]] — the C++ port of this recipe.
 - [[layout-review-rules]] — review rules the Level-Design agent applies on top of the acceptance.
 - [[pipelines-index]] — parent index.
 - [[level-layout-schema]] — output format and validator.

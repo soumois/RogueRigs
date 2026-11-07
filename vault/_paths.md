@@ -364,6 +364,7 @@ sys-hud-locator  reference/tech/systems/ui/sys-hud/sys-hud-locator.md
 sys-hud-minimap  reference/tech/systems/ui/sys-hud-minimap.md
 sys-hud-pressure  reference/tech/systems/ui/sys-hud-pressure.md
 sys-hud-xp-bar  reference/tech/systems/ui/sys-hud-xp-bar.md
+sys-layout-generator  reference/tech/systems/world/sys-grid/sys-layout-generator.md
 sys-level-up  reference/tech/systems/core/sys-level-up.md
 sys-main-menu  reference/tech/systems/ui/sys-main-menu.md
 sys-objectives  reference/tech/systems/world/sys-objectives.md
