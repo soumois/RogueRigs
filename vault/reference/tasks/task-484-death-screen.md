@@ -1,9 +1,9 @@
 ---
 id: task-484-death-screen
 description: "Global task: Run-lost screen when the miner's health reaches 0: death sequence, appearance animation, mockup look, recap, Retry and Main Menu. Open to run or review it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Death screen with Retry and Main Menu
 
@@ -14,14 +14,14 @@ status: wait-answers
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-484-07-doc
+- next_step: none
 - started: 2026-11-07T00:57:21Z
-- waiting_for: owner je valide on task-484-01-mockup round 1
-- executor_tokens: input 416, cache write 510785, cache read 50223185, output 165263
-- executor_usage: runs 2, turns 203, context start 17k peak 456k, resumes 1, 48 min, units 6.49 M
+- waiting_for: none
+- executor_tokens: input 438, cache write 531695, cache read 55348828, output 176859
+- executor_usage: runs 2, turns 214, context start 17k peak 477k, resumes 1, 50 min, units 7.08 M
 - planning_tokens: input 42, cache write 85956, cache read 1026467, output 24255
 - planning_usage: ac67649c "Plan death screen request" 1/1 (tasks 484), units 0.33 M
-- result: open
+- result: Done. Commit 5364acc9. Created wbp-run-lost (tree, anchors table for owner retouches, events, ApplyAppearance values, verification) listed in blueprints-ui-index, and sys-run-lost (URRRunLostSubsystem, FRRRunLostRecap, URRRunLostWidget, controller and HUD hooks, URRRunSettings tunables, debug commands, tests) under sys-run. Updated sys-objectives-run-flow (loss path, game mode restart removed, ReturnToMainMenu users), sys-hud-events (OnRunLost moment), wbp-alert-objectives (ShowRunEnd success branch), wbp-health-status (no GAME OVER), wbp-hud (HUD collapsed on a loss), bp-rr-player-controller (RunLostWidgetClass), sys-run-log (GetRunKillCount). Lint clean. ALERT cause: executor run over the standard budget (whole task).
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, tout par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -46,7 +46,7 @@ Decided 2026-11-07 (owner "Ok, tout par défaut"): every default below is accept
 7. task-484-07-doc (vault/reference/tasks/task-484-death-screen/task-484-07-doc.md) — doc: Doc nodes of the new widget, the changed HUD widgets and the run-flow system updated.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-484-01-mockup]] — step 1, art.
 - [[task-484-02-elements]] — step 2, art.
 - [[task-484-03-death-flow]] — step 3, cpp.
