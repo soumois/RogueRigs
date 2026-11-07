@@ -11,5 +11,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 ## Relations
 - [[tasks-index]] — parent index.
 - [[task-493-async-layout-loader]] — builds the grid from a layout JSON, loading its assets asynchronously and exposing a 0-100 load percentage for a future loading screen. Status in-progress.
-- [[task-495-generator-window-repair]] — a post-generation repair pass in the C++ layout generator that fixes dead and too-open 24 x 24 windows, so every generated layout meets the window rule. Status todo.
+- [[task-495-generator-window-repair]] — the C++ layout generator enforces every layout review rule (24 x 24 windows, straight lanes, pocket distance) by repair and acceptance checks. Status todo.
 - [[task-494-generator-test-map]] — a test map without robots where the owner generates a new layout on the fly with a console command and plays it. Status todo.
