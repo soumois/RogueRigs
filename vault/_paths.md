@@ -181,6 +181,7 @@ crew-board-assets  reference/external-tools/crew-board-assets.md
 crew-board-data  reference/external-tools/crew-board-data.md
 crew-characters  reference/gdd/crew-characters.md
 damage-numbers  reference/gdd/weapons/damage-numbers.md
+death-screen  reference/gdd/run/death-screen.md
 destruction-rules  reference/gdd/terrain/destruction-rules.md
 dialogue-tone  reference/gdd/art-audio/dialogue-tone.md
 difficulty  reference/gdd/run/difficulty.md
