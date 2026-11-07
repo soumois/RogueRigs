@@ -3,7 +3,7 @@ id: task-494-04-doc
 description: "Doc: Document the test mode, the command and the test map."
 parent: task-494-generator-test-map
 kind: task
-status: todo
+status: in-progress
 ---
 # Enemy-free test map with a command to generate and reload a new level: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T08:47:14Z
 - waiting_for: none
 - result: open
 
