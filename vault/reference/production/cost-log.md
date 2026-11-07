@@ -1185,6 +1185,7 @@ kind: note
 | [[task-485-03-run-lost]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-485-04-intermission]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-485-05-shop-screen]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-485-06-shop-card]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).

@@ -14,7 +14,7 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
-- next_step: task-485-06-shop-card
+- next_step: task-485-07-upgrade-reroll
 - started: 2026-11-07T02:19:47Z
 - waiting_for: none
 - executor_tokens: input 232, cache write 248302, cache read 17169785, output 95439
