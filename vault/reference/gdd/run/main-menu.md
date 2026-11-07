@@ -18,7 +18,7 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 ## Layout
 - Full-screen image with a dark gradient behind a left column: title "ROGUE RIGS" (drawn by the widget, never in the image; no game logo yet), then the buttons "New Run", "Options", "Exit".
 - Labels in English, exactly these words, hardcoded in the widget (not in screen_texts.json).
-- Font and colours as [[wbp-loading]]: Roboto Bold, white with outline, orange (1, 0.35, 0.1) on hover and focus.
+- Font and colours as [[wbp-loading]]: Roboto Bold, white with outline, orange (1, 0.35, 0.1) on hover and focus; on mouse hover the button also grows as [[ui-button-hover]] (provisional, owner 2026-11-06, task-485).
 - No animation, no music.
 
 ## Behaviour

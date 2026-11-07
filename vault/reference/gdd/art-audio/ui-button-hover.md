@@ -3,13 +3,13 @@ id: ui-button-hover
 description: "Mouse hover effect of every game screen button: scope, plate and text buttons, timing, focus, disabled, sound. Open for button or menu work."
 parent: art-audio-index
 kind: spec
-status: open
+status: provisional
 ---
 # UI button hover
 
 Requested by the owner 2026-11-06 ([[task-485-ui-button-hover]]): "il faudrait des effets de hover lorsqu'on passe au dessus des boutons dans toutes les interfaces".
 
-Pending: the values below are the proposed defaults of task-485 Q1 to Q7, not yet answered.
+Values provisional: the owner accepted the defaults of task-485 Q1 to Q7 (his words in its request).
 
 ## Scope (Q4, Q5)
 - Every clickable button: main menu New Run and Exit; pause menu Resume and Exit; run-lost Retry and Main Menu; stats screen Continue; shop Reroll, Continue and the Buy button of each card; level-up Reroll; run-won end screen button.

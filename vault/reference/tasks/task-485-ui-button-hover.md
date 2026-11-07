@@ -3,24 +3,24 @@ id: task-485-ui-button-hover
 description: "Global task: Visible mouse hover effect on all clickable buttons of the main menu, pause, run-lost, stats, shop, level-up and run-won screens. Open to run or review it."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Hover effect on every button of every screen
 
-- request: Owner, verbatim (French): "il faudrait des effets de hover lorsqu'on passe au dessus des boutons dans toutes les interfaces". The options and defaults are Q1 to Q7 below; his answers are appended here at confirmation. 
+- request: Owner, verbatim (French): "il faudrait des effets de hover lorsqu'on passe au dessus des boutons dans toutes les interfaces". The options and defaults are Q1 to Q7 below; his answers are appended here at confirmation. Owner answer 2026-11-07 (relayed by the main session, verbatim): "Tout par défaut" = the plan and the defaults of Q1, Q2, Q3, Q4, Q5, Q6, Q7 accepted.
 - goal: Every clickable button of every game screen reacts visibly when the mouse passes over it and returns to normal when it leaves, with one consistent effect defined in ui-button-hover; layouts, click behaviour and the existing level-up card hover stay as they are.
 - acceptance: A1 On each button listed in ui-button-hover Scope (main menu New Run and Exit; pause Resume and Exit; run-lost Retry and Main Menu; stats Continue; shop Reroll, Continue and the five Buy buttons; level-up Reroll; run-won end screen button), a frame with the mouse over it differs visibly from a frame without, as ui-button-hover Look says (plates brighter and grown to 1.05, main menu text orange and grown), and it returns to the rest look when the mouse leaves. A2 The effect eases in and out over about 0.1 s and works on paused screens (pause, level-up, stats, shop, run-lost). A3 Disabled buttons (Options, greyed Reroll and Buy) show no hover effect; keyboard or gamepad focus alone shows no hover look; pressed look unchanged. A4 No layout change: at 1920 x 1080, 1280 x 720, 1920 x 1200 and 2560 x 1080 nothing moves, overlaps or is clipped at rest or when a button is hovered. A5 Clicks still do what they did (start run, resume, retry, continue, reroll, buy, main menu, exit); level-up cards keep their own hover; shop purchase effects and the run-lost appearance still play. A6 Build clean; compiled with warnings as errors.
 - gdd_check: Read: gdd-index, art-audio-index, color-code, audio-direction, main-menu, death-screen; tech docs read only to inventory buttons and their current hover (no code or asset read): blueprints-ui-index, wbp-main-menu (text buttons already orange on hover and focus), wbp-pause-menu, wbp-run-lost, wbp-intermission, wbp-shop-screen (plates with hover tint 1.3, never seen on screen in any capture), wbp-shop-card (Buy hover tint 1.35, 'may be capped'), wbp-upgrade-choice (cards already have an eased hover, Reroll button plain), wbp-alert-objectives (RestartButton of the run-won end screen), umg-layout, verification-levels. Inventory: 8 widgets with buttons (MainMenu, PauseMenu, RunLost, Intermission, ShopScreen, ShopCard, UpgradeChoice, AlertObjectives); WBP_Loading, HUD panels and the others have no clickable button. No conflict with the GDD; the only existing hover rule is main-menu orange, kept. Open values (none existed): look, scale, colour, timing, scope of cards, disabled, focus, sound, capture size: proposed as Q1 to Q7, written as defaults in the new gdd node ui-button-hover (status open until answered). Uncommitted owner edits: git status at planning shows no modified .uasset (the two WBP of the shop handover are no longer pending); umg-layout still applies if any appear at execution. Milestone: polish of existing M2 screens, no new system. Verification standard: new behaviour on 8 widgets; not light because several assets change and the four-resolution check stays (Q7). Plan: one global (one owner point), one bp subtask per main asset, a representative slice (pause menu) checked first because whether the current hover tints show at all is uncertain.
 - verification_level: standard
-- confirmed_by_owner: no (plan and questions handed back 2026-11-07)
+- confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
 - next_step: task-485-01-pause-slice
 - started: open
-- waiting_for: Owner answers to Q1-Q7 (plate look, colour, main menu, scope, disabled and focus, sound, capture resolutions).
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-07, each with a default; open until the owner answers.
+Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
 - Q1 Effet sur les boutons à plaque crème (Resume, Exit, Retry, Main Menu, Continue, Reroll, Buy, bouton de fin de run). A: la plaque s'éclaircit nettement (environ +25 % de luminosité, même teinte) et le bouton grossit à 1,05, transition 0,1 s à l'entrée et à la sortie. B: éclaircissement seul, sans grossissement. C: grossissement seul. D: A plus un léger contour lumineux autour de la plaque. Défaut: A.
 - Q2 Couleur du survol des plaques. A: même teinte crème, juste plus claire ; le texte garde sa couleur brun foncé. B: reflet orange (l'orange du menu principal) sur la plaque. C: le texte passe en orange. Défaut: A.
 - Q3 Menu principal (New Run, Exit: texte seul, déjà orange au survol et au focus). A: on garde l'orange et on ajoute le même grossissement 1,05 en 0,1 s. B: on n'y touche pas. Défaut: A.
