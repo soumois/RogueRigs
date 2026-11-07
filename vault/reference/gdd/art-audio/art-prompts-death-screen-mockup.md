@@ -22,9 +22,25 @@ Content of [[death-screen]] (task-484 Q1 to Q10 defaults), style of [[art-prompt
 ## Owner words
 - Round 1: "Je valide" (owner 2026-11-07, relayed by the main session). Round 1 is the validated mockup; status keep.
 
+## Elements (task-484-02)
+Every element of the validated round 1 maps to an existing sprite: no new PNG, no generation, 0 credits (cap 24, unused). The mockup is the layout reference only; sizes and margins as [[art-prompts-pause-menu-mockup]] Elements.
+
+| Element | Reused asset | Margins (px, UMG fraction) | Credits |
+|---|---|---|---|
+| Recap frame | `Art/UI/LevelEnd/T_LevelEnd_Frame.png` 942 x 458, Draw As Box | L, R 90 = 0.0955; T, B 86 = 0.1878 | 0 |
+| Title side rails | `Art/UI/Shop/T_Shop_TitleBar.png` 512 x 69, left bar, UMG mirrors it for the right | none (plain image) | 0 |
+| Retry, Main Menu | `Art/UI/Shop/T_Shop_ButtonContinue.png` 640 x 163, hover and pressed by UMG tint | L, R about 95 to 105 (estimate from task-424-02), T, B 0 | 0 |
+| Title (red), subtitle, recap labels and values | UMG text | none | 0 |
+| Lines beside the subtitle, lines between recap rows | plain UMG lines (as level-end and pause) | none | 0 |
+| Dimmed, desaturated level behind | UMG dark overlay plus a desaturation effect (no sprite) | none | 0 |
+| Duskite icon | not in the mockup, not used | none | 0 |
+
+Gaps: the mockup title rails carry a round bolt at the inner end, `T_Shop_TitleBar` is the same family (accepted on level-end and pause). Title colour: rust red of the mockup ([[color-code]] red accent).
+
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
 - [[death-screen]] — the screen this mockup shows.
 - [[art-prompts-level-end-screen-mockup]] — style reference Image 1.
 - [[art-prompts-pause-menu-mockup]] — style reference Image 2.
 - [[task-484-01-mockup]] — the subtask that made it.
+- [[task-484-02-elements]] — maps the mockup elements to reused sprites.
