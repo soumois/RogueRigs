@@ -3,7 +3,7 @@ id: task-493-02-doc
 description: "Doc: Document the loader, its percentage and completion event."
 parent: task-493-async-layout-loader
 kind: task
-status: todo
+status: in-progress
 ---
 # Asynchronous level loader from a layout JSON with a load percentage: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T07:11:52Z
 - waiting_for: none
 - result: open
 
