@@ -3,7 +3,7 @@ id: task-492-03-ld-validation
 description: "Level-design: Level-Design agent generates 20 passing seeds with the C++ generator and reviews them with layout-review-rules."
 parent: task-492-cpp-layout-generator
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent: level-design
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T06:27:26Z
 - waiting_for: none
 - result: open
 
