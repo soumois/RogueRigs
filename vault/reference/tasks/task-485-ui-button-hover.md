@@ -3,7 +3,7 @@ id: task-485-ui-button-hover
 description: "Global task: Visible mouse hover effect on all clickable buttons of the main menu, pause, run-lost, stats, shop, level-up and run-won screens. Open to run or review it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Hover effect on every button of every screen
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
 - next_step: task-485-01-pause-slice
-- started: open
+- started: 2026-11-07T02:19:47Z
 - waiting_for: none
 - result: open
 

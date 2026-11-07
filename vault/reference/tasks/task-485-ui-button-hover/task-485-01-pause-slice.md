@@ -3,7 +3,7 @@ id: task-485-01-pause-slice
 description: "Bp: Representative slice: hover effect of ui-button-hover on WBP_PauseMenu Resume and Exit, built so the other screens can reuse the same mechanism."
 parent: task-485-ui-button-hover
 kind: task
-status: todo
+status: in-progress
 ---
 # Hover effect on every button of every screen: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T02:19:47Z
 - waiting_for: none
 - result: open
 
