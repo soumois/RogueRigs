@@ -16,9 +16,9 @@ void URRMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	SetIsFocusable(true);
-	// Text buttons: growth only, the orange stays the widget's own focus colour (ui-button-hover, task-485-09). Options is disabled
-	// and not attached.
-	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("NewRunButton"), TEXT("ExitButton")}, false);
+	// Plate buttons since task-487: the plate brightens and grows (ui-button-hover); the orange focus outline is the widget's own
+	// (RefreshColours). Options is disabled and not attached.
+	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("NewRunButton"), TEXT("ExitButton")});
 }
 
 bool URRMainMenuWidget::StartNewRun()
