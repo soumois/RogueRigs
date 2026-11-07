@@ -14,9 +14,13 @@ status: wait-answers
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, tout par défaut")
 - milestone: M2
-- next_step: task-484-01-mockup
+- next_step: task-484-02-elements
 - started: 2026-11-07T00:57:21Z
 - waiting_for: owner je valide on task-484-01-mockup round 1
+- executor_tokens: input 52, cache write 100457, cache read 1042232, output 11222
+- executor_usage: runs 2, turns 25, context start 17k peak 66k, resumes 0, 4 min, units 0.29 M
+- planning_tokens: input 42, cache write 85956, cache read 1026467, output 24255
+- planning_usage: ac67649c "Plan death screen request" 1/1 (tasks 484), units 0.33 M
 - result: open
 
 ## Questions

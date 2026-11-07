@@ -3,7 +3,7 @@ id: task-484-02-elements
 description: "Art: Map every element of the validated mockup to an existing sprite; make a new sprite only where none matches."
 parent: task-484-death-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Death screen with Retry and Main Menu: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T01:03:44Z
 - waiting_for: none
 - result: open
 
