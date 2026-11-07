@@ -3,7 +3,7 @@ id: task-493-async-layout-loader
 description: "Global task: builds the grid from a layout JSON, loading its assets asynchronously and exposing a 0-100 load percentage for a future loading screen."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Asynchronous level loader from a layout JSON with a load percentage
 
@@ -18,7 +18,7 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
 - next_step: task-493-01-loader
-- started: open
+- started: 2026-11-07T06:47:27Z
 - waiting_for: none
 - result: open
 

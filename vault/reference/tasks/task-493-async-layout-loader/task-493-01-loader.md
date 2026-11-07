@@ -3,7 +3,7 @@ id: task-493-01-loader
 description: "Cpp: Asynchronous loader that loads the layout assets and builds the grid over frames, with a 0-100 percentage and a completion event."
 parent: task-493-async-layout-loader
 kind: task
-status: todo
+status: in-progress
 ---
 # Asynchronous level loader from a layout JSON with a load percentage: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T06:47:27Z
 - waiting_for: none
 - result: open
 
