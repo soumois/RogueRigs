@@ -119,6 +119,7 @@ bp-explosion-wall-debris  reference/tech/blueprints/fx/bp-explosion-wall-debris.
 bp-extraction-shuttle  reference/tech/blueprints/world/bp-extraction-shuttle.md
 bp-extractor-rotor-wash  reference/tech/blueprints/fx/bp-extractor-rotor-wash.md
 bp-floor-plates-material  reference/tech/blueprints/world/bp-floor-plates-material.md
+bp-gen-test-game-mode  reference/tech/blueprints/player/bp-gen-test-game-mode.md
 bp-heal-ring  reference/tech/blueprints/fx/bp-heal-ring.md
 bp-heavy  reference/tech/blueprints/enemies/bp-heavy.md
 bp-heavy-death-puff  reference/tech/blueprints/fx/bp-heavy-death-puff.md

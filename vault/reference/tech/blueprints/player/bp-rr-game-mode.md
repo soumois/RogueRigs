@@ -25,3 +25,4 @@ kind: doc
 - [[bp-objective-console]] — console class set in RunFlowConfig.
 - [[bp-bonus-chest]] — chest class set in RunFlowConfig.
 - [[bp-extraction-shuttle]] — shuttle class set in RunFlowConfig.
+- [[bp-gen-test-game-mode]] — the generator test map game mode, same pawn and controller, run flow off.

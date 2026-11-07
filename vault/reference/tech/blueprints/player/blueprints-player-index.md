@@ -15,6 +15,7 @@ Miner, drone, controller, game mode and the weapon Blueprints: the player side.
 - [[bp-rr-player-controller]] — BP_RRPlayerController, input wiring.
 - [[bp-rr-game-mode]] — BP_RRGameMode, default pawn and controller.
 - [[bp-main-menu-game-mode]] — BP_MainMenuGameMode, game mode of L_MainMenu naming WBP_MainMenu.
+- [[bp-gen-test-game-mode]] — BP_GenTestGameMode and the L_GenTest generator test map (no robots, rr.Level.New).
 - [[bp-burst-rifle]] — BP_BurstRifle, the burst rifle weapon.
 - [[bp-shotgun]] — BP_Shotgun and BP_ShotgunPellet, the shotgun weapon and its pellet.
 - [[bp-turret]] — BP_TurretLauncher, BP_Turret and BP_TurretBullet, the turret weapon.
