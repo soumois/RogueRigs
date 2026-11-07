@@ -9,10 +9,57 @@
 #include "Grid/RRLayoutGenParams.h"
 #include "Math/RandomStream.h"
 
+/** Measures of one generated layout, read by the recipe seed acceptance. */
+struct ROGUERIGS_API FRRLayoutGenStats
+{
+	/** Asteroid (non-void) cells. */
+	int32 Asteroid = 0;
+	/** Block share (rock, heal ore, barrel) of the asteroid cells. */
+	double Coverage = 0.0;
+	/** Share of the floor cells (floor, spawn) 4-connected to the spawn. */
+	double Reach = 0.0;
+	/** 4-connected asteroid pieces. */
+	int32 Pieces = 0;
+	/** Largest BFS distance from an asteroid cell to floor, measured before heal veins and barrels. */
+	int32 MaxFar = 0;
+	/** Open cells outside every all-open Passage x Passage window. */
+	int32 Narrow = 0;
+	/** Valid hidden pockets (unreachable regions of MinRegion+ cells, gap 1 to MaxGap). */
+	int32 Pockets = 0;
+	/** Longest straight outline run. */
+	int32 OutlineRun = 0;
+	/** Heal ore and barrel cells. */
+	int32 HealOre = 0;
+	int32 Barrels = 0;
+	/** Count per layout type name (void, rock, heal_ore, barrel, spawn), for the brief. */
+	TMap<FString, int32> Counts;
+};
+
+/** One accepted (or last tried) layout of a seed search. */
+struct ROGUERIGS_API FRRGeneratedLayout
+{
+	/** Seed that produced Cells. */
+	int32 Seed = 0;
+	/** Grid size. */
+	int32 Width = 0;
+	int32 Height = 0;
+	/** Cell types, row-major. */
+	TArray<ERRCellType> Cells;
+	/** Measures of Cells. */
+	FRRLayoutGenStats Stats;
+	/** Failed acceptance checks; empty when the layout passed. */
+	TArray<FString> Fails;
+	/** Seeds tried by the search, and generation time of the accepted seed alone and of the whole search (s). */
+	int32 SeedsTried = 0;
+	double Seconds = 0.0;
+	double SearchSeconds = 0.0;
+};
+
 /**
  * Generates one layout grid from params and a seed. Plain C++ (no UObject, no game-thread state): one instance per thread.
  * Carve() runs the carving steps of the recipe: outline and notching, spawn clearing, main network, hidden pockets,
- * far-cell filler, cleanup and the 3-cell passage repair.
+ * far-cell filler, cleanup and the 3-cell passage repair. Decorate() places heal veins and barrels; Generate() runs the
+ * whole recipe with its seed acceptance and returns the first passing seed.
  */
 class ROGUERIGS_API FRRLayoutGenerator
 {
@@ -22,6 +69,27 @@ public:
 
 	/** Runs the carving steps for Seed and leaves the carved grid in GetCells() (spawn cell set). */
 	void Carve(int32 Seed);
+
+	/** Places the heal veins and barrels on the carved grid. Returns false when the quotas cannot be met. */
+	bool Decorate();
+
+	/** Measures the current grid. */
+	FRRLayoutGenStats Measure() const;
+
+	/** Recipe checks (and brief bounds when Brief is not null) of Stats; returns the failed checks. */
+	TArray<FString> Check(const FRRLayoutGenStats& Stats, const FRRLayoutBrief* Brief) const;
+
+	/** Carve, measure the far distance, decorate, measure and check one seed. */
+	FRRGeneratedLayout RunSeed(int32 Seed, const FRRLayoutBrief* Brief);
+
+	/** Tries seeds upward from FirstSeed (search.max_seeds) and returns the first that passes, or the last tried. */
+	FRRGeneratedLayout Generate(int32 FirstSeed, const FRRLayoutBrief* Brief);
+
+	/** The layout as level-layout-schema JSON (compact, every non-floor cell, row-major): same cells give the same bytes. */
+	static FString ToJson(const FString& Name, const FRRGeneratedLayout& Layout);
+
+	/** Layout type name of a cell type ("rock", "heal_ore"...), empty for floor. */
+	static const TCHAR* TypeName(ERRCellType Type);
 
 	/** The grid, row-major (index = Y * Width + X). */
 	const TArray<ERRCellType>& GetCells() const { return Grid; }
@@ -124,6 +192,13 @@ protected:
 
 	/** Thin outline peninsulas farther than maxd from floor (inside the void margin) become void. */
 	void TrimFar();
+
+	/** Largest BFS distance from an asteroid cell to floor. */
+	int32 MeasureMaxFar() const;
+
+	/** Picks N cells of Candidates, each the farthest from Picked among Tries random valid ones; places and records them. */
+	bool PickSpread(const TArray<FIntPoint>& Candidates, int32 Count, int32 Tries, TFunctionRef<bool(int32, int32)> IsValid,
+		TArray<FIntPoint>& Picked, TFunctionRef<void(int32, int32)> Place);
 
 	/** Params copy. */
 	FRRLayoutGenParams P;

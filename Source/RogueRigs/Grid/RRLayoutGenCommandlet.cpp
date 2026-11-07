@@ -5,6 +5,8 @@
 #include "Grid/RRLayoutGenerator.h"
 #include "Grid/RRLayoutGenParams.h"
 #include "HAL/PlatformTime.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #include "RogueRigs.h"
 
 URRLayoutGenCommandlet::URRLayoutGenCommandlet()
@@ -55,6 +57,58 @@ int32 URRLayoutGenCommandlet::Main(const FString& Params)
 		return bSame && Narrow == 0 ? 0 : 1;
 	}
 
-	UE_LOG(LogRogueRigs, Error, TEXT("RRLayoutGen: only -carveonly is available in this build"));
-	return 2;
+	FString Name = TEXT("arena_gen");
+	FParse::Value(*Params, TEXT("name="), Name);
+	FString OutDir = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("GeneratedLevels"));
+	FParse::Value(*Params, TEXT("out="), OutDir);
+	OutDir = FPaths::ConvertRelativePathToFull(OutDir);
+	FString BriefPath;
+	FParse::Value(*Params, TEXT("brief="), BriefPath);
+
+	bool bValidName = !Name.IsEmpty();
+	for (const TCHAR Char : Name)
+	{
+		bValidName &= (Char >= TEXT('a') && Char <= TEXT('z')) || (Char >= TEXT('0') && Char <= TEXT('9')) || Char == TEXT('_');
+	}
+	if (!bValidName)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("RRLayoutGen: -name must be snake_case ([a-z0-9_]+), got '%s'"), *Name);
+		return 2;
+	}
+
+	FRRLayoutBrief Brief;
+	const bool bHasBrief = !BriefPath.IsEmpty();
+	if (bHasBrief && !RRLayoutGen::LoadBrief(BriefPath, Brief, Error))
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("RRLayoutGen: %s"), *Error);
+		return 2;
+	}
+
+	FRRLayoutGenerator Generator(GenParams);
+	const FRRGeneratedLayout Layout = Generator.Generate(Seed, bHasBrief ? &Brief : nullptr);
+	if (Layout.Fails.Num() > 0)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("RRLayoutGen: no seed in [%d, %d] passes (%.2f s); nothing written"),
+			Seed, Seed + Layout.SeedsTried - 1, Layout.SearchSeconds);
+		return 1;
+	}
+
+	const FString LayoutPath = FPaths::Combine(OutDir, Name + TEXT(".json"));
+	if (!FFileHelper::SaveStringToFile(FRRLayoutGenerator::ToJson(Name, Layout), *LayoutPath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("RRLayoutGen: cannot write %s"), *LayoutPath);
+		return 1;
+	}
+	if (bHasBrief)
+	{
+		const FString BriefOut = FPaths::Combine(OutDir, Name + TEXT(".brief.json"));
+		if (!FFileHelper::SaveStringToFile(Brief.SourceText, *BriefOut, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+		{
+			UE_LOG(LogRogueRigs, Error, TEXT("RRLayoutGen: cannot write %s"), *BriefOut);
+			return 1;
+		}
+	}
+	UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen: seed %d accepted after %d seed(s); generation %.2f s for this layout, %.2f s for the search; wrote %s"),
+		Layout.Seed, Layout.SeedsTried, Layout.Seconds, Layout.SearchSeconds, *LayoutPath);
+	return 0;
 }
