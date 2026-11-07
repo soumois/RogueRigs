@@ -20,7 +20,7 @@ Content of [[death-screen]] (task-484 Q1 to Q10 defaults), style of [[art-prompt
 - Self-check: every death-screen element present, no yellow, green or blue; Retry is barely brighter than Main Menu.
 
 ## Owner words
-- Round 1: open (waiting for "je valide" or a change request).
+- Round 1: "Je valide" (owner 2026-11-07, relayed by the main session). Round 1 is the validated mockup; status keep.
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.
