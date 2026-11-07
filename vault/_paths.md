@@ -46,6 +46,7 @@ art-prompts-heal-pickup  reference/gdd/art-audio/art-prompts-heal-pickup.md
 art-prompts-hud-unified-mockup  reference/gdd/art-audio/art-prompts-hud-unified-mockup.md
 art-prompts-level-end-screen  reference/gdd/art-audio/art-prompts-level-end-screen.md
 art-prompts-level-end-screen-mockup  reference/gdd/art-audio/art-prompts-level-end-screen-mockup.md
+art-prompts-loading-screen  reference/gdd/art-audio/art-prompts-loading-screen.md
 art-prompts-main-menu-background  reference/gdd/art-audio/art-prompts-main-menu-background.md
 art-prompts-miner  reference/gdd/art-audio/art-prompts-miner.md
 art-prompts-ore-deposit  reference/gdd/art-audio/art-prompts-ore-deposit.md

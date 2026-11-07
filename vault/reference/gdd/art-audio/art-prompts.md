@@ -32,6 +32,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - `drone-turnaround.webp` — the drone, front, side, back, source of the Meshy mesh ([[art-prompts-drone]]).
 - `shooter-turnaround.webp`, `heavy-turnaround.webp`, `kamikaze-turnaround.webp`, `chaser-turnaround-v2.webp` — owner sheets for the next Meshy meshes ([[art-prompts-robots-meshy]]).
 - `chest-turnaround.webp` — the bonus chest supply locker, front, side, back ([[art-prompts-chest]]).
+- `loading-screen-background.png` — the loading screen illustration ([[art-prompts-loading-screen]]).
 - `console-c2-turnaround.webp` — the field uplink console (C2 uplink mast), front, side, back, source of the Meshy mesh ([[art-prompts-console]]).
 
 ## Relations
@@ -58,6 +59,7 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[burst-rifle-mesh]] — burst rifle Meshy mesh (Aqua Wasteland Carbine): owner words, files, measures, budget.
 - [[art-prompts-heal-pickup]] — heal pickup crystal variants: Kie.ai prompt, 3-up sheet, self-review.
 - [[art-prompts-main-menu-background]] — main menu background: Kie.ai prompt, 3 variants, self-review.
+- [[art-prompts-loading-screen]] — loading screen illustration: Kie.ai scene prompt, two corrections, style review.
 - [[art-prompts-shop-screen]] — ChatGPT text prompt for design and game-feel proposals of the shop screen, with screenshot.
 - [[art-prompts-shop-screen-mockup]] — ChatGPT's answer: shop screen mockup and asset sheet from the owner, elements taken.
 - [[art-prompts-level-end-screen]] — ChatGPT mockup prompt of the end-of-level stats screen in the Spare Parts look, one attachment.

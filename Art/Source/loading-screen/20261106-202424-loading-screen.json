@@ -1,0 +1,28 @@
+{
+  "run_id": "20261106-202424-loading-screen",
+  "asset": "loading-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/loading-screen/prompts/02-correction-1.txt",
+  "prompt": "Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same shuttle position in the upper right, same miner crouching in the open side hatch, same small floating drone with its orange camera eye beside the hatch, same dark calm bottom left area, same indigo violet magenta nebula, same starfield, same floating grey-violet asteroids, same large cratered planet on the right. No text, no UI. Image 1 is the image to correct. Image 2 is the run shuttle design, used only for the shuttle details.\nOnly change these four things:\n1. The shuttle matches image 2: an orange dome on the roof centre, dense rust chips on the white and teal plates, all four ducted rotor rings visible.\n2. The rock blocks on the asteroid have smooth light lilac tops with no pits and no cracks, and a thin glowing orange-yellow rim on the chamfered top edge.\n3. The open floor of the asteroid is hand-painted cartoon flagstones with a magenta-purple base and dark cracks with a pink rim highlight; no small rubble, chips or pebbles on the floor; crystals only grow from the rock blocks.\n4. The planet is deep ultramarine and violet with no cyan rim glow.\nChange nothing else.",
+  "refs": [
+    "Art/Source/loading-screen/20261106-202154-loading-screen-1.png",
+    "Art/Source/loading-screen/ref-extractor-three-quarter.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "05183c45390ad42103fbbe1cdb52785a",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000007e8481fd964af775b37137cc.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/loading-screen/20261106-202424-loading-screen-1.png"
+  ]
+}

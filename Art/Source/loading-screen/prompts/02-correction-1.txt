@@ -1,0 +1,7 @@
+Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same shuttle position in the upper right, same miner crouching in the open side hatch, same small floating drone with its orange camera eye beside the hatch, same dark calm bottom left area, same indigo violet magenta nebula, same starfield, same floating grey-violet asteroids, same large cratered planet on the right. No text, no UI. Image 1 is the image to correct. Image 2 is the run shuttle design, used only for the shuttle details.
+Only change these four things:
+1. The shuttle matches image 2: an orange dome on the roof centre, dense rust chips on the white and teal plates, all four ducted rotor rings visible.
+2. The rock blocks on the asteroid have smooth light lilac tops with no pits and no cracks, and a thin glowing orange-yellow rim on the chamfered top edge.
+3. The open floor of the asteroid is hand-painted cartoon flagstones with a magenta-purple base and dark cracks with a pink rim highlight; no small rubble, chips or pebbles on the floor; crystals only grow from the rock blocks.
+4. The planet is deep ultramarine and violet with no cyan rim glow.
+Change nothing else.

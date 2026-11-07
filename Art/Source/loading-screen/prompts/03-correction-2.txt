@@ -1,0 +1,5 @@
+Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same shuttle with its orange roof dome, rusty white and teal plates, amber cockpit and landing legs, same miner crouching in the open side hatch, same small floating drone with its orange camera eye beside the hatch, same asteroid with smooth lilac rock blocks with a thin orange-yellow rim, same magenta-purple cartoon flagstone floor, same violet crystals, same dark calm bottom left area, same nebula, starfield, floating asteroids and violet planet. No text, no UI. Image 1 is the image to correct. Image 2 is the run shuttle design: it has four ducted rotors, one at each corner.
+Only change these two things:
+1. Add the fourth ducted rotor of the shuttle on the near front corner, below and in front of the cockpit side, as in image 2, placed so it does not cover the open hatch, the miner or the drone.
+2. The single pale blue-grey flagstone right of the centre of the floor becomes magenta-purple like the other flagstones.
+Change nothing else.

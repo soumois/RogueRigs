@@ -1,0 +1,28 @@
+{
+  "run_id": "20261106-202627-loading-screen",
+  "asset": "loading-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/loading-screen/prompts/03-correction-2.txt",
+  "prompt": "Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same shuttle with its orange roof dome, rusty white and teal plates, amber cockpit and landing legs, same miner crouching in the open side hatch, same small floating drone with its orange camera eye beside the hatch, same asteroid with smooth lilac rock blocks with a thin orange-yellow rim, same magenta-purple cartoon flagstone floor, same violet crystals, same dark calm bottom left area, same nebula, starfield, floating asteroids and violet planet. No text, no UI. Image 1 is the image to correct. Image 2 is the run shuttle design: it has four ducted rotors, one at each corner.\nOnly change these two things:\n1. Add the fourth ducted rotor of the shuttle on the near front corner, below and in front of the cockpit side, as in image 2, placed so it does not cover the open hatch, the miner or the drone.\n2. The single pale blue-grey flagstone right of the centre of the floor becomes magenta-purple like the other flagstones.\nChange nothing else.",
+  "refs": [
+    "Art/Source/loading-screen/20261106-202424-loading-screen-1.png",
+    "Art/Source/loading-screen/ref-extractor-three-quarter.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "b9dcf35ed34ef974a32d571a3388338c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000482081f5944c19a6d5f0b277.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/loading-screen/20261106-202627-loading-screen-1.png"
+  ]
+}
