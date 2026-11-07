@@ -3,7 +3,7 @@ id: task-487-main-menu-buttons-plate
 description: "Global task: rework the main menu New Run, Options and Exit buttons so they fit the menu look instead of bare floating text. Open to run or review it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu buttons that fit the screen (plate buttons)
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-07, "Prends la solution a")
 - milestone: M2
 - next_step: task-487-01-menu-plates
-- started: open
+- started: 2026-11-07T04:41:16Z
 - waiting_for: none
 - result: open
 

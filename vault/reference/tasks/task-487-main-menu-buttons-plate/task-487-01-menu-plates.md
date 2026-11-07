@@ -3,7 +3,7 @@ id: task-487-01-menu-plates
 description: "Bp: WBP_MainMenu New Run, Options and Exit become plate buttons as main-menu Layout says, with the plate hover and the focus outline."
 parent: task-487-main-menu-buttons-plate
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu buttons that fit the screen (plate buttons): bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:41:16Z
 - waiting_for: none
 - result: open
 
