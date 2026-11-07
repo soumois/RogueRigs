@@ -1,9 +1,9 @@
 ---
 id: task-493-async-layout-loader
 description: "Global task: builds the grid from a layout JSON, loading its assets asynchronously and exposing a 0-100 load percentage for a future loading screen."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Asynchronous level loader from a layout JSON with a load percentage
 
@@ -17,14 +17,14 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-493-02-doc
+- next_step: none
 - started: 2026-11-07T06:47:27Z
 - waiting_for: none
-- executor_tokens: input 156, cache write 230087, cache read 12339632, output 82911
-- executor_usage: runs 1, turns 78, context start 17k peak 242k, resumes 0, 25 min, units 1.94 M
+- executor_tokens: input 172, cache write 240152, cache read 14317378, output 88224
+- executor_usage: runs 1, turns 86, context start 17k peak 252k, resumes 0, 26 min, units 2.17 M
 - planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
 - planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
-- result: open
+- result: Done. 6d276df9. New node sys-layout-loader (vault/reference/tech/systems/world/sys-grid/sys-layout-loader.md, parent sys-grid): classes, StartLoad, LoadPercent / GetLoadPercent, OnLoadCompleted, phases, what the percentage covers (parse, assets, build units) and how a loading screen reads it, settings with provisional values, logs, measures, tests, debug command. sys-grid lifecycle and Relations updated. Lint clean. Budget: executor run over the standard budget, cause recorded in task-493-01-loader result.
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -40,6 +40,6 @@ Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; v
 2. task-493-02-doc (vault/reference/tasks/task-493-async-layout-loader/task-493-02-doc.md) — doc: Document the loader, its percentage and completion event.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-493-01-loader]] — step 1, cpp.
 - [[task-493-02-doc]] — step 2, doc.
