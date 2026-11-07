@@ -14,11 +14,11 @@ status: in-progress
 - verification_level: exploratory
 - confirmed_by_owner: yes (2026-11-07, "Menu q1- montre moi une image du b je suis curieux. Le reste par défaut")
 - milestone: M2
-- next_step: task-488-03-capture
+- next_step: task-488-04-doc
 - started: 2026-11-07T04:21:16Z
 - waiting_for: none
-- executor_tokens: input 136, cache write 170688, cache read 7121214, output 35774
-- executor_usage: runs 1, turns 64, context start 17k peak 181k, resumes 1, 14 min, units 1.10 M
+- executor_tokens: input 154, cache write 182501, cache read 8613556, output 40139
+- executor_usage: runs 1, turns 72, context start 17k peak 193k, resumes 2, 18 min, units 1.29 M
 - planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
 - planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
 - result: open

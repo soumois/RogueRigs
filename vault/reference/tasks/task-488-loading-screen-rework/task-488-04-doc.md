@@ -3,7 +3,7 @@ id: task-488-04-doc
 description: "Doc: Doc node of the loading widget updated."
 parent: task-488-loading-screen-rework
 kind: task
-status: todo
+status: in-progress
 ---
 # Richer loading screen (illustration and framed texts): doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:39:13Z
 - waiting_for: none
 - result: open
 
