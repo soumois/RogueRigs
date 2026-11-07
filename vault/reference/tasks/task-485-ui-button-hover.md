@@ -14,11 +14,11 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
-- next_step: task-485-10-capture
+- next_step: task-485-11-doc
 - started: 2026-11-07T02:19:47Z
 - waiting_for: none
-- executor_tokens: input 236, cache write 251623, cache read 17692954, output 96456
-- executor_usage: runs 1, turns 117, context start 18k peak 264k, resumes 1, 44 min, units 2.57 M
+- executor_tokens: input 238, cache write 252384, cache read 17956603, output 97355
+- executor_usage: runs 1, turns 118, context start 18k peak 264k, resumes 1, 45 min, units 2.60 M
 - planning_tokens: input 34, cache write 111833, cache read 957049, output 19112
 - planning_usage: a4e7f869 "Plan button hover effects" 1/1 (tasks 485), units 0.33 M
 - result: open

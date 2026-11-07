@@ -3,7 +3,7 @@ id: task-485-11-doc
 description: "Doc: Doc nodes of the eight changed widgets and of any shared mechanism updated."
 parent: task-485-ui-button-hover
 kind: task
-status: todo
+status: in-progress
 ---
 # Hover effect on every button of every screen: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T03:04:01Z
 - waiting_for: none
 - result: open
 
