@@ -434,8 +434,8 @@ protected:
 
 	/**
 	 * Health a Heal pickup restores on collection, through HealEffectClass (SetByCaller Data.Heal, clamped to MaxHealth).
-	 * The grid sets it from OreTypes.csv HealValue (row Heal: 15 per pickup, a 2 x 2 vein restores 60; heal-ore, owner
-	 * 2026-10-10). 0 by default: a heal pickup spawned outside the grid heals nothing. Only read by Heal pickups.
+	 * The grid sets it from OreTypes.csv HealValue (row Heal: 30 per pickup, a 2 x 2 vein restores 120; heal-ore, owner
+	 * 2026-11-07). 0 by default: a heal pickup spawned outside the grid heals nothing. Only read by Heal pickups.
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickup|Heal", meta = (ClampMin = 0))
 	float HealAmount = 0.f;

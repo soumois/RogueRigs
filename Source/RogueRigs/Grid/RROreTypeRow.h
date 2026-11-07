@@ -35,7 +35,7 @@ struct ROGUERIGS_API FRROreTypeRow : public FTableRowBase
 
 	/**
 	 * Health restored by each heal pickup a broken block of this type drops (ARRPickup::SetHealAmount); 0 for non-heal ores.
-	 * Row Heal (heal-ore, owner 2026-10-10): 15 per pickup, so a 2 x 2 heal vein restores 60.
+	 * Row Heal (heal-ore, owner 2026-11-07, task-490): 30 per pickup, so a 2 x 2 heal vein restores 120.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ore Type", meta = (ClampMin = "0"))
 	float HealValue = 0.f;

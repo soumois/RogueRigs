@@ -262,7 +262,7 @@ namespace RRScreenshotCommands
 	 * path (e.g. /Game/RogueRigs/Blueprints/Pickups/BP_PickupHeal.BP_PickupHeal_C), else a robot name resolved like
 	 * rr.Stress.Spawn. Characters stand on the miner's floor height, other actors are placed at it (a kamikaze within its
 	 * arm range flares at once: visual check of the flare). HealAmount > 0 sets it on spawned pickups (BP_PickupHeal defaults to 0,
-	 * the grid sets 15; task-324-02 heal number check).
+	 * the grid sets 30 since task-490; task-324-02 heal number check).
 	 */
 	FAutoConsoleCommandWithWorldAndArgs SpawnNearCommand(
 		TEXT("rr.Debug.SpawnNear"),

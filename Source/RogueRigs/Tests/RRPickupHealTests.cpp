@@ -154,7 +154,7 @@ bool FRRPickupHealFullHealthTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("heal pickup on the floor (not above the rest height, not fallen through)"), HealWeak->GetActorLocation().Z <= HealWeak->GetPopEnd().Z + 0.5 && HealWeak->GetActorLocation().Z > HealWeak->GetPopEnd().Z - 50.0);
 	TestNearlyEqual(TEXT("health still 100"), HealthOf(Miner), 100.f, 0.01f);
 
-	// The miner takes damage: the waiting pickup is attracted and collected, healing 15.
+	// The miner takes damage: the waiting pickup is attracted and collected, healing HealValue.
 	Miner->GetRRAbilitySystemComponent()->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), 70.f);
 	int32 Frames = 0;
 	for (; Frames < 120 && CountCollected(Recorder.Get(), ERRPickupType::Heal) == 0; ++Frames)

@@ -536,8 +536,8 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 {
 	using namespace RROreDepositTests;
 
-	// heal-ore (owner 2026-10-10): 12 veins of 2 x 2 (48 cells), each one deposit; 15 HP per pickup (OreTypes.csv row Heal),
-	// so a vein restores 60. Every heal pickup is collected, even those that pop inside the pickup radius.
+	// heal-ore (owner 2026-10-10): 12 veins of 2 x 2 (48 cells), each one deposit; HealValue HP per pickup (OreTypes.csv row Heal, 30),
+	// so a vein restores 4 x HealValue (120). Every heal pickup is collected, even those that pop inside the pickup radius.
 	FRROreTypeRow HealRow;
 	if (!TestTrue(TEXT("row Heal found in OreTypes.csv"), ARRArenaGrid::GetOreType(HealId, HealRow)))
 	{
@@ -616,12 +616,13 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 			Weapon->GetAutoFireComponent()->StopFiring();
 		}
 	}
-	ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), 100.f);
+	// Max 200: the 4 pickups of the vein (4 x 30 = 120 since task-490) all heal without reaching the cap.
+	ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), 200.f);
 	ASC->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), 10.f);
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	Miner->OnPickupCollected.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandlePickupCollected);
 
-	// Dig: the 4 blocks shake together and break on the same frame, about 2 s in; the 4 heal pickups worth 15 pop one by one
+	// Dig: the 4 blocks shake together and break on the same frame, about 2 s in; the 4 heal pickups worth HealValue pop one by one
 	// during the dig, every 0.5 s, the last on the break frame (task-235-01).
 	// task-213-02: each pickup pops at a random yaw and 80-300 uu (task-195-02) from the global FMath stream, clock-seeded; a
 	// pickup popping away from the miner can land beyond the pickup radius and stay there. Seeded only so the logged numbers
@@ -768,7 +769,8 @@ bool FRROreHealVeinTest::RunTest(const FString& Parameters)
 		HealCollected += Type == ERRPickupType::Heal ? 1 : 0;
 	}
 	TestEqual(TEXT("the 4 heal pickups are collected"), HealCollected, 4);
-	TestNearlyEqual(TEXT("the vein restored 60 HP (10 -> 70)"), ASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()), 70.f, 0.01f);
+	TestNearlyEqual(TEXT("the vein restored 4 x HealValue (10 -> 130 of 200)"), ASC->GetNumericAttribute(URRHealthAttributeSet::GetHealthAttribute()),
+		10.f + 4.f * HealRow.HealValue, 0.01f);
 	return true;
 }
 
