@@ -3,7 +3,7 @@ id: task-486-grey-buttons-plate
 description: "Global task: cream plate look for the level-up Reroll and run-won Main Menu buttons, like the other screen buttons. Open to run or review it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Cream plate look for the two grey buttons (level-up Reroll, run-won Main Menu)
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
 - next_step: task-486-01-reroll-plate
-- started: open
+- started: 2026-11-07T03:29:08Z
 - waiting_for: none
 - result: open
 

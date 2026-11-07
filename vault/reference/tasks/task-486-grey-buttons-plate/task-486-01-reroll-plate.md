@@ -3,7 +3,7 @@ id: task-486-01-reroll-plate
 description: "Bp: Level-up Reroll button of WBP_UpgradeChoice gets the cream plate look of ui-button-hover, with the standard plate hover."
 parent: task-486-grey-buttons-plate
 kind: task
-status: todo
+status: in-progress
 ---
 # Cream plate look for the two grey buttons (level-up Reroll, run-won Main Menu): bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T03:29:08Z
 - waiting_for: none
 - result: open
 
