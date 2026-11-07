@@ -7,7 +7,7 @@ status: provisional
 ---
 # Death screen
 
-Requested by the owner 2026-11-06 ([[task-484-death-screen]]). Pending: the values below are the proposed defaults of task-484 Q1 to Q10, not yet answered.
+Requested by the owner 2026-11-06 ([[task-484-death-screen]]). Values provisional: the owner accepted the defaults of task-484 Q1 to Q10 (his words in its request).
 
 ## Death sequence (Q1)
 - Lethal hit: controls cut, the game runs at 30 % speed for 1 s real time, camera unchanged; then the screen appears and gameplay pauses. No miner death animation.
