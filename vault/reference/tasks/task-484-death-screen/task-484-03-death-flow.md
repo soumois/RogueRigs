@@ -3,7 +3,7 @@ id: task-484-03-death-flow
 description: "Cpp: Death sequence, run-lost screen trigger for death and missed shuttle, recap values, Retry and Main Menu actions, screen texts."
 parent: task-484-death-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Death screen with Retry and Main Menu: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T01:04:15Z
 - waiting_for: none
 - result: open
 
