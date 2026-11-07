@@ -1,0 +1,16 @@
+Same art style as Image 1 (the level-end screen mockup) and Image 2 (the pause menu mockup). Keep exactly their visual language: the riveted title side bars, the riveted teal and gunmetal frame with corner brackets, thin divider lines, the cream rusty buttons with teal ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.
+
+Make a new screen: the RUN LOST screen shown when the miner dies. Do not copy the texts of Image 1 or Image 2. All text is English, crisp and readable.
+
+Background: the arena behind is dimmed to about 75 % black and desaturated to near grey, so only faint shapes of the level remain; the violet ore crystals in the corners are also greyed and dim.
+
+Layout:
+- Top: title "CONTRACT TERMINATED" in large letters, in a dark rust red, with the same riveted side bars as "LEVEL 1 CLEARED".
+- Under the title, between two thin lines, one subtitle line in smaller pale grey letters: "Unauthorized personnel neutralized. Claim returned to Kessler-Voss."
+- Centre: one smaller riveted teal and gunmetal frame (same frame as Image 1, about half its height) holding three recap rows, label left and value right, all the same font size and aligned:
+  "Level reached   Level 2 of 4"
+  "Robots destroyed   47"
+  "Duskite lost   61"
+- Bottom: two buttons side by side, both in the style of the cream rusty buttons with teal ends of Image 2: "Retry" (highlighted, slightly brighter) and "Main Menu".
+
+Do not add anything else: no ore counter band, no icons, no character, no extra panels. No yellow, green or blue elements. Keep the text sizes consistent and every row aligned.

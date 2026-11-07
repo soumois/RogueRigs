@@ -37,6 +37,7 @@ art-prompts-burst-rifle  reference/gdd/art-audio/art-prompts-burst-rifle.md
 art-prompts-card-back  reference/gdd/art-audio/art-prompts-card-back.md
 art-prompts-chest  reference/gdd/art-audio/art-prompts-chest.md
 art-prompts-console  reference/gdd/art-audio/art-prompts-console.md
+art-prompts-death-screen-mockup  reference/gdd/art-audio/art-prompts-death-screen-mockup.md
 art-prompts-drone  reference/gdd/art-audio/art-prompts-drone.md
 art-prompts-extractor  reference/gdd/art-audio/art-prompts-extractor.md
 art-prompts-floor-texture  reference/gdd/art-audio/art-prompts-floor-texture.md

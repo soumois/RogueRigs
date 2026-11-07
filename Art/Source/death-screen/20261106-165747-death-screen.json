@@ -1,0 +1,28 @@
+{
+  "run_id": "20261106-165747-death-screen",
+  "asset": "death-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/death-screen/prompts/01-mockup.txt",
+  "prompt": "Same art style as Image 1 (the level-end screen mockup) and Image 2 (the pause menu mockup). Keep exactly their visual language: the riveted title side bars, the riveted teal and gunmetal frame with corner brackets, thin divider lines, the cream rusty buttons with teal ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.\n\nMake a new screen: the RUN LOST screen shown when the miner dies. Do not copy the texts of Image 1 or Image 2. All text is English, crisp and readable.\n\nBackground: the arena behind is dimmed to about 75 % black and desaturated to near grey, so only faint shapes of the level remain; the violet ore crystals in the corners are also greyed and dim.\n\nLayout:\n- Top: title \"CONTRACT TERMINATED\" in large letters, in a dark rust red, with the same riveted side bars as \"LEVEL 1 CLEARED\".\n- Under the title, between two thin lines, one subtitle line in smaller pale grey letters: \"Unauthorized personnel neutralized. Claim returned to Kessler-Voss.\"\n- Centre: one smaller riveted teal and gunmetal frame (same frame as Image 1, about half its height) holding three recap rows, label left and value right, all the same font size and aligned:\n  \"Level reached   Level 2 of 4\"\n  \"Robots destroyed   47\"\n  \"Duskite lost   61\"\n- Bottom: two buttons side by side, both in the style of the cream rusty buttons with teal ends of Image 2: \"Retry\" (highlighted, slightly brighter) and \"Main Menu\".\n\nDo not add anything else: no ore counter band, no icons, no character, no extra panels. No yellow, green or blue elements. Keep the text sizes consistent and every row aligned.",
+  "refs": [
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp",
+    "Art/Source/pause-menu/20261102-223354-pause-menu-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "35f7c9758258bb9a0918de9f4384d588",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000db1081fbbf08ffc207d86937.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/death-screen/20261106-165747-death-screen-1.png"
+  ]
+}

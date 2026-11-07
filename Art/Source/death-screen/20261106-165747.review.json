@@ -1,0 +1,12 @@
+{
+  "run_id": "20261106-165747",
+  "items": [
+    {
+      "file": "Art/Source/death-screen/20261106-165747-death-screen-1.png",
+      "verdict": "pass",
+      "rule": null,
+      "reason": "Same family as the level-end and pause mockups (riveted teal and rust frame, title side bars, subtitle side lines, cream rusty buttons with teal caps), red title on a dimmed, desaturated arena, recap rows Level 2 of 4 / Robots destroyed 47 / Duskite lost 61, and Retry and Main Menu as the death-screen spec asks; no A rule, colour-code or readability rule broken (A14 targets scene reference art, not UI mockups; the red title is the red accent the spec asks for and what a player expects of a loss screen).",
+      "correction": null
+    }
+  ]
+}
