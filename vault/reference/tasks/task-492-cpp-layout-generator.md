@@ -3,7 +3,7 @@ id: task-492-cpp-layout-generator
 description: "Global task: deterministic C++ port of the 240 x 240 generator recipe that writes a layout JSON, then a 20-seed validation by the Level-Design agent."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent
 
@@ -18,7 +18,7 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
 - next_step: task-492-01-gen-carve
-- started: open
+- started: 2026-11-07T06:14:54Z
 - waiting_for: none
 - result: open
 
