@@ -32,7 +32,9 @@ bool URRMinimap::Initialize(ARRArenaGrid* InGrid, const FRRMinimapConfig& InConf
 	LastSeenCell = FIntPoint(INDEX_NONE, INDEX_NONE);
 
 	const TConstArrayView64<uint8> InitialData(reinterpret_cast<const uint8*>(Pixels.GetData()), static_cast<int64>(Pixels.Num()) * sizeof(FColor));
-	Texture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_B8G8R8A8, MakeUniqueObjectName(this, UTexture2D::StaticClass(), TEXT("MinimapTexture")), InitialData);
+	// CreateTransient puts the texture in the transient package: the name must be unique there, or a second minimap (HUD
+	// ResetMinimap, task-494) would overwrite the texture the widget material still shows.
+	Texture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_B8G8R8A8, MakeUniqueObjectName(GetTransientPackage(), UTexture2D::StaticClass(), TEXT("MinimapTexture")), InitialData);
 	if (!Texture)
 	{
 		Grid.Reset();
