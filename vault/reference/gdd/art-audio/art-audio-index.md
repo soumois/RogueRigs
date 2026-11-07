@@ -19,6 +19,7 @@ kind: note
 - [[dialogue-tone]] — how the Rigs talk; bark rules and examples.
 - [[style-guide-text]] — scored text style guide: four constraint types, scale 0-10, threshold 8; open to score or refine text.
 - [[kessler-voss-logo]] — the retained company logo: look, file, legibility, usage rules.
+- [[ui-button-hover]] — mouse hover effect of every button on every screen; open for button or menu work.
 - [[rock-look-reference]] — owner DRG Survivor captures of wall tops (cracked = weaker rock, slab look); open for rock or ore look work.
 
 ## Relations
