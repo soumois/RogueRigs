@@ -10,5 +10,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-495-generator-window-repair]] — the C++ layout generator enforces every layout review rule (24 x 24 windows, straight lanes, pocket distance) by repair and acceptance checks. Status in-progress.
 - [[task-494-generator-test-map]] — a test map without robots where the owner generates a new layout on the fly with a console command and plays it. Status todo.

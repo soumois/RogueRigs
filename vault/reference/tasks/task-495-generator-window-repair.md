@@ -1,9 +1,9 @@
 ---
 id: task-495-generator-window-repair
 description: "Global task: the C++ layout generator enforces every layout review rule (24 x 24 windows, straight lanes, pocket distance) by repair and acceptance checks."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # C++ generator enforces the layout review rules (windows, straight lanes, pocket distance)
 
@@ -14,14 +14,14 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Oui")
 - milestone: M2
-- next_step: task-495-03-doc
+- next_step: none
 - started: 2026-11-07T07:13:43Z
 - waiting_for: none
-- executor_tokens: input 156, cache write 235550, cache read 13276109, output 111602
-- executor_usage: runs 1, turns 78, context start 17k peak 248k, resumes 0, 55 min, units 2.18 M
+- executor_tokens: input 168, cache write 246970, cache read 14792279, output 116824
+- executor_usage: runs 1, turns 84, context start 17k peak 259k, resumes 0, 56 min, units 2.37 M
 - planning_tokens: input 32, cache write 74671, cache read 675978, output 22719
 - planning_usage: a9fa42c4 "Plan window repair pass" 1/1 (tasks 495), units 0.27 M
-- result: open
+- result: Done. Commit 5ab27305. sys-layout-generator: review_repairs entry (passes, dead-window filler walk, outcrop or wall bump, lane bump or niche, pocket distance checked only), params review section, the three acceptance checks and the new yield (24 of 24 starts, 22 on the same first seed, reach caveat) replacing the not-automated gotcha. layout-review-rules: intro and lane line updated, Automation section says what is enforced and gives the task-495-02 verdict. layout-generator-recipe: C++ port section records the verdict. Lint clean. Global over the standard budget (see the ALERT causes of 01 and 02).
 
 ## Questions
 Decided 2026-11-07 (owner "Oui"): the defaults of Q1, Q2, Q4 are accepted; values provisional, owner 2026-11-07.
@@ -36,7 +36,7 @@ Decided 2026-11-07 (owner "Oui"): the defaults of Q1, Q2, Q4 are accepted; value
 3. task-495-03-doc (vault/reference/tasks/task-495-generator-window-repair/task-495-03-doc.md) — doc: Document the repair passes and the new acceptance checks.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-495-01-repair-pass]] — step 1, cpp.
 - [[task-495-02-ld-review]] — step 2, level-design.
 - [[task-495-03-doc]] — step 3, doc.
