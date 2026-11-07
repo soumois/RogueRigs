@@ -493,3 +493,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-482-verification-levels]] — Crew rule: the Planner sets a verification level per global task (light, standard, exploratory) with an indicative executor budget. Open to run or review the rule change. Status done.
 - [[task-483-executor-budget-alert-traces]] — Measures executors against their level: non-blocking budget alert at closing, and executor traces kept in agent-usage.js. Open to run or review the measurement. Status done.
 - [[task-484-death-screen]] — Run-lost screen when the miner's health reaches 0: death sequence, appearance animation, mockup look, recap, Retry and Main Menu. Open to run or review it. Status done.
+- [[task-485-ui-button-hover]] — Visible mouse hover effect on all clickable buttons of the main menu, pause, run-lost, stats, shop, level-up and run-won screens. Open to run or review it. Status done.

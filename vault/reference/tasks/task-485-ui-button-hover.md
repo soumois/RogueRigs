@@ -1,9 +1,9 @@
 ---
 id: task-485-ui-button-hover
 description: "Global task: Visible mouse hover effect on all clickable buttons of the main menu, pause, run-lost, stats, shop, level-up and run-won screens. Open to run or review it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Hover effect on every button of every screen
 
@@ -14,14 +14,14 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
-- next_step: task-485-11-doc
+- next_step: none
 - started: 2026-11-07T02:19:47Z
 - waiting_for: none
-- executor_tokens: input 238, cache write 252384, cache read 17956603, output 97355
-- executor_usage: runs 1, turns 118, context start 18k peak 264k, resumes 1, 45 min, units 2.60 M
+- executor_tokens: input 256, cache write 268816, cache read 20406647, output 105316
+- executor_usage: runs 1, turns 127, context start 18k peak 281k, resumes 1, 46 min, units 2.90 M
 - planning_tokens: input 34, cache write 111833, cache read 957049, output 19112
 - planning_usage: a4e7f869 "Plan button hover effects" 1/1 (tasks 485), units 0.33 M
-- result: open
+- result: Done. Done (1c087c53). New sys-button-hover (systems-ui-index child, linked from ui-button-hover): subsystem, M_UI_ButtonPlate, settings, attach calls, debug commands. Eight wbp nodes (main-menu, pause-menu, run-lost, intermission, shop-screen, shop-card, upgrade-choice, alert-objectives) got a button_hover line with commit, mechanism and verified captures, and a relation to sys-button-hover. Lint clean.
 
 ## Questions
 Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -47,7 +47,7 @@ Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; 
 11. task-485-11-doc (vault/reference/tasks/task-485-ui-button-hover/task-485-11-doc.md) — doc: Doc nodes of the eight changed widgets and of any shared mechanism updated.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-485-01-pause-slice]] — step 1, bp.
 - [[task-485-02-slice-capture]] — step 2, capture.
 - [[task-485-03-run-lost]] — step 3, bp.
