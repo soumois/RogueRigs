@@ -3,7 +3,7 @@ id: task-484-04-death-widget
 description: "Bp: New death-screen widget from the validated mockup, with the appearance animation and the two buttons wired to C++."
 parent: task-484-death-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Death screen with Retry and Main Menu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T01:24:52Z
 - waiting_for: none
 - result: open
 
