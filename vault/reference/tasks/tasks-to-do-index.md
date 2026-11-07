@@ -10,4 +10,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-494-generator-test-map]] — a test map without robots where the owner generates a new layout on the fly with a console command and plays it. Status in-progress.

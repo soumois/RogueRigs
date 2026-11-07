@@ -1,9 +1,9 @@
 ---
 id: task-494-generator-test-map
 description: "Global task: a test map without robots where the owner generates a new layout on the fly with a console command and plays it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Enemy-free test map with a command to generate and reload a new level
 
@@ -17,14 +17,14 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-494-04-doc
+- next_step: none
 - started: 2026-11-07T08:36:35Z
 - waiting_for: none
-- executor_tokens: input 214, cache write 258989, cache read 17833902, output 86078
-- executor_usage: runs 1, turns 107, context start 17k peak 271k, resumes 0, 36 min, units 2.54 M
+- executor_tokens: input 224, cache write 266255, cache read 19203754, output 90435
+- executor_usage: runs 1, turns 112, context start 17k peak 278k, resumes 0, 37 min, units 2.71 M
 - planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
 - planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
-- result: open
+- result: Done. Done (commit cd2682bd). New sys-gen-test-mode (under sys-grid): classes, rr.Level.New, in-place reload flow, seed line, logs, measures, gotchas. sys-layout-loader: StartLoadIntoGrid entry point and link; sys-grid children link; bp-gen-test-game-mode (written in 02) linked to it. Lint clean (65 pre-existing warnings). Budget ALERT continues from subtasks 01 and 03 (minimap fix round).
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -42,7 +42,7 @@ Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; v
 4. task-494-04-doc (vault/reference/tasks/task-494-generator-test-map/task-494-04-doc.md) — doc: Document the test mode, the command and the test map.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-494-01-test-mode-command]] — step 1, cpp.
 - [[task-494-02-test-map]] — step 2, bp.
 - [[task-494-03-capture]] — step 3, capture.
