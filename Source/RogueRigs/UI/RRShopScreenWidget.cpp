@@ -4,10 +4,18 @@
 #include "UI/RRShopScreenWidget.h"
 
 #include "Run/RRIntermissionShopSubsystem.h"
+#include "UI/RRButtonHover.h"
 
 URRIntermissionShopSubsystem* URRShopScreenWidget::GetShop() const
 {
 	return URRIntermissionShopSubsystem::Get(this);
+}
+
+void URRShopScreenWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	// A greyed Reroll (SetIsEnabled false) shows no hover: the subsystem skips disabled buttons.
+	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("RerollButton"), TEXT("ContinueButton")});
 }
 
 void URRShopScreenWidget::NativeConstruct()
