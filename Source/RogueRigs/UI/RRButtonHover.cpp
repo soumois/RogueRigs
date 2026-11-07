@@ -50,7 +50,7 @@ void URRButtonHoverSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
-void URRButtonHoverSubsystem::Attach(UButton* Button, bool bBrightenPlate)
+void URRButtonHoverSubsystem::Attach(UButton* Button, bool bBrightenPlate, UWidget* ScaleWidget)
 {
 	if (!Button || Button->IsDesignTime())
 	{
@@ -61,7 +61,7 @@ void URRButtonHoverSubsystem::Attach(UButton* Button, bool bBrightenPlate)
 	URRButtonHoverSubsystem* Subsystem = GameInstance ? GameInstance->GetSubsystem<URRButtonHoverSubsystem>() : nullptr;
 	if (Subsystem)
 	{
-		Subsystem->AttachButton(Button, bBrightenPlate);
+		Subsystem->AttachButton(Button, bBrightenPlate, ScaleWidget);
 	}
 }
 
@@ -96,7 +96,21 @@ float URRButtonHoverSubsystem::GetHoverAmount(const UButton* Button) const
 	return -1.0f;
 }
 
-void URRButtonHoverSubsystem::AttachButton(UButton* Button, bool bBrightenPlate)
+void URRButtonHoverSubsystem::LogEntries() const
+{
+	for (const FRRButtonHoverEntry& Entry : Entries)
+	{
+		if (const UButton* Button = Entry.Button.Get())
+		{
+			const UUserWidget* Owner = Button->GetTypedOuter<UUserWidget>();
+			UE_LOG(LogRogueRigs, Log, TEXT("ButtonHover: %s.%s hovered %d enabled %d amount %.2f plate %s"), Owner ? *Owner->GetClass()->GetName() : TEXT("?"),
+				*Button->GetName(), Button->IsHovered() ? 1 : 0, Button->GetIsEnabled() ? 1 : 0, Entry.Amount,
+				Entry.PlateMaterial ? TEXT("material") : Entry.bTintPlate ? TEXT("tint") : TEXT("none"));
+		}
+	}
+}
+
+void URRButtonHoverSubsystem::AttachButton(UButton* Button, bool bBrightenPlate, UWidget* ScaleWidget)
 {
 	// Drop entries of destroyed buttons, and never attach one button twice.
 	Entries.RemoveAll([](const FRRButtonHoverEntry& Entry) { return !Entry.Button.IsValid(); });
@@ -110,7 +124,8 @@ void URRButtonHoverSubsystem::AttachButton(UButton* Button, bool bBrightenPlate)
 
 	FRRButtonHoverEntry& Entry = Entries.AddDefaulted_GetRef();
 	Entry.Button = Button;
-	Entry.RestScale = Button->GetRenderTransform().Scale;
+	Entry.ScaleWidget = ScaleWidget ? ScaleWidget : static_cast<UWidget*>(Button);
+	Entry.RestScale = Entry.ScaleWidget->GetRenderTransform().Scale;
 
 	FButtonStyle Style = Button->GetStyle();
 	UTexture* PlateTexture = Cast<UTexture>(Style.Normal.GetResourceObject());
@@ -122,6 +137,17 @@ void URRButtonHoverSubsystem::AttachButton(UButton* Button, bool bBrightenPlate)
 		// Same draw mode, margins, size and tint as the Normal brush; only the resource changes. The Hovered brush becomes the
 		// same brush, so the effect comes only from the eased Brightness (a tint above 1 is clamped by Slate vertex colours).
 		Style.Normal.SetResourceObject(Entry.PlateMaterial);
+		Style.Hovered = Style.Normal;
+		Button->SetStyle(Style);
+	}
+	else if (bBrightenPlate && Style.Normal.DrawAs != ESlateBrushDrawType::NoDrawType && !Style.Normal.GetResourceObject()
+		&& Style.Normal.TintColor.IsColorSpecified())
+	{
+		// Untextured plate (engine default grey rounded box: level-up Reroll, run-won end button): its tint is below 1, so the
+		// eased brightening goes through the Normal tint. The Hovered brush becomes the Normal one, so the engine's instant hover
+		// tint no longer jumps.
+		Entry.bTintPlate = true;
+		Entry.RestTint = Style.Normal.TintColor.GetSpecifiedColor();
 		Style.Hovered = Style.Normal;
 		Button->SetStyle(Style);
 	}
@@ -174,13 +200,30 @@ bool URRButtonHoverSubsystem::Tick(float DeltaTime)
 void URRButtonHoverSubsystem::Apply(FRRButtonHoverEntry& Entry) const
 {
 	const URRButtonHoverSettings* Settings = GetDefault<URRButtonHoverSettings>();
-	UButton* Button = Entry.Button.Get();
 	const float Eased = FMath::SmoothStep(0.0f, 1.0f, Entry.Amount);
 	const float Scale = FMath::Lerp(1.0f, Settings->HoverScale, Eased);
-	Button->SetRenderScale(Entry.RestScale * Scale);
+	if (UWidget* ScaleWidget = Entry.ScaleWidget.Get())
+	{
+		ScaleWidget->SetRenderScale(Entry.RestScale * Scale);
+	}
 	if (Entry.PlateMaterial)
 	{
 		const float DisplayFactor = FMath::Lerp(1.0f, Settings->HoverBrightness, Eased);
 		Entry.PlateMaterial->SetScalarParameterValue(RRButtonHover::BrightnessParam, FMath::Pow(DisplayFactor, RRButtonHover::DisplayGamma));
+	}
+	else if (Entry.bTintPlate)
+	{
+		UButton* Button = Entry.Button.Get();
+		// Linear factor here (not the display one): these grey plates carry white labels, and the display factor took them to
+		// near white, unreadable (task-485 capture of the run-won button).
+		const float LinearFactor = FMath::Lerp(1.0f, Settings->HoverBrightness, Eased);
+		FLinearColor Tint = Entry.RestTint;
+		Tint.R = FMath::Min(Tint.R * LinearFactor, 1.0f);
+		Tint.G = FMath::Min(Tint.G * LinearFactor, 1.0f);
+		Tint.B = FMath::Min(Tint.B * LinearFactor, 1.0f);
+		FButtonStyle Style = Button->GetStyle();
+		Style.Normal.TintColor = FSlateColor(Tint);
+		Style.Hovered = Style.Normal;
+		Button->SetStyle(Style);
 	}
 }

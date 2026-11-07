@@ -39,7 +39,11 @@ protected:
 	/** Gives RerollButton and ContinueButton the mouse hover of ui-button-hover (task-485-05). */
 	virtual void NativeOnInitialized() override;
 
-	/** Binds the shop's OnShopChanged to OnShopRefreshed, then runs the Blueprint Construct. */
+	/**
+	 * Binds the shop's OnShopChanged to OnShopRefreshed, runs the Blueprint Construct, then gives the BuyButton of each card
+	 * ShopCard0..4 the hover of ui-button-hover (task-485-06): the plate brightens and its wrapper BuyPlateBox grows, because the
+	 * card's purchase juice animates the button's own scale. The card body has no hover.
+	 */
 	virtual void NativeConstruct() override;
 
 	/** Unbinds the shop. */

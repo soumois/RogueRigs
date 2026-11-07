@@ -13,6 +13,7 @@ class UButton;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
 class UUserWidget;
+class UWidget;
 
 /**
  * Values of the button hover (ui-button-hover Look), overridable without code in Config/DefaultGame.ini,
@@ -30,7 +31,10 @@ public:
 	UPROPERTY(Config)
 	float HoverScale;
 
-	/** Plate brightness of a hovered button, as a factor on the displayed (sRGB) colour: 1.25 = about +25 %, same hue. */
+	/**
+	 * Plate brightness of a hovered button, 1.25 = about +25 %, same hue: a factor on the displayed (sRGB) colour of textured plates;
+	 * on untextured grey plates with white labels it multiplies the linear tint (smaller step, keeps the label readable).
+	 */
 	UPROPERTY(Config)
 	float HoverBrightness;
 
@@ -56,8 +60,18 @@ struct FRRButtonHoverEntry
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> PlateMaterial;
 
-	/** Render scale the button had when attached (the hover multiplies it). */
+	/** Widget that grows: the button itself, or a wrapper when the button's own scale is animated by its widget (shop Buy juice). */
+	UPROPERTY()
+	TWeakObjectPtr<UWidget> ScaleWidget;
+
+	/** Render scale the grown widget had when attached (the hover multiplies it). */
 	FVector2D RestScale = FVector2D(1.0, 1.0);
+
+	/** Untextured plate (grey rounded box): the brightening eases the Normal brush tint from RestTint instead of a material. */
+	bool bTintPlate = false;
+
+	/** Normal brush tint at attach time (untextured plates). */
+	FLinearColor RestTint = FLinearColor::White;
 
 	/** Eased hover amount: 0 at rest, 1 fully hovered. */
 	float Amount = 0.0f;
@@ -81,9 +95,10 @@ public:
 
 	/**
 	 * Gives Button the hover effect. bBrightenPlate: replace its Normal plate brush by the brightening material (plate buttons);
-	 * false = growth only (text buttons). Safe to call twice on one button and with null.
+	 * false = growth only (text buttons). ScaleWidget: the widget that grows (null = the button); use a wrapper that holds only the
+	 * button when the widget animates the button's own render scale. Safe to call twice on one button and with null.
 	 */
-	static void Attach(UButton* Button, bool bBrightenPlate = true);
+	static void Attach(UButton* Button, bool bBrightenPlate = true, UWidget* ScaleWidget = nullptr);
 
 	/** Attach for each named button of Owner's widget tree (a missing name is skipped with a log line). */
 	static void AttachNamed(UUserWidget* Owner, const TArray<FName>& ButtonNames, bool bBrightenPlate = true);
@@ -91,8 +106,11 @@ public:
 	/** Eased hover amount of Button (0 at rest, 1 hovered), or -1 when it is not attached. For tests and probes. */
 	float GetHoverAmount(const UButton* Button) const;
 
+	/** Logs every attached button: owner widget, name, hovered, enabled, eased amount (rr.Debug.ButtonHover). */
+	void LogEntries() const;
+
 private:
-	void AttachButton(UButton* Button, bool bBrightenPlate);
+	void AttachButton(UButton* Button, bool bBrightenPlate, UWidget* ScaleWidget);
 	bool Tick(float DeltaTime);
 	static bool IsButtonHoverable(const UButton* Button);
 	void Apply(FRRButtonHoverEntry& Entry) const;

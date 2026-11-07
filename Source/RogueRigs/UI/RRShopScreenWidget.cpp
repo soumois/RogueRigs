@@ -3,6 +3,7 @@
 
 #include "UI/RRShopScreenWidget.h"
 
+#include "Components/Button.h"
 #include "Run/RRIntermissionShopSubsystem.h"
 #include "UI/RRButtonHover.h"
 
@@ -25,6 +26,18 @@ void URRShopScreenWidget::NativeConstruct()
 		Shop->OnShopChanged.AddUniqueDynamic(this, &URRShopScreenWidget::HandleShopChanged);
 	}
 	Super::NativeConstruct();
+	for (int32 Index = 0; Index < 5; ++Index)
+	{
+		UUserWidget* Card = Cast<UUserWidget>(GetWidgetFromName(*FString::Printf(TEXT("ShopCard%d"), Index)));
+		if (!Card)
+		{
+			continue;
+		}
+		if (UButton* Buy = Cast<UButton>(Card->GetWidgetFromName(TEXT("BuyButton"))))
+		{
+			URRButtonHoverSubsystem::Attach(Buy, true, Card->GetWidgetFromName(TEXT("BuyPlateBox")));
+		}
+	}
 }
 
 void URRShopScreenWidget::NativeDestruct()
