@@ -43,3 +43,4 @@ kind: doc
 - [[sys-run-shop]] — child: the intermission shop; adds bought cards to the snapshot.
 - [[sys-main-menu]] — the main menu that resets the run and opens NewRunMapName; reached again from the run won end screen through MainMenuMapName.
 - [[sys-objectives-run-flow]] — ReturnToMainMenu, which reads MainMenuMapName.
+- [[sys-run-lost]] — child: death sequence, run-lost screen event and recap, Retry (New Run) and Main Menu.

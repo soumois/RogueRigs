@@ -10,7 +10,7 @@ kind: doc
 - parent_class: ARRPlayerController (/Script/RogueRigs.RRPlayerController)
 - purpose: routes Enhanced Input to the miner ([[sys-player]]).
 - components: none.
-- exposed_defaults: ShopScreenWidgetClass = /Game/RogueRigs/UI/WBP_ShopScreen (task-317-03, [[wbp-shop-screen]]); HUDWidgetClass = /Game/RogueRigs/UI/WBP_HUD (task-009-06); LoadingScreenWidgetClass = /Game/RogueRigs/UI/WBP_Loading (task-206-05, [[wbp-loading]]); PauseMenuWidgetClass = /Game/RogueRigs/UI/WBP_PauseMenu (task-424-05, [[wbp-pause-menu]]); DefaultMappingContext = /Game/RogueRigs/Input/IMC_Miner; IntermissionWidgetClass = /Game/RogueRigs/UI/WBP_Intermission (task-206-04); MoveAction = IA_Move; StickAimAction = IA_StickAim; MouseAimAction = IA_MouseAim (all Axis2D, in /Game/RogueRigs/Input/, created by duplicating the TwinStick assets, originals untouched).
+- exposed_defaults: ShopScreenWidgetClass = /Game/RogueRigs/UI/WBP_ShopScreen (task-317-03, [[wbp-shop-screen]]); HUDWidgetClass = /Game/RogueRigs/UI/WBP_HUD (task-009-06); LoadingScreenWidgetClass = /Game/RogueRigs/UI/WBP_Loading (task-206-05, [[wbp-loading]]); PauseMenuWidgetClass = /Game/RogueRigs/UI/WBP_PauseMenu (task-424-05, [[wbp-pause-menu]]); RunLostWidgetClass = /Game/RogueRigs/UI/WBP_RunLost (task-484-04, commit 0ec081cd, [[wbp-run-lost]]; RunLostWidgetZOrder 45 default); DefaultMappingContext = /Game/RogueRigs/Input/IMC_Miner; IntermissionWidgetClass = /Game/RogueRigs/UI/WBP_Intermission (task-206-04); MoveAction = IA_Move; StickAimAction = IA_StickAim; MouseAimAction = IA_MouseAim (all Axis2D, in /Game/RogueRigs/Input/, created by duplicating the TwinStick assets, originals untouched).
 - events: none.
 - logic_in_bp: none
 - assets: IMC_Miner mappings (all on IA_Move unless noted): Gamepad Left 2D (no modifier); W and Z: Swizzle Input Axis Values YXZ; S: Swizzle YXZ then Negate; D: none; A and Q: Negate. IA_StickAim: Gamepad Right 2D (no modifier). IA_MouseAim: Mouse XY 2D-Axis (no modifier).
@@ -26,3 +26,4 @@ kind: doc
 - [[wbp-shop-screen]] — the cards shop screen set in ShopScreenWidgetClass.
 - [[wbp-loading]] — the loading screen widget set in LoadingScreenWidgetClass.
 - [[wbp-pause-menu]] — the pause screen widget set in PauseMenuWidgetClass.
+- [[wbp-run-lost]] — the run-lost screen widget set in RunLostWidgetClass.

@@ -29,5 +29,6 @@ kind: doc
 - [[run-log-schema]] — the fields this collects.
 - [[sys-run]] — run level index and the miner hook order.
 - [[sys-run-transition]] — OnLevelReady restamps the start.
+- [[sys-run-lost]] — reads GetRunKillCount (kills of every level of the run, task-484) for the run-lost recap.
 - [[sys-damage]] — the global damage event.
 - [[sys-grid]] — terrain destruction event.

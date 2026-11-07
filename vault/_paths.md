@@ -383,6 +383,7 @@ sys-run  reference/tech/systems/world/sys-run.md
 sys-run-layout  reference/tech/systems/world/sys-run/sys-run-layout.md
 sys-run-log  reference/tech/systems/world/sys-run-log.md
 sys-run-log-writer  reference/tech/systems/world/sys-run-log/sys-run-log-writer.md
+sys-run-lost  reference/tech/systems/world/sys-run/sys-run-lost.md
 sys-run-shop  reference/tech/systems/world/sys-run/sys-run-shop.md
 sys-run-transition  reference/tech/systems/world/sys-run/sys-run-transition.md
 sys-run-transition-fade  reference/tech/systems/world/sys-run/sys-run-transition-fade.md
@@ -456,6 +457,7 @@ wbp-main-menu  reference/tech/blueprints/ui/wbp-main-menu.md
 wbp-minimap-locator  reference/tech/blueprints/ui/wbp-minimap-locator.md
 wbp-ore-counter  reference/tech/blueprints/ui/wbp-ore-counter.md
 wbp-pause-menu  reference/tech/blueprints/ui/wbp-pause-menu.md
+wbp-run-lost  reference/tech/blueprints/ui/wbp-run-lost.md
 wbp-shop-card  reference/tech/blueprints/ui/wbp-shop-card.md
 wbp-shop-screen  reference/tech/blueprints/ui/wbp-shop-screen.md
 wbp-shop-screen-indicator  reference/tech/blueprints/ui/wbp-shop-screen-indicator.md
