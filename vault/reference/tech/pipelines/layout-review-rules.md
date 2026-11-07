@@ -15,7 +15,7 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 - Straight lane: flag a corridor 3 to 10 cells wide running straight for more than about 30 cells (arena_l2 keeps one of about 36 cells on its left side, accepted).
 - Hidden pockets: a pocket farther than `max_far` (15 cells) from the network fails (seed 3517: 37); the 1 to 3 rock cell gap alone is not enough.
 - Reach window 0.65 to 0.86 is narrow: seeds fail at 0.868 to 0.874; widen to about 0.88 only if passing seeds are scarce.
-- Barrel count is drawn per seed (14 to 18), not set by the params.
+- Barrel count is drawn per seed within `barrels.min` to `barrels.max`, not picked in the review: 17 to 22 since task-491 (owner 2026-11-06, provisional); the committed levels were drawn in 14 to 18. Heal veins: 14 of 2 × 2 (5 in pockets, 9 in walls, brief bound `heal_ore` [56, 56]) since task-491; the committed levels keep 12 (48 cells).
 
 ## Refinements from arena_l3 (task-205-03)
 - Yield: only 3 to 4 of 28 passing seeds keep every 24 × 24 window between 0.05 and 0.95; review 20 or more passing seeds, not 6 to 10. Most rejects are a fully open window (0.97 to 1.00) or a solid one (0 to 0.03).

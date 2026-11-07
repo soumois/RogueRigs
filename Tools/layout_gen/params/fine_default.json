@@ -41,8 +41,8 @@
  },
  "filler": { "maxd": 15, "extra_min": 12, "extra_rand": 15, "turn_scale": 0.7, "rho0_min": 2.4, "rho0_max": 3.9, "aim_noise": 0.3, "max_iter": 600 },
  "cleanup": { "min_region": 135, "max_gap": 9, "max_rock_island": 9, "passage": 3, "repair_rounds": 30, "loops": 8 },
- "heal": { "vein": 2, "pocket_veins": 4, "wall_veins": 8, "exclude_half": 25, "wall_min_rock": 4, "pocket_min_rock": 4, "tries": 300 },
- "barrels": { "min": 14, "max": 18, "pairs_min": 3, "pairs_max": 4, "pair_dist_min": 2, "pair_dist_max": 3.2, "spawn_exclude": 18, "heal_clear": 2, "tries": 300 },
+ "heal": { "vein": 2, "pocket_veins": 5, "wall_veins": 9, "exclude_half": 25, "wall_min_rock": 4, "pocket_min_rock": 4, "tries": 300 },
+ "barrels": { "min": 17, "max": 22, "pairs_min": 3, "pairs_max": 4, "pair_dist_min": 2, "pair_dist_max": 3.2, "spawn_exclude": 18, "heal_clear": 2, "tries": 300 },
  "search": {
   "max_seeds": 300,
   "pieces": 1,
