@@ -17,8 +17,8 @@ status: in-progress
 - next_step: task-485-10-capture
 - started: 2026-11-07T02:19:47Z
 - waiting_for: none
-- executor_tokens: input 232, cache write 248302, cache read 17169785, output 95439
-- executor_usage: runs 1, turns 115, context start 18k peak 260k, resumes 1, 43 min, units 2.50 M
+- executor_tokens: input 236, cache write 251623, cache read 17692954, output 96456
+- executor_usage: runs 1, turns 117, context start 18k peak 264k, resumes 1, 44 min, units 2.57 M
 - planning_tokens: input 34, cache write 111833, cache read 957049, output 19112
 - planning_usage: a4e7f869 "Plan button hover effects" 1/1 (tasks 485), units 0.33 M
 - result: open
