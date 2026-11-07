@@ -29,6 +29,7 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 
 ## Automation
 - Doing the scan by hand per seed is the main cost; candidate for automation in the generator acceptance (not done).
+- Owner 2026-11-07 (provisional, [[task-495-generator-window-repair]]): the C++ generator enforces every rule of this node, so no agent is needed at runtime: window rule (every void-free 24 × 24 window, stride 2, open fraction 0.05 to 0.95) by a repair pass; straight lane becomes a hard rule (no corridor 3 to 10 cells wide straight over 30 cells, ±1 tolerance), repaired where feasible; a hidden pocket farther than 15 cells (max_far) from the network fails. Each is also a seed-acceptance check. The Node generator is unchanged and the committed maps are not regenerated; the level-design review stays a dev-time check.
 
 ## Relations
 - [[pipelines-index]] — parent index.

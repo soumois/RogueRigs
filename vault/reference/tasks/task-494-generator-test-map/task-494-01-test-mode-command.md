@@ -9,7 +9,7 @@ status: todo
 
 - goal: Enemy-free test mode (no robot spawn, objectives, shuttle or alert) and the rr.Level.New [seed] command that generates, saves and reloads a layout through the async loader.
 - agent: cpp
-- depends_on: none
+- depends_on: task-495-generator-window-repair
 - inputs: level-flow (vault/reference/gdd/run/level-flow.md), sys-grid (vault/reference/tech/systems/world/sys-grid.md), level-layout-schema (vault/reference/tech/pipelines/level-layout-schema.md)
 - expected_output: see done_when
 - done_when: A2 to A4 and A6 of the global hold in a -game run on a map using the mode (log evidence: seeds, layout counts, no robot spawned); builds; committed.
