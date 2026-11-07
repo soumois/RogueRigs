@@ -75,6 +75,8 @@ bool URRLayoutLoaderSubsystem::StartLoad(const FString& LayoutPath, FTransform G
 	LoadPercent = 0.f;
 	LastLoggedDecile = -1;
 	PendingTransform = GridTransform;
+	TargetGrid = PendingTargetGrid;
+	PendingTargetGrid = nullptr;
 	RequestedGridClass = Settings->GridClass;
 	LayoutFilePath = ResolveLayoutPath(LayoutPath);
 	const FString LayoutName = FPaths::GetBaseFilename(LayoutFilePath);
@@ -106,6 +108,23 @@ bool URRLayoutLoaderSubsystem::StartLoad(const FString& LayoutPath, FTransform G
 	UE_LOG(LogRogueRigs, Log, TEXT("RRLayoutLoader: loading %s (%d assets requested, %d already in memory; start call %.2f ms)."),
 		*LayoutFilePath, Stats.AssetsRequested, Stats.AssetsAlreadyLoaded, Stats.MaxStepMs);
 	return true;
+}
+
+bool URRLayoutLoaderSubsystem::StartLoadIntoGrid(const FString& LayoutPath, ARRArenaGrid* Grid)
+{
+	if (!IsValid(Grid))
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("RRLayoutLoader: no grid to rebuild in place; %s not started."), *LayoutPath);
+		return false;
+	}
+	PendingTargetGrid = Grid;
+	const bool bStarted = StartLoad(LayoutPath, Grid->GetActorTransform());
+	PendingTargetGrid = nullptr;
+	if (bStarted)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("RRLayoutLoader: %s will be rebuilt in place."), *Grid->GetName());
+	}
+	return bStarted;
 }
 
 void URRLayoutLoaderSubsystem::CollectGridAssets(const FSoftObjectPath& GridClassPath, TArray<FSoftObjectPath>& OutPaths) const
@@ -253,14 +272,28 @@ bool URRLayoutLoaderSubsystem::SpawnAndBeginBuild()
 		Finish(false, FString::Printf(TEXT("grid class %s did not load"), *RequestedGridClass.ToString()));
 		return false;
 	}
-	ARRArenaGrid* Grid = World->SpawnActorDeferred<ARRArenaGrid>(GridClass, PendingTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-	if (!Grid)
+	ARRArenaGrid* Grid = TargetGrid.Get();
+	if (Grid)
 	{
-		Finish(false, TEXT("grid spawn failed"));
+		// In-place rebuild (StartLoadIntoGrid): the grid keeps its actor, transform and the systems bound to it.
+		Grid->SetExternalBuild(true);
+	}
+	else if (TargetGrid.IsStale())
+	{
+		Finish(false, TEXT("target grid destroyed during the load"));
 		return false;
 	}
-	Grid->SetExternalBuild(true);
-	Grid->FinishSpawning(PendingTransform);
+	else
+	{
+		Grid = World->SpawnActorDeferred<ARRArenaGrid>(GridClass, PendingTransform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Grid)
+		{
+			Finish(false, TEXT("grid spawn failed"));
+			return false;
+		}
+		Grid->SetExternalBuild(true);
+		Grid->FinishSpawning(PendingTransform);
+	}
 	LoadedGrid = Grid;
 	if (!Grid->BeginIncrementalBuild(*Layout))
 	{

@@ -573,6 +573,20 @@ void URRHUDWidget::TryCreateMinimap()
 	BroadcastMinimapView();
 }
 
+void URRHUDWidget::ResetMinimap()
+{
+	if (Minimap)
+	{
+		Minimap->OnPixelsDirtied.Remove(MinimapDirtiedHandle);
+		Minimap->Shutdown();
+		Minimap = nullptr;
+	}
+	MinimapDirtiedHandle.Reset();
+	bMinimapViewSent = false;
+	MinimapRetries = 0;
+	TryCreateMinimap();
+}
+
 void URRHUDWidget::RetryCreateMinimap()
 {
 	bMinimapRetryPending = false;

@@ -139,6 +139,12 @@ public:
 	const URRMinimap* GetMinimap() const { return Minimap; }
 
 	/**
+	 * Drops the minimap and creates it again from the grid as it is now (task-494-01: the generator test map rebuilds its grid in
+	 * place with a new layout). Fires OnMinimapTextureReady with the new texture, then OnMinimapViewChanged.
+	 */
+	void ResetMinimap();
+
+	/**
 	 * Fired once per world when an end screen shows (task-211-01): bRunWon = success screen of the last level (run won), else
 	 * the run-lost screen (shuttle missed) or, bGameOver, the miner's death. Panels (URRHUDPanelWidget, BindToHUD) bind it to hide
 	 * themselves; the panel that draws the end screen (WBP_AlertObjectives) keeps it. Same moment as the OnEndScreenShown event.

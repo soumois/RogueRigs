@@ -80,6 +80,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Layout Loader")
 	bool StartLoad(const FString& LayoutPath, FTransform GridTransform);
 
+	/**
+	 * Same load as StartLoad, but rebuilds Grid in place instead of spawning a new grid (task-494-01, generator test map): Grid is
+	 * set to external build and BeginIncrementalBuild replaces its cells and instances, so every system holding that grid keeps a
+	 * valid pointer. Returns false (nothing started, logged) while another load runs or when Grid is null.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Layout Loader")
+	bool StartLoadIntoGrid(const FString& LayoutPath, ARRArenaGrid* Grid);
+
 	/** Load percentage, 0 to 100 (100 once the grid is complete; stays at its value after a failure). */
 	UFUNCTION(BlueprintPure, Category = "Layout Loader")
 	float GetLoadPercent() const { return LoadPercent; }
@@ -160,6 +168,12 @@ private:
 
 	/** Where the grid is spawned. */
 	FTransform PendingTransform;
+
+	/** Existing grid rebuilt in place by the current load (StartLoadIntoGrid); null = a new grid is spawned. */
+	TWeakObjectPtr<ARRArenaGrid> TargetGrid;
+
+	/** Grid handed by StartLoadIntoGrid to the StartLoad call it makes (null otherwise). */
+	TWeakObjectPtr<ARRArenaGrid> PendingTargetGrid;
 
 	/** Absolute path of the layout file. */
 	FString LayoutFilePath;

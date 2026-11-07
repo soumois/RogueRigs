@@ -648,6 +648,10 @@ ARRShuttle* URRRunFlowSubsystem::GetArrivalShuttle() const
 
 void URRRunFlowSubsystem::TickArrival()
 {
+	if (!bArrivalEnabled)
+	{
+		return;
+	}
 	if (!bArrivalPlaced)
 	{
 		ResolveConfig();
@@ -666,7 +670,7 @@ void URRRunFlowSubsystem::TickArrival()
 
 ARRShuttle* URRRunFlowSubsystem::PlaceArrivalShuttle()
 {
-	if (bArrivalPlaced)
+	if (bArrivalPlaced || !bArrivalEnabled)
 	{
 		return GetArrivalShuttle();
 	}

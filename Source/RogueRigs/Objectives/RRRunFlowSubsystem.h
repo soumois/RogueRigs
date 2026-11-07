@@ -146,6 +146,15 @@ public:
 	bool IsRunFlowEnabled() const { return bRunFlowEnabled; }
 
 	/**
+	 * Turns the arrival extractor placement on or off (task-494-01: the generator test map has no shuttle). On by default; off
+	 * before the first tick: no arrival is placed (TickArrival and PlaceArrivalShuttle do nothing).
+	 */
+	void SetArrivalEnabled(bool bEnabled) { bArrivalEnabled = bEnabled; }
+
+	/** True when the arrival extractor is placed at level start (SetArrivalEnabled). */
+	bool IsArrivalEnabled() const { return bArrivalEnabled; }
+
+	/**
 	 * Turns the arrival footprint clear (task-372-01) on or off; on by default. Off: the arrival extractor is still placed but the
 	 * blocks under it stay (task-371 behaviour). The automation test worlds turn it off (RRTestHarness::FTestWorld) so the
 	 * scenes they build next to the miner are not cleared; the extraction landing clear is not affected.
@@ -682,4 +691,7 @@ protected:
 
 	/** Flow on/off. */
 	bool bRunFlowEnabled = true;
+
+	/** Arrival extractor placement on/off (SetArrivalEnabled). */
+	bool bArrivalEnabled = true;
 };
