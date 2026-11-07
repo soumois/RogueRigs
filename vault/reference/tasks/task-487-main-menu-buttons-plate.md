@@ -14,11 +14,11 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Prends la solution a")
 - milestone: M2
-- next_step: task-487-02-capture
+- next_step: task-487-03-doc
 - started: 2026-11-07T04:41:16Z
 - waiting_for: none
-- executor_tokens: input 80, cache write 116421, cache read 3369833, output 26698
-- executor_usage: runs 1, turns 40, context start 17k peak 129k, resumes 0, 8 min, units 0.62 M
+- executor_tokens: input 102, cache write 129402, cache read 4701657, output 30631
+- executor_usage: runs 1, turns 50, context start 17k peak 142k, resumes 1, 11 min, units 0.79 M
 - planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
 - planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
 - result: open

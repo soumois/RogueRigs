@@ -3,7 +3,7 @@ id: task-487-03-doc
 description: "Doc: Doc nodes of the main menu widget and of the hover mechanism updated."
 parent: task-487-main-menu-buttons-plate
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu buttons that fit the screen (plate buttons): doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:51:52Z
 - waiting_for: none
 - result: open
 
