@@ -14,11 +14,11 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Tout par défaut")
 - milestone: M2
-- next_step: task-486-02-end-screen-plate
+- next_step: task-486-03-capture
 - started: 2026-11-07T03:29:08Z
 - waiting_for: none
-- executor_tokens: input 56, cache write 138637, cache read 2572990, output 20094
-- executor_usage: runs 1, turns 28, context start 18k peak 151k, resumes 0, 5 min, units 0.53 M
+- executor_tokens: input 70, cache write 155862, cache read 3672929, output 25083
+- executor_usage: runs 1, turns 35, context start 18k peak 168k, resumes 0, 8 min, units 0.69 M
 - planning_tokens: input 26, cache write 70317, cache read 572496, output 11275
 - planning_usage: a77b1cf1 "Plan grey buttons retouch" 1/1 (tasks 486), units 0.20 M
 - result: open

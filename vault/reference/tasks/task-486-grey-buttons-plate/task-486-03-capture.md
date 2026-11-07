@@ -3,7 +3,7 @@ id: task-486-03-capture
 description: "Capture: level-up and run-won screens, the two buttons at rest, hovered and disabled, four resolutions, compared with task-485."
 parent: task-486-grey-buttons-plate
 kind: task
-status: todo
+status: in-progress
 ---
 # Cream plate look for the two grey buttons (level-up Reroll, run-won Main Menu): capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T03:37:15Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-486-02-end-screen-plate
 description: "Bp: Run-won Main Menu button of the WBP_AlertObjectives end screen gets the same cream plate as the run-lost Main Menu, with the standard plate hover."
 parent: task-486-grey-buttons-plate
 kind: task
-status: in-progress
+status: done
 ---
 # Cream plate look for the two grey buttons (level-up Reroll, run-won Main Menu): bp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: RestartButton draws as the cream plate at the run-lost Main Menu size with a dark brown label, uses the plate hover instead of the x1.25 grey tint, the rest of the end screen is unchanged and the click still returns to the main menu; compiled with warnings as errors and saved.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-486
+- usage: included in the executor run of task-486
+- runs: 1
 - milestone: M2
 - started: 2026-11-07T03:34:06Z
 - waiting_for: none
-- result: open
+- result: Done (see commit after 3141b2a6). RestartButton wrapped in SizeBox RestartSize 440x108 (EndPanel slot HAlign centre, was fill); WidgetStyle copied from WBP_RunLost MainMenuButton (T_Shop_ButtonContinue Box, margin 0.155); RestartText Roboto Bold 30 dark brown (0.05,0.04,0.03); EndPanel canvas offset top 25 so title, subtitle and Duskite row stay put. Graph untouched. Compiled (warnings as errors) and saved. Seen -game 1080 (Saved/Captures/task486_chk2/sheet.png): cream plate centred under the Duskite row, hover brighter and 1.05 (plate material), rr.Run.MainMenu reaches the main menu, title/subtitle/row at the task-485 positions.
 
 ## Relations
 - [[task-486-grey-buttons-plate]] — parent global task.
