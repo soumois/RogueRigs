@@ -14,11 +14,11 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Oui")
 - milestone: M2
-- next_step: task-495-02-ld-review
+- next_step: task-495-03-doc
 - started: 2026-11-07T07:13:43Z
 - waiting_for: none
-- executor_tokens: input 112, cache write 206144, cache read 8182156, output 96809
-- executor_usage: runs 1, turns 56, context start 17k peak 218k, resumes 0, 39 min, units 1.56 M
+- executor_tokens: input 156, cache write 235550, cache read 13276109, output 111602
+- executor_usage: runs 1, turns 78, context start 17k peak 248k, resumes 0, 55 min, units 2.18 M
 - planning_tokens: input 32, cache write 74671, cache read 675978, output 22719
 - planning_usage: a9fa42c4 "Plan window repair pass" 1/1 (tasks 495), units 0.27 M
 - result: open

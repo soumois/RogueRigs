@@ -3,7 +3,7 @@ id: task-495-03-doc
 description: "Doc: document the repair passes and the new acceptance checks of the C++ layout generator."
 parent: task-495-generator-window-repair
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ generator enforces the layout review rules: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T08:08:50Z
 - waiting_for: none
 - result: open
 

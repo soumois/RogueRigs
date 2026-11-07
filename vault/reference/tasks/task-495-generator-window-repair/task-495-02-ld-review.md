@@ -3,7 +3,7 @@ id: task-495-02-ld-review
 description: "Level-design: dev-time re-review of the 24 seed starts of task-492-03 against all layout-review-rules, compared with review_cpp.md."
 parent: task-495-generator-window-repair
 kind: task
-status: in-progress
+status: done
 ---
 # C++ generator enforces the layout review rules: level-design
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: A new table next to review_cpp.md gives per start: accepted seed, validator result, min and max window, straight lane flag, pocket distance, verdict; 24/24 meet the window rule, the straight-lane rule (30 cells, ±1 tolerance) and the pocket distance rule (15 cells), measured independently of the generator report, and pass the validator; A4 judged on the downscaled previews with any unnatural repaired area named.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-495
+- usage: included in the executor run of task-495
+- runs: 1
 - milestone: M2
 - started: 2026-11-07T07:52:59Z
 - waiting_for: none
-- result: open
+- result: Independent Node review (review495.js, not the generator code) of the 24 starts after the repair passes: 24/24 kept, all validate_layout.js OK with brief_240; every void-free 24 x 24 window in 0.073-0.929, longest straight lane 14-29 (none over 30), farthest hidden pocket 10 (limit 15); values equal to the generator report. Against review_cpp.md: kept 4 to 24, mean window min 0.026 to 0.087, mean max 0.956 to 0.915, lanes over 30: 3 to 0. A4: carved areas read as filler corridors, lane fixes as small wall bumps; first look showed identical round outcrops lined up on seed 2505, corrected once in the generator (commit f7cfc4b7: 1 to 3 overlapping discs, random direction and centre), rechecked with all task-495-01 checks rerun (24/24, determinism, LayoutLoader 3/3). Least natural area left: four rounded outcrops in a loose column along the narrow central plaza of 2505; no straight cut or square block. Table Saved/GeneratedLevels/task-492/review_task495.md, previews Saved/GeneratedLevels/task-495/png/ (temporary).
 
 ## Verdict
 Table: Saved/GeneratedLevels/task-492/review_task495.md (next to review_cpp.md, temporary). Measured by Saved/GeneratedLevels/task-495/review495.js, a Node scan independent of the generator (same scan as review_cpp.md, thresholds of [[layout-review-rules]]), plus validate_layout.js with brief_240.
