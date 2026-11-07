@@ -1,9 +1,9 @@
 ---
 id: task-492-cpp-layout-generator
 description: "Global task: deterministic C++ port of the 240 x 240 generator recipe that writes a layout JSON, then a 20-seed validation by the Level-Design agent."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent
 
@@ -17,14 +17,14 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-492-04-doc
+- next_step: none
 - started: 2026-11-07T06:14:54Z
 - waiting_for: none
-- executor_tokens: input 94, cache write 165133, cache read 5427127, output 84311
-- executor_usage: runs 1, turns 47, context start 17k peak 177k, resumes 0, 30 min, units 1.17 M
+- executor_tokens: input 108, cache write 175679, cache read 6706624, output 88700
+- executor_usage: runs 1, turns 54, context start 17k peak 188k, resumes 0, 32 min, units 1.33 M
 - planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
 - planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
-- result: open
+- result: Done. Commit 58a08640: new sys-layout-generator (vault/reference/tech/systems/world/sys-grid/, parent sys-grid: classes, params, determinism, seed search, commandlet entry point, output, gotchas); sys-grid data line and Relations point to it; layout-generator-recipe 'For the C++ port' points to it and records the Level-Design verdict. Lint clean.
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -42,7 +42,7 @@ Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; v
 4. task-492-04-doc (vault/reference/tasks/task-492-cpp-layout-generator/task-492-04-doc.md) — doc: Document the C++ generator and its entry point.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-492-01-gen-carve]] — step 1, cpp.
 - [[task-492-02-gen-place-json]] — step 2, cpp.
 - [[task-492-03-ld-validation]] — step 3, level-design.
