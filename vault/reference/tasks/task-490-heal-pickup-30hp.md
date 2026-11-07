@@ -3,7 +3,7 @@ id: task-490-heal-pickup-30hp
 description: "Global task: HealValue of the heal pickup (one per broken heal-ore block) set to 30 HP."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Each heal pickup restores 30 HP
 
@@ -18,7 +18,7 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
 - next_step: task-490-01-heal-value
-- started: open
+- started: 2026-11-07T06:06:33Z
 - waiting_for: none
 - result: open
 

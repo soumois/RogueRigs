@@ -3,7 +3,7 @@ id: task-490-01-heal-value
 description: "Cpp: Set HealValue of the Heal row to 30 and check one pickup heals 30 HP in game."
 parent: task-490-heal-pickup-30hp
 kind: task
-status: todo
+status: in-progress
 ---
 # Each heal pickup restores 30 HP: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T06:06:33Z
 - waiting_for: none
 - result: open
 
