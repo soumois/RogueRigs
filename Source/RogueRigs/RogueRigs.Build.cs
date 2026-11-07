@@ -30,7 +30,9 @@ public class RogueRigs : ModuleRules
 			"Niagara",
 			"JsonUtilities",
 			// URRBlobShadowSettings (task-472-01): global actor shadow multipliers in Project Settings.
-			"DeveloperSettings"
+			"DeveloperSettings",
+			// URRButtonHoverSubsystem (task-485-01): copies and edits the button style (FButtonStyle, FSlateBrush).
+			"SlateCore"
 		});
 
 		PublicIncludePaths.AddRange(new string[] {

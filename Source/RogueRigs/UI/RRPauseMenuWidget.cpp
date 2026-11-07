@@ -10,6 +10,7 @@
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Internationalization/Internationalization.h"
 #include "Player/RRMiner.h"
+#include "UI/RRButtonHover.h"
 #include "Player/RRPlayerController.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRTurretLauncher.h"
@@ -189,6 +190,9 @@ void URRPauseMenuWidget::NativeOnInitialized()
 	{
 		ExitButton->OnClicked.AddUniqueDynamic(this, &URRPauseMenuWidget::HandleExitClicked);
 	}
+	// Mouse hover of both plates (ui-button-hover, task-485-01).
+	URRButtonHoverSubsystem::Attach(ResumeButton);
+	URRButtonHoverSubsystem::Attach(ExitButton);
 }
 
 void URRPauseMenuWidget::RefreshStats()
