@@ -3,7 +3,7 @@ id: task-486-04-doc
 description: "Doc: Doc nodes of the two changed widgets and of the hover mechanism updated."
 parent: task-486-grey-buttons-plate
 kind: task
-status: todo
+status: in-progress
 ---
 # Cream plate look for the two grey buttons (level-up Reroll, run-won Main Menu): doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T03:43:37Z
 - waiting_for: none
 - result: open
 
