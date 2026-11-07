@@ -3,7 +3,7 @@ id: task-484-05-hud-loss-path
 description: "Bp: HUD side of a loss: HUD hidden, old GAME OVER text and RUN LOST / Play again panel no longer shown; run-won and level-success end screens unchanged."
 parent: task-484-death-screen
 kind: task
-status: todo
+status: in-progress
 ---
 # Death screen with Retry and Main Menu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T01:40:04Z
 - waiting_for: none
 - result: open
 
