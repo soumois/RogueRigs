@@ -24,7 +24,7 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - executor_usage: runs 1, turns 54, context start 17k peak 188k, resumes 0, 32 min, units 1.33 M
 - planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
 - planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
-- result: Done. Commit 58a08640: new sys-layout-generator (vault/reference/tech/systems/world/sys-grid/, parent sys-grid: classes, params, determinism, seed search, commandlet entry point, output, gotchas); sys-grid data line and Relations point to it; layout-generator-recipe 'For the C++ port' points to it and records the Level-Design verdict. Lint clean.
+- result: Done. C++ generator FRRLayoutGenerator ports the Direct 240 recipe from Tools/layout_gen/params/fine_default.json with FRandomStream (byte-identical JSON per params and seed); commandlet -run=RRLayoutGen writes <name>.json and <name>.brief.json and prints generation time. 24 passing seeds all pass validate_layout.js with the 240 brief (passage 3); Level-Design review keeps 4 (6453, 7002, 7900, 7950), comparable to the Node generator; no generator defect. Deviations for the owner: low keep yield of the review rules (as with Node), some seeds about 3 s. Build only (no gameplay change). Doc: sys-layout-generator.
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
