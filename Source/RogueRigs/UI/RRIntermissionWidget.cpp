@@ -4,10 +4,17 @@
 #include "UI/RRIntermissionWidget.h"
 
 #include "Run/RRIntermissionShopSubsystem.h"
+#include "UI/RRButtonHover.h"
 
 URRIntermissionShopSubsystem* URRIntermissionWidget::GetShop() const
 {
 	return URRIntermissionShopSubsystem::Get(this);
+}
+
+void URRIntermissionWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("ContinueButton")});
 }
 
 void URRIntermissionWidget::NativeConstruct()

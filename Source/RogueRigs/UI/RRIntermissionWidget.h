@@ -48,6 +48,9 @@ public:
 	URRIntermissionShopSubsystem* GetShop() const;
 
 protected:
+	/** Gives ContinueButton the mouse hover of ui-button-hover (task-485-04). */
+	virtual void NativeOnInitialized() override;
+
 	/** Binds the shop's OnShopChanged to OnShopRefreshed, then runs the Blueprint Construct. */
 	virtual void NativeConstruct() override;
 
