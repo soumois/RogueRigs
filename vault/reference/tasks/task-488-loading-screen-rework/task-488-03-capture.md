@@ -3,7 +3,7 @@ id: task-488-03-capture
 description: "Capture: -game capture of the loading screen in both cases at the four resolutions, up to 3 rounds of capture and correction."
 parent: task-488-loading-screen-rework
 kind: task
-status: todo
+status: in-progress
 ---
 # Richer loading screen (illustration and framed texts): capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:35:10Z
 - waiting_for: none
 - result: open
 
