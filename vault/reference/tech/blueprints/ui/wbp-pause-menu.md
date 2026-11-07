@@ -48,8 +48,11 @@ kind: doc
 - verified (task-424-05): build clean, -game captures `Saved/Captures/pmfix_*/pm_00.png` at four resolutions with one weapon. Not verified: two and four weapon layouts.
 - owner_agent: agent-bp
 
+- button_hover (task-485-01, 01a90440): ResumeButton and ExitButton attached in URRPauseMenuWidget::NativeOnInitialized: at runtime the Normal brush draws through M_UI_ButtonPlate and the Hovered brush becomes the Normal one (the 1.3 hovered tint above is no longer drawn); the plate brightens and grows on mouse hover. Asset unchanged. Verified: -game at the four resolutions (Saved/Captures/task485_slice/crops.png, task485_resA/sheet_pm.png, task485_resA1200). See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
+
 ## Relations
 - [[blueprints-ui-index]] — parent index.
 - [[sys-pause-menu]] — the C++ base, stats struct and text formats.
 - [[bp-rr-player-controller]] — creates it through PauseMenuWidgetClass.
 - [[pause-menu]] — the design.
+- [[sys-button-hover]] — shared mouse hover of its buttons.

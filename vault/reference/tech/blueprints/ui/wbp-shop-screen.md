@@ -35,6 +35,7 @@ kind: doc
 - verified_anchors: task-356-03 captures (-game windowed, Saved/ShopFix/task-356/, not committed) at 1920 x 1080, 1280 x 720, 1920 x 1200 and 2560 x 1080: everything fits, no overlap, nothing cut; indicator bottom to panel top 8 px at 720p, 11 to 17 px elsewhere; at 2560 x 1080 the panel stretches fully and the cards sit about 150 px apart (wide empty gaps, not fixed); purchase effects (flash, sparks, ore flight, count-down, burn, SOLD) played at 1920 x 1080. Not seen: hover and pressed, Reroll disabled, fullscreen, the owner's own version rendered, graphs re-read after the rebuild. Counter interior re-captured in task-357-02 at the same four resolutions with balances 0, 83 and 108 ([[wbp-shop-screen-indicator]]); 4-digit balance not captured. Capture tool note: `Tools/capture/capture.js --force-res` (commit c1a0124b) passes -ForceRes so windowed captures larger than the desktop keep their size; no vault node documents the tool.
 
 - verified_frame_details: task-355-02 capture (-game, Saved/ShopFix/task-355/, not committed) at 1920 x 1080, 1280 x 720, 1920 x 1200, 2560 x 1080: five cards fit, Reroll and Continue on screen, SOLD card inside its frame; the Reroll plate is greyed at balance 135 / cost 165; purchase burn plays (detail in [[wbp-shop-card]]). Open: wide gaps between cards at 2560 x 1080; the 4-digit balance "2,760" reaches the right edge of the ore counter panel at 1920 x 1080. Unseen: hover and pressed tints.
+- button_hover (task-485-05, be7c1c32): RerollButton and ContinueButton attached in URRShopScreenWidget::NativeOnInitialized (eased brightening replaces the hovered tint; a greyed Reroll shows nothing); NativeConstruct also attaches each card Buy ([[wbp-shop-card]]). Asset unchanged. Verified: -game at the four resolutions (Saved/Captures/task485_b1080/c_shopbtn.png, task485_resB/sheet_sh.png, task485_resB1200); greyed Reroll hovered not captured. See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
@@ -52,3 +53,4 @@ kind: doc
 - [[umg-layout]] — the layout rule the anchor_rule follows.
 - [[task-342-03-shop-ore-flight]] — the task that built the ore flight.
 - [[bp-rr-player-controller]] — holds ShopScreenWidgetClass and creates the widget.
+- [[sys-button-hover]] — shared mouse hover of its buttons.

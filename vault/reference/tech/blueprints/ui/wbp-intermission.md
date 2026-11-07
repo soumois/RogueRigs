@@ -31,6 +31,7 @@ kind: doc
 - ui_check (task-392-05): other WBP_* under /Game/RogueRigs/UI scanned for player-visible "Ore"; two left, outside the task and reported to the owner: ShopCard ShortLabel "Short on ore" ([[wbp-shop-screen]]) and the EndOreText designer default "Ore secured: 0" in [[wbp-alert-objectives]] (the latter now documented there).
 - owner_agent: agent-bp
 - verified (task-399): the owner validated the result on screen on 2026-10-30 ("Ok je valide ce que j'ai vu à l'écran"); capture run (Saved/LevelEndScreen/task-399/comparison_sheet.png, not committed) showed the number right of the label at 1920 x 1080, 1280 x 720 and 2560 x 1080; 1920 x 1200 not verified. Earlier, no capture run for task-383-02: the owner validated the screen visually on 2026-10-30 ("Ok je valide l'écran de fin, plus besoin de test"); the BP compiled clean with warnings as errors. Earlier (task-381-03 capture, Saved/LevelEndScreen/task-381/): layout seen at 1920 x 1080, 1280 x 720, 1920 x 1200, 2560 x 1080 and level 4 at 1920 x 1080. Open defect (seen, not fixed): on level 4 the longer subtitle crosses the two fixed-width subtitle lines. Not seen by the crew: render after task-383, label and value spacing at other resolutions, Bold typeface in game, level 4 CASH OUT, hover and pressed tints, a click, a multi-weapon damage list. Earlier: task-317-05, task-317-04.
+- button_hover (task-485-04, fd4ec0ae): ContinueButton (NEXT LEVEL, CASH OUT on the last level) attached in URRIntermissionWidget::NativeOnInitialized; at runtime the 1.3 hovered tint is replaced by the eased plate brightening. Asset unchanged. Verified: -game at the four resolutions (Saved/Captures/task485_b1080/c_st.png, task485_resB/sheet_st.png and sheet_co.png, task485_resB1200). See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
@@ -44,3 +45,4 @@ kind: doc
 - [[task-399-total-duskite-number-overlap]] — the OreRow fix for the label and number overlap.
 - [[intermission]] — the gdd look of this screen.
 - [[wbp-alert-objectives]] — font and palette reference.
+- [[sys-button-hover]] — shared mouse hover of its buttons.

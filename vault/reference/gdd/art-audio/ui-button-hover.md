@@ -33,3 +33,4 @@ Values provisional: the owner accepted the defaults of task-485 Q1 to Q7 (his wo
 - [[wbp-upgrade-choice]] — the card hover left unchanged.
 - [[audio-direction]] — why no sound.
 - [[task-485-ui-button-hover]] — the task that applies it.
+- [[sys-button-hover]] — how it is built (C++ subsystem, plate material).

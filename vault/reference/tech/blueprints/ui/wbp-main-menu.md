@@ -19,6 +19,7 @@ kind: doc
 - logic_in_bp: function `RefreshColours` (New Run and Exit texts orange 1/0.35/0.1 when the button has keyboard focus, else white). Look only; run logic is C++.
 - assets: T_MainMenuBackground; Roboto Bold font.
 - owner_agent: agent-bp
+- button_hover (task-485-09, 76cd99d1): NewRunButton and ExitButton grow to 1.05 on mouse hover (C++ AttachNamed, growth only, no plate); the orange stays RefreshColours on focus, so focus alone shows orange without growth; OptionsButton (disabled) not attached. Asset unchanged. Verified: -game at 1920 x 1080, 1280 x 720, 1920 x 1200, 2560 x 1080 (Saved/Captures/task485_b1080/c_mm.png, task485_resB/sheet_mm.png, task485_resB1200), Options hovered shows nothing. See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
@@ -26,3 +27,4 @@ kind: doc
 - [[bp-main-menu-game-mode]] — the game mode that creates this widget.
 - [[main-menu]] — the design.
 - [[wbp-loading]] — font and colour reference.
+- [[sys-button-hover]] — shared mouse hover of its buttons.

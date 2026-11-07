@@ -34,6 +34,7 @@ kind: doc
 - assets: the textures above; font Roboto Bold.
 - verified (task-484-04 to 06): compiled with warnings as errors, saved; -game death and missed shuttle at 1920x1080, 1280x720, 1920x1200, 2560x1080 (Saved/Captures/rl06_owner); no script error. Not verified on screen: non-zero recap values, gamepad confirm, skip by key.
 - owner_agent: agent-bp
+- button_hover (task-485-03, ca37b1da): RetryButton and MainMenuButton attached in URRRunLostWidget::NativeOnInitialized (same runtime brush swap as [[wbp-pause-menu]]); SkipButton not attached; the appearance (button opacity) is unchanged. Asset unchanged. Verified: -game at the four resolutions (Saved/Captures/task485_a1080/rl_crop.png, task485_resA/sheet_rl.png, task485_rl1200). See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
@@ -41,3 +42,4 @@ kind: doc
 - [[bp-rr-player-controller]] — creates it through RunLostWidgetClass.
 - [[death-screen]] — the design.
 - [[art-prompts-death-screen-mockup]] — the validated mockup and element mapping.
+- [[sys-button-hover]] — shared mouse hover of its buttons.
