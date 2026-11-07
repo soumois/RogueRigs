@@ -11,6 +11,7 @@
 
 class ARRArenaGrid;
 class ARRMiner;
+class URRGenTestSeedWidget;
 
 /**
  * Dev test mode (owner Q5, task-494): the miner and drone play on a generated 240 x 240 layout with barrels and heal veins, and
@@ -21,7 +22,7 @@ class ARRMiner;
  * then the map grid is rebuilt in place by URRLayoutLoaderSubsystem::StartLoadIntoGrid. While it runs, the miner is frozen
  * (movement off) and the previous layout's runtime actors (pickups, projectiles, explosion effects, turrets) are removed; at the
  * end the miner and drone are put on the spawn cell, the flow field and the HUD minimap are rebuilt, and the seed is shown on screen
- * (on-screen debug message) and logged. The load percentage is only logged (Q5).
+ * (URRGenTestSeedWidget, top centre) and logged. The load percentage is only logged (Q5).
  * Abstract like ARRGameMode: the Blueprint child sets the pawn, controller and HiddenHUDWidgetNames.
  */
 UCLASS(Abstract)
@@ -104,8 +105,11 @@ private:
 	/** Logs the robots, consoles, bonus chests and shuttles alive (A2 evidence). */
 	void LogWatch() const;
 
-	/** Shows Text as the persistent on-screen line of this mode. */
-	void ShowScreenLine(const FString& Text, const FColor& Color) const;
+	/** Shows Text as the seed line of this mode (kept until the line widget exists). */
+	void ShowScreenLine(const FString& Text, const FColor& Color);
+
+	/** Creates the seed line widget in player 0's viewport (top centre); true once it exists. */
+	bool CreateSeedWidget();
 
 	/** The map grid (first ARRArenaGrid of the world). */
 	ARRArenaGrid* FindMapGrid() const;
@@ -122,4 +126,10 @@ private:
 	bool bHUDHidden = false;
 	bool bMinerFrozen = false;
 	float WatchElapsed = 0.f;
+	FString ScreenText;
+	FColor ScreenColor = FColor::White;
+
+	/** Seed line at the top centre of the screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRGenTestSeedWidget> SeedWidget;
 };

@@ -33,15 +33,11 @@
 #include "Pool/RRNiagaraPoolSubsystem.h"
 #include "Projectiles/RRProjectile.h"
 #include "RogueRigs.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/RRGenTestSeedWidget.h"
 #include "UI/RRHUDWidget.h"
 #include "Weapons/RRTurret.h"
 #include "World/RRWorld.h"
-
-namespace RRGenTest
-{
-	/** Key of the persistent on-screen line of the mode. */
-	constexpr uint64 ScreenLineKey = 0x52524C564C4E4557ull;
-}
 
 ARRGenTestGameMode::ARRGenTestGameMode()
 {
@@ -100,9 +96,10 @@ void ARRGenTestGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		Loader->OnLoadCompleted.RemoveDynamic(this, &ARRGenTestGameMode::HandleLoadCompleted);
 	}
-	if (GEngine)
+	if (SeedWidget)
 	{
-		GEngine->RemoveOnScreenDebugMessage(RRGenTest::ScreenLineKey);
+		SeedWidget->RemoveFromParent();
+		SeedWidget = nullptr;
 	}
 	Super::EndPlay(EndPlayReason);
 }
@@ -113,6 +110,10 @@ void ARRGenTestGameMode::Tick(float DeltaSeconds)
 	if (!bHUDHidden)
 	{
 		bHUDHidden = HideHUDWidgets();
+	}
+	if (!SeedWidget)
+	{
+		CreateSeedWidget();
 	}
 	if (State == EState::Generating && GenerateTask.IsValid() && GenerateTask.IsCompleted())
 	{
@@ -405,12 +406,34 @@ void ARRGenTestGameMode::LogWatch() const
 		RunFlow ? RunFlow->GetAlert() : 0.f, CurrentSeed);
 }
 
-void ARRGenTestGameMode::ShowScreenLine(const FString& Text, const FColor& Color) const
+void ARRGenTestGameMode::ShowScreenLine(const FString& Text, const FColor& Color)
 {
-	if (GEngine)
+	ScreenText = Text;
+	ScreenColor = Color;
+	if (SeedWidget)
 	{
-		GEngine->AddOnScreenDebugMessage(RRGenTest::ScreenLineKey, 1.0e6f, Color, Text, /*bNewerOnTop*/ true, FVector2D(1.5f, 1.5f));
+		SeedWidget->SetLine(ScreenText, FLinearColor(ScreenColor));
 	}
+}
+
+bool ARRGenTestGameMode::CreateSeedWidget()
+{
+	APlayerController* Controller = GetWorld()->GetFirstPlayerController();
+	if (!Controller || !Controller->IsLocalController())
+	{
+		return false;
+	}
+	SeedWidget = CreateWidget<URRGenTestSeedWidget>(Controller, URRGenTestSeedWidget::StaticClass());
+	if (!SeedWidget)
+	{
+		return false;
+	}
+	// Top centre (SetPositionInViewport would reset the anchors to the top left; the widget pads itself from the top edge).
+	SeedWidget->SetAnchorsInViewport(FAnchors(0.5f, 0.f));
+	SeedWidget->SetAlignmentInViewport(FVector2D(0.5f, 0.f));
+	SeedWidget->AddToPlayerScreen(5);
+	SeedWidget->SetLine(ScreenText, FLinearColor(ScreenColor));
+	return true;
 }
 
 ARRArenaGrid* ARRGenTestGameMode::FindMapGrid() const
