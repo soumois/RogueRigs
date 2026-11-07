@@ -3,7 +3,7 @@ id: task-485-09-main-menu
 description: "Bp: Main menu New Run and Exit: keep the orange and add the growth of ui-button-hover."
 parent: task-485-ui-button-hover
 kind: task
-status: todo
+status: in-progress
 ---
 # Hover effect on every button of every screen: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T03:03:15Z
 - waiting_for: none
 - result: open
 
