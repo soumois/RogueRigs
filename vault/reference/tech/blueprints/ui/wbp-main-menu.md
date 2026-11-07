@@ -9,17 +9,28 @@ kind: doc
 - asset_path: /Game/RogueRigs/UI/WBP_MainMenu (texture /Game/RogueRigs/UI/T_MainMenuBackground, 1672x940, TEXTUREGROUP_UI, from `vault/assets/main-menu-background.png`)
 - parent_class: `URRMainMenuWidget` ([[sys-main-menu]])
 - purpose: the main menu screen, created by the menu player controller from [[bp-main-menu-game-mode]].
-- components: Root CanvasPanel > `BackgroundImage` (full anchor); `GradientRow` (HorizontalBox, left, 1000 wide) with `GradientBand0..4` (Border, colour 0.01/0.012/0.03, alpha 0.85/0.65/0.45/0.22/0.07); `MenuColumn` (VerticalBox, left offset 120, vertically centred) with `TitleText` "ROGUE RIGS" (Roboto Bold 80, white, outline 3), then `NewRunButton`, `OptionsButton`, `ExitButton`, each with a text (Roboto Bold 40, white, outline 2). Options is disabled, not focusable, grey 0.4. The stepped bands stand in for a smooth gradient (a gradient texture could replace them).
+- components (Root CanvasPanel; top-level blocks are direct children):
+
+| Widget | Anchors / slot | Notes |
+|---|---|---|
+| BackgroundImage (Image) | (0,0)-(1,1), offsets 0 | T_MainMenuBackground |
+| GradientRow (HorizontalBox) | (0,0)-(0,1), offset right 1000 | `GradientBand0..4` (Border, colour 0.01/0.012/0.03, alpha 0.85/0.65/0.45/0.22/0.07), each Fill; stepped stand-in for a smooth gradient |
+| MenuColumn (VerticalBox) | point (0,0.5), align (0,0.5), offset left 120, auto size | `TitleText` "ROGUE RIGS" (Roboto Bold 80, white, outline 3, bottom padding 40), then `ButtonColumn` |
+| ButtonColumn (VerticalBox) | MenuColumn slot HAlign Left | `NewRunButton`, `OptionsButton`, `ExitButton`, slots HAlign Fill, padding 8 top and bottom: all three take the width of the widest (New Run) |
+
+- plate buttons (task-487-01, 663c7c6a): style as [[wbp-pause-menu]] (T_Shop_ButtonContinue, Box, margin L/R 0.155, image 640x163; Pressed tint 0.7; Disabled tint 0.5 alpha 0.85 = greyed plate), Normal and Pressed padding 0, BackgroundColor white; size from content: each button holds `<Name>Content` (Overlay, fill) with `<Name>Text` (Roboto Bold 36, no outline, dark brown 0.05/0.04/0.03, centred, padding 125 left/right, 30 top/bottom; about 440 x 105 at 1080p). Options is disabled and not focusable.
+- focus outline: `NewRunFocus` and `ExitFocus` (Image in the Content overlay, fill, padding 20/13 so it hugs the visible plate; RoundedBox, fill alpha 0, outline orange 1/0.35/0.1, width 3, radius 10, no brush transparency). Render opacity does not hide a RoundedBox outline, so the graph toggles Visibility.
 - exposed_defaults: desired focus widget `NewRunButton`; labels hardcoded in English ([[main-menu]]).
 - events:
   - `OnClicked` New Run → `StartNewRun`; Exit → `QuitGame`.
   - `OnHovered` of New Run and Exit → `SetKeyboardFocus` on that button.
   - `EventConstruct` → `SetKeyboardFocus` NewRunButton, then `RefreshColours`.
   - `EventTick` → `RefreshColours`.
-- logic_in_bp: function `RefreshColours` (New Run and Exit texts orange 1/0.35/0.1 when the button has keyboard focus, else white). Look only; run logic is C++.
+- logic_in_bp: function `RefreshColours` (name kept from the text buttons): `NewRunFocus` / `ExitFocus` HitTestInvisible when their button has keyboard focus, else Hidden. Labels keep their colour. Look only; run logic is C++.
 - assets: T_MainMenuBackground; Roboto Bold font.
 - owner_agent: agent-bp
-- button_hover (task-485-09, 76cd99d1): NewRunButton and ExitButton grow to 1.05 on mouse hover (C++ AttachNamed, growth only, no plate); the orange stays RefreshColours on focus, so focus alone shows orange without growth; OptionsButton (disabled) not attached. Asset unchanged. Verified: -game at 1920 x 1080, 1280 x 720, 1920 x 1200, 2560 x 1080 (Saved/Captures/task485_b1080/c_mm.png, task485_resB/sheet_mm.png, task485_resB1200), Options hovered shows nothing. See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
+- button_hover (task-485-09, then task-487-01): NewRunButton and ExitButton take the plate hover (C++ AttachNamed with plate brightening since task-487: brighter plate, grow 1.05; the focus outline is inside the button, so it grows with it); OptionsButton (disabled) not attached. Hovering a button also gives it keyboard focus (OnHovered), so the outline follows the mouse. See [[sys-button-hover]]; values of [[ui-button-hover]].
+- verified (task-487-02): compiled with warnings as errors, saved; -game L_MainMenu at 1920 x 1080, 1280 x 720, 1920 x 1200, 2560 x 1080, at rest and New Run, Exit, Options hovered (Saved/Captures/task487_sheets/rest_sheet.png, hover_sheet.png). The column is taller than with text buttons, so the centred title sits about 60 px higher at 1080p. Not verified on screen: Enter and clicks (graph events unchanged).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
@@ -28,3 +39,4 @@ kind: doc
 - [[main-menu]] — the design.
 - [[wbp-loading]] — font and colour reference.
 - [[sys-button-hover]] — shared mouse hover of its buttons.
+- [[wbp-pause-menu]] — source of the plate button style.
