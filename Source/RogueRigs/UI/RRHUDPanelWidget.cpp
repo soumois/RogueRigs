@@ -6,8 +6,15 @@
 #include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
+#include "UI/RRButtonHover.h"
 #include "UI/RRHUDWidget.h"
 #include "Weapons/RRWeapon.h"
+
+void URRHUDPanelWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	URRButtonHoverSubsystem::AttachNamed(this, HoverButtonNames);
+}
 
 void URRHUDPanelWidget::SetMiner(ARRMiner* Miner)
 {

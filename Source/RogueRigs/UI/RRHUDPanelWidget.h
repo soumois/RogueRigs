@@ -74,6 +74,13 @@ public:
 	int32 GetHUDBindCount() const { return HUDBindCount; }
 
 protected:
+	/** Gives the buttons named in HoverButtonNames the mouse hover of ui-button-hover (task-485). */
+	virtual void NativeOnInitialized() override;
+
+	/** Plate buttons of this panel that get the mouse hover of ui-button-hover (set in the Blueprint class defaults; empty = none). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Panel")
+	TArray<FName> HoverButtonNames;
+
 	/**
 	 * Hook: bind the miner events this panel shows (OnHealthChanged, OnDamaged, OnWeaponSlotChanged, its progression...) and read
 	 * their current values. Miner is the new miner (null = none: clear). Unbinding PreviousMiner's events is the hook's job
