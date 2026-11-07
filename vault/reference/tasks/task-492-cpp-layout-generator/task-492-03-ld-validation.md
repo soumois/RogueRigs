@@ -3,7 +3,7 @@ id: task-492-03-ld-validation
 description: "Level-design: Level-Design agent generates 20 passing seeds with the C++ generator and reviews them with layout-review-rules."
 parent: task-492-cpp-layout-generator
 kind: task
-status: in-progress
+status: done
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent: level-design
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: A4 of the global holds: 20 seeds validated by validate_layout.js, verdict per seed written, defects found fixed in the generator and re-checked, remaining deviations listed for the owner; committed.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-492
+- usage: included in the executor run of task-492
+- runs: 1
 - milestone: M2
 - started: 2026-11-07T06:27:26Z
 - waiting_for: none
-- result: open
+- result: 24 passing C++ seeds (first 20 starts 1000-2900 step 100, plus starts 6450, 7000, 7900, 7950), all validate_layout.js OK with the 240 brief (passage 3). Review per layout-review-rules: 4 kept (6453, 7002, 7900, 7950: every window in 0.05-0.95), 20 rejected for dead or too-open windows, 3 lanes over 30 flagged, no far pocket. Comparable to the Node generator: the Node script fed FRandomStream's LCG reproduces the C++ cells exactly; over 60 starts each, yield 4 vs 0 kept. No generator defect found. Deviations for the owner: low keep yield (unchanged from Node), some seeds about 3 s. Files and table in Saved/GeneratedLevels/task-492/ (temporary).
 
 ## Verdict
 24 passing seeds of the C++ generator (brief 240 × 240, coverage 0.52–0.62, heal_ore 56, barrel 17–22, reach ≥ 0.6, passage 3), all `validate_layout.js` OK, minimum passage 3. Scan of [[layout-review-rules]]: 24 × 24 void-free windows, stride 2; dead < 0.04, too open > 0.95, lane > 30 cells (±1 wall tolerance), pocket gap > 15. Per seed: window min–max, flags, verdict (keep = every window 0.05–0.95, no far pocket).

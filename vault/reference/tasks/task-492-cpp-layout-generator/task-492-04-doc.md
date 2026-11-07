@@ -3,7 +3,7 @@ id: task-492-04-doc
 description: "Doc: Document the C++ generator and its entry point."
 parent: task-492-cpp-layout-generator
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T06:45:11Z
 - waiting_for: none
 - result: open
 
