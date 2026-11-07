@@ -3,7 +3,7 @@ id: task-488-loading-screen-rework
 description: "Global task: replace the plain dark loading screen (New Run and between levels) with an illustrated, framed screen in the game style. Open to run or review it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Richer loading screen (illustration and framed texts)
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-07, "Menu q1- montre moi une image du b je suis curieux. Le reste par défaut")
 - milestone: M2
 - next_step: task-488-01-loading-image
-- started: open
+- started: 2026-11-07T04:21:16Z
 - waiting_for: none
 - result: open
 

@@ -3,7 +3,7 @@ id: task-488-01-loading-image
 description: "Art: One full-screen loading illustration made and kept as intermission says (subject Q2), prompt listed in a new art-prompts node."
 parent: task-488-loading-screen-rework
 kind: task
-status: todo
+status: in-progress
 ---
 # Richer loading screen (illustration and framed texts): art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:21:16Z
 - waiting_for: none
 - result: open
 
