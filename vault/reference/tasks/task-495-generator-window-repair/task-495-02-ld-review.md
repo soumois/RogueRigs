@@ -3,7 +3,7 @@ id: task-495-02-ld-review
 description: "Level-design: dev-time re-review of the 24 seed starts of task-492-03 against all layout-review-rules, compared with review_cpp.md."
 parent: task-495-generator-window-repair
 kind: task
-status: todo
+status: in-progress
 ---
 # C++ generator enforces the layout review rules: level-design
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T07:52:59Z
 - waiting_for: none
 - result: open
 
