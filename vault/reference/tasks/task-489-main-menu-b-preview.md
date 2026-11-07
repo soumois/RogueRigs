@@ -3,7 +3,7 @@ id: task-489-main-menu-b-preview
 description: "Global task: one temporary mockup of the main menu with option B buttons (dark metal plates, white text, orange edge) so the owner can choose task-487 Q1."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Preview image of main menu button option B (discussion only)
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes, 2026-11-07 ("montre moi une image du b je suis curieux")
 - milestone: M2
 - next_step: task-489-01-b-mockup
-- started: open
+- started: 2026-11-07T04:21:17Z
 - waiting_for: none
 - result: open
 

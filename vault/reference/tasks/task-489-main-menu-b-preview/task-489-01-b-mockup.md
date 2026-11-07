@@ -3,7 +3,7 @@ id: task-489-01-b-mockup
 description: "Art: One temporary image-to-image mockup of the current main menu with the buttons drawn as option B, shown to the owner."
 parent: task-489-main-menu-b-preview
 kind: task
-status: todo
+status: in-progress
 ---
 # Preview image of main menu button option B (discussion only): art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-07T04:21:17Z
 - waiting_for: none
 - result: open
 
