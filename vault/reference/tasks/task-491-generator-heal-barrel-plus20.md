@@ -1,9 +1,9 @@
 ---
 id: task-491-generator-heal-barrel-plus20
 description: "Global task: generator parameters give 14 heal veins (56 cells) and 17 to 22 barrels per 240 x 240 layout; committed layouts unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Generator rules: 20 % more heal veins and barrels
 
@@ -17,10 +17,14 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - verification_level: light
 - confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
-- next_step: task-491-01-gen-params
+- next_step: none
 - started: 2026-11-07T06:13:06Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 30, cache write 40862, cache read 561307, output 5538
+- executor_usage: runs 1, turns 15, context start 17k peak 53k, resumes 0, 1 min, units 0.13 M
+- planning_tokens: input 6, cache write 13690, cache read 111230, output 4016
+- planning_usage: a8f799ff "Plan heals, barrels, procgen test map" 1/5 (tasks 490, 491, 492, 493, 494), units 0.05 M
+- result: Done. Params fine_default.json: heal pocket_veins 4->5, wall_veins 8->9 (14 veins, 56 cells), barrels min/max 14-18 -> 17-22, pairs_min/max 3-4 unchanged (chains kept); code already read the counts from params, no code change. Seeds 3 and 100 with default params and a scratch brief heal_ore [56,56], barrel [17,22]: generator OK, validate_layout.js exit 0, 56 heal_ore, 22 barrels each, min passage 3. Content/RogueRigs/Data/Levels unchanged. layout-generator-recipe and layout-review-rules updated; gdd heal-ore and barrel already stated the counts. Commit 80bc3b4d.
 
 ## Questions
 Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
@@ -35,5 +39,5 @@ Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; v
 1. task-491-01-gen-params (vault/reference/tasks/task-491-generator-heal-barrel-plus20/task-491-01-gen-params.md) — cpp: Raise heal vein and barrel counts in the Node generator params by 20 % and check two seeds with the validator.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-491-01-gen-params]] — step 1, cpp.

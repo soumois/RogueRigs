@@ -499,3 +499,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-488-loading-screen-rework]] — replace the plain dark loading screen (New Run and between levels) with an illustrated, framed screen in the game style. Open to run or review it. Status done.
 - [[task-489-main-menu-b-preview]] — one temporary mockup of the main menu with option B buttons (dark metal plates, white text, orange edge) so the owner can choose task-487 Q1. Status done.
 - [[task-490-heal-pickup-30hp]] — HealValue of the heal pickup (one per broken heal-ore block) set to 30 HP. Status done.
+- [[task-491-generator-heal-barrel-plus20]] — generator parameters give 14 heal veins (56 cells) and 17 to 22 barrels per 240 x 240 layout; committed layouts unchanged. Status done.

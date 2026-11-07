@@ -3,7 +3,7 @@ id: task-491-01-gen-params
 description: "Cpp: Raise heal vein and barrel counts in the Node generator params by 20 % and check two seeds with the validator."
 parent: task-491-generator-heal-barrel-plus20
 kind: task
-status: in-progress
+status: done
 ---
 # Generator rules: 20 % more heal veins and barrels: cpp
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: A1 to A3 of the global hold; layout-generator-recipe and layout-review-rules state 14 veins (5 pockets, 9 walls) and 17 to 22 barrels; committed.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-491
+- usage: included in the executor run of task-491
+- runs: 1
 - milestone: M2
 - started: 2026-11-07T06:13:06Z
 - waiting_for: none
-- result: open
+- result: Params fine_default.json: heal pocket_veins 4->5, wall_veins 8->9 (14 veins, 56 cells), barrels min/max 14-18 -> 17-22, pairs_min/max 3-4 unchanged (chains kept); code already read the counts from params, no code change. Seeds 3 and 100 with default params and a scratch brief heal_ore [56,56], barrel [17,22]: generator OK, validate_layout.js exit 0, 56 heal_ore, 22 barrels each, min passage 3. Content/RogueRigs/Data/Levels unchanged. layout-generator-recipe and layout-review-rules updated; gdd heal-ore and barrel already stated the counts. Commit 80bc3b4d.
 
 ## Relations
 - [[task-491-generator-heal-barrel-plus20]] — parent global task.
