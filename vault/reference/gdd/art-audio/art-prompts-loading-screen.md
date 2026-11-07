@@ -54,3 +54,4 @@ Change nothing else.
 - [[task-488-01-loading-image]] — the subtask that made it.
 - [[art-prompts-main-menu-background]] — style reference and first image.
 - [[art-prompts-extractor]] — the shuttle mesh the reference render comes from.
+- [[wbp-loading]] — the widget that shows it (T_LoadingBackground).

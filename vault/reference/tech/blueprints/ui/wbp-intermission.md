@@ -46,3 +46,4 @@ kind: doc
 - [[intermission]] — the gdd look of this screen.
 - [[wbp-alert-objectives]] — font and palette reference.
 - [[sys-button-hover]] — shared mouse hover of its buttons.
+- [[wbp-loading]] — reuses its riveted frame texture (T_LevelEnd_Frame).
