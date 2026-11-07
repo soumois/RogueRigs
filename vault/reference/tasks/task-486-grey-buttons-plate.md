@@ -21,7 +21,7 @@ status: done
 - executor_usage: runs 1, turns 47, context start 18k peak 196k, resumes 2, 15 min, units 0.99 M
 - planning_tokens: input 26, cache write 70317, cache read 572496, output 11275
 - planning_usage: a77b1cf1 "Plan grey buttons retouch" 1/1 (tasks 486), units 0.20 M
-- result: Done. Done (26ad1c83). wbp-upgrade-choice: components line, button_hover rewritten (plate hover, no x1.25 tint), new reroll_plate line (RerollSize 440x110, style, fonts, Panel offset 18.5, captures), relation to wbp-run-lost. wbp-alert-objectives: components line, button_hover rewritten, new restart_plate line (RestartSize 440x108, style, Bold 30, EndPanel offset 25, captures). sys-button-hover: untextured grey mode now used by no attached button, kept as fallback. ui-button-hover already held the task-486 line (planner). Lint clean.
+- result: Done. Level-up Reroll (98a84716) and run-won Main Menu (a3294db6) are cream T_Shop_ButtonContinue plates with dark brown Bold labels (Reroll 440x110 Bold 28 with ore and cost, Main Menu 440x108 Bold 30) and take the plate hover; panel offsets keep cards, title, subtitle and Duskite row in place. A1-A6 seen at the four resolutions (Saved/Captures/task486_sheets); a real mouse click was not tested (debug commands used). Docs 26ad1c83.
 
 ## Questions
 Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
