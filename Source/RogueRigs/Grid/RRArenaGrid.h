@@ -685,6 +685,38 @@ public:
 	 */
 	bool RebuildForRunLevel();
 
+	/**
+	 * Incremental build (task-493-01, used by URRLayoutLoaderSubsystem): keeps a copy of Layout and plans the build in units,
+	 * which StepIncrementalBuild runs over several frames. The units do the same work as RebuildFromLayout on that layout
+	 * (deposits, chunk components and instances, corner pieces, deposit crystals, barrel shadows), so the result is the same
+	 * grid. Returns false for an invalid layout (grid emptied, logged error).
+	 */
+	bool BeginIncrementalBuild(const FRRLayoutData& Layout);
+
+	/**
+	 * Runs build units until BudgetSeconds of game-thread time is spent (at least one unit per call). Returns true once every
+	 * unit has run (also on later calls), false while units remain or when no build was begun.
+	 */
+	bool StepIncrementalBuild(double BudgetSeconds);
+
+	/** Share of the incremental build units done, 0 to 1 (0 before BeginIncrementalBuild). */
+	float GetIncrementalBuildProgress() const;
+
+	/** True between BeginIncrementalBuild and the step that runs the last unit. */
+	bool IsIncrementalBuildActive() const { return IncrementalLayout.IsValid() && IncrementalUnitsDone < IncrementalUnitsTotal; }
+
+	/** Units of the current or last incremental build (2 per chunk + 6), 0 before any. */
+	int32 GetIncrementalBuildUnitCount() const { return IncrementalUnitsTotal; }
+
+	/**
+	 * Set before FinishSpawning by an owner that builds the grid itself (the layout loader): OnConstruction and BeginPlay then
+	 * do not read LayoutName and the grid stays empty until BeginIncrementalBuild. Placed grids keep false (their current path).
+	 */
+	void SetExternalBuild(bool bInExternalBuild) { bExternalBuild = bInExternalBuild; }
+
+	/** True when the grid is built by an external owner (SetExternalBuild). */
+	bool IsExternalBuild() const { return bExternalBuild; }
+
 protected:
 	/** Rebuilds the grid from the layout so play starts from a fresh, fully indexed state (placed actors do not rerun construction in PIE or cooked builds); in a rendering game world, creates one hidden barrel telegraph so its material is warmed up before the first fuse. */
 	virtual void BeginPlay() override;
@@ -721,6 +753,12 @@ protected:
 	/** Loads the layout and builds instances, or clears everything when loading fails. */
 	void RebuildFromLayout();
 
+	/** Empties cells, health, deposits, fuses, queued destructions and every instance (layout failed to load). */
+	void ResetToEmpty();
+
+	/** Runs incremental build unit Unit (see BeginIncrementalBuild for the order). */
+	void RunIncrementalUnit(int32 Unit);
+
 	/**
 	 * Builds Deposits and CellDepositId from the freshly loaded Cells: first the layout veins (4-connected Ore and HealOre
 	 * groups, as the former vein flood fill), then, when bPlaceOreDeposits, every OreTypes.csv row with a RockShare: its
@@ -751,8 +789,14 @@ protected:
 	/** Copies a valid Layout into Cells, GridWidth, GridHeight and SpawnCell. */
 	void ApplyLayoutData(const FRRLayoutData& Layout);
 
-	/** Destroys the chunk components, applies meshes and materials to the templates, creates the chunk components and adds floor and block instances from Cells, and resets health, maps and shaking. */
+	/** Destroys the chunk components, applies meshes and materials to the templates, creates the chunk components and adds floor and block instances from Cells, and resets health, maps and shaking. Runs the steps below in one call. */
 	void BuildInstances();
+
+	/** First step of BuildInstances: clears the instances, fuses, marks and shaking, applies meshes and materials to the templates, sizes health, index maps and ChunkVisuals. */
+	void BeginBuildInstances();
+
+	/** Creates the chunk components of chunk ChunkIndex (row-major over ChunkCount) and adds the floor and block instances and health of its cells. */
+	void BuildCellChunk(int32 ChunkIndex);
 
 	/** Destroys every chunk component, empties the template components and resets the instance maps. */
 	void ClearAllInstances();
@@ -835,8 +879,14 @@ protected:
 	/** Number of ERRRockPieceShape values (full, edge, outer, inner, diagonal). */
 	static constexpr int32 RockPieceShapeCount = 5;
 
-	/** Builds the piece table, sizes the corner maps and PieceVisuals, and adds one intact piece per non-empty corner in one batch per ISM. Called by BuildInstances after the cell instances. */
-	void BuildCornerPieces();
+	/** Builds the piece table and sizes the corner maps and PieceVisuals; BuildCornerChunk then adds one intact piece per non-empty corner, one batch per ISM. Called by BuildInstances after the cell instances. */
+	void BeginCornerPieces();
+
+	/** Adds the rock pieces of the corners of chunk ChunkIndex (corner chunk rule of GetPieceVisualIndex) with their custom data; after every BuildCellChunk. */
+	void BuildCornerChunk(int32 ChunkIndex);
+
+	/** Logs the piece and piece ISM counts (game worlds). */
+	void FinishCornerPieces();
 
 	/** True for the cell types drawn by the dual-grid rock pieces (solid for the corner masks): Rock, Ore, HealOre, SpecialOre. Barrels are not: they keep their own mesh on a floor slab. */
 	static bool IsRockPieceType(ERRCellType Type);
@@ -1631,4 +1681,14 @@ protected:
 
 	/** Queued blocks destroyed in DestructionBudgetFrame (the first one of a frame ignores the budget). */
 	int32 DestructionCellsThisFrame = 0;
+
+	/** Layout of the incremental build in progress (task-493-01); reset when its last unit has run. */
+	TSharedPtr<const FRRLayoutData> IncrementalLayout;
+
+	/** Incremental build units done and planned. */
+	int32 IncrementalUnitsDone = 0;
+	int32 IncrementalUnitsTotal = 0;
+
+	/** Built by an external owner (SetExternalBuild): OnConstruction and BeginPlay skip RebuildFromLayout. */
+	bool bExternalBuild = false;
 };

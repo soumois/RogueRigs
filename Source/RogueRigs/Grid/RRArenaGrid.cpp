@@ -106,7 +106,7 @@ void ARRArenaGrid::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 
 	// Never rebuild during play: it would wipe destroyed blocks, health and the instance maps.
-	if (HasActorBegunPlay() || IsActorBeginningPlay())
+	if (HasActorBegunPlay() || IsActorBeginningPlay() || bExternalBuild)
 	{
 		return;
 	}
@@ -117,8 +117,11 @@ void ARRArenaGrid::OnConstruction(const FTransform& Transform)
 void ARRArenaGrid::BeginPlay()
 {
 	// Placed actors keep their serialized instances but not the transient state (PIE duplication, cooked load):
-	// rebuild once so cells, health and maps match the instances.
-	RebuildFromLayout();
+	// rebuild once so cells, health and maps match the instances. A grid built by the layout loader (task-493-01) waits for it.
+	if (!bExternalBuild)
+	{
+		RebuildFromLayout();
+	}
 
 	Super::BeginPlay();
 
@@ -140,28 +143,130 @@ void ARRArenaGrid::RebuildFromLayout()
 {
 	if (!LoadLayout())
 	{
-		Cells.Reset();
-		CellHealth.Reset();
-		CellShotHealth.Reset();
-		CellDigDrops.Reset();
-		CellInstanceIndex.Reset();
-		CellFloorInstanceIndex.Reset();
-		CellDepositId.Reset();
-		Deposits.Reset();
-		PlacedDepositCounts.Reset();
-		ShakingCells.Reset();
-		ClearBarrelFuses();
-		ClearPendingCellDestructions();
-		SetActorTickEnabled(false);
-		GridWidth = 0;
-		GridHeight = 0;
-		SpawnCell = FIntPoint(-1, -1);
-		ClearAllInstances();
+		ResetToEmpty();
 		return;
 	}
 
 	BuildDeposits();
 	BuildInstances();
+}
+
+void ARRArenaGrid::ResetToEmpty()
+{
+	Cells.Reset();
+	CellHealth.Reset();
+	CellShotHealth.Reset();
+	CellDigDrops.Reset();
+	CellInstanceIndex.Reset();
+	CellFloorInstanceIndex.Reset();
+	CellDepositId.Reset();
+	Deposits.Reset();
+	PlacedDepositCounts.Reset();
+	ShakingCells.Reset();
+	ClearBarrelFuses();
+	ClearPendingCellDestructions();
+	SetActorTickEnabled(false);
+	GridWidth = 0;
+	GridHeight = 0;
+	SpawnCell = FIntPoint(-1, -1);
+	ClearAllInstances();
+}
+
+bool ARRArenaGrid::BeginIncrementalBuild(const FRRLayoutData& Layout)
+{
+	IncrementalLayout.Reset();
+	IncrementalUnitsDone = 0;
+	IncrementalUnitsTotal = 0;
+	if (!Layout.IsValid())
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("ARRArenaGrid %s: incremental build refused, invalid layout %s (%s)."), *GetName(), *Layout.Name, *Layout.Error);
+		ResetToEmpty();
+		return false;
+	}
+	IncrementalLayout = MakeShared<FRRLayoutData>(Layout);
+	// Units: layout and deposits, build preparation, one per chunk for the cells, corner preparation, one per chunk for the
+	// corner pieces, then piece log with deposit colours and crystal pulse, deposit crystals, barrel shadows.
+	const int32 SafeChunkCells = FMath::Max(1, ChunkCells);
+	const int32 Chunks = FMath::DivideAndRoundUp(Layout.Width, SafeChunkCells) * FMath::DivideAndRoundUp(Layout.Height, SafeChunkCells);
+	IncrementalUnitsTotal = 2 * Chunks + 6;
+	return true;
+}
+
+bool ARRArenaGrid::StepIncrementalBuild(double BudgetSeconds)
+{
+	if (!IsIncrementalBuildActive())
+	{
+		return IncrementalUnitsTotal > 0 && IncrementalUnitsDone >= IncrementalUnitsTotal;
+	}
+	const double Start = FPlatformTime::Seconds();
+	do
+	{
+		RunIncrementalUnit(IncrementalUnitsDone);
+		++IncrementalUnitsDone;
+	}
+	while (IncrementalUnitsDone < IncrementalUnitsTotal && FPlatformTime::Seconds() - Start < BudgetSeconds);
+
+	if (IncrementalUnitsDone >= IncrementalUnitsTotal)
+	{
+		IncrementalLayout.Reset();
+		return true;
+	}
+	return false;
+}
+
+float ARRArenaGrid::GetIncrementalBuildProgress() const
+{
+	return IncrementalUnitsTotal > 0 ? FMath::Clamp(static_cast<float>(IncrementalUnitsDone) / IncrementalUnitsTotal, 0.f, 1.f) : 0.f;
+}
+
+void ARRArenaGrid::RunIncrementalUnit(int32 Unit)
+{
+	const int32 Chunks = (IncrementalUnitsTotal - 6) / 2;
+	if (Unit == 0)
+	{
+		LayoutName = IncrementalLayout->Name;
+		ApplyLayoutData(*IncrementalLayout);
+		BuildDeposits();
+		return;
+	}
+	if (Unit == 1)
+	{
+		BeginBuildInstances();
+		return;
+	}
+	int32 Index = Unit - 2;
+	if (Index < Chunks)
+	{
+		BuildCellChunk(Index);
+		return;
+	}
+	Index -= Chunks;
+	if (Index == 0)
+	{
+		BeginCornerPieces();
+		return;
+	}
+	Index -= 1;
+	if (Index < Chunks)
+	{
+		BuildCornerChunk(Index);
+		return;
+	}
+	Index -= Chunks;
+	switch (Index)
+	{
+	case 0:
+		FinishCornerPieces();
+		WriteDepositColors();
+		WriteCellCrystalPulseData();
+		break;
+	case 1:
+		BuildDepositCrystals();
+		break;
+	default:
+		BuildBarrelShadows();
+		break;
+	}
 }
 
 bool ARRArenaGrid::GetOreType(FName OreId, FRROreTypeRow& OutRow)
@@ -768,6 +873,27 @@ FTransform ARRArenaGrid::GetBlockRenderTransform(FIntPoint Cell) const
 
 void ARRArenaGrid::BuildInstances()
 {
+	// Same steps as the incremental build (task-493-01), all in one call.
+	BeginBuildInstances();
+	const int32 ChunkTotal = ChunkCount.X * ChunkCount.Y;
+	for (int32 ChunkIndex = 0; ChunkIndex < ChunkTotal; ++ChunkIndex)
+	{
+		BuildCellChunk(ChunkIndex);
+	}
+	BeginCornerPieces();
+	for (int32 ChunkIndex = 0; ChunkIndex < ChunkTotal; ++ChunkIndex)
+	{
+		BuildCornerChunk(ChunkIndex);
+	}
+	FinishCornerPieces();
+	WriteDepositColors();
+	WriteCellCrystalPulseData();
+	BuildDepositCrystals();
+	BuildBarrelShadows();
+}
+
+void ARRArenaGrid::BeginBuildInstances()
+{
 	ClearAllInstances();
 	ShakingCells.Reset();
 	MarkedCells.Reset();
@@ -885,9 +1011,20 @@ void ARRArenaGrid::BuildInstances()
 	ChunkCount = FIntPoint(FMath::DivideAndRoundUp(GridWidth, ChunkCells), FMath::DivideAndRoundUp(GridHeight, ChunkCells));
 	constexpr int32 VisualSlotCount = 6;
 	ChunkVisuals.SetNum(VisualSlotCount * ChunkCount.X * ChunkCount.Y);
+}
+
+void ARRArenaGrid::BuildCellChunk(int32 ChunkIndex)
+{
+	if (ChunkCount.X <= 0 || ChunkIndex < 0 || ChunkIndex >= ChunkCount.X * ChunkCount.Y)
+	{
+		return;
+	}
+	const int32 ChunkX = ChunkIndex % ChunkCount.X;
+	const int32 ChunkY = ChunkIndex / ChunkCount.X;
 
 	// Gather per chunk visual first and add in one batch; AddInstances appends, so instance i of a batch
-	// gets index (count before batch) + i, which is recorded in both maps.
+	// gets index (count before batch) + i, which is recorded in both maps. Every cell of a chunk visual lies in this chunk,
+	// so walking the chunk row by row gives each visual the same instance order as a walk of the whole grid.
 	struct FBatch
 	{
 		ERRCellType MapKey = ERRCellType::Floor;
@@ -895,12 +1032,19 @@ void ARRArenaGrid::BuildInstances()
 		TArray<FTransform> CollisionTransforms;
 		TArray<FIntPoint> BatchCells;
 	};
-	TArray<FBatch> Batches;
-	Batches.SetNum(ChunkVisuals.Num());
-
-	for (int32 Y = 0; Y < GridHeight; ++Y)
+	constexpr int32 VisualSlotCount = 6;
+	FBatch Batches[VisualSlotCount];
+	auto BatchOf = [&Batches](ERRCellType MapKey) -> FBatch*
 	{
-		for (int32 X = 0; X < GridWidth; ++X)
+		const int32 Slot = GetVisualSlot(MapKey);
+		return Slot == INDEX_NONE ? nullptr : &Batches[Slot];
+	};
+
+	const int32 EndY = FMath::Min(GridHeight, (ChunkY + 1) * ChunkCells);
+	const int32 EndX = FMath::Min(GridWidth, (ChunkX + 1) * ChunkCells);
+	for (int32 Y = ChunkY * ChunkCells; Y < EndY; ++Y)
+	{
+		for (int32 X = ChunkX * ChunkCells; X < EndX; ++X)
 		{
 			const FIntPoint Cell(X, Y);
 			const ERRCellType Type = Cells[GetCellIndex(Cell)];
@@ -917,7 +1061,7 @@ void ARRArenaGrid::BuildInstances()
 				const int32 FloorVisualIndex = GetVisualIndex(ERRCellType::Floor, Cell);
 				if (FloorVisualIndex != INDEX_NONE)
 				{
-					FBatch& FloorBatch = Batches[FloorVisualIndex];
+					FBatch& FloorBatch = *BatchOf(ERRCellType::Floor);
 					FloorBatch.MapKey = ERRCellType::Floor;
 					FloorBatch.Transforms.Add(GetFloorInstanceTransform(Cell));
 					FloorBatch.CollisionTransforms.Add(GetFloorInstanceTransform(Cell));
@@ -933,7 +1077,7 @@ void ARRArenaGrid::BuildInstances()
 			{
 				continue;
 			}
-			FBatch& Batch = Batches[VisualIndex];
+			FBatch& Batch = *BatchOf(Type);
 			Batch.MapKey = Type;
 			Batch.Transforms.Add(GetBlockRenderTransform(Cell));
 			Batch.CollisionTransforms.Add(GetBlockInstanceTransform(Cell));
@@ -979,12 +1123,6 @@ void ARRArenaGrid::BuildInstances()
 			IndexMap[GetCellIndex(Cell)] = FirstIndex + Offset;
 		}
 	}
-
-	BuildCornerPieces();
-	WriteDepositColors();
-	WriteCellCrystalPulseData();
-	BuildDepositCrystals();
-	BuildBarrelShadows();
 }
 
 void ARRArenaGrid::BuildBarrelShadows()
@@ -1042,7 +1180,7 @@ URRBlobShadowComponent* ARRArenaGrid::GetBarrelShadow(FIntPoint Cell) const
 	return Shadow ? Shadow->Get() : nullptr;
 }
 
-void ARRArenaGrid::BuildCornerPieces()
+void ARRArenaGrid::BeginCornerPieces()
 {
 	BuildPieceTable();
 
@@ -1074,45 +1212,61 @@ void ARRArenaGrid::BuildCornerPieces()
 	CornerPieceInstance.Init(INDEX_NONE, CornerTotal);
 	CornerBroken.Init(false, CornerTotal);
 	PieceVisuals.SetNum(RockPieceSetCount * RockPieceShapeCount * PieceVariantSlots * ChunkCount.X * ChunkCount.Y);
+}
+
+void ARRArenaGrid::BuildCornerChunk(int32 ChunkIndex)
+{
+	if (ChunkCount.X <= 0 || ChunkIndex < 0 || ChunkIndex >= ChunkCount.X * ChunkCount.Y || CornerPieceVisual.IsEmpty())
+	{
+		return;
+	}
+	// Corners of this chunk (GetPieceVisualIndex: a corner on a chunk line belongs to the higher chunk, the last corner line to
+	// the last chunk). Every corner of a piece visual lies in one chunk, so a row-major walk of the chunk keeps the instance
+	// order of a walk of the whole corner grid.
+	const int32 ChunkX = ChunkIndex % ChunkCount.X;
+	const int32 ChunkY = ChunkIndex / ChunkCount.X;
+	const int32 EndX = ChunkX == ChunkCount.X - 1 ? GridWidth + 1 : (ChunkX + 1) * ChunkCells;
+	const int32 EndY = ChunkY == ChunkCount.Y - 1 ? GridHeight + 1 : (ChunkY + 1) * ChunkCells;
 
 	// Gather per piece visual, then add in one batch per ISM (AddInstances appends: instance i of a batch gets count + i).
-	TArray<TArray<FTransform>> Transforms;
-	TArray<TArray<int32>> BatchCorners;
-	Transforms.SetNum(PieceVisuals.Num());
-	BatchCorners.SetNum(PieceVisuals.Num());
-	for (int32 CornerIndex = 0; CornerIndex < CornerTotal; ++CornerIndex)
+	TMap<int32, TPair<TArray<FTransform>, TArray<int32>>> Batches;
+	for (int32 CornerY = ChunkY * ChunkCells; CornerY < EndY; ++CornerY)
 	{
-		const FIntPoint Corner = GetCornerFromIndex(CornerIndex);
-		const uint8 Mask = GetCornerMask(Corner);
-		if (Mask == 0)
+		for (int32 CornerX = ChunkX * ChunkCells; CornerX < EndX; ++CornerX)
 		{
-			continue;
+			const FIntPoint Corner(CornerX, CornerY);
+			const int32 CornerIndex = GetCornerIndex(Corner);
+			const uint8 Mask = GetCornerMask(Corner);
+			if (CornerIndex == INDEX_NONE || Mask == 0)
+			{
+				continue;
+			}
+			const ERRRockPieceShape Shape = PieceShapeByMask[Mask];
+			const int32 VisualIndex = GetPieceVisualIndex(ERRRockPieceSet::Intact, Shape, GetPieceVariant(Corner, Shape), Corner);
+			if (VisualIndex == INDEX_NONE)
+			{
+				continue;
+			}
+			TPair<TArray<FTransform>, TArray<int32>>& Batch = Batches.FindOrAdd(VisualIndex);
+			Batch.Key.Add(GetCornerPieceTransform(Corner, GetPieceTurns(Corner, Mask)));
+			Batch.Value.Add(CornerIndex);
 		}
-		const ERRRockPieceShape Shape = PieceShapeByMask[Mask];
-		const int32 VisualIndex = GetPieceVisualIndex(ERRRockPieceSet::Intact, Shape, GetPieceVariant(Corner, Shape), Corner);
-		if (VisualIndex == INDEX_NONE)
-		{
-			continue;
-		}
-		Transforms[VisualIndex].Add(GetCornerPieceTransform(Corner, GetPieceTurns(Corner, Mask)));
-		BatchCorners[VisualIndex].Add(CornerIndex);
 	}
-	for (int32 VisualIndex = 0; VisualIndex < PieceVisuals.Num(); ++VisualIndex)
+	for (TPair<int32, TPair<TArray<FTransform>, TArray<int32>>>& Pair : Batches)
 	{
-		if (Transforms[VisualIndex].Num() == 0)
-		{
-			continue;
-		}
+		const int32 VisualIndex = Pair.Key;
+		const TArray<FTransform>& Transforms = Pair.Value.Key;
+		const TArray<int32>& BatchCorners = Pair.Value.Value;
 		FRRGridPieceVisual* Visual = GetOrCreatePieceVisual(VisualIndex);
 		if (!Visual || !Visual->Render)
 		{
 			continue;
 		}
 		const int32 FirstIndex = Visual->InstanceCorners.Num();
-		Visual->Render->AddInstances(Transforms[VisualIndex], /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
-		for (int32 Offset = 0; Offset < BatchCorners[VisualIndex].Num(); ++Offset)
+		Visual->Render->AddInstances(Transforms, /*bShouldReturnIndices*/ false, /*bWorldSpace*/ false);
+		for (int32 Offset = 0; Offset < BatchCorners.Num(); ++Offset)
 		{
-			const int32 CornerIndex = BatchCorners[VisualIndex][Offset];
+			const int32 CornerIndex = BatchCorners[Offset];
 			Visual->InstanceCorners.Add(CornerIndex);
 			CornerPieceVisual[CornerIndex] = VisualIndex;
 			CornerPieceInstance[CornerIndex] = FirstIndex + Offset;
@@ -1123,7 +1277,10 @@ void ARRArenaGrid::BuildCornerPieces()
 		}
 		Visual->Render->MarkRenderStateDirty();
 	}
+}
 
+void ARRArenaGrid::FinishCornerPieces()
+{
 	if (GetWorld() && GetWorld()->IsGameWorld())
 	{
 		int32 PieceCount = 0;

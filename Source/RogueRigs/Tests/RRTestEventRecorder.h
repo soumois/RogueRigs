@@ -112,6 +112,14 @@ public:
 	/** Recaps of the OnRunLost broadcasts received through HandleRunLost. */
 	TArray<FRRRunLostRecap> RunLostRecaps;
 
+	/** Bind to URRLayoutLoaderSubsystem::OnLoadCompleted (task-493-01): records each result and grid. */
+	UFUNCTION()
+	void HandleLayoutLoadCompleted(ARRArenaGrid* Grid, bool bSuccess) { LayoutLoadResults.Add(bSuccess); LayoutLoadGrids.Add(Grid); }
+
+	/** Results and grids of the OnLoadCompleted broadcasts received through HandleLayoutLoadCompleted. */
+	TArray<bool> LayoutLoadResults;
+	TArray<TWeakObjectPtr<ARRArenaGrid>> LayoutLoadGrids;
+
 	/** Bind to URRRunFlowSubsystem::OnShuttleCountdown: counts broadcasts and keeps the last value. */
 	UFUNCTION()
 	void HandleShuttleCountdown(float RemainingSeconds, FVector ShuttleLocation) { ++ShuttleCountdownCount; LastShuttleCountdown = RemainingSeconds; }
