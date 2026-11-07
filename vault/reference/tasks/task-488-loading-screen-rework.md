@@ -21,7 +21,7 @@ status: done
 - executor_usage: runs 1, turns 76, context start 17k peak 199k, resumes 2, 19 min, units 1.39 M
 - planning_tokens: input 18, cache write 23709, cache read 414096, output 7908
 - planning_usage: aff83457 "Plan main menu + loading rework" 1/3 (tasks 487, 488, 489), units 0.11 M
-- result: Done. wbp-loading updated (commit d082d554): canvas tree with anchors, alignment, offsets and size mode per umg-layout, assets T_LoadingBackground and T_Loading_BottomGradient, restyled bar (flat brushes, riveted strip) and spinner in the frame, LoadingImage now the background image, verified line with the task-488 captures, owner retouch points; relations added in art-prompts-loading-screen and wbp-intermission. Lint clean.
+- result: Done. A1-A6 met: full-screen illustration T_LoadingBackground (shuttle with miner and drone over the arena asteroid, no text, prompts in art-prompts-loading-screen, 24 credits); bottom gradient; riveted T_LevelEnd_Frame bottom left with the unchanged texts; orange flat fill in a riveted dark track between levels, spinning ore icon in the frame on New Run; behaviour and graph untouched; seen in -game at 1920x1080, 1280x720, 1920x1200, 2560x1080 in 2 capture rounds (sheet Saved/Captures/t488_final_sheet.png). Open for the owner: A12 low camera of the illustration (as the main menu background).
 
 ## Questions
 Decided 2026-11-07 (owner "Menu q1- montre moi une image du b je suis curieux. Le reste par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
