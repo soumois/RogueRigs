@@ -70,6 +70,8 @@
   "outcrop_rho_max": 3.6,
   "lane_rho_min": 2.4,
   "lane_rho_max": 3.2,
+  "outcrop_discs": 3,
+  "outcrop_step": 0.9,
   "shape_noise": 0.6,
   "max_actions": 80,
   "max_tries": 8,

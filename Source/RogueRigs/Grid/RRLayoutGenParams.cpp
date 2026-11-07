@@ -254,6 +254,8 @@ bool RRLayoutGen::LoadParams(const FString& FilePath, FRRLayoutGenParams& OutPar
 		S.Num(TEXT("outcrop_rho_max"), O.OutcropRhoMax);
 		S.Num(TEXT("lane_rho_min"), O.LaneRhoMin);
 		S.Num(TEXT("lane_rho_max"), O.LaneRhoMax);
+		S.Int(TEXT("outcrop_discs"), O.OutcropDiscs);
+		S.Num(TEXT("outcrop_step"), O.OutcropStep);
 		S.Num(TEXT("shape_noise"), O.ShapeNoise);
 		S.Int(TEXT("max_actions"), O.MaxActions);
 		S.Int(TEXT("max_tries"), O.MaxTries);

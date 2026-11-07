@@ -276,7 +276,7 @@ protected:
 	/** Repair of a window under RepairOpenMin: a filler walk from the main network into its deepest rock. */
 	bool RepairDeadWindow(const FReviewWindow& Window);
 
-	/** Repair of a window over RepairOpenMax: an organic rock outcrop at its most open cell, else a bump on one of its walls. */
+	/** Repair of a window over RepairOpenMax: an organic rock outcrop on an open cell, else a bump on one of its walls. */
 	bool RepairOpenWindow(const FReviewWindow& Window);
 
 	/** Repair of a straight lane: a wall bump (wide lane) or a wall niche at its middle, or at a third. */

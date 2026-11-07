@@ -230,6 +230,9 @@ struct FRRLayoutGenReviewParams
 	double OutcropRhoMax = 0.0;
 	double LaneRhoMin = 0.0;
 	double LaneRhoMax = 0.0;
+	/** An outcrop is 1 to OutcropDiscs overlapping discs, OutcropStep x radius apart along a random direction. */
+	int32 OutcropDiscs = 1;
+	double OutcropStep = 0.0;
 	/** Edge noise amplitude of outcrops, bumps and niches (cells; scale walk.brush_noise_scale). */
 	double ShapeNoise = 0.0;
 	/** Repair actions per pass, failed candidates tried per action, repair passes (each followed by the cleanup loop). */

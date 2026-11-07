@@ -1275,32 +1275,40 @@ bool FRRLayoutGenerator::RepairOpenWindow(const FReviewWindow& Window)
 			}
 		}
 	}
-	int32 Center = -1;
-	int32 BestClear = 0;
+	// Free outcrop: centre drawn among the window cells where a disc of OutcropRhoMin keeps Passage open cells to the walls
+	// (a disc reaches Rho + ShapeNoise cells; Clear - 1 open cells surround a cell), so outcrops do not line up on the
+	// most open cells; one to OutcropDiscs overlapping discs OutcropStep x Rho apart in a random direction.
+	TArray<int32> Centers;
 	for (int32 Y = Window.Y; Y < Window.Y + K; ++Y)
 	{
 		for (int32 X = Window.X; X < Window.X + K; ++X)
 		{
 			const int32 I = Y * W + X;
-			if (Grid[I] == ERRCellType::Floor && !Hidden[I] && !InSpawnZone(X, Y, P.Spawn.ZoneHalf) && Clear[I] > BestClear)
+			if (Grid[I] == ERRCellType::Floor && !Hidden[I] && !InSpawnZone(X, Y, P.Spawn.ZoneHalf)
+				&& (Clear[I] - 1) - Pass - RV.ShapeNoise >= RV.OutcropRhoMin)
 			{
-				BestClear = Clear[I];
-				Center = I;
+				Centers.Add(I);
 			}
 		}
 	}
 	int32 ReachBefore = 0;
 	const TArray<uint8> ReachMask = Reach(&ReachBefore);
 	const int32 FarBefore = MeasureMaxFar();
-	if (Center >= 0)
+	if (Centers.Num() > 0)
 	{
-		// The outcrop reaches Rho + ShapeNoise cells from its centre; BestClear - 1 open cells surround the centre.
-		const double MaxRho = (BestClear - 1) - Pass - RV.ShapeNoise;
+		const int32 Center = Centers[FMath::FloorToInt32(Rnd() * Centers.Num())];
+		const double MaxRho = (Clear[Center] - 1) - Pass - RV.ShapeNoise;
 		const double Rho = FMath::Min(RV.OutcropRhoMin + Rnd() * (RV.OutcropRhoMax - RV.OutcropRhoMin), MaxRho);
-		if (Rho >= RV.OutcropRhoMin)
+		const double Angle = Rnd() * TwoPiApprox;
+		const int32 Discs = 1 + FMath::FloorToInt32(Rnd() * FMath::Max(1, RV.OutcropDiscs));
+		for (int32 Count = Discs; Count >= 1; --Count)
 		{
 			TArray<FCellUndo> Changes;
-			StampRock(Center % W, Center / W, Rho, ReachMask, Changes);
+			for (int32 D = 0; D < Count; ++D)
+			{
+				const double Step = D * RV.OutcropStep * Rho;
+				StampRock(Center % W + FMath::Cos(Angle) * Step, Center / W + FMath::Sin(Angle) * Step, Rho, ReachMask, Changes);
+			}
 			int32 Open = 0;
 			if (Changes.Num() > P.Cleanup.MaxRockIsland && RockKeepsRules(Changes, ReachBefore, FarBefore) && CountWindow(Window.X, Window.Y, Open)
 				&& Open < Window.Open)
