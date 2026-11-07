@@ -462,6 +462,31 @@ void URRRunLogSubsystem::CollectEventsMet(const URRRunFlowSubsystem* RunFlow, TA
 	}
 }
 
+int32 URRRunLogSubsystem::GetRunKillCount(const UWorld* World) const
+{
+	if (!World || World != TrackedWorld.Get())
+	{
+		return INDEX_NONE;
+	}
+	int32 Total = 0;
+	auto AddKills = [&Total](const FRRRunLevelStats& LevelStats)
+	{
+		for (const TPair<FString, int32>& Pair : LevelStats.KillsByRobotType)
+		{
+			Total += Pair.Value;
+		}
+	};
+	for (const FRRRunLogLevelEntry& Entry : Run.Levels)
+	{
+		AddKills(Entry.Stats);
+	}
+	if (!bLevelEnded)
+	{
+		AddKills(GetCurrentLevelStats());
+	}
+	return Total;
+}
+
 void URRRunLogSubsystem::HandleMinerDeath(AActor* DeathInstigator)
 {
 	HandleLevelEnded(TrackedWorld.Get(), ERRRunLevelOutcome::Death);

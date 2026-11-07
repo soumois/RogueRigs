@@ -39,6 +39,11 @@
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
 #include "Containers/Ticker.h"
+#include "Damage/RRGE_DamageFlat.h"
+#include "GameFramework/WorldSettings.h"
+#include "GAS/RRGameplayTags.h"
+#include "Run/RRRunLostSubsystem.h"
+#include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
 #include "Tests/RRTestEventRecorder.h"
@@ -559,7 +564,6 @@ bool FRRIntegrationGameOverTest::RunTest(const FString& Parameters)
 	GameMode->OnGameOver.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleGameOver);
 	// No authority game mode in the test world: register as ARRMiner::BeginPlay does in a run. Never travel.
 	GameMode->RegisterMiner(Miner);
-	const float RestartDelay = GameMode->GetRestartDelay();
 
 	ARRChaser* Chaser = SpawnChaser(*this, TestWorld, Setup.ChaserClass, Setup.Grid, ChaseMinerCell + FIntPoint(3, 0));
 	if (!Chaser)
@@ -587,18 +591,16 @@ bool FRRIntegrationGameOverTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Health 0"), GetHealth(Miner), 0.f);
 	TestEqual(TEXT("game over fired once"), Recorder->GetGameOverCount(), 1);
 	TestTrue(TEXT("IsGameOver"), GameMode->IsGameOver());
-	TestEqual(TEXT("restart armed with the Blueprint delay"), GameMode->GetRestartTimeRemaining(), RestartDelay, 1.e-4f);
 
-	// One more second (below the restart delay: no travel): no further hit, no second game over.
+	// One more second (the death sequence, then the run-lost screen; nothing travels): no further hit, no second game over.
 	const int32 AttacksAtDeath = Chaser->GetAttackCount();
 	for (int32 Frame = 0; Frame < 60; ++Frame)
 	{
 		TestWorld.Tick();
 	}
 	Miner->GetHealthSet()->OnDamageReceived.Remove(Handle);
-	AddInfo(FString::Printf(TEXT("1 s after death: %d hits, %d attacks, chaser state %s, restart in %.3f s"),
-		Hits.Num(), Chaser->GetAttackCount(), *UEnum::GetValueAsString(Chaser->GetState()), GameMode->GetRestartTimeRemaining()));
-	TestTrue(TEXT("restart delay longer than the extra second"), RestartDelay > 1.f + 2.f * FrameSeconds);
+	AddInfo(FString::Printf(TEXT("1 s after death: %d hits, %d attacks, chaser state %s"),
+		Hits.Num(), Chaser->GetAttackCount(), *UEnum::GetValueAsString(Chaser->GetState())));
 	TestEqual(TEXT("no hit on the dead miner"), Hits.Num(), ExpectedHits);
 	TestTrue(TEXT("at most one attack in flight after death"), Chaser->GetAttackCount() <= AttacksAtDeath + 1);
 	TestEqual(TEXT("game over still fired once"), Recorder->GetGameOverCount(), 1);
@@ -2009,10 +2011,26 @@ namespace RRIntegrationObjectiveTests
 		Test.TestTrue(TEXT("controller reports the pause"), Loop.Controller->IsPaused());
 		Test.TestTrue(TEXT("cursor shown on the end screen"), Loop.Controller->ShouldShowMouseCursor());
 
-		// WBP_HUD end screen; the level-up screen lost to it.
-		Test.TestTrue(TEXT("EndScreen visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
-		const FString EndTitle = GetWidgetText(Test, Loop.HUD, TEXT("EndTitle"));
-		Test.TestTrue(*FString::Printf(TEXT("EndTitle '%s' is %s"), *EndTitle, Title), EndTitle == Title);
+		// Success: WBP_HUD end screen. Loss (task-484): the run-lost screen (URRRunLostSubsystem), its title from screen_texts.json.
+		// Both: the HUD is in its end screen state and the level-up screen lost to it.
+		URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(World);
+		Test.TestTrue(TEXT("HUD end screen state"), Loop.HUD->IsEndScreenShown() && Loop.HUD->IsEndScreenRunWon() == bSuccess && !Loop.HUD->IsEndScreenGameOver());
+		if (bSuccess)
+		{
+			Test.TestTrue(TEXT("EndScreen visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
+			const FString EndTitle = GetWidgetText(Test, Loop.HUD, TEXT("EndTitle"));
+			Test.TestTrue(*FString::Printf(TEXT("EndTitle '%s' is %s"), *EndTitle, Title), EndTitle == Title);
+			Test.TestFalse(TEXT("no run-lost screen on a success"), RunLost && RunLost->IsRunLostShown());
+		}
+		else if (Test.TestNotNull(TEXT("run-lost subsystem"), RunLost))
+		{
+			const FRRRunLostRecap& Recap = RunLost->GetRecap();
+			Test.TestTrue(TEXT("run-lost screen shown"), RunLost->IsRunLostShown());
+			Test.TestFalse(TEXT("run lost by the shuttle, not a death"), Recap.bMinerDied);
+			Test.TestEqual(TEXT("missed shuttle text id"), Recap.ScreenTextId, FName(TEXT("run_lost_shuttle")));
+			Test.TestEqual(TEXT("run-lost title"), Recap.Title.ToString(), FString(Title));
+			Test.TestEqual(TEXT("robots destroyed = the kills of this level (no run log in the test world)"), Recap.RobotsDestroyed, Loop.RunFlow->GetKillCount());
+		}
 		Test.TestTrue(TEXT("ShuttleText hidden at the end"), GetWidgetVisibility(Test, Loop.HUD, TEXT("ShuttleText")) == ESlateVisibility::Collapsed);
 		Test.TestTrue(TEXT("UpgradeScreen collapsed at the end"), GetWidgetVisibility(Test, Loop.HUD, TEXT("UpgradeScreen")) == ESlateVisibility::Collapsed);
 		Test.TestTrue(TEXT("level-up choices blocked by the end"), LevelUp->AreChoicesBlocked());
@@ -2033,13 +2051,31 @@ namespace RRIntegrationObjectiveTests
 		Test.TestTrue(TEXT("miner still after the end"), Miner->GetActorLocation().Equals(EndLocation, 0.01f));
 		Test.TestEqual(TEXT("shuttle countdown frozen after the end"), Loop.RunFlow->GetShuttle() ? Loop.RunFlow->GetShuttle()->GetRemainingSeconds() : -1.f, EndCountdown);
 		Test.TestEqual(TEXT("no level-up offer after the end"), Recorder->GetOfferCardCounts().Num(), EndOffers);
-		Test.TestTrue(TEXT("EndScreen still visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
+		if (bSuccess)
+		{
+			Test.TestTrue(TEXT("EndScreen still visible"), GetWidgetVisibility(Test, Loop.HUD, TEXT("EndScreen")) == ESlateVisibility::Visible);
+		}
 		Test.TestFalse(TEXT("second EndRun refused"), Loop.RunFlow->EndRun(!bSuccess));
 		Test.TestEqual(TEXT("still one OnRunEnded"), Recorder->GetRunEndedResults().Num(), 1);
 
+		FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
+		if (!bSuccess)
+		{
+			// Run-lost Main Menu (task-484): run reset, the main menu map opened directly; a second press (or Retry) is refused.
+			if (Test.TestNotNull(TEXT("run-lost subsystem"), RunLost) && Test.TestNotNull(TEXT("world context"), Context))
+			{
+				Test.TestTrue(TEXT("no travel before Main Menu"), Context->TravelURL.IsEmpty());
+				Test.TestTrue(TEXT("Main Menu accepted"), RunLost->ReturnToMainMenu());
+				Test.TestEqual(TEXT("Main Menu opens the main menu map"), Context->TravelURL, GetDefault<URRRunSettings>()->MainMenuMapName);
+				Test.TestFalse(TEXT("second Main Menu refused"), RunLost->ReturnToMainMenu());
+				Test.TestFalse(TEXT("Retry refused once leaving"), RunLost->Retry());
+				Context->TravelURL.Empty();
+			}
+			return;
+		}
+
 		// Rejouer: clicking the button reaches RestartLevel, which asks the engine to reopen this map (travel cleared before it runs).
 		UButton* Restart = Cast<UButton>(URRHUDWidget::FindWidgetInTree(Loop.HUD, TEXT("RestartButton")));
-		FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
 		if (Test.TestNotNull(TEXT("WBP_HUD has RestartButton"), Restart) && Test.TestNotNull(TEXT("world context"), Context))
 		{
 			Test.TestTrue(TEXT("RestartButton visible (UMG property: no Slate widget headless)"), Restart->GetVisibility() == ESlateVisibility::Visible || Restart->GetVisibility() == ESlateVisibility::SelfHitTestInvisible);
@@ -2230,7 +2266,115 @@ bool FRRIntegrationShuttleTimeoutLossTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("lost when the countdown runs out (within one frame)"), CountdownSeconds, double(ShortCountdown), double(FrameSeconds) + 1e-3);
 	TestTrue(TEXT("shuttle missed"), Shuttle->IsFinished() && !Shuttle->WasExtracted());
-	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ false, TEXT("RUN LOST"));
+	CheckEndScreen(*this, TestWorld, Loop, Recorder.Get(), /*bSuccess*/ false, TEXT("CLAIM SECURED"));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRIntegrationDeathRunLostTest, "RogueRigs.Integration.DeathRunLostScreen",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRIntegrationDeathRunLostTest::RunTest(const FString& Parameters)
+{
+	using namespace RRIntegrationObjectiveTests;
+
+	FTestGameInstance GameInstance;
+	FTestWorld TestWorld(TEXT("RRIntegrationDeathRunLost"));
+	UWorld* World = TestWorld.Get();
+	FCheatGuard CheatGuard(World);
+	FRunLoop Loop;
+	if (!StartRun(*this, TestWorld, GameInstance, Loop))
+	{
+		return false;
+	}
+	URRRunFlowSubsystem* RunFlow = Loop.RunFlow;
+	URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(World);
+	ARRMiner* Miner = Loop.Setup.Miner;
+	if (!TestNotNull(TEXT("run-lost subsystem"), RunLost))
+	{
+		return false;
+	}
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	RunLost->OnRunLost.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleRunLost);
+	auto RunLostCount = [&Recorder]() { return Recorder->RunLostRecaps.Num(); };
+
+	// A few frames of play, some ore carried, then a lethal hit (the invulnerable cheat of StartRun lifted).
+	for (int32 Frame = 0; Frame < 30; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	constexpr int32 HeldOre = 5;
+	TestTrue(TEXT("ore carried"), RunFlow->AddCarriedOre(HeldOre));
+	const int32 Held = RunFlow->GetCarriedOre() + RunFlow->GetSecuredOre();
+	RRCheats::SetInvulnerable(World, false, TEXT("RogueRigs.Integration"));
+	UAbilitySystemComponent* ASC = Miner->GetAbilitySystemComponent();
+	for (int32 Frame = 0; Frame < 120 && ASC->HasMatchingGameplayTag(RRGameplayTags::State_Invulnerable); ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(URRGE_DamageFlat::StaticClass(), 1.f, ASC->MakeEffectContext());
+	Spec.Data->SetSetByCallerMagnitude(RRGameplayTags::Data_Damage, 100000.f);
+	ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+	if (!TestTrue(TEXT("miner dead"), Miner->IsDead()))
+	{
+		return false;
+	}
+	const ARRGameMode* RunGameMode = Cast<ARRGameMode>(Loop.GameMode);
+	TestTrue(TEXT("game over"), RunGameMode && RunGameMode->IsGameOver());
+	TestTrue(TEXT("death sequence running"), RunLost->IsDeathSequenceRunning());
+	TestFalse(TEXT("not paused during the death sequence"), World->IsPaused());
+	TestFalse(TEXT("HUD not in its end screen state during the sequence"), Loop.HUD->IsEndScreenShown());
+
+	int32 ShownFrame = -1;
+	for (int32 Frame = 1; Frame <= 180 && ShownFrame < 0; ++Frame)
+	{
+		TestWorld.Tick();
+		if (Frame == 30)
+		{
+			TestFalse(TEXT("still not paused mid-sequence"), World->IsPaused());
+			TestTrue(TEXT("still slowed mid-sequence"), World->GetWorldSettings()->TimeDilation < 1.f);
+		}
+		if (RunLostCount() > 0)
+		{
+			ShownFrame = Frame;
+		}
+	}
+	AddInfo(FString::Printf(TEXT("run-lost screen %d frames after the lethal hit"), ShownFrame));
+	if (!TestEqual(TEXT("OnRunLost once"), RunLostCount(), 1))
+	{
+		return false;
+	}
+	TestTrue(TEXT("world paused by the run-lost screen"), World->IsPaused());
+	TestTrue(TEXT("controller reports the pause"), Loop.Controller->IsPaused());
+	TestTrue(TEXT("cursor shown"), Loop.Controller->ShouldShowMouseCursor());
+	TestTrue(TEXT("HUD end screen state: game over"), Loop.HUD->IsEndScreenShown() && Loop.HUD->IsEndScreenGameOver());
+	TestEqual(TEXT("time dilation restored"), World->GetWorldSettings()->TimeDilation, 1.f, 1.e-4f);
+	const FRRRunLostRecap& Recap = RunLost->GetRecap();
+	TestTrue(TEXT("recap: miner died"), Recap.bMinerDied);
+	TestEqual(TEXT("recap: title"), Recap.Title.ToString(), FString(TEXT("CONTRACT TERMINATED")));
+	TestEqual(TEXT("recap: Duskite held at death"), Recap.DuskiteHeld, Held);
+	TestEqual(TEXT("recap: robots destroyed = the kills of this level (no run log in the test world)"), Recap.RobotsDestroyed, RunFlow->GetKillCount());
+	TestFalse(TEXT("run flow not ended by the death (the game over owns it)"), RunFlow->IsRunEnded());
+
+	// Frozen behind the screen.
+	const double PausedTime = World->GetTimeSeconds();
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("game time frozen behind the screen"), World->GetTimeSeconds(), PausedTime);
+	TestEqual(TEXT("still one OnRunLost"), RunLostCount(), 1);
+
+	// Retry: without the game instance subsystems (test world) it resets and opens the New Run map directly; second press refused.
+	FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
+	if (TestNotNull(TEXT("world context"), Context))
+	{
+		TestTrue(TEXT("no travel before Retry"), Context->TravelURL.IsEmpty());
+		TestTrue(TEXT("Retry accepted"), RunLost->Retry());
+		TestEqual(TEXT("Retry opens the New Run map (level 1)"), Context->TravelURL, GetDefault<URRRunSettings>()->NewRunMapName);
+		TestFalse(TEXT("second Retry refused"), RunLost->Retry());
+		TestFalse(TEXT("Main Menu refused once leaving"), RunLost->ReturnToMainMenu());
+		Context->TravelURL.Empty();
+	}
 	return true;
 }
 

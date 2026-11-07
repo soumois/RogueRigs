@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Components/SlateWrapperTypes.h"
 #include "InputCoreTypes.h"
+#include "Run/RRRunLostSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
 #include "RRPlayerController.generated.h"
 
@@ -17,6 +18,7 @@ class URRHUDWidget;
 class URRIntermissionWidget;
 class URRLoadingScreenWidget;
 class URRPauseMenuWidget;
+class URRRunLostWidget;
 class URRShopScreenWidget;
 class URRScreenFadeWidget;
 struct FInputActionValue;
@@ -92,6 +94,9 @@ public:
 	/** The pause menu widget on screen; null when closed or without PauseMenuWidgetClass. */
 	URRPauseMenuWidget* GetPauseMenuWidget() const { return PauseMenuWidget; }
 
+	/** The run-lost screen on screen (task-484); null before the run is lost or without RunLostWidgetClass. */
+	URRRunLostWidget* GetRunLostWidget() const { return RunLostWidget; }
+
 protected:
 	/**
 	 * Local player only: creates HUDWidgetClass, adds it to the viewport and binds it to the game mode, the possessed miner and
@@ -121,6 +126,16 @@ protected:
 	/** Transition OnLoadingStarted callback: keeps the HUD hidden, removes the stats and shop widgets, shows the loading screen. */
 	UFUNCTION()
 	void HandleLoadingStarted(int32 LevelIndex, const FString& LayoutName);
+
+	/**
+	 * Run-lost OnRunLost callback (death-screen gdd, task-484): HUD hidden, RunLostWidgetClass created above it with the recap, Game
+	 * and UI input with the focus on the screen, cursor shown (the run-lost subsystem paused the game).
+	 */
+	UFUNCTION()
+	void HandleRunLost(const FRRRunLostRecap& Recap);
+
+	/** Removes the run-lost screen from the viewport (Retry starts the loading screen). */
+	void RemoveRunLostWidget();
 
 	/** Transition OnLevelReady callback: removes the loading screen (and the stats or cards screen left by the fade path) and shows the HUD again. */
 	UFUNCTION()
@@ -327,6 +342,21 @@ protected:
 
 	/** Transition subsystem bound at BeginPlay. */
 	TWeakObjectPtr<URRRunTransitionSubsystem> BoundTransition;
+
+	/** Run-lost subsystem of this world, bound at BeginPlay (local player). */
+	TWeakObjectPtr<URRRunLostSubsystem> BoundRunLost;
+
+	/** Run-lost screen class (a Blueprint subclass of URRRunLostWidget: WBP_RunLost, task-484). None = no screen (the game stays paused; rr.Run.Lost.Retry and rr.Run.Lost.MainMenu go on). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Lost")
+	TSubclassOf<URRRunLostWidget> RunLostWidgetClass;
+
+	/** Viewport Z-order of the run-lost screen: above the HUD (0) and the pause menu, below the run transition widgets (TransitionWidgetZOrder). */
+	UPROPERTY(EditDefaultsOnly, Category = "HUD|Run Lost")
+	int32 RunLostWidgetZOrder = 45;
+
+	/** The run-lost screen on screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRRunLostWidget> RunLostWidget;
 
 	/** True while SetHUDHiddenForTransition(true) keeps the HUD widget collapsed. */
 	bool bHUDHiddenForTransition = false;

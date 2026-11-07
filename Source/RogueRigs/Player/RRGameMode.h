@@ -1,4 +1,4 @@
-// Rogue Rigs - game mode of a run: game over on the miner's death, then level restart.
+// Rogue Rigs - game mode of a run: game over on the miner's death (the run-lost screen follows, task-484).
 
 #pragma once
 
@@ -17,8 +17,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnGameOverSignature);
  * Blueprint) are set in the Blueprint subclass, because ARRMiner and ARRPlayerController are abstract
  * and need their assets.
  * Game over: each miner registers itself at BeginPlay (RegisterMiner). On the first miner death the game mode
- * disables the input of the miner's player controller, broadcasts OnGameOver once and arms a timer that reopens
- * the current level after RestartDelay seconds.
+ * disables the input of every player controller and broadcasts OnGameOver once. Nothing restarts on its own any more
+ * (death-screen gdd, task-484): URRRunLostSubsystem plays the death sequence and shows the run-lost screen, whose Retry and
+ * Main Menu buttons end the run.
  * Run flow: RunFlowConfig holds the alert and console tunables read by URRRunFlowSubsystem (set ConsoleClass to the console
  * Blueprint here).
  */
@@ -31,17 +32,9 @@ public:
 	/** Listens to Miner's OnDeath for the game over. Called by ARRMiner::BeginPlay; safe to call twice. */
 	void RegisterMiner(ARRMiner* Miner);
 
-	/** True once the game over happened (the restart is pending). */
+	/** True once the game over happened (the miner died). */
 	UFUNCTION(BlueprintPure, Category = "Run")
 	bool IsGameOver() const { return bGameOver; }
-
-	/** Delay in seconds between the game over and the level restart. */
-	UFUNCTION(BlueprintPure, Category = "Run")
-	float GetRestartDelay() const { return RestartDelay; }
-
-	/** Seconds left before the level restart; -1 when no restart is armed. */
-	UFUNCTION(BlueprintPure, Category = "Run")
-	float GetRestartTimeRemaining() const;
 
 	/** Tunables of the level run flow (alert bar, console drop); read once by URRRunFlowSubsystem. */
 	const FRRRunFlowConfig& GetRunFlowConfig() const { return RunFlowConfig; }
@@ -51,19 +44,9 @@ public:
 	FRROnGameOverSignature OnGameOver;
 
 protected:
-	/** Clears the restart timer. */
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	/** Miner OnDeath callback: first call only, disables the player input, broadcasts OnGameOver, arms the restart timer. */
+	/** Miner OnDeath callback: first call only, disables the player input, broadcasts OnGameOver. */
 	UFUNCTION()
 	void HandleMinerDeath(AActor* DeathInstigator);
-
-	/** Restart timer callback: reopens the current level (UGameplayStatics::OpenLevel on the current level name). */
-	virtual void RestartLevel();
-
-	/** Seconds between the game over and the level restart (miner gdd, M1: 3 s). */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Run", meta = (ClampMin = 0.1, Units = "s"))
-	float RestartDelay = 3.f;
 
 	/** Alert and console tunables of the run flow (level-flow M1 defaults); ConsoleClass = the console Blueprint. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Run|Flow")
@@ -71,7 +54,4 @@ protected:
 
 	/** True once the game over happened; guards against a second game over. */
 	bool bGameOver = false;
-
-	/** Timer that calls RestartLevel after RestartDelay. */
-	FTimerHandle RestartTimerHandle;
 };

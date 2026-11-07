@@ -311,12 +311,6 @@ namespace RRTestAccess
 		static int32 PulseRateIndexOf(const ARRPickup* Pickup) { return Pickup->*(&FPickupAccess::PulseRateDataIndex); }
 	};
 
-	/** ARRGameMode: the restart delay. */
-	struct FGameModeAccess : public ARRGameMode
-	{
-		static float& Delay(ARRGameMode* GameMode) { return GameMode->*(&FGameModeAccess::RestartDelay); }
-	};
-
 	/** ARRMiner: loadout lists (RRTestHarness::KeepRifleOnly) and weapon attachment settings. */
 	struct FMinerAccess : public ARRMiner
 	{

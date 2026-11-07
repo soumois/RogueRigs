@@ -1,0 +1,113 @@
+{
+ "run_id": "20261107-020000-screen_texts",
+ "rounds": [
+  {
+   "loop": 0,
+   "reviews": [
+    {
+     "item_id": "end_run_won",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged",
+     "suggestion": null
+    },
+    {
+     "item_id": "intermission_recap",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged",
+     "suggestion": null
+    },
+    {
+     "item_id": "intermission_run_won",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged",
+     "suggestion": null
+    },
+    {
+     "item_id": "shop_screen",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged",
+     "suggestion": null
+    },
+    {
+     "item_id": "loading_level",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged",
+     "suggestion": null
+    },
+    {
+     "item_id": "run_lost_death",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Cold procedural company notice (T6) that names the miner only as 'unauthorized personnel', states what the company does without ordering the player (T9), implies robots rather than a human on site (L1), treats the claim as the company's (L4), does not reuse the example lines (T8), quotes no film (T3) and mocks no one (T2); the humour comes only from the gap between the bureaucratic tone and a death.",
+     "suggestion": null
+    },
+    {
+     "item_id": "run_lost_shuttle",
+     "verdict": "fail",
+     "rule": "L4",
+     "reason": "The subtitle is correct bureaucratic company voice, but the title 'CLAIM FORFEITED' implies the Rigs held a right to the claim and lost it, while the claim was never theirs and the company would never concede otherwise.",
+     "suggestion": "CLAIM SECURED"
+    }
+   ]
+  },
+  {
+   "loop": 1,
+   "reviews": [
+    {
+     "item_id": "run_lost_shuttle",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "'CLAIM SECURED' keeps the claim with Kessler-Voss without implying the Rigs ever had a right to it (L4), and with the unchanged subtitle it is cold bureaucratic company voice (T6) that states what happened without ordering the player (T9), puts no company human on site (L1), mocks no one (T2), reuses no example line (T8) and quotes no film (T3).",
+     "suggestion": null
+    },
+    {
+     "item_id": "end_run_won",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged since loop 0 (pass).",
+     "suggestion": null
+    },
+    {
+     "item_id": "intermission_recap",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged since loop 0 (pass).",
+     "suggestion": null
+    },
+    {
+     "item_id": "intermission_run_won",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged since loop 0 (pass).",
+     "suggestion": null
+    },
+    {
+     "item_id": "shop_screen",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged since loop 0 (pass).",
+     "suggestion": null
+    },
+    {
+     "item_id": "loading_level",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged since loop 0 (pass).",
+     "suggestion": null
+    },
+    {
+     "item_id": "run_lost_death",
+     "verdict": "pass",
+     "rule": null,
+     "reason": "Unchanged since loop 0 (pass).",
+     "suggestion": null
+    }
+   ]
+  }
+ ]
+}

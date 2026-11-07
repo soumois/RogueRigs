@@ -12,7 +12,11 @@
 #include "GAS/RREnemyAttributeSet.h"
 #include "GAS/RRGameplayTags.h"
 #include "GAS/RRHealthAttributeSet.h"
+#include "GameFramework/WorldSettings.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Player/RRGameMode.h"
+#include "Run/RRRunLostSubsystem.h"
+#include "Run/RRRunSettings.h"
 #include "Tests/RRTestEventRecorder.h"
 #include "Tests/RRTestAccess.h"
 #include "Tests/RRTestHarness.h"
@@ -249,7 +253,6 @@ bool FRRPlayerGameOverTest::RunTest(const FString& Parameters)
 	{
 		return false;
 	}
-	TestEqual(TEXT("default RestartDelay is 3 s"), GameModeClass->GetDefaultObject<ARRGameMode>()->GetRestartDelay(), 3.f);
 
 	FTestWorld TestWorld(TEXT("RRPlayerGameOver"));
 	ARRMiner* Miner = SpawnTestMiner(*this, TestWorld);
@@ -259,10 +262,6 @@ bool FRRPlayerGameOverTest::RunTest(const FString& Parameters)
 		return false;
 	}
 
-	// A configured delay other than the default proves the timer reads the property.
-	constexpr float ConfiguredDelay = 4.5f;
-	FGameModeAccess::Delay(GameMode) = ConfiguredDelay;
-
 	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
 	GameMode->OnGameOver.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleGameOver);
 	// No authority game mode in the test world: register as ARRMiner::BeginPlay does in a run.
@@ -270,27 +269,88 @@ bool FRRPlayerGameOverTest::RunTest(const FString& Parameters)
 	GameMode->RegisterMiner(Miner);
 
 	TestFalse(TEXT("no game over while alive"), GameMode->IsGameOver());
-	TestEqual(TEXT("no restart armed while alive"), GameMode->GetRestartTimeRemaining(), -1.f);
+
+	// Death sequence and run-lost recap (death-screen gdd, task-484): the bare world has no game instance (no run, no run log), so
+	// the recap reads level 1 of the settings level count and this level's kills.
+	UWorld* World = TestWorld.Get();
+	URRRunFlowSubsystem* RunFlow = World->GetSubsystem<URRRunFlowSubsystem>();
+	URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(World);
+	if (!TestNotNull(TEXT("run flow subsystem"), RunFlow) || !TestNotNull(TEXT("run-lost subsystem"), RunLost))
+	{
+		return false;
+	}
+	RunLost->OnRunLost.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleRunLost);
+	const TArray<FRRRunLostRecap>& Shown = Recorder->RunLostRecaps;
+	constexpr int32 HeldOre = 7;
+	constexpr int32 Kills = 3;
+	TestTrue(TEXT("ore carried before the death"), RunFlow->AddCarriedOre(HeldOre));
+	for (int32 Kill = 0; Kill < Kills; ++Kill)
+	{
+		RunFlow->NotifyEnemyKilled(nullptr, nullptr);
+	}
+	const int32 SecuredBefore = RunFlow->GetSecuredOre();
 
 	UAbilitySystemComponent* Enemy = SpawnEnemySource(TestWorld, 1.f);
 	ApplyFlatDamage(Enemy, Miner->GetAbilitySystemComponent(), 150.f);
 	TestTrue(TEXT("miner dead"), Miner->IsDead());
 	TestEqual(TEXT("game over fired once on death (registered twice)"), Recorder->GetGameOverCount(), 1);
 	TestTrue(TEXT("IsGameOver"), GameMode->IsGameOver());
-	TestEqual(TEXT("restart armed with the configured delay"), GameMode->GetRestartTimeRemaining(), ConfiguredDelay, 1.e-4f);
+	TestTrue(TEXT("death sequence running"), RunLost->IsDeathSequenceRunning());
+	const URRRunSettings* Settings = GetDefault<URRRunSettings>();
+	TestEqual(TEXT("game slowed to the death time dilation"), World->GetWorldSettings()->TimeDilation, Settings->DeathTimeDilation, 1.e-4f);
+	TestEqual(TEXT("carried ore emptied by the death"), RunFlow->GetCarriedOre(), 0);
+	TestEqual(TEXT("no screen at the lethal hit"), Shown.Num(), 0);
 
-	// A second death broadcast does not end the run again nor re-arm the timer; ticks stay below the delay (no travel).
-	constexpr int32 Frames = 30;
-	for (int32 Frame = 0; Frame < Frames; ++Frame)
+	// The screen comes after DeathSequenceRealSeconds of real time, the game having run at the dilated speed meanwhile.
+	const double StartReal = World->GetRealTimeSeconds();
+	const double StartGame = World->GetTimeSeconds();
+	int32 ShownFrame = -1;
+	for (int32 Frame = 1; Frame <= 240 && ShownFrame < 0; ++Frame)
+	{
+		TestWorld.Tick();
+		// A second death broadcast during the sequence changes nothing.
+		if (Frame == 10)
+		{
+			Miner->OnDeath.Broadcast(nullptr);
+		}
+		if (Shown.Num() > 0)
+		{
+			ShownFrame = Frame;
+		}
+	}
+	const double RealSeconds = World->GetRealTimeSeconds() - StartReal;
+	const double GameSeconds = World->GetTimeSeconds() - StartGame;
+	AddInfo(FString::Printf(TEXT("run-lost screen at frame %d: %.3f s real, %.3f s game time"), ShownFrame, RealSeconds, GameSeconds));
+	if (!TestEqual(TEXT("OnRunLost fired once"), Shown.Num(), 1))
+	{
+		return false;
+	}
+	TestEqual(TEXT("game over still fired once"), Recorder->GetGameOverCount(), 1);
+	TestEqual(TEXT("screen after the death sequence real time (within one frame)"), RealSeconds, double(Settings->DeathSequenceRealSeconds), double(FrameSeconds) + 1.e-3);
+	TestEqual(TEXT("game time ran at the dilated speed"), GameSeconds, double(Settings->DeathSequenceRealSeconds * Settings->DeathTimeDilation), double(FrameSeconds) + 1.e-3);
+	TestFalse(TEXT("death sequence over"), RunLost->IsDeathSequenceRunning());
+	TestTrue(TEXT("run-lost shown"), RunLost->IsRunLostShown());
+	TestEqual(TEXT("time dilation restored"), World->GetWorldSettings()->TimeDilation, 1.f, 1.e-4f);
+
+	const FRRRunLostRecap& Recap = Shown[0];
+	TestTrue(TEXT("recap: miner died"), Recap.bMinerDied);
+	TestEqual(TEXT("recap: death text id"), Recap.ScreenTextId, FName(TEXT("run_lost_death")));
+	TestEqual(TEXT("recap: title from screen_texts.json"), Recap.Title.ToString(), FString(TEXT("CONTRACT TERMINATED")));
+	TestFalse(TEXT("recap: subtitle from screen_texts.json"), Recap.Subtitle.IsEmpty());
+	TestEqual(TEXT("recap: level 1 without a run"), Recap.LevelReached, 1);
+	TestEqual(TEXT("recap: level count from the settings"), Recap.LevelCount, FMath::Max(1, Settings->LevelLayouts.Num()));
+	TestEqual(TEXT("recap: robots destroyed"), Recap.RobotsDestroyed, Kills);
+	TestEqual(TEXT("recap: Duskite held at death"), Recap.DuskiteHeld, HeldOre + SecuredBefore);
+	TestEqual(TEXT("recap: level text"), Recap.LevelText.ToString(), FString::Printf(TEXT("Level 1 of %d"), Recap.LevelCount));
+
+	// Nothing more: no second screen, no travel (the old 3 s restart is gone).
+	FWorldContext* Context = GEngine->GetWorldContextFromWorld(World);
+	for (int32 Frame = 0; Frame < 300; ++Frame)
 	{
 		TestWorld.Tick();
 	}
-	Miner->OnDeath.Broadcast(nullptr);
-	TestEqual(TEXT("game over still fired once"), Recorder->GetGameOverCount(), 1);
-	// The timer manager skips the frame the timer was set in (measured: 29 of 30 frames counted).
-	const float Remaining = GameMode->GetRestartTimeRemaining();
-	TestTrue(FString::Printf(TEXT("restart timer counts down, not re-armed (%.4f s left)"), Remaining),
-		Remaining >= ConfiguredDelay - Frames * FrameSeconds - 1.e-3f && Remaining <= ConfiguredDelay - (Frames - 1) * FrameSeconds + 1.e-3f);
+	TestEqual(TEXT("still one OnRunLost"), Shown.Num(), 1);
+	TestTrue(TEXT("no restart travel after 5 s"), !Context || Context->TravelURL.IsEmpty());
 	return true;
 }
 

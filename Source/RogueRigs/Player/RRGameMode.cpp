@@ -1,14 +1,11 @@
-// Rogue Rigs - game mode of a run: game over on the miner's death, then level restart.
+// Rogue Rigs - game mode of a run: game over on the miner's death (the run-lost screen follows, task-484).
 
 #include "Player/RRGameMode.h"
 
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
-#include "Kismet/GameplayStatics.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
-#include "Run/RRRunSubsystem.h"
-#include "TimerManager.h"
 
 void ARRGameMode::RegisterMiner(ARRMiner* Miner)
 {
@@ -16,18 +13,6 @@ void ARRGameMode::RegisterMiner(ARRMiner* Miner)
 	{
 		Miner->OnDeath.AddUniqueDynamic(this, &ARRGameMode::HandleMinerDeath);
 	}
-}
-
-float ARRGameMode::GetRestartTimeRemaining() const
-{
-	const FTimerManager& TimerManager = GetWorldTimerManager();
-	return TimerManager.IsTimerActive(RestartTimerHandle) ? TimerManager.GetTimerRemaining(RestartTimerHandle) : -1.f;
-}
-
-void ARRGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	GetWorldTimerManager().ClearTimer(RestartTimerHandle);
-	Super::EndPlay(EndPlayReason);
 }
 
 void ARRGameMode::HandleMinerDeath(AActor* DeathInstigator)
@@ -38,6 +23,7 @@ void ARRGameMode::HandleMinerDeath(AActor* DeathInstigator)
 	}
 	bGameOver = true;
 
+	// Controls cut (death-screen gdd, Death sequence); the run-lost screen's buttons are UMG and still take clicks and keys.
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		if (APlayerController* PlayerController = It->Get())
@@ -46,20 +32,6 @@ void ARRGameMode::HandleMinerDeath(AActor* DeathInstigator)
 		}
 	}
 
-	UE_LOG(LogRogueRigs, Log, TEXT("%s: game over (killed by %s), restart in %.2f s."), *GetName(), *GetNameSafe(DeathInstigator), RestartDelay);
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: game over (killed by %s): death sequence, then the run-lost screen."), *GetName(), *GetNameSafe(DeathInstigator));
 	OnGameOver.Broadcast();
-
-	GetWorldTimerManager().SetTimer(RestartTimerHandle, this, &ARRGameMode::RestartLevel, FMath::Max(RestartDelay, 0.1f), false);
-}
-
-void ARRGameMode::RestartLevel()
-{
-	// Death = run lost (task-206-03): the restart begins a new run at level 1.
-	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
-	{
-		Run->ResetRun();
-	}
-	const FString LevelName = UGameplayStatics::GetCurrentLevelName(this, true);
-	UE_LOG(LogRogueRigs, Log, TEXT("%s: restarting level %s."), *GetName(), *LevelName);
-	UGameplayStatics::OpenLevel(this, FName(*LevelName));
 }

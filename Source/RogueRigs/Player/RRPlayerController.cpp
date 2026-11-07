@@ -19,6 +19,7 @@
 #include "Engine/GameViewportClient.h"
 #include "UI/RRLoadingScreenWidget.h"
 #include "UI/RRPauseMenuWidget.h"
+#include "UI/RRRunLostWidget.h"
 #include "UI/RRScreenFadeWidget.h"
 #include "UI/RRShopScreenWidget.h"
 #include "Weapons/RRWeapon.h"
@@ -58,6 +59,16 @@ void ARRPlayerController::BeginPlay()
 				// GetLoadingLayoutName: the next layout after Continue, level 1's layout after the main menu New Run (task-379-01).
 				ShowLoadingScreen(Transition->GetLoadingLevelIndex(), Transition->GetLoadingLayoutName());
 			}
+		}
+	}
+
+	// Run-lost screen (task-484): death after its sequence, or missed shuttle.
+	if (IsLocalPlayerController() && GetLocalPlayer())
+	{
+		if (URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(this))
+		{
+			BoundRunLost = RunLost;
+			RunLost->OnRunLost.AddUniqueDynamic(this, &ARRPlayerController::HandleRunLost);
 		}
 	}
 
@@ -128,6 +139,11 @@ void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Transition->OnScreenFadeFinished.RemoveDynamic(this, &ARRPlayerController::HandleScreenFadeFinished);
 	}
 	BoundTransition.Reset();
+	if (URRRunLostSubsystem* RunLost = BoundRunLost.Get())
+	{
+		RunLost->OnRunLost.RemoveDynamic(this, &ARRPlayerController::HandleRunLost);
+	}
+	BoundRunLost.Reset();
 	RemoveScreenFadeOverlay();
 	Super::EndPlay(EndPlayReason);
 }
@@ -176,7 +192,44 @@ void ARRPlayerController::HandleLoadingStarted(int32 LevelIndex, const FString& 
 	SetHUDHiddenForTransition(true, TEXT("loading"));
 	RemoveIntermissionWidget();
 	RemoveShopScreenWidget();
+	RemoveRunLostWidget();
 	ShowLoadingScreen(LevelIndex, LayoutName);
+}
+
+void ARRPlayerController::HandleRunLost(const FRRRunLostRecap& Recap)
+{
+	// HUD hidden behind the screen (death-screen gdd, Buttons); the old end screen panels are inside it.
+	SetHUDHiddenForTransition(true, TEXT("run lost"));
+	if (!RunLostWidgetClass || !GetLocalPlayer())
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("%s: run lost but RunLostWidgetClass is not set; run rr.Run.Lost.Retry or rr.Run.Lost.MainMenu to go on."), *GetName());
+		return;
+	}
+	RemoveRunLostWidget();
+	RunLostWidget = CreateWidget<URRRunLostWidget>(this, RunLostWidgetClass);
+	if (!RunLostWidget)
+	{
+		UE_LOG(LogRogueRigs, Error, TEXT("%s: could not create the run-lost widget %s."), *GetName(), *GetNameSafe(RunLostWidgetClass));
+		return;
+	}
+	RunLostWidget->AddToViewport(RunLostWidgetZOrder);
+	FInputModeGameAndUI InputMode;
+	InputMode.SetHideCursorDuringCapture(false);
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	InputMode.SetWidgetToFocus(RunLostWidget->TakeWidget());
+	SetInputMode(InputMode);
+	SetShowMouseCursor(true);
+	RunLostWidget->ShowRunLost(Recap);
+	UE_LOG(LogRogueRigs, Log, TEXT("%s: run-lost screen shown (%s)."), *GetName(), Recap.bMinerDied ? TEXT("miner died") : TEXT("shuttle missed"));
+}
+
+void ARRPlayerController::RemoveRunLostWidget()
+{
+	if (RunLostWidget)
+	{
+		RunLostWidget->RemoveFromParent();
+		RunLostWidget = nullptr;
+	}
 }
 
 void ARRPlayerController::HandleShopScreenStarted()

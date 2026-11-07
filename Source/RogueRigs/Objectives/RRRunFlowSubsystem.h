@@ -265,7 +265,8 @@ public:
 	 * shown (player 0's controller, when there is one) and broadcasts OnRunEnded. Refused (false) when already ended or when the
 	 * miner is dead (the game over owns that end). Called when the shuttle finishes. A success during a run
 	 * (URRRunTransitionSubsystem::HandleLevelExtracted) opens the stats screen instead: OnRunEnded is not broadcast, the phase is
-	 * still Ended (task-206-03); on the last level the stats screen's button calls ShowRunWonEndScreen (task-317-01).
+	 * still Ended (task-206-03); on the last level the stats screen's button calls ShowRunWonEndScreen (task-317-01). A loss (shuttle
+	 * missed) also shows the run-lost screen after OnRunEnded (URRRunLostSubsystem::ShowShuttleMissed, task-484).
 	 */
 	UFUNCTION(BlueprintCallable, Category = "RunFlow")
 	bool EndRun(bool bSuccess);
@@ -281,7 +282,7 @@ public:
 	void RestartLevel();
 
 	/**
-	 * Run won end screen "Main Menu" button (task-390-01, main-menu gdd): resets the run (URRRunSubsystem::ResetRun: level 1 next,
+	 * Run won end screen "Main Menu" button (task-390-01, main-menu gdd), pause menu Exit and run-lost Main Menu: resets the run (URRRunSubsystem::ResetRun: level 1 next,
 	 * secured ore 0), then opens URRRunSettings::MainMenuMapName directly (no loading screen, no fade). The menu controller sets
 	 * its own UI input and cursor at BeginPlay. False (warning, nothing reset) without a world or with an empty map name.
 	 */
@@ -447,7 +448,7 @@ protected:
 	/** Missed shuttle or death: sets carried to 0 (secured unchanged), closes the counter, broadcasts on change. Reason is logged. */
 	void LoseCarriedOre(const TCHAR* Reason);
 
-	/** Registered miner OnDeath callback: the carried ore is lost. */
+	/** Registered miner OnDeath callback: the carried ore is lost and the run-lost death sequence starts (URRRunLostSubsystem, task-484). */
 	UFUNCTION()
 	void HandleMinerDeath(AActor* DeathInstigator);
 

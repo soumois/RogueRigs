@@ -2,6 +2,7 @@
 
 #include "Objectives/RRRunFlowSubsystem.h"
 
+#include "Run/RRRunLostSubsystem.h"
 #include "Run/RRRunSettings.h"
 #include "Run/RRRunSubsystem.h"
 #include "Run/RRRunTransitionSubsystem.h"
@@ -805,6 +806,8 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	{
 		RunLog->HandleLevelEnded(GetWorld(), bSuccess ? ERRRunLevelOutcome::Extracted : ERRRunLevelOutcome::MissedShuttle);
 	}
+	// Run-lost recap (death-screen gdd): the Duskite held when the shuttle left, read before the loss empties the carried ore.
+	const int32 DuskiteHeld = CarriedOre + GetSecuredOre();
 	// Ore before the end event, so an end screen bound to OnRunEnded reads the final counts.
 	if (bSuccess)
 	{
@@ -848,6 +851,14 @@ bool URRRunFlowSubsystem::EndRun(bool bSuccess)
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended, %s."), bSuccess ? (Transition && Transition->IsRunWon() ? TEXT("miner extracted, run won") : TEXT("miner extracted"))
 		: TEXT("shuttle missed, run lost"));
 	OnRunEnded.Broadcast(bSuccess);
+	// Missed shuttle (death-screen gdd Q9): the run-lost screen, with its own title and subtitle.
+	if (!bSuccess)
+	{
+		if (URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(this))
+		{
+			RunLost->ShowShuttleMissed(DuskiteHeld);
+		}
+	}
 	UpdateLocatorTarget();
 	return true;
 }
@@ -896,12 +907,12 @@ bool URRRunFlowSubsystem::ReturnToMainMenu()
 		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunFlowSubsystem: back to the main menu refused (URRRunSettings::MainMenuMapName is empty)."));
 		return false;
 	}
-	// Run won (task-390-01): the run ends here, so the next New Run begins level 1 with no secured ore.
+	// Run won (task-390-01), run lost (task-484) or pause menu Exit: the run ends here, so the next New Run begins level 1 with no secured ore.
 	if (URRRunSubsystem* Run = URRRunSubsystem::Get(this))
 	{
 		Run->ResetRun();
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run won: back to the main menu, opening %s."), *MapName);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: run ended: back to the main menu, opening %s."), *MapName);
 	UGameplayStatics::OpenLevel(World, FName(*MapName));
 	return true;
 }
@@ -1151,7 +1162,13 @@ void URRRunFlowSubsystem::LoseCarriedOre(const TCHAR* Reason)
 
 void URRRunFlowSubsystem::HandleMinerDeath(AActor* DeathInstigator)
 {
+	// Run-lost recap (death-screen gdd): the Duskite held at death, read before the death empties the carried ore.
+	const int32 DuskiteHeld = CarriedOre + GetSecuredOre();
 	LoseCarriedOre(TEXT("miner died"));
+	if (URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(this))
+	{
+		RunLost->BeginDeathSequence(DuskiteHeld);
+	}
 }
 
 void URRRunFlowSubsystem::RegisterSpawner(ARREnemySpawner* InSpawner)

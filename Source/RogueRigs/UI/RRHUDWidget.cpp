@@ -308,10 +308,6 @@ void URRHUDWidget::BindToGameMode(ARRGameMode* GameMode)
 	if (GameMode)
 	{
 		GameMode->OnGameOver.AddUniqueDynamic(this, &URRHUDWidget::HandleGameOver);
-		if (GameMode->IsGameOver())
-		{
-			ShowEndScreen(false, true);
-		}
 	}
 }
 
@@ -333,6 +329,11 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 		Previous->OnBonusChestDropped.RemoveDynamic(this, &URRHUDWidget::HandleBonusChestDropped);
 		Previous->OnShuttleLanded.RemoveDynamic(this, &URRHUDWidget::HandleShuttleLanded);
 	}
+	if (URRRunLostSubsystem* PreviousRunLost = BoundRunLost.Get())
+	{
+		PreviousRunLost->OnRunLost.RemoveDynamic(this, &URRHUDWidget::HandleRunLost);
+	}
+	BoundRunLost.Reset();
 	BoundRunFlow = RunFlow;
 	for (URRHUDPanelWidget* Panel : GetPanels())
 	{
@@ -357,6 +358,13 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 	RunFlow->OnConsoleDropped.AddUniqueDynamic(this, &URRHUDWidget::HandleConsoleDropped);
 	RunFlow->OnBonusChestDropped.AddUniqueDynamic(this, &URRHUDWidget::HandleBonusChestDropped);
 	RunFlow->OnShuttleLanded.AddUniqueDynamic(this, &URRHUDWidget::HandleShuttleLanded);
+	// Death (task-484): the HUD hides behind the run-lost screen, after the death sequence, not at the lethal hit.
+	URRRunLostSubsystem* RunLost = URRRunLostSubsystem::Get(RunFlow);
+	BoundRunLost = RunLost;
+	if (RunLost)
+	{
+		RunLost->OnRunLost.AddUniqueDynamic(this, &URRHUDWidget::HandleRunLost);
+	}
 
 	// Push the current state once.
 	OnAlertChanged(RunFlow->GetAlert(), RunFlow->HasPendingObjective());
@@ -387,6 +395,10 @@ void URRHUDWidget::BindToRunFlow(URRRunFlowSubsystem* RunFlow)
 		{
 			ShowEndScreen(RunFlow->WasRunSuccessful(), false);
 		}
+	}
+	if (RunLost && RunLost->IsRunLostShown() && RunLost->GetRecap().bMinerDied)
+	{
+		ShowEndScreen(false, true);
 	}
 	OnAlertEventsChanged(RunFlow->GetAlertBarEvents());
 }
@@ -916,7 +928,15 @@ void URRHUDWidget::HandleHealthAttributeChanged(const FOnAttributeChangeData& Ch
 void URRHUDWidget::HandleGameOver()
 {
 	OnGameOver();
-	ShowEndScreen(false, true);
+}
+
+void URRHUDWidget::HandleRunLost(const FRRRunLostRecap& Recap)
+{
+	// The missed shuttle already showed its end screen from OnRunEnded (ShowEndScreen runs once).
+	if (Recap.bMinerDied)
+	{
+		ShowEndScreen(false, true);
+	}
 }
 
 void URRHUDWidget::HandleXPChanged(float Current, float Needed, int32 Level)

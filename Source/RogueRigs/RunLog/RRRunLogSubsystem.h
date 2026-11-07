@@ -68,6 +68,12 @@ public:
 	 */
 	void HandleLevelEnded(UWorld* World, ERRRunLevelOutcome Outcome);
 
+	/**
+	 * Robots destroyed over the current (or last) run in World (death-screen recap, task-484): the kills of every level entry of the
+	 * run record plus the current level's kills while it has not ended. INDEX_NONE when World is not the tracked world.
+	 */
+	int32 GetRunKillCount(const UWorld* World) const;
+
 	/** The current (or last) run record. */
 	const FRRRunLogRecord& GetRunRecord() const { return Run; }
 

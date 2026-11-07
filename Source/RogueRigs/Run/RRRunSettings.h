@@ -75,4 +75,18 @@ public:
 	 */
 	UPROPERTY(Config, EditAnywhere, Category = "Run|Transition", meta = (ClampMin = "0"))
 	float TransitionFadeInSeconds = 0.5f;
+
+	/**
+	 * Death sequence (death-screen gdd Q1, task-484): global time dilation while the miner's death plays before the run-lost
+	 * screen (0.3 = the game runs at 30 % speed). Provisional value (owner 2026-11-07).
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Death", meta = (ClampMin = "0.01", ClampMax = "1"))
+	float DeathTimeDilation = 0.3f;
+
+	/**
+	 * Death sequence: seconds of real time between the lethal hit and the run-lost screen (the game paused then). 0 = the screen
+	 * comes at the next tick. Provisional value (owner 2026-11-07).
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Death", meta = (ClampMin = "0"))
+	float DeathSequenceRealSeconds = 1.f;
 };

@@ -10,6 +10,7 @@
 #include "Grid/RRArenaGrid.h"
 #include "Objectives/RRConsole.h"
 #include "Pickups/RRPickup.h"
+#include "Run/RRRunLostSubsystem.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRTestEventRecorder.generated.h"
 
@@ -103,6 +104,13 @@ public:
 	/** Bind to URRRunFlowSubsystem::OnRunEnded: records each result. */
 	UFUNCTION()
 	void HandleRunEnded(bool bSuccess) { RunEndedResults.Add(bSuccess); }
+
+	/** Bind to URRRunLostSubsystem::OnRunLost: records each recap (task-484). */
+	UFUNCTION()
+	void HandleRunLost(const FRRRunLostRecap& Recap) { RunLostRecaps.Add(Recap); }
+
+	/** Recaps of the OnRunLost broadcasts received through HandleRunLost. */
+	TArray<FRRRunLostRecap> RunLostRecaps;
 
 	/** Bind to URRRunFlowSubsystem::OnShuttleCountdown: counts broadcasts and keeps the last value. */
 	UFUNCTION()

@@ -8,6 +8,7 @@
 #include "Objectives/RRConsole.h"
 #include "UI/RRHUDTypes.h"
 #include "UI/RRMinimap.h"
+#include "Run/RRRunLostSubsystem.h"
 #include "Upgrades/RRUpgradeCard.h"
 #include "RRHUDWidget.generated.h"
 
@@ -536,7 +537,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Turret")
 	void OnTurretChargesChanged(int32 Charges, int32 MaxCharges, float RechargeDuration);
 
-	/** Display event: the run is over (the level restarts after the game mode's RestartDelay). Implement in Blueprint. */
+	/**
+	 * Display event: the miner died (game mode OnGameOver), at the lethal hit. The death sequence follows; the end screen moment
+	 * (HUD hidden) is the run-lost screen (URRRunLostSubsystem::OnRunLost, task-484). Implement in Blueprint.
+	 */
 	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
 	void OnGameOver();
 
@@ -593,6 +597,10 @@ protected:
 	/** Run flow OnRunEnded callback. */
 	UFUNCTION()
 	void HandleRunEnded(bool bSuccess);
+
+	/** Run-lost OnRunLost callback (task-484): a death shows the end screen state (bGameOver) now, after the death sequence. */
+	UFUNCTION()
+	void HandleRunLost(const FRRRunLostRecap& Recap);
 
 	/** Run flow OnAlertChanged callback. */
 	UFUNCTION()
@@ -679,6 +687,9 @@ protected:
 
 	/** Run flow whose events are bound. */
 	TWeakObjectPtr<URRRunFlowSubsystem> BoundRunFlow;
+
+	/** Run-lost subsystem of the bound run flow's world (OnRunLost bound). */
+	TWeakObjectPtr<URRRunLostSubsystem> BoundRunLost;
 
 	/** Handle of the Health change binding on BoundASC. */
 	FDelegateHandle HealthChangedHandle;
