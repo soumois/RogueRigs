@@ -3,11 +3,11 @@ id: task-492-cpp-layout-generator
 description: "Global task: deterministic C++ port of the 240 x 240 generator recipe that writes a layout JSON, then a 20-seed validation by the Level-Design agent."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # C++ layout generator writing the grid JSON, validated by the Level-Design agent
 
-- request: Owner, verbatim (French), 2026-11-06: "- faire passer les soins ( chaque petit bloc) à 30 PV récupérer. Augmenter de 20 pourcent le nombre de barils et de soins dans les règles
+- request: Owner, verbatim (French), 2026-11-06: "- faire passer les soins ( chaque petit bloc) à 30 PV récupérer. Augmenter de 20 pourcent le nombre de barils et de soins dans les règles. Owner answer 2026-11-07 (relayed by the main session, verbatim): "Ok, all default" = the plan and the defaults of Q1, Q2, Q3, Q4, Q5, Q6 accepted.
 - commencer à développer le c++ et préparer une map test où je pourrais faire des générations à la volée pour tester moi même le résultat. Il faudra aussi, faire des tests avec l'agent level designer qui valide le résultat. Donc commence juste par le script qui génère le json, valide cette partie la avec l'agent designer. Puis fait un script qui load les assets par rapport au json. Load de manière asynchrone et prépare une variable qui indiquera un pourcentage des objets loader ( ça servira pour l écran de loading plus tard).
 
 Et enfin prépare le niveau test dans ennemi avec une commande pour reload un nouveau level". The executor has standing permission to open and close Unreal and save. This global covers: "commencer à développer le c++ ... Donc commence juste par le script qui génère le json, valide cette partie la avec l'agent designer" and "faire des tests avec l'agent level designer qui valide le résultat".
@@ -15,15 +15,15 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - acceptance: A1 The C++ generator follows every step of layout-generator-recipe "Direct 240 generation" (outline, spawn clearing, main network, hidden pockets, far-cell filler, cleanup, 3-cell passage repair, heal veins and barrels with the task-491 counts, recipe seed acceptance), all parameters as data; FRandomStream; same params and seed give a byte-identical JSON (identity with the Node output is not required). A2 It can be run outside a play session for a given seed, params and optional brief, and writes `<name>.json` in the schema format (and `<name>.brief.json` when a brief is given); generation time per layout is printed. A3 Every layout it writes passes `node Tools/validate_layout.js` with a 240 x 240 brief using the task-491 bounds (minimum passage 3). A4 The Level-Design agent generates 20 passing seeds with it, applies layout-review-rules (24 x 24 window scan, dead zones, too-open windows, straight lanes, pocket distance) and gives a verdict per seed; at least one seed keeps every window in 0.05 to 0.95, and the agent states whether the set is comparable to the Node generator. A defect it finds in the generator is fixed before the global closes; a remaining deviation is listed for the owner. A5 The C++ project builds; existing tests still pass.
 - gdd_check: Read: arena-grid (M2 uses a deterministic C++ generator, no runtime AI), layout-generator-recipe ("For the C++ port": FRandomStream, parameters as data), layout-review-rules (not automated; kept manual per Q3 default), level-layout-schema, agent-level-design, milestones (grid generator is M2: in scope). No conflict. No open value. Depends on task-491 (counts).
 - verification_level: standard
-- confirmed_by_owner: no (plan and questions handed back 2026-11-07)
+- confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
 - next_step: task-492-01-gen-carve
 - started: open
-- waiting_for: Owner answers Q1 to Q6 (shared with task-490 to task-494).
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-07, each with a default; open until the owner answers.
+Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
 - Q1 (task-490) "chaque petit bloc" = chaque bloc de soin cassé = un pickup, qui rend 30 PV (`HealValue` de `OreTypes.csv`, ligne `Heal`). Une veine 2 × 2 rend donc 120 PV. Défaut: oui, 30 PV par pickup.
 - Q2 (task-491) +20 % "dans les règles": règles du GDD et paramètres du générateur (script Node actuel et futur générateur C++), sans régénérer les maps déjà commitées (arena_m1_fine, arena_l2 à l4 gardent leurs comptes). Soins: 12 veines 2 × 2 -> 14 veines (56 cellules: 5 en poches cachées, 9 dans les murs). Barils: 14 à 18 par seed -> 17 à 22 par seed, toujours en paires pour les chaînes. Défaut: ces valeurs, règles seulement.
 - Q3 (task-492) Générateur C++: portage de la recette de arena_gen_fine.js (240 × 240, paramètres en données, FRandomStream: mêmes paramètres + même seed = même JSON, mais pas identique octet par octet au script Node). Il écrit le JSON au format level-layout-schema et peut être lancé hors du jeu pour une seed donnée. Il garde seulement les contrôles de la recette pour accepter une seed; les règles de review (zones mortes, zones trop ouvertes, longues lignes droites) restent vérifiées par l'agent level designer sur un lot de 20 seeds, pas automatisées. Défaut: oui.

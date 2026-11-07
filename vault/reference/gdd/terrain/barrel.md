@@ -19,6 +19,8 @@ status: approved
 
 - Barrel count (owner 2026-10-13, provisional): 25 % more barrels than the first value: about 20 in `arena_m1` instead of 16, and the same ratio on larger layouts. GDD only: the current map is not changed.
 
+- Barrel count (owner 2026-11-06, provisional, task-491): 20 % more in the generator rules: 17 to 22 barrels per generated 240 × 240 layout (was 14 to 18 drawn per seed), still with pairs for chains. Rules only: the committed layouts are not changed.
+
 - Fuse and explosion feedback (owner 2026-10-16, provisional; Code Architect run 2): while the danger circle grows the barrel looks unstable: it shakes more and more (render only) and its body blinks orange-white faster and faster until the explosion. At the explosion a particle burst (flash, orange fireball, sparks, a little smoke) scaled to the radius plays on top of the grey-box sphere of [[explosions]], and an orange shockwave ring grows on the ground from the centre to the explosion radius, about as long as the sphere. Built as a barrel-only explosion visual that the kamikaze may reuse later ([[enemy-kamikaze]] unchanged for now).
 
 ## Relations

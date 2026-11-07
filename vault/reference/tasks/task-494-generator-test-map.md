@@ -3,11 +3,11 @@ id: task-494-generator-test-map
 description: "Global task: a test map without robots where the owner generates a new layout on the fly with a console command and plays it."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Enemy-free test map with a command to generate and reload a new level
 
-- request: Owner, verbatim (French), 2026-11-06: "- faire passer les soins ( chaque petit bloc) à 30 PV récupérer. Augmenter de 20 pourcent le nombre de barils et de soins dans les règles
+- request: Owner, verbatim (French), 2026-11-06: "- faire passer les soins ( chaque petit bloc) à 30 PV récupérer. Augmenter de 20 pourcent le nombre de barils et de soins dans les règles. Owner answer 2026-11-07 (relayed by the main session, verbatim): "Ok, all default" = the plan and the defaults of Q1, Q2, Q3, Q4, Q5, Q6 accepted.
 - commencer à développer le c++ et préparer une map test où je pourrais faire des générations à la volée pour tester moi même le résultat. Il faudra aussi, faire des tests avec l'agent level designer qui valide le résultat. Donc commence juste par le script qui génère le json, valide cette partie la avec l'agent designer. Puis fait un script qui load les assets par rapport au json. Load de manière asynchrone et prépare une variable qui indiquera un pourcentage des objets loader ( ça servira pour l écran de loading plus tard).
 
 Et enfin prépare le niveau test dans ennemi avec une commande pour reload un nouveau level". The executor has standing permission to open and close Unreal and save. This global covers: "préparer une map test où je pourrais faire des générations à la volée pour tester moi même le résultat" and "Et enfin prépare le niveau test dans ennemi avec une commande pour reload un nouveau level" ("dans ennemi" read as "sans ennemi", Q5).
@@ -15,15 +15,15 @@ Et enfin prépare le niveau test dans ennemi avec une commande pour reload un no
 - acceptance: A1 A test map starts on a generated 240 x 240 layout built with the task-493 loader; miner and drone playable (move, aim, dig, barrels explode, heal pickups heal). A2 No robot ever spawns, no console, bonus chest, shuttle or alert bar, during at least 2 minutes of play. A3 `rr.Level.New [seed]` generates a new layout with the task-492 generator (random seed when omitted, the given seed otherwise), writes its JSON to `Saved/GeneratedLevels/`, reloads the level with the async loader and puts the miner at the new spawn; the seed is shown on screen and logged. The same seed twice gives the same layout. A4 Several reloads in a row work without crash or leftover blocks from the previous layout. A5 Capture checklist passes. A6 Normal game maps unchanged.
 - gdd_check: Read: arena-grid, level-layout-schema, agent-level-design; gloss only for level-flow (robots, consoles, chests, shuttle placed during play: all off in this map). "dans ennemi" taken as "sans ennemi" (Q5). Not a gdd feature: a dev test map; no gdd edit. No open value. Milestone M2. Depends on task-492 and task-493.
 - verification_level: standard
-- confirmed_by_owner: no (plan and questions handed back 2026-11-07)
+- confirmed_by_owner: yes (2026-11-07, "Ok, all default")
 - milestone: M2
 - next_step: task-494-01-test-mode-command
 - started: open
-- waiting_for: Owner answers Q1 to Q6 (shared with task-490 to task-493).
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-07, each with a default; open until the owner answers.
+Decided 2026-11-07 (owner "Ok, all default"): every default below is accepted; values provisional, owner 2026-11-07.
 - Q1 (task-490) "chaque petit bloc" = chaque bloc de soin cassé = un pickup, qui rend 30 PV (`HealValue` de `OreTypes.csv`, ligne `Heal`). Une veine 2 × 2 rend donc 120 PV. Défaut: oui, 30 PV par pickup.
 - Q2 (task-491) +20 % "dans les règles": règles du GDD et paramètres du générateur (script Node actuel et futur générateur C++), sans régénérer les maps déjà commitées (arena_m1_fine, arena_l2 à l4 gardent leurs comptes). Soins: 12 veines 2 × 2 -> 14 veines (56 cellules: 5 en poches cachées, 9 dans les murs). Barils: 14 à 18 par seed -> 17 à 22 par seed, toujours en paires pour les chaînes. Défaut: ces valeurs, règles seulement.
 - Q3 (task-492) Générateur C++: portage de la recette de arena_gen_fine.js (240 × 240, paramètres en données, FRandomStream: mêmes paramètres + même seed = même JSON, mais pas identique octet par octet au script Node). Il écrit le JSON au format level-layout-schema et peut être lancé hors du jeu pour une seed donnée. Il garde seulement les contrôles de la recette pour accepter une seed; les règles de review (zones mortes, zones trop ouvertes, longues lignes droites) restent vérifiées par l'agent level designer sur un lot de 20 seeds, pas automatisées. Défaut: oui.

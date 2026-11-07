@@ -10,8 +10,8 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 ## Relations
 - [[tasks-index]] — parent index.
-- [[task-490-heal-pickup-30hp]] — HealValue of the heal pickup (one per broken heal-ore block) set to 30 HP. Status wait-answers.
-- [[task-491-generator-heal-barrel-plus20]] — generator parameters give 14 heal veins (56 cells) and 17 to 22 barrels per 240 x 240 layout; committed layouts unchanged. Status wait-answers.
-- [[task-492-cpp-layout-generator]] — deterministic C++ port of the 240 x 240 generator recipe that writes a layout JSON, then a 20-seed validation by the Level-Design agent. Status wait-answers.
-- [[task-493-async-layout-loader]] — builds the grid from a layout JSON, loading its assets asynchronously and exposing a 0-100 load percentage for a future loading screen. Status wait-answers.
-- [[task-494-generator-test-map]] — a test map without robots where the owner generates a new layout on the fly with a console command and plays it. Status wait-answers.
+- [[task-490-heal-pickup-30hp]] — HealValue of the heal pickup (one per broken heal-ore block) set to 30 HP. Status todo.
+- [[task-491-generator-heal-barrel-plus20]] — generator parameters give 14 heal veins (56 cells) and 17 to 22 barrels per 240 x 240 layout; committed layouts unchanged. Status todo.
+- [[task-492-cpp-layout-generator]] — deterministic C++ port of the 240 x 240 generator recipe that writes a layout JSON, then a 20-seed validation by the Level-Design agent. Status todo.
+- [[task-493-async-layout-loader]] — builds the grid from a layout JSON, loading its assets asynchronously and exposing a 0-100 load percentage for a future loading screen. Status todo.
+- [[task-494-generator-test-map]] — a test map without robots where the owner generates a new layout on the fly with a console command and plays it. Status todo.
