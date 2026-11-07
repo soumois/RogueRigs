@@ -108,7 +108,9 @@ int32 URRLayoutGenCommandlet::Main(const FString& Params)
 			return 1;
 		}
 	}
-	UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen: seed %d accepted after %d seed(s); generation %.2f s for this layout, %.2f s for the search; wrote %s"),
-		Layout.Seed, Layout.SeedsTried, Layout.Seconds, Layout.SearchSeconds, *LayoutPath);
+	const FRRLayoutGenStats& S = Layout.Stats;
+	UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen: seed %d accepted after %d seed(s); generation %.2f s for this layout, %.2f s for the search; review: window %.3f-%.3f, longest lane %d, farthest pocket %d, repairs carve %d outcrop %d lane %d; wrote %s"),
+		Layout.Seed, Layout.SeedsTried, Layout.Seconds, Layout.SearchSeconds, S.WindowMin, S.WindowMax, S.LongestLane, S.FarthestPocket,
+		S.RepairCarves, S.RepairOutcrops, S.RepairLanes, *LayoutPath);
 	return 0;
 }

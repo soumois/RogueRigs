@@ -31,6 +31,16 @@ struct ROGUERIGS_API FRRLayoutGenStats
 	/** Heal ore and barrel cells. */
 	int32 HealOre = 0;
 	int32 Barrels = 0;
+	/** Smallest and largest open share (floor, spawn, barrel) over the void-free review windows (layout-review-rules). */
+	double WindowMin = 1.0;
+	double WindowMax = 0.0;
+	/** Longest straight lane (cells) and largest distance from a hidden pocket to the main network. */
+	int32 LongestLane = 0;
+	int32 FarthestPocket = 0;
+	/** Review repairs applied while carving: dead windows carved, outcrops added to too-open windows, lanes broken. */
+	int32 RepairCarves = 0;
+	int32 RepairOutcrops = 0;
+	int32 RepairLanes = 0;
 	/** Count per layout type name (void, rock, heal_ore, barrel, spawn), for the brief. */
 	TMap<FString, int32> Counts;
 };
@@ -58,7 +68,7 @@ struct ROGUERIGS_API FRRGeneratedLayout
 /**
  * Generates one layout grid from params and a seed. Plain C++ (no UObject, no game-thread state): one instance per thread.
  * Carve() runs the carving steps of the recipe: outline and notching, spawn clearing, main network, hidden pockets,
- * far-cell filler, cleanup and the 3-cell passage repair. Decorate() places heal veins and barrels; Generate() runs the
+ * far-cell filler, cleanup, the review repair passes (24 x 24 windows, straight lanes) and the 3-cell passage repair. Decorate() places heal veins and barrels; Generate() runs the
  * whole recipe with its seed acceptance and returns the first passing seed.
  */
 class ROGUERIGS_API FRRLayoutGenerator
@@ -105,6 +115,12 @@ public:
 
 	/** FNV-1a hash of the grid, to compare two runs. */
 	uint32 HashGrid() const;
+
+	/** Smallest and largest open share over the void-free review windows (stride Review.Stride). */
+	void MeasureWindows(double& OutMin, double& OutMax) const;
+
+	/** Longest straight lane of the grid (both axes), in cells. */
+	int32 MeasureLongestLane() const;
 
 protected:
 	/** Uniform random value in [0, 1) from the stream. */
@@ -196,6 +212,79 @@ protected:
 	/** Largest BFS distance from an asteroid cell to floor. */
 	int32 MeasureMaxFar() const;
 
+	/** One review window: origin and open share. */
+	struct FReviewWindow
+	{
+		int32 X = 0;
+		int32 Y = 0;
+		int32 Open = 0;
+		double Share = 0.0;
+	};
+
+	/** One straight lane run: axis (true = along X), anchor line B, first cell A along the axis, length. */
+	struct FLaneRun
+	{
+		bool bAlongX = true;
+		int32 B = 0;
+		int32 Start = 0;
+		int32 Len = 0;
+	};
+
+	/** One changed cell and its previous type, to undo a repair. */
+	using FCellUndo = TPair<int32, ERRCellType>;
+
+	/** Grid index of the cell at position A along the lane axis and B across it. */
+	int32 LaneIndex(bool bAlongX, int32 A, int32 B) const { return bAlongX ? B * W + A : A * W + B; }
+
+	/** Open cells in the review window at (X, Y); false when the window holds void. */
+	bool CountWindow(int32 X, int32 Y, int32& OutOpen) const;
+
+	/** Scans the review windows: min and max share, and the windows outside [Low, High] sorted worst first. */
+	void ScanWindows(double Low, double High, double& OutMin, double& OutMax, TArray<FReviewWindow>* OutOffending) const;
+
+	/** For each open cell, the first and last cell (across the lane axis) of the open span through it. */
+	void BuildSpans(bool bAlongX, TArray<int32>& OutLo, TArray<int32>& OutHi) const;
+
+	/** Straight lane runs along one axis: returns the longest; runs longer than MinLen go to OutRuns. */
+	int32 ScanLanes(bool bAlongX, int32 MinLen, TArray<FLaneRun>* OutRuns) const;
+
+	/** Length of the lane run of anchor line B that holds position A (0 when none). */
+	int32 LaneRunAt(bool bAlongX, int32 B, int32 A) const;
+
+	/** True when cell (X, Y) lies in an all-open Passage x Passage window. */
+	bool IsCovered(int32 X, int32 Y) const;
+
+	/** True when every open cell of the box lies in an all-open Passage x Passage window. */
+	bool BoxCovered(int32 X0, int32 Y0, int32 X1, int32 Y1) const;
+
+	/** Restores the cells of Undo (newest last). */
+	void Undo(const TArray<FCellUndo>& Changes);
+
+	/** Rock cells of a noisy disc become floor (safe, outside pocket guards); unreachable or narrow carved cells are put back. */
+	void CarveDisc(double CX, double CY, double Rho, TArray<FCellUndo>& Changes);
+
+	/** Keeps the carved cells of Changes that reach the main network and lie in a passage window; puts the others back. */
+	void SettleCarve(TArray<FCellUndo>& Changes);
+
+	/** Reachable floor cells of a noisy disc become rock (outside the spawn zone and pockets). */
+	void StampRock(double CX, double CY, double Rho, const TArray<uint8>& ReachMask, TArray<FCellUndo>& Changes);
+
+	/** True when the rock of Changes (all reachable floor before) cut nothing off, kept the passage rule around it and left
+	 *  no asteroid cell farther from floor than max(FarBefore, search.max_far). */
+	bool RockKeepsRules(const TArray<FCellUndo>& Changes, int32 ReachBefore, int32 FarBefore) const;
+
+	/** Repair of a window under RepairOpenMin: a filler walk from the main network into its deepest rock. */
+	bool RepairDeadWindow(const FReviewWindow& Window);
+
+	/** Repair of a window over RepairOpenMax: an organic rock outcrop at its most open cell, else a bump on one of its walls. */
+	bool RepairOpenWindow(const FReviewWindow& Window);
+
+	/** Repair of a straight lane: a wall bump (wide lane) or a wall niche at its middle, or at a third. */
+	bool RepairLane(const FLaneRun& Lane);
+
+	/** Review repair pass: repairs the worst window, else the longest lane, until none is left or none can be fixed. */
+	int32 RepairReviewRules();
+
 	/** Picks N cells of Candidates, each the farthest from Picked among Tries random valid ones; places and records them. */
 	bool PickSpread(const TArray<FIntPoint>& Candidates, int32 Count, int32 Tries, TFunctionRef<bool(int32, int32)> IsValid,
 		TArray<FIntPoint>& Picked, TFunctionRef<void(int32, int32)> Place);
@@ -236,4 +325,9 @@ protected:
 	int32 Total = 0;
 	int32 FloorCount = 0;
 	int32 PocketCount = 0;
+
+	/** Review repairs of the current layout. */
+	int32 RepairCarves = 0;
+	int32 RepairOutcrops = 0;
+	int32 RepairLanes = 0;
 };

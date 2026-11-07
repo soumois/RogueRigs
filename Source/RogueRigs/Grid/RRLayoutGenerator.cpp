@@ -561,6 +561,9 @@ void FRRLayoutGenerator::Carve(int32 Seed)
 	Total = 0;
 	FloorCount = 0;
 	PocketCount = 0;
+	RepairCarves = 0;
+	RepairOutcrops = 0;
+	RepairLanes = 0;
 
 	// 1. Outline: polar radius plus value-noise jitter, clamped EdgeMargin cells from the grid edge.
 	const FRRLayoutGenOutlineParams& O = P.Outline;
@@ -789,10 +792,720 @@ void FRRLayoutGenerator::Carve(int32 Seed)
 			break;
 		}
 	}
+
+	// 7. Review repairs (layout-review-rules): dead and too-open 24 x 24 windows, straight lanes. Each pass that changed
+	// the grid is followed by the passage repair and region refill (repairs add no far cell: the filler is not rerun).
+	// A layout with nothing to repair is unchanged.
+	for (int32 Pass = 0; Pass < P.Review.Passes; ++Pass)
+	{
+		if (RepairReviewRules() == 0)
+		{
+			break;
+		}
+		PassageRepair();
+		RefillRegions();
+	}
 	PassageRepair();
 	RefillRegions();
 	TrimFar();
 	Grid[SY * W + SX] = ERRCellType::Spawn;
+}
+
+bool FRRLayoutGenerator::CountWindow(int32 X, int32 Y, int32& OutOpen) const
+{
+	const int32 K = P.Review.Window;
+	OutOpen = 0;
+	for (int32 J = 0; J < K; ++J)
+	{
+		for (int32 I = 0; I < K; ++I)
+		{
+			const ERRCellType Type = TypeAt(X + I, Y + J);
+			if (Type == ERRCellType::Void)
+			{
+				return false;
+			}
+			OutOpen += IsOpen(Type) ? 1 : 0;
+		}
+	}
+	return true;
+}
+
+void FRRLayoutGenerator::ScanWindows(double Low, double High, double& OutMin, double& OutMax, TArray<FReviewWindow>* OutOffending) const
+{
+	const FRRLayoutGenReviewParams& RV = P.Review;
+	const int32 K = RV.Window;
+	const int32 S = FMath::Max(1, RV.Stride);
+	const int32 W1 = W + 1;
+	TArray<int32> OpenSat;
+	TArray<int32> VoidSat;
+	OpenSat.SetNumZeroed(W1 * (H + 1));
+	VoidSat.SetNumZeroed(W1 * (H + 1));
+	for (int32 Y = 0; Y < H; ++Y)
+	{
+		for (int32 X = 0; X < W; ++X)
+		{
+			const ERRCellType Type = Grid[Y * W + X];
+			const int32 Here = (Y + 1) * W1 + X + 1;
+			OpenSat[Here] = OpenSat[Y * W1 + X + 1] + OpenSat[(Y + 1) * W1 + X] - OpenSat[Y * W1 + X] + (IsOpen(Type) ? 1 : 0);
+			VoidSat[Here] = VoidSat[Y * W1 + X + 1] + VoidSat[(Y + 1) * W1 + X] - VoidSat[Y * W1 + X] + (Type == ERRCellType::Void ? 1 : 0);
+		}
+	}
+	OutMin = 1.0;
+	OutMax = 0.0;
+	if (OutOffending)
+	{
+		OutOffending->Reset();
+	}
+	const double Area = static_cast<double>(K * K);
+	for (int32 Y = 0; Y + K <= H; Y += S)
+	{
+		for (int32 X = 0; X + K <= W; X += S)
+		{
+			auto Box = [&](const TArray<int32>& Sat) { return Sat[(Y + K) * W1 + X + K] - Sat[Y * W1 + X + K] - Sat[(Y + K) * W1 + X] + Sat[Y * W1 + X]; };
+			if (Box(VoidSat) > 0)
+			{
+				continue;
+			}
+			const int32 Open = Box(OpenSat);
+			const double Share = Open / Area;
+			OutMin = FMath::Min(OutMin, Share);
+			OutMax = FMath::Max(OutMax, Share);
+			if (OutOffending && (Share < Low || Share > High))
+			{
+				OutOffending->Add(FReviewWindow{ X, Y, Open, Share });
+			}
+		}
+	}
+	if (OutOffending)
+	{
+		OutOffending->StableSort([Low, High](const FReviewWindow& A, const FReviewWindow& B)
+		{
+			const double EA = A.Share < Low ? Low - A.Share : A.Share - High;
+			const double EB = B.Share < Low ? Low - B.Share : B.Share - High;
+			return EA > EB;
+		});
+	}
+}
+
+void FRRLayoutGenerator::MeasureWindows(double& OutMin, double& OutMax) const
+{
+	ScanWindows(0.0, 1.0, OutMin, OutMax, nullptr);
+}
+
+void FRRLayoutGenerator::BuildSpans(bool bAlongX, TArray<int32>& OutLo, TArray<int32>& OutHi) const
+{
+	const int32 A = bAlongX ? W : H;
+	const int32 B = bAlongX ? H : W;
+	OutLo.Init(-1, N);
+	OutHi.Init(-1, N);
+	for (int32 AI = 0; AI < A; ++AI)
+	{
+		int32 BI = 0;
+		while (BI < B)
+		{
+			if (!IsOpen(Grid[LaneIndex(bAlongX, AI, BI)]))
+			{
+				++BI;
+				continue;
+			}
+			int32 End = BI;
+			while (End + 1 < B && IsOpen(Grid[LaneIndex(bAlongX, AI, End + 1)]))
+			{
+				++End;
+			}
+			for (int32 K = BI; K <= End; ++K)
+			{
+				OutLo[LaneIndex(bAlongX, AI, K)] = BI;
+				OutHi[LaneIndex(bAlongX, AI, K)] = End;
+			}
+			BI = End + 1;
+		}
+	}
+}
+
+int32 FRRLayoutGenerator::ScanLanes(bool bAlongX, int32 MinLen, TArray<FLaneRun>* OutRuns) const
+{
+	// Scan of layout-review-rules (task-492-03 review): along the axis, the open span through the anchor cell keeps a
+	// width of LaneWidthMin..LaneWidthMax and both walls within LaneTolerance cells of where the run started.
+	const FRRLayoutGenReviewParams& RV = P.Review;
+	TArray<int32> Lo;
+	TArray<int32> Hi;
+	BuildSpans(bAlongX, Lo, Hi);
+	const int32 A = bAlongX ? W : H;
+	const int32 B = bAlongX ? H : W;
+	int32 Longest = 0;
+	for (int32 BI = 0; BI < B; ++BI)
+	{
+		int32 Len = 0;
+		int32 T0 = 0;
+		int32 B0 = 0;
+		int32 Start = 0;
+		for (int32 AI = 0; AI <= A; ++AI)
+		{
+			bool bOk = false;
+			int32 Top = 0;
+			int32 Bot = 0;
+			if (AI < A)
+			{
+				const int32 I = LaneIndex(bAlongX, AI, BI);
+				if (IsOpen(Grid[I]))
+				{
+					Top = Lo[I];
+					Bot = Hi[I];
+					const int32 Width = Bot - Top + 1;
+					bOk = Width >= RV.LaneWidthMin && Width <= RV.LaneWidthMax;
+				}
+			}
+			if (bOk && Len > 0 && FMath::Abs(Top - T0) <= RV.LaneTolerance && FMath::Abs(Bot - B0) <= RV.LaneTolerance)
+			{
+				++Len;
+				continue;
+			}
+			Longest = FMath::Max(Longest, Len);
+			if (OutRuns && Len > MinLen)
+			{
+				OutRuns->Add(FLaneRun{ bAlongX, BI, Start, Len });
+			}
+			Len = bOk ? 1 : 0;
+			T0 = Top;
+			B0 = Bot;
+			Start = AI;
+		}
+	}
+	return Longest;
+}
+
+int32 FRRLayoutGenerator::LaneRunAt(bool bAlongX, int32 B, int32 A) const
+{
+	TArray<FLaneRun> Runs;
+	ScanLanes(bAlongX, 0, &Runs);
+	for (const FLaneRun& Run : Runs)
+	{
+		if (Run.B == B && A >= Run.Start && A < Run.Start + Run.Len)
+		{
+			return Run.Len;
+		}
+	}
+	return 0;
+}
+
+int32 FRRLayoutGenerator::MeasureLongestLane() const
+{
+	return FMath::Max(ScanLanes(true, MAX_int32, nullptr), ScanLanes(false, MAX_int32, nullptr));
+}
+
+bool FRRLayoutGenerator::IsCovered(int32 X, int32 Y) const
+{
+	const int32 K = P.Cleanup.Passage;
+	for (int32 OY = Y - K + 1; OY <= Y; ++OY)
+	{
+		for (int32 OX = X - K + 1; OX <= X; ++OX)
+		{
+			bool bAllOpen = true;
+			for (int32 DY = 0; DY < K && bAllOpen; ++DY)
+			{
+				for (int32 DX = 0; DX < K; ++DX)
+				{
+					if (!IsOpen(TypeAt(OX + DX, OY + DY)))
+					{
+						bAllOpen = false;
+						break;
+					}
+				}
+			}
+			if (bAllOpen)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool FRRLayoutGenerator::BoxCovered(int32 X0, int32 Y0, int32 X1, int32 Y1) const
+{
+	for (int32 Y = FMath::Max(0, Y0); Y <= FMath::Min(H - 1, Y1); ++Y)
+	{
+		for (int32 X = FMath::Max(0, X0); X <= FMath::Min(W - 1, X1); ++X)
+		{
+			if (IsOpen(Grid[Y * W + X]) && !IsCovered(X, Y))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void FRRLayoutGenerator::Undo(const TArray<FCellUndo>& Changes)
+{
+	for (int32 K = Changes.Num() - 1; K >= 0; --K)
+	{
+		const int32 I = Changes[K].Key;
+		const ERRCellType Old = Changes[K].Value;
+		if (Grid[I] == ERRCellType::Floor && Old != ERRCellType::Floor)
+		{
+			--FloorCount;
+		}
+		else if (Grid[I] != ERRCellType::Floor && Old == ERRCellType::Floor)
+		{
+			++FloorCount;
+		}
+		Grid[I] = Old;
+	}
+}
+
+void FRRLayoutGenerator::CarveDisc(double CX, double CY, double Rho, TArray<FCellUndo>& Changes)
+{
+	const double Amp = P.Review.ShapeNoise;
+	const int32 R = FMath::CeilToInt32(Rho + Amp) + 1;
+	const int32 RX = RoundHalfUp(CX);
+	const int32 RY = RoundHalfUp(CY);
+	for (int32 J = -R; J <= R; ++J)
+	{
+		for (int32 I = -R; I <= R; ++I)
+		{
+			const int32 X = RX + I;
+			const int32 Y = RY + J;
+			if (!IsAsteroid(X, Y))
+			{
+				continue;
+			}
+			const int32 Id = Y * W + X;
+			if (Grid[Id] != ERRCellType::Rock || !Safe[Id] || HiddenGuard[Id])
+			{
+				continue;
+			}
+			if (Hypot(X - CX, Y - CY) <= Rho + Amp * (2.0 * ValueNoise(X, Y, P.Walk.BrushNoiseScale, 3) - 1.0))
+			{
+				Changes.Add(FCellUndo(Id, ERRCellType::Rock));
+				Grid[Id] = ERRCellType::Floor;
+				++FloorCount;
+			}
+		}
+	}
+}
+
+void FRRLayoutGenerator::SettleCarve(TArray<FCellUndo>& Changes)
+{
+	// Carving only adds open cells, so the cells already open keep their passage window; only carved cells can be
+	// unreachable (a new isolated region) or narrow. They go back to rock until every carved cell left is both.
+	for (int32 Round = 0; Round < P.Cleanup.RepairRounds; ++Round)
+	{
+		const TArray<uint8> ReachMask = Reach();
+		bool bChanged = false;
+		for (const FCellUndo& Change : Changes)
+		{
+			const int32 I = Change.Key;
+			if (Change.Value == ERRCellType::Rock && Grid[I] == ERRCellType::Floor && (!ReachMask[I] || !IsCovered(I % W, I / W)))
+			{
+				Grid[I] = ERRCellType::Rock;
+				--FloorCount;
+				bChanged = true;
+			}
+		}
+		if (!bChanged)
+		{
+			break;
+		}
+	}
+}
+
+void FRRLayoutGenerator::StampRock(double CX, double CY, double Rho, const TArray<uint8>& ReachMask, TArray<FCellUndo>& Changes)
+{
+	const double Amp = P.Review.ShapeNoise;
+	const int32 R = FMath::CeilToInt32(Rho + Amp) + 1;
+	const int32 RX = RoundHalfUp(CX);
+	const int32 RY = RoundHalfUp(CY);
+	for (int32 J = -R; J <= R; ++J)
+	{
+		for (int32 I = -R; I <= R; ++I)
+		{
+			const int32 X = RX + I;
+			const int32 Y = RY + J;
+			if (!InBounds(X, Y))
+			{
+				continue;
+			}
+			const int32 Id = Y * W + X;
+			if (Grid[Id] != ERRCellType::Floor || !ReachMask[Id] || Hidden[Id] || InSpawnZone(X, Y, P.Spawn.ZoneHalf))
+			{
+				continue;
+			}
+			if (Hypot(X - CX, Y - CY) <= Rho + Amp * (2.0 * ValueNoise(X, Y, P.Walk.BrushNoiseScale, 4) - 1.0))
+			{
+				Changes.Add(FCellUndo(Id, ERRCellType::Floor));
+				Grid[Id] = ERRCellType::Rock;
+				--FloorCount;
+			}
+		}
+	}
+}
+
+bool FRRLayoutGenerator::RockKeepsRules(const TArray<FCellUndo>& Changes, int32 ReachBefore, int32 FarBefore) const
+{
+	if (Changes.Num() == 0)
+	{
+		return false;
+	}
+	int32 ReachAfter = 0;
+	Reach(&ReachAfter);
+	if (ReachAfter != ReachBefore - Changes.Num())
+	{
+		return false; // the rock cut a part of the network off
+	}
+	int32 X0 = W;
+	int32 Y0 = H;
+	int32 X1 = 0;
+	int32 Y1 = 0;
+	for (const FCellUndo& Change : Changes)
+	{
+		X0 = FMath::Min(X0, Change.Key % W);
+		X1 = FMath::Max(X1, Change.Key % W);
+		Y0 = FMath::Min(Y0, Change.Key / W);
+		Y1 = FMath::Max(Y1, Change.Key / W);
+	}
+	const int32 K = P.Cleanup.Passage;
+	return BoxCovered(X0 - K, Y0 - K, X1 + K, Y1 + K) && MeasureMaxFar() <= FMath::Max(FarBefore, P.Search.MaxFar);
+}
+
+bool FRRLayoutGenerator::RepairDeadWindow(const FReviewWindow& Window)
+{
+	// A filler walk (step 5 of the recipe) from the nearest main-network cell into the deepest rock of the window.
+	const int32 K = P.Review.Window;
+	const TArray<int32> Dist = BfsFromWalkable();
+	int32 Target = -1;
+	int32 Deepest = -1;
+	for (int32 Y = Window.Y; Y < Window.Y + K; ++Y)
+	{
+		for (int32 X = Window.X; X < Window.X + K; ++X)
+		{
+			const int32 I = Y * W + X;
+			if (Grid[I] == ERRCellType::Rock && Safe[I] && !HiddenGuard[I] && Dist[I] > Deepest)
+			{
+				Deepest = Dist[I];
+				Target = I;
+			}
+		}
+	}
+	if (Target < 0)
+	{
+		return false;
+	}
+	const int32 TX = Target % W;
+	const int32 TY = Target / W;
+	const TArray<uint8> ReachMask = Reach();
+	int32 Best = -1;
+	double BestDist = 1e9;
+	for (int32 I = 0; I < N; ++I)
+	{
+		if (ReachMask[I])
+		{
+			const double D = Hypot(I % W - TX, I / W - TY);
+			if (D < BestDist)
+			{
+				BestDist = D;
+				Best = I;
+			}
+		}
+	}
+	if (Best < 0)
+	{
+		return false;
+	}
+	const FRRLayoutGenFillerParams& FL = P.Filler;
+	const int32 BX = Best % W;
+	const int32 BY = Best / W;
+	const double Angle = FMath::Atan2(static_cast<double>(TY - BY), static_cast<double>(TX - BX)) + Gauss() * FL.AimNoise;
+	const int32 Len = FMath::CeilToInt32(BestDist) + FL.ExtraMin + FMath::FloorToInt32(Rnd() * FL.ExtraRand);
+	const double Rho0 = FL.Rho0Min + Rnd() * (FL.Rho0Max - FL.Rho0Min);
+	TArray<FCellUndo> Changes;
+	for (const int32 I : WanderWalk(BX, BY, Angle, Len, Rho0, P.Walk.Turn * FL.TurnScale))
+	{
+		if (Grid[I] == ERRCellType::Rock)
+		{
+			Changes.Add(FCellUndo(I, ERRCellType::Rock));
+			Grid[I] = ERRCellType::Floor;
+			++FloorCount;
+		}
+	}
+	SettleCarve(Changes);
+	int32 Open = 0;
+	if (!CountWindow(Window.X, Window.Y, Open) || Open <= Window.Open)
+	{
+		Undo(Changes);
+		return false;
+	}
+	++RepairCarves;
+	return true;
+}
+
+bool FRRLayoutGenerator::RepairOpenWindow(const FReviewWindow& Window)
+{
+	// Organic rock outcrop at the window cell farthest (Chebyshev) from any closed cell, clear of the walls by Passage.
+	const FRRLayoutGenReviewParams& RV = P.Review;
+	const int32 K = RV.Window;
+	const int32 Pass = P.Cleanup.Passage;
+	TArray<int32> Clear;
+	Clear.SetNumUninitialized(N);
+	for (int32 I = 0; I < N; ++I)
+	{
+		Clear[I] = IsOpen(Grid[I]) ? FarDistance : 0;
+	}
+	auto ClearAt = [&](int32 X, int32 Y) { return InBounds(X, Y) ? Clear[Y * W + X] : 0; };
+	for (int32 Y = 0; Y < H; ++Y)
+	{
+		for (int32 X = 0; X < W; ++X)
+		{
+			int32& C = Clear[Y * W + X];
+			if (C > 0)
+			{
+				C = FMath::Min(C, FMath::Min(FMath::Min(ClearAt(X - 1, Y), ClearAt(X - 1, Y - 1)), FMath::Min(ClearAt(X, Y - 1), ClearAt(X + 1, Y - 1))) + 1);
+			}
+		}
+	}
+	for (int32 Y = H - 1; Y >= 0; --Y)
+	{
+		for (int32 X = W - 1; X >= 0; --X)
+		{
+			int32& C = Clear[Y * W + X];
+			if (C > 0)
+			{
+				C = FMath::Min(C, FMath::Min(FMath::Min(ClearAt(X + 1, Y), ClearAt(X + 1, Y + 1)), FMath::Min(ClearAt(X, Y + 1), ClearAt(X - 1, Y + 1))) + 1);
+			}
+		}
+	}
+	int32 Center = -1;
+	int32 BestClear = 0;
+	for (int32 Y = Window.Y; Y < Window.Y + K; ++Y)
+	{
+		for (int32 X = Window.X; X < Window.X + K; ++X)
+		{
+			const int32 I = Y * W + X;
+			if (Grid[I] == ERRCellType::Floor && !Hidden[I] && !InSpawnZone(X, Y, P.Spawn.ZoneHalf) && Clear[I] > BestClear)
+			{
+				BestClear = Clear[I];
+				Center = I;
+			}
+		}
+	}
+	int32 ReachBefore = 0;
+	const TArray<uint8> ReachMask = Reach(&ReachBefore);
+	const int32 FarBefore = MeasureMaxFar();
+	if (Center >= 0)
+	{
+		// The outcrop reaches Rho + ShapeNoise cells from its centre; BestClear - 1 open cells surround the centre.
+		const double MaxRho = (BestClear - 1) - Pass - RV.ShapeNoise;
+		const double Rho = FMath::Min(RV.OutcropRhoMin + Rnd() * (RV.OutcropRhoMax - RV.OutcropRhoMin), MaxRho);
+		if (Rho >= RV.OutcropRhoMin)
+		{
+			TArray<FCellUndo> Changes;
+			StampRock(Center % W, Center / W, Rho, ReachMask, Changes);
+			int32 Open = 0;
+			if (Changes.Num() > P.Cleanup.MaxRockIsland && RockKeepsRules(Changes, ReachBefore, FarBefore) && CountWindow(Window.X, Window.Y, Open)
+				&& Open < Window.Open)
+			{
+				++RepairOutcrops;
+				return true;
+			}
+			Undo(Changes);
+		}
+	}
+
+	// No room for a free outcrop (around the spawn square for example): a bump on a wall of the window, at the wall cells
+	// with the most open cells around them.
+	const int32 Ring = FMath::CeilToInt32(RV.OutcropRhoMax + RV.ShapeNoise);
+	TArray<TPair<int32, int32>> Walls; // (open cells around, index)
+	for (int32 Y = Window.Y; Y < Window.Y + K; ++Y)
+	{
+		for (int32 X = Window.X; X < Window.X + K; ++X)
+		{
+			const int32 I = Y * W + X;
+			if (Grid[I] != ERRCellType::Rock || InSpawnZone(X, Y, P.Spawn.ZoneHalf))
+			{
+				continue;
+			}
+			bool bFacesNetwork = false;
+			for (const FIntPoint& D : D4)
+			{
+				bFacesNetwork |= InBounds(X + D.X, Y + D.Y) && ReachMask[(Y + D.Y) * W + X + D.X] != 0;
+			}
+			if (!bFacesNetwork)
+			{
+				continue;
+			}
+			int32 OpenAround = 0;
+			for (int32 J = -Ring; J <= Ring; ++J)
+			{
+				for (int32 Q = -Ring; Q <= Ring; ++Q)
+				{
+					OpenAround += IsOpen(TypeAt(X + Q, Y + J)) ? 1 : 0;
+				}
+			}
+			Walls.Add(TPair<int32, int32>(OpenAround, I));
+		}
+	}
+	Walls.StableSort([](const TPair<int32, int32>& A, const TPair<int32, int32>& B) { return A.Key > B.Key; });
+	for (int32 K2 = 0; K2 < FMath::Min(Walls.Num(), RV.MaxTries); ++K2)
+	{
+		const int32 I = Walls[K2].Value;
+		const double Rho = RV.OutcropRhoMin + Rnd() * (RV.OutcropRhoMax - RV.OutcropRhoMin);
+		TArray<FCellUndo> Changes;
+		StampRock(I % W, I / W, Rho, ReachMask, Changes);
+		int32 Open = 0;
+		if (RockKeepsRules(Changes, ReachBefore, FarBefore) && CountWindow(Window.X, Window.Y, Open) && Open < Window.Open)
+		{
+			++RepairOutcrops;
+			return true;
+		}
+		Undo(Changes);
+	}
+	return false;
+}
+
+bool FRRLayoutGenerator::RepairLane(const FLaneRun& Lane)
+{
+	// A wall bump (rock, lane wide enough to keep Passage open cells) or a wall niche (carved) shifts a wall by more than
+	// LaneTolerance at one position, which splits the run there.
+	const FRRLayoutGenReviewParams& RV = P.Review;
+	const int32 Pass = P.Cleanup.Passage;
+	const int32 Across = Lane.bAlongX ? H : W;
+	static const int32 Num[3] = { 1, 1, 2 };
+	static const int32 Den[3] = { 2, 3, 3 };
+	for (int32 F = 0; F < 3; ++F)
+	{
+		const int32 A = Lane.Start + Lane.Len * Num[F] / Den[F];
+		TArray<int32> Lo;
+		TArray<int32> Hi;
+		BuildSpans(Lane.bAlongX, Lo, Hi);
+		const int32 Anchor = LaneIndex(Lane.bAlongX, A, Lane.B);
+		if (!IsOpen(Grid[Anchor]))
+		{
+			continue;
+		}
+		const int32 Top = Lo[Anchor];
+		const int32 Bot = Hi[Anchor];
+		const double BumpMax = (Bot - Top + 1) - Pass - RV.ShapeNoise;
+		const bool bWide = BumpMax >= RV.LaneTolerance + 1;
+		for (int32 Option = 0; Option < 2; ++Option)
+		{
+			const bool bBump = (Option == 0) == bWide;
+			for (int32 Side = 0; Side < 2; ++Side)
+			{
+				const int32 WallB = Side == 0 ? Top - 1 : Bot + 1;
+				if (WallB < 0 || WallB >= Across)
+				{
+					continue;
+				}
+				const int32 Wall = LaneIndex(Lane.bAlongX, A, WallB);
+				const int32 X = Wall % W;
+				const int32 Y = Wall / W;
+				double Rho = RV.LaneRhoMin + Rnd() * (RV.LaneRhoMax - RV.LaneRhoMin);
+				TArray<FCellUndo> Changes;
+				bool bOk = false;
+				if (bBump)
+				{
+					Rho = FMath::Min(Rho, BumpMax);
+					if (Rho < RV.LaneTolerance + 1)
+					{
+						continue;
+					}
+					int32 ReachBefore = 0;
+					const TArray<uint8> ReachMask = Reach(&ReachBefore);
+					const int32 FarBefore = MeasureMaxFar();
+					StampRock(X, Y, Rho, ReachMask, Changes);
+					bOk = RockKeepsRules(Changes, ReachBefore, FarBefore);
+				}
+				else
+				{
+					if (Grid[Wall] != ERRCellType::Rock)
+					{
+						continue;
+					}
+					CarveDisc(X, Y, Rho, Changes);
+					SettleCarve(Changes);
+					for (const FCellUndo& Change : Changes)
+					{
+						bOk |= Grid[Change.Key] == ERRCellType::Floor;
+					}
+				}
+				if (bOk && LaneRunAt(Lane.bAlongX, Lane.B, A) < Lane.Len)
+				{
+					++RepairLanes;
+					return true;
+				}
+				Undo(Changes);
+			}
+		}
+	}
+	return false;
+}
+
+int32 FRRLayoutGenerator::RepairReviewRules()
+{
+	const FRRLayoutGenReviewParams& RV = P.Review;
+	TSet<int32> FailedWindows;
+	TSet<int64> FailedLanes;
+	int32 Actions = 0;
+	while (Actions < RV.MaxActions)
+	{
+		bool bFixed = false;
+		double Min = 0.0;
+		double Max = 0.0;
+		TArray<FReviewWindow> Windows;
+		ScanWindows(RV.RepairOpenMin, RV.RepairOpenMax, Min, Max, &Windows);
+		int32 Tries = 0;
+		for (const FReviewWindow& Window : Windows)
+		{
+			const int32 Key = Window.Y * W + Window.X;
+			if (FailedWindows.Contains(Key))
+			{
+				continue;
+			}
+			if (Tries++ >= RV.MaxTries)
+			{
+				break;
+			}
+			bFixed = Window.Share < RV.RepairOpenMin ? RepairDeadWindow(Window) : RepairOpenWindow(Window);
+			if (bFixed)
+			{
+				break;
+			}
+			FailedWindows.Add(Key);
+		}
+		if (!bFixed)
+		{
+			TArray<FLaneRun> Lanes;
+			ScanLanes(true, RV.LaneMax, &Lanes);
+			ScanLanes(false, RV.LaneMax, &Lanes);
+			Lanes.StableSort([](const FLaneRun& A, const FLaneRun& B) { return A.Len > B.Len; });
+			Tries = 0;
+			for (const FLaneRun& Lane : Lanes)
+			{
+				const int64 Key = (static_cast<int64>(Lane.bAlongX) << 40) | (static_cast<int64>(Lane.B) << 20) | Lane.Start;
+				if (FailedLanes.Contains(Key))
+				{
+					continue;
+				}
+				if (Tries++ >= RV.MaxTries)
+				{
+					break;
+				}
+				bFixed = RepairLane(Lane);
+				if (bFixed)
+				{
+					break;
+				}
+				FailedLanes.Add(Key);
+			}
+		}
+		if (!bFixed)
+		{
+			break;
+		}
+		++Actions;
+	}
+	return Actions;
 }
 
 int32 FRRLayoutGenerator::MeasureMaxFar() const
@@ -1213,6 +1926,15 @@ FRRLayoutGenStats FRRLayoutGenerator::Measure() const
 		}
 	}
 
+	for (const FRegion& Region : Regions)
+	{
+		if (Region.Cells.Num() >= P.Cleanup.MinRegion)
+		{
+			Stats.FarthestPocket = FMath::Max(Stats.FarthestPocket, Region.Gap + 1);
+		}
+	}
+	MeasureWindows(Stats.WindowMin, Stats.WindowMax);
+	Stats.LongestLane = MeasureLongestLane();
 	Stats.MaxFar = MeasureMaxFar();
 	Stats.Narrow = CountNarrowCells();
 	for (const FOutlineRun& Run : FindOutlineRuns(0))
@@ -1253,6 +1975,19 @@ TArray<FString> FRRLayoutGenerator::Check(const FRRLayoutGenStats& Stats, const 
 	if (Stats.Narrow > 0)
 	{
 		Fails.Add(FString::Printf(TEXT("narrow cells %d"), Stats.Narrow));
+	}
+	const FRRLayoutGenReviewParams& RV = P.Review;
+	if (Stats.WindowMin < RV.OpenMin || Stats.WindowMax > RV.OpenMax)
+	{
+		Fails.Add(FString::Printf(TEXT("window %.3f-%.3f"), Stats.WindowMin, Stats.WindowMax));
+	}
+	if (Stats.LongestLane > RV.LaneMax)
+	{
+		Fails.Add(FString::Printf(TEXT("lane %d"), Stats.LongestLane));
+	}
+	if (Stats.FarthestPocket > RV.PocketMaxDist)
+	{
+		Fails.Add(FString::Printf(TEXT("pocket distance %d"), Stats.FarthestPocket));
 	}
 	if (Brief)
 	{
@@ -1300,6 +2035,9 @@ FRRGeneratedLayout FRRLayoutGenerator::RunSeed(int32 Seed, const FRRLayoutBrief*
 	Result.Height = H;
 	Result.Stats = Measure();
 	Result.Stats.MaxFar = MaxFar;
+	Result.Stats.RepairCarves = RepairCarves;
+	Result.Stats.RepairOutcrops = RepairOutcrops;
+	Result.Stats.RepairLanes = RepairLanes;
 	if (bDecorated)
 	{
 		Result.Fails = Check(Result.Stats, Brief);
@@ -1323,8 +2061,9 @@ FRRGeneratedLayout FRRLayoutGenerator::Generate(int32 FirstSeed, const FRRLayout
 		Result = RunSeed(FirstSeed + K, Brief);
 		const FRRLayoutGenStats& S = Result.Stats;
 		const FString Verdict = Result.Fails.Num() > 0 ? TEXT("FAIL: ") + FString::Join(Result.Fails, TEXT(", ")) : FString(TEXT("OK"));
-		UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen seed %d: %.2f s, asteroid %d, coverage %.3f, reachable %.3f, pockets %d, maxd %d, outline %d, heal_ore %d, barrel %d -- %s"),
-			Result.Seed, Result.Seconds, S.Asteroid, S.Coverage, S.Reach, S.Pockets, S.MaxFar, S.OutlineRun, S.HealOre, S.Barrels, *Verdict);
+		UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen seed %d: %.2f s, asteroid %d, coverage %.3f, reachable %.3f, pockets %d, maxd %d, outline %d, heal_ore %d, barrel %d, window %.3f-%.3f, lane %d, pocket distance %d, repairs carve %d outcrop %d lane %d -- %s"),
+			Result.Seed, Result.Seconds, S.Asteroid, S.Coverage, S.Reach, S.Pockets, S.MaxFar, S.OutlineRun, S.HealOre, S.Barrels,
+			S.WindowMin, S.WindowMax, S.LongestLane, S.FarthestPocket, S.RepairCarves, S.RepairOutcrops, S.RepairLanes, *Verdict);
 		Result.SeedsTried = K + 1;
 		if (Result.Fails.Num() == 0)
 		{

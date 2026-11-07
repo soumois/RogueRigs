@@ -206,6 +206,38 @@ struct FRRLayoutGenSearchParams
 	int32 MinPockets = 0;
 };
 
+/** Layout review rules (vault: layout-review-rules) enforced by repair passes and checked by the seed acceptance. */
+struct FRRLayoutGenReviewParams
+{
+	/** Side of the scanned windows (cells) and scan stride. */
+	int32 Window = 24;
+	int32 Stride = 2;
+	/** Accepted open share (floor, spawn, barrel) of every void-free window. */
+	double OpenMin = 0.0;
+	double OpenMax = 1.0;
+	/** The repair pass aims inside this tighter range, so decoration cannot push a window out of the accepted one. */
+	double RepairOpenMin = 0.0;
+	double RepairOpenMax = 1.0;
+	/** Straight lane: open span LaneWidthMin..LaneWidthMax wide whose walls stay within LaneTolerance cells; longest allowed run. */
+	int32 LaneMax = 0;
+	int32 LaneWidthMin = 0;
+	int32 LaneWidthMax = 0;
+	int32 LaneTolerance = 0;
+	/** Largest distance (cells) from a hidden pocket to the main network. */
+	int32 PocketMaxDist = 0;
+	/** Radius range of a rock outcrop added into a too-open window, and of a wall bump or niche breaking a straight lane. */
+	double OutcropRhoMin = 0.0;
+	double OutcropRhoMax = 0.0;
+	double LaneRhoMin = 0.0;
+	double LaneRhoMax = 0.0;
+	/** Edge noise amplitude of outcrops, bumps and niches (cells; scale walk.brush_noise_scale). */
+	double ShapeNoise = 0.0;
+	/** Repair actions per pass, failed candidates tried per action, repair passes (each followed by the cleanup loop). */
+	int32 MaxActions = 0;
+	int32 MaxTries = 0;
+	int32 Passes = 0;
+};
+
 /** Every tunable value of the layout generator, read from a params JSON file. */
 struct ROGUERIGS_API FRRLayoutGenParams
 {
@@ -226,6 +258,7 @@ struct ROGUERIGS_API FRRLayoutGenParams
 	FRRLayoutGenHealParams Heal;
 	FRRLayoutGenBarrelParams Barrels;
 	FRRLayoutGenSearchParams Search;
+	FRRLayoutGenReviewParams Review;
 };
 
 /** Optional brief bounds (level-layout-schema): checked on top of the recipe checks. */

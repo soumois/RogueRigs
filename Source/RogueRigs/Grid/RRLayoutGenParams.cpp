@@ -236,6 +236,29 @@ bool RRLayoutGen::LoadParams(const FString& FilePath, FRRLayoutGenParams& OutPar
 		S.Num(TEXT("reach_max"), O.ReachMax);
 		S.Int(TEXT("min_pockets"), O.MinPockets);
 	}
+	{
+		const FParamReader S = R.Sub(TEXT("review"));
+		FRRLayoutGenReviewParams& O = OutParams.Review;
+		S.Int(TEXT("window"), O.Window);
+		S.Int(TEXT("stride"), O.Stride);
+		S.Num(TEXT("open_min"), O.OpenMin);
+		S.Num(TEXT("open_max"), O.OpenMax);
+		S.Num(TEXT("repair_open_min"), O.RepairOpenMin);
+		S.Num(TEXT("repair_open_max"), O.RepairOpenMax);
+		S.Int(TEXT("lane_max"), O.LaneMax);
+		S.Int(TEXT("lane_width_min"), O.LaneWidthMin);
+		S.Int(TEXT("lane_width_max"), O.LaneWidthMax);
+		S.Int(TEXT("lane_tolerance"), O.LaneTolerance);
+		S.Int(TEXT("pocket_max_dist"), O.PocketMaxDist);
+		S.Num(TEXT("outcrop_rho_min"), O.OutcropRhoMin);
+		S.Num(TEXT("outcrop_rho_max"), O.OutcropRhoMax);
+		S.Num(TEXT("lane_rho_min"), O.LaneRhoMin);
+		S.Num(TEXT("lane_rho_max"), O.LaneRhoMax);
+		S.Num(TEXT("shape_noise"), O.ShapeNoise);
+		S.Int(TEXT("max_actions"), O.MaxActions);
+		S.Int(TEXT("max_tries"), O.MaxTries);
+		S.Int(TEXT("passes"), O.Passes);
+	}
 
 	if (Missing.Num() > 0)
 	{
