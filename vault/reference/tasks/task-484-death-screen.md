@@ -3,7 +3,7 @@ id: task-484-death-screen
 description: "Global task: Run-lost screen when the miner's health reaches 0: death sequence, appearance animation, mockup look, recap, Retry and Main Menu. Open to run or review it."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Death screen with Retry and Main Menu
 
@@ -16,7 +16,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-484-01-mockup
 - started: 2026-11-07T00:57:21Z
-- waiting_for: none
+- waiting_for: owner je valide on task-484-01-mockup round 1
 - result: open
 
 ## Questions

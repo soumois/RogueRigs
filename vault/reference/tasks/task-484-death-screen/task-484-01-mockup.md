@@ -3,7 +3,7 @@ id: task-484-01-mockup
 description: "Art: Kie.ai mockup of the death screen in the level-end and pause style, rounds until the owner says "je valide"."
 parent: task-484-death-screen
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Death screen with Retry and Main Menu: art
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-07T00:57:21Z
-- waiting_for: none
+- waiting_for: owner je valide or change request on mockup round 1 (Art/Source/death-screen/20261106-165747-death-screen-1.png)
 - result: open
 
 ## Relations
