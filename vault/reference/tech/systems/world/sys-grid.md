@@ -35,6 +35,7 @@ kind: doc
 - [[rock-state-render-options]] — Design note (no code) for the slab rock look: dual-grid pieces, damage display, ore crystals, counts, budget. Open before rock look work.
 - [[sys-layout-generator]] — C++ 240 x 240 layout generator and its RRLayoutGen commandlet. Open to generate a layout.
 - [[sys-layout-loader]] — Asynchronous loader: builds the grid from a layout JSON over frames with a 0-100 percentage and completion event. Open for loading screens or the test map.
+- [[sys-gen-test-mode]] — Enemy-free generator test map mode and rr.Level.New [seed]: in-place reload, seed line, timings. Open to use the test map.
 - [[sys-grid-api]] — Public functions of the arena grid: cell centers, face centers, world lookups, damage and destruction entry points. Open to call the grid from C++.
 - [[systems-index]] — parent index.
 - [[level-layout-schema]] — file format the grid loads.

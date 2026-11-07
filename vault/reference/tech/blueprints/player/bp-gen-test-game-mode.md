@@ -7,7 +7,7 @@ kind: doc
 # BP_GenTestGameMode and L_GenTest
 
 - asset_path: /Game/RogueRigs/Blueprints/Player/BP_GenTestGameMode; map /Game/RogueRigs/Maps/L_GenTest ([[task-494-02-test-map]]).
-- parent_class: `ARRGenTestGameMode` (child of `ARRGameMode`, task-494-01).
+- parent_class: `ARRGenTestGameMode` (child of `ARRGameMode`, [[sys-gen-test-mode]]).
 - purpose: the dev test map where the owner plays the miner and drone on generated layouts, without robots, console, bonus chest, shuttle or alert bar, and asks for a new layout with `rr.Level.New [seed]`.
 - components: none
 - exposed_defaults: `DefaultPawnClass` BP_Miner_C, `PlayerControllerClass` BP_RRPlayerController_C (both as [[bp-rr-game-mode]]); `HiddenHUDWidgetNames` [`AlertObjectives`] (alert bar and objective panel of [[wbp-alert-objectives]]); C++ defaults kept: `StartSeed` 0 (random), `ParamsPath` empty (generator default params), `LayoutFilePrefix` `gen_test_`, `WatchLogSeconds` 30; `RunFlowConfig` left at the C++ defaults (the run flow is off).
@@ -22,5 +22,6 @@ kind: doc
 - [[blueprints-player-index]] — parent index.
 - [[bp-rr-game-mode]] — the run game mode whose pawn and controller it reuses.
 - [[wbp-alert-objectives]] — the HUD panel it hides.
+- [[sys-gen-test-mode]] — the C++ test mode, rr.Level.New and its logs.
 - [[sys-layout-loader]] — the asynchronous loader that builds its grid.
 - [[task-494-02-test-map]] — the task that made the map.

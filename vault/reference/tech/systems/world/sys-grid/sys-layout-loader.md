@@ -6,10 +6,11 @@ kind: doc
 ---
 # Layout loader (asynchronous)
 
-- responsibility: builds a level from a layout JSON without a blocking load ([[task-493-async-layout-loader]], commit b360ef09). Only the test map uses it (owner Q4, 2026-11-07); the game maps keep the grid's own synchronous path ([[sys-grid]] lifecycle).
+- responsibility: builds a level from a layout JSON without a blocking load ([[task-493-async-layout-loader]], commit b360ef09). Only the test map ([[sys-gen-test-mode]]) uses it (owner Q4, 2026-11-07); the game maps keep the grid's own synchronous path ([[sys-grid]] lifecycle).
 - main_classes: `URRLayoutLoaderSubsystem` (UTickableWorldSubsystem, `Source/RogueRigs/Grid/RRLayoutLoaderSubsystem.h/.cpp`), `URRLayoutLoaderSettings` (`RRLayoutLoaderSettings.h`, config object like `URRRunSettings`), `ERRLayoutLoadPhase` (Idle, Loading, Building, Done, Failed), `FRRLayoutLoadStats`. Grid side in `ARRArenaGrid`: `SetExternalBuild`, `BeginIncrementalBuild`, `StepIncrementalBuild`, `GetIncrementalBuildProgress`.
 - entry_points:
   - `StartLoad(LayoutPath, GridTransform)` (BlueprintCallable): path absolute, relative to the project folder, or a bare name in `Content/RogueRigs/Data/Levels/`. Refused while a load runs.
+  - `StartLoadIntoGrid(LayoutPath, Grid)` (BlueprintCallable, task-494-01, commit 6334081b): same load, but rebuilds the given grid in place (set external, `BeginIncrementalBuild` replaces cells and instances) instead of spawning one, so systems holding that grid keep it; used by [[sys-gen-test-mode]].
   - `LoadPercent` (BlueprintReadOnly) and `GetLoadPercent()` (BlueprintPure), `IsLoading()`, `GetPhase()`, `GetLoadedGrid()`.
   - `OnLoadCompleted(Grid, bSuccess)` (BlueprintAssignable): once per load, at 100 with the grid, or on failure with a null grid.
   - Debug: `rr.Level.LoadLayout <path> [keep] [stay]` (`Debug/RRLayoutLoaderDebugCommands.cpp`): loads at the map grid's transform, hides that grid at the end unless `keep`, moves the player to the new spawn cell unless `stay`.
@@ -29,3 +30,4 @@ kind: doc
 - [[level-layout-schema]] — the file format it reads.
 - [[intermission]] — the loading screen that will read its percentage.
 - [[task-493-async-layout-loader]] — the task that built it.
+- [[sys-gen-test-mode]] — the test map mode that rebuilds its grid in place with it.
