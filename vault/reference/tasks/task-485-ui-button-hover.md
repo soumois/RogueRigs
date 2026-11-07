@@ -21,7 +21,7 @@ status: done
 - executor_usage: runs 1, turns 127, context start 18k peak 281k, resumes 1, 46 min, units 2.90 M
 - planning_tokens: input 34, cache write 111833, cache read 957049, output 19112
 - planning_usage: a4e7f869 "Plan button hover effects" 1/1 (tasks 485), units 0.33 M
-- result: Done. Done (1c087c53). New sys-button-hover (systems-ui-index child, linked from ui-button-hover): subsystem, M_UI_ButtonPlate, settings, attach calls, debug commands. Eight wbp nodes (main-menu, pause-menu, run-lost, intermission, shop-screen, shop-card, upgrade-choice, alert-objectives) got a button_hover line with commit, mechanism and verified captures, and a relation to sys-button-hover. Lint clean.
+- result: Done. Every button of the eight screens has the mouse hover of ui-button-hover through one C++ mechanism (sys-button-hover: URRButtonHoverSubsystem, M_UI_ButtonPlate): cream plates brighten about +25 % and grow to 1.05, grey untextured buttons (level-up Reroll, run-won Main Menu) lighten by a linear x1.25 so the white label stays readable, main menu text grows and keeps its orange; 0.1 s real-time ease, works paused; disabled buttons and focus alone show nothing. A1 to A4 seen in -game captures at 1920x1080, 1280x720, 1920x1200, 2560x1080; A5 clicks not exercised by a real click (bindings untouched); A6 build succeeded, WBP compiled with warnings as errors. Budget ALERT: 127 turns, 2.9 M units vs 90 / 1.5 M (eight widgets, new material, editor save dialog, MCP over a JSON-RPC script, multi-resolution capture flows).
 
 ## Questions
 Decided 2026-11-07 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-07.
