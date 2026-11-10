@@ -3,7 +3,7 @@ id: task-496-03-capture
 description: "Capture: One -game capture of the generated terrains of level 1 and level 2, compared with the hand layouts before."
 parent: task-496-generator-in-runs
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator wired into real runs: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T20:16:14Z
 - waiting_for: none
 - result: open
 
