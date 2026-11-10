@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Containers/Ticker.h"
 #include "Grid/RRLayoutData.h"
 #include "Run/RRRunSnapshot.h"
 #include "Run/RRLayoutProvider.h"
@@ -295,4 +296,11 @@ protected:
 
 	/** True from PrepareNewRunLayout until BeginRun. */
 	bool bNewRunPrepared = false;
+
+	/** Core ticker measuring the game-thread frames while a request is pending (task-496 A2: the generation must not stall them). */
+	FTSTicker::FDelegateHandle PendingFrameTicker;
+
+	/** Longest game-thread frame (ms) and frame count since the last request, logged with its result. */
+	double LongestPendingFrameMs = 0.0;
+	int32 PendingFrames = 0;
 };

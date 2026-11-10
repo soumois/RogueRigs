@@ -311,6 +311,18 @@ bool URRRunTransitionSubsystem::StartNewRun(UWorld* MenuWorld, const FString& Ma
 		LoadingLevelIndex, *LoadingLayoutName, *GetNameSafe(MenuWorld), LoadingStartFrame, *MapToOpen,
 		IsLoadingProgressMeasured() ? TEXT("measured") : TEXT("not measured"));
 	OnLoadingStarted.Broadcast(LoadingLevelIndex, LoadingLayoutName);
+	// Level 1 terrain prepared from the menu (task-496): still generating = the loading screen stays up in the menu world until it
+	// is ready, then the travel; the map load itself then never waits for the generator.
+	if (Run->IsLayoutPending(LoadingLevelIndex))
+	{
+		SetLoadingStage(ERRRunLoadingStage::WaitingForLayout);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: New Run: level 1 layout %s still being generated (run seed %d), waiting for OnLayoutReady behind the loading screen."),
+			*LoadingLayoutName, Run->GetRunSeed());
+		Run->OnLayoutReady.AddUniqueDynamic(this, &URRRunTransitionSubsystem::HandleLayoutReady);
+		return true;
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunTransitionSubsystem: New Run: level 1 layout %s %s (run seed %d)."), *LoadingLayoutName,
+		Run->IsLayoutReady(LoadingLevelIndex) ? TEXT("already prepared") : TEXT("not prepared, the grid uses its own layout"), Run->GetRunSeed());
 	OpenArenaMap();
 	return true;
 }

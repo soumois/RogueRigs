@@ -127,6 +127,11 @@ void URRRunSubsystem::Deinitialize()
 	{
 		LayoutTask.Wait();
 	}
+	if (PendingFrameTicker.IsValid())
+	{
+		FTSTicker::GetCoreTicker().RemoveTicker(PendingFrameTicker);
+		PendingFrameTicker.Reset();
+	}
 	ClearLayoutRequest();
 	Super::Deinitialize();
 }
@@ -178,9 +183,46 @@ bool URRRunSubsystem::RequestLayoutByName(int32 InLevelIndex, const FString& InL
 		InLevelIndex, *InLayoutName, *Provider->GetProviderName(), Request.RunSeed, Request.LevelSeed,
 		Request.bForceGeneratorFailure ? TEXT(", generation forced to fail") : TEXT(""));
 
+	// Game-thread frames while the worker builds (task-496 A2): the longest one is logged with the result.
+	LongestPendingFrameMs = 0.0;
+	PendingFrames = 0;
+	TWeakObjectPtr<URRRunSubsystem> WeakThis(this);
+	if (!PendingFrameTicker.IsValid())
+	{
+		PendingFrameTicker = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakThis](float DeltaTime)
+		{
+			URRRunSubsystem* Run = WeakThis.Get();
+			if (!Run || !Run->bLayoutPending)
+			{
+				if (Run)
+				{
+					Run->PendingFrameTicker.Reset();
+				}
+				return false;
+			}
+			// The first tick closes the frame of the request itself: not counted.
+			// Frame 1 is the first engine frame after the start (the menu request at startup is made in frame 0): its 130-150 ms
+			// are the engine start, measured the same with a 0.6 s or a 4.4 s generation (task-496 menu runs); logged, not counted.
+			if (Run->PendingFrames++ > 0 && GFrameCounter <= 1)
+			{
+				UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: first engine frame %.1f ms (frame %llu, engine start) while the level %d layout is built on a worker; not counted."),
+					DeltaTime * 1000.0, GFrameCounter, Run->RequestedLevelIndex);
+			}
+			else if (Run->PendingFrames > 1)
+			{
+				Run->LongestPendingFrameMs = FMath::Max(Run->LongestPendingFrameMs, DeltaTime * 1000.0);
+				if (DeltaTime > 0.1f)
+				{
+					UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: game-thread frame of %.1f ms (frame %llu) while the level %d layout is built on a worker."),
+						DeltaTime * 1000.0, GFrameCounter, Run->RequestedLevelIndex);
+				}
+			}
+			return true;
+		}));
+	}
+
 	// The worker only touches the provider and the request copy; the result is handed to the game thread by serial, so a
 	// request replaced or cleared meanwhile is simply dropped there.
-	TWeakObjectPtr<URRRunSubsystem> WeakThis(this);
 	LayoutTask = UE::Tasks::Launch(UE_SOURCE_LOCATION, [Provider, Request, WeakThis, Serial]() -> TSharedPtr<FRRLayoutData>
 	{
 		TSharedPtr<FRRLayoutData> Layout = Provider->BuildLayout(Request);
@@ -214,8 +256,9 @@ void URRRunSubsystem::CompleteLayoutRequest(uint32 Serial)
 	const bool bSuccess = Layout.IsValid() && Layout->IsValid();
 	if (bSuccess)
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout ready for level %d: %s (%s), %d x %d, spawn (%d, %d), %.1f ms after the request."),
-			RequestedLevelIndex, *RequestedLayoutName, *Layout->Source, Layout->Width, Layout->Height, Layout->SpawnCell.X, Layout->SpawnCell.Y, Milliseconds);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout ready for level %d: %s (%s), %d x %d, spawn (%d, %d), %.1f ms after the request; game thread meanwhile: %d frame(s), longest %.1f ms."),
+			RequestedLevelIndex, *RequestedLayoutName, *Layout->Source, Layout->Width, Layout->Height, Layout->SpawnCell.X, Layout->SpawnCell.Y, Milliseconds,
+			FMath::Max(0, PendingFrames - 1), LongestPendingFrameMs);
 	}
 	else
 	{
@@ -407,7 +450,8 @@ bool URRRunSubsystem::AdvanceToNextLevel()
 	const FString Layout = GetCurrentLayoutName();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: advanced to level %d/%d, layout %s, snapshot %s."),
 		LevelIndex, GetLevelCount(), *Layout, bSnapshotPending ? TEXT("pending") : TEXT("none"));
-	// The next terrain is prepared at once, while the intermission shows (intermission, task-206-02).
+	// The next terrain is generated at once (task-496 Q2): AdvanceToNextLevel runs in the frame of the miner's contact with the
+	// extractor board zone (ARRShuttle::TryBoard -> EndRun(true) -> HandleLevelExtracted); the terrain swap stays behind the cards screen.
 	RequestLayout(LevelIndex);
 	OnLevelAdvanced.Broadcast(LevelIndex, Layout);
 	return true;

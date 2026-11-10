@@ -27,6 +27,12 @@ public:
 	ARRMainMenuGameMode();
 
 	/**
+	 * The menu opens (task-496, main-menu gdd): the level 1 terrain of the next run starts generating off the game thread
+	 * (URRRunSubsystem::PrepareNewRunLayout), unless a prepared run already waits (Main Menu after a run: ResetRun prepared it).
+	 */
+	virtual void StartPlay() override;
+
+	/**
 	 * Creates MainMenuWidgetClass owned by PlayerController and adds it to the viewport (called once by the local menu
 	 * controller at BeginPlay). Returns the widget, or null (warning logged) without a class or a local player.
 	 */
