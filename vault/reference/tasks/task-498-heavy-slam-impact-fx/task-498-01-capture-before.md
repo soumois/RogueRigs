@@ -3,7 +3,7 @@ id: task-498-01-capture-before
 description: "Capture: A -game capture of several heavy slams to see whether a dust ring and rock chips already appear."
 parent: task-498-heavy-slam-impact-fx
 kind: task
-status: todo
+status: in-progress
 ---
 # Heavy slam impact: dust ring and rock chips: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T20:39:35Z
 - waiting_for: none
 - result: open
 
