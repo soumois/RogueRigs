@@ -3,7 +3,7 @@ id: task-499-robot-logo-decals
 description: "Global task: The yellow Kessler-Voss emblem added as a decal on the Heavy, Kamikaze and Chaser v2 meshes, like the shield emblem, without regenerating the Meshy meshes."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Yellow Kessler-Voss emblem decal on Heavy, Kamikaze, Chaser v2
 
@@ -16,7 +16,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-499-07-doc
 - started: 2026-11-10T20:42:05Z
-- waiting_for: none
+- waiting_for: Owner: (1) emblem legibility at the default game camera failed the style review (chaser v2 and shield chaser v2 emblem not visible, heavy and kamikaze only a small yellow mark): keep the Q3 one-third sizes or enlarge (critic: 20-22 cm on the chasers; script --size reruns it); (2) heavy emblem looks fragmented on its dark recess: keep or move/sharpen; (3) cost not recorded for any subtask (agent-usage.js finds no transcript), so the global cannot be closed by task-status.js
 - result: open
 
 ## Questions
