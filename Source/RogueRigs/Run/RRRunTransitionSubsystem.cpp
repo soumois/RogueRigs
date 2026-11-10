@@ -301,7 +301,7 @@ bool URRRunTransitionSubsystem::StartNewRun(UWorld* MenuWorld, const FString& Ma
 	Phase = ERRRunTransitionPhase::Loading;
 	bNewRunLoading = true;
 	LoadingLevelIndex = 1;
-	// The arena grid of level 1 builds from its own LayoutName; the settings entry of level 1 names the same layout.
+	// The arena grid of level 1 builds from the layout prepared by ResetRun (task-496, same name as the settings entry of level 1).
 	LoadingLayoutName = Run->GetLayoutNameForLevel(LoadingLevelIndex);
 	LoadingStartSeconds = FPlatformTime::Seconds();
 	LoadingStartFrame = GFrameCounter;
@@ -319,7 +319,7 @@ void URRRunTransitionSubsystem::OpenArenaMap()
 {
 	UWorld* World = IntermissionWorld.Get();
 	URRRunSubsystem* Run = GetRun();
-	// Level 1 is never requested (its grid reads its own LayoutName): New Run has no prepared layout to check.
+	// New Run: the level 1 layout may still be generating; the grid waits for it at BeginPlay (no check here).
 	if (!bNewRunLoading && Run && !Run->IsLayoutReady(LoadingLevelIndex))
 	{
 		// Provisional decision (task-206-03): the travel goes on, the grid falls back to its own LayoutName with an error.

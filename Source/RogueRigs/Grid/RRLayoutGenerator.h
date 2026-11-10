@@ -116,6 +116,9 @@ public:
 	/** FNV-1a hash of the grid, to compare two runs. */
 	uint32 HashGrid() const;
 
+	/** FNV-1a hash of a cell array (same value as HashGrid for the same cells): compares a run layout with a commandlet output. */
+	static uint32 HashCells(const TArray<ERRCellType>& Cells);
+
 	/** Smallest and largest open share over the void-free review windows (stride Review.Stride). */
 	void MeasureWindows(double& OutMin, double& OutMax) const;
 

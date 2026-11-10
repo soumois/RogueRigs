@@ -1,0 +1,8 @@
+{
+ "width": 240,
+ "height": 240,
+ "rock_coverage": [0.52, 0.62],
+ "counts": { "heal_ore": [56, 56], "barrel": [17, 22] },
+ "reachable_floor_min": 0.6,
+ "min_passage_width": 3
+}

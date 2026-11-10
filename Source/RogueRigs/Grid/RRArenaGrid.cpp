@@ -490,7 +490,7 @@ bool ARRArenaGrid::LoadLayout()
 	{
 		LayoutName = Prepared->Name;
 		ApplyLayoutData(*Prepared);
-		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: built from the prepared layout %s (%d x %d)."), *GetName(), *LayoutName, GridWidth, GridHeight);
+		UE_LOG(LogRogueRigs, Log, TEXT("ARRArenaGrid %s: built from the prepared layout %s (%s, %d x %d)."), *GetName(), *LayoutName, *Prepared->Source, GridWidth, GridHeight);
 		return true;
 	}
 
@@ -518,11 +518,17 @@ TSharedPtr<const FRRLayoutData> ARRArenaGrid::FindRunPreparedLayout() const
 {
 	const UWorld* World = GetWorld();
 	URRRunSubsystem* Run = World && World->IsGameWorld() ? URRRunSubsystem::Get(this) : nullptr;
-	if (!Run || !Run->IsRunInProgress() || Run->GetLevelIndex() <= 1)
+	if (!Run)
 	{
 		return nullptr;
 	}
-	const int32 Level = Run->GetLevelIndex();
+	// Level 1 (task-496): built from the layout prepared for the run (PrepareNewRunLayout), before or after BeginRun; without
+	// that preparation (map played directly, editor, tests) the grid reads its own LayoutName.
+	const int32 Level = Run->IsRunInProgress() ? Run->GetLevelIndex() : (Run->HasNewRunLayout() ? 1 : 0);
+	if (Level <= 0 || (Level == 1 && !Run->IsLayoutRequested(1)))
+	{
+		return nullptr;
+	}
 	if (TSharedPtr<const FRRLayoutData> Prepared = Run->GetPreparedLayout(Level))
 	{
 		return Prepared;

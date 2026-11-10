@@ -44,10 +44,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnRunResetSignature);
  * opens the map; the new miner's HandleMinerBeginPlay replays the snapshot once (ApplySnapshotToMiner). Loss or run won:
  * ResetRun, so the next map starts a new run at level 1.
  *
- * Layouts (task-206-02): AdvanceToNextLevel requests the layout of the new level at once (RequestLayout). The layout provider
- * (IRRLayoutProvider, JSON files today, the C++ generator later) builds it on a worker thread; OnLayoutReady fires on the game
- * thread and GetPreparedLayout returns it until the next request. It lives here, so it survives the map travel, and
- * ARRArenaGrid builds from it on levels 2+. Level 1 is never requested: the grid reads its own LayoutName.
+ * Layouts (task-206-02, task-496): AdvanceToNextLevel requests the layout of the new level at once (RequestLayout). The layout
+ * provider (FRRGeneratorLayoutProvider: C++ generator, level seed derived from the run seed, hand JSON as fallback) builds it on a
+ * worker thread; OnLayoutReady fires on the game thread and GetPreparedLayout returns it until the next request. It lives here,
+ * so it survives the map travel, and ARRArenaGrid builds from it. Level 1 is requested by PrepareNewRunLayout (ResetRun, so New
+ * Run, Retry and Main Menu) before the run begins; without that preparation (map played directly) the grid reads its own LayoutName.
  *
  * Ore: carried as secured ore. The extraction moves the carried ore into URROreBankSubsystem (game instance), which keeps it
  * across the travel; every level starts with 0 carried ore. The snapshot only records the recap figures: the ore secured by
@@ -118,8 +119,30 @@ public:
 	 */
 	TSharedPtr<const FRRLayoutData> WaitForPreparedLayout(int32 InLevelIndex);
 
-	/** Replaces the layout provider (the future generator); null restores the JSON provider. Takes effect at the next request. */
+	/**
+	 * Replaces the layout provider; null restores the default one (FRRGeneratorLayoutProvider, or FRRJsonLayoutProvider when
+	 * URRRunSettings::bGenerateRunLayouts is false). Takes effect at the next request.
+	 */
 	void SetLayoutProvider(TSharedPtr<IRRLayoutProvider> InProvider);
+
+	/**
+	 * Prepares the next run (task-496): draws a new run seed and requests the level 1 layout off the game thread. The next
+	 * BeginRun keeps that seed and that request, and the level 1 grid builds from it. Refused (false) while a run is in progress.
+	 * ResetRun calls it unless a preparation is already waiting.
+	 */
+	bool PrepareNewRunLayout();
+
+	/** True from PrepareNewRunLayout until the next BeginRun: a run seed and a level 1 request wait for the next run. */
+	bool HasNewRunLayout() const { return bNewRunPrepared && RequestedLevelIndex == 1; }
+
+	/** True when the last layout request is for InLevelIndex (pending, ready or failed). */
+	bool IsLayoutRequested(int32 InLevelIndex) const { return InLevelIndex > 0 && RequestedLevelIndex == InLevelIndex; }
+
+	/** Seed of the current (or prepared) run; every level seed derives from it. Log only, never shown to the player (task-496 Q4). */
+	int32 GetRunSeed() const { return RunSeed; }
+
+	/** Seed of level InLevelIndex of the run seed InRunSeed: the first seed the generator tries for that level. */
+	static int32 DeriveLevelSeed(int32 InRunSeed, int32 InLevelIndex);
 
 	/** Ends the run state (run lost, run won, restart, main menu New Run): no run in progress, snapshot cleared, secured ore bank cleared (ore lasts one run); the next map begins level 1. */
 	UFUNCTION(BlueprintCallable, Category = "Run")
@@ -266,4 +289,10 @@ protected:
 
 	/** FPlatformTime::Seconds at the last request, for the ready log. */
 	double RequestStartSeconds = 0.0;
+
+	/** Seed of the current or prepared run (0 before the first one). */
+	int32 RunSeed = 0;
+
+	/** True from PrepareNewRunLayout until BeginRun. */
+	bool bNewRunPrepared = false;
 };

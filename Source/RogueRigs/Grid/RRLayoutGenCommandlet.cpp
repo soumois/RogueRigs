@@ -109,8 +109,8 @@ int32 URRLayoutGenCommandlet::Main(const FString& Params)
 		}
 	}
 	const FRRLayoutGenStats& S = Layout.Stats;
-	UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen: seed %d accepted after %d seed(s); generation %.2f s for this layout, %.2f s for the search; review: window %.3f-%.3f, longest lane %d, farthest pocket %d, repairs carve %d outcrop %d lane %d; wrote %s"),
+	UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen: seed %d accepted after %d seed(s); generation %.2f s for this layout, %.2f s for the search; review: window %.3f-%.3f, longest lane %d, farthest pocket %d, repairs carve %d outcrop %d lane %d; cells hash %08x; wrote %s"),
 		Layout.Seed, Layout.SeedsTried, Layout.Seconds, Layout.SearchSeconds, S.WindowMin, S.WindowMax, S.LongestLane, S.FarthestPocket,
-		S.RepairCarves, S.RepairOutcrops, S.RepairLanes, *LayoutPath);
+		S.RepairCarves, S.RepairOutcrops, S.RepairLanes, FRRLayoutGenerator::HashCells(Layout.Cells), *LayoutPath);
 	return 0;
 }

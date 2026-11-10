@@ -30,6 +30,9 @@ struct ROGUERIGS_API FRRLayoutData
 	/** Why the layout is invalid (file missing, parse error...); empty when valid. */
 	FString Error;
 
+	/** Where the cells come from, for the logs ("generator, level seed ..." or "hand json ..."); empty when read by the grid itself. */
+	FString Source;
+
 	/** True when the layout parsed: positive size and Width * Height cells. */
 	bool IsValid() const { return Error.IsEmpty() && Width > 0 && Height > 0 && Cells.Num() == Width * Height; }
 };

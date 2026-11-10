@@ -7,7 +7,9 @@
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "Async/Async.h"
+#include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTime.h"
+#include "Misc/Guid.h"
 #include "GAS/RRHealthAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
 #include "Objectives/RROreBankSubsystem.h"
@@ -23,6 +25,31 @@
 
 namespace
 {
+#if !UE_BUILD_SHIPPING
+	/** Debug: generation of this level skipped as failed so the hand layout fallback runs (0 = off, -1 = every level). */
+	TAutoConsoleVariable<int32> CVarForceGenFail(
+		TEXT("rr.Layout.ForceGenFail"),
+		0,
+		TEXT("rr.Layout.ForceGenFail <level>: the run layout generator treats that level (-1: every level) as failed, so it falls back to its hand layout JSON. 0 = off."),
+		ECVF_Cheat);
+#endif
+
+	/** The run's layout provider from the settings: the C++ generator (hand JSON fallback), or the hand JSON only. */
+	TSharedPtr<IRRLayoutProvider> MakeDefaultLayoutProvider()
+	{
+		if (GetDefault<URRRunSettings>()->bGenerateRunLayouts)
+		{
+			return MakeShared<FRRGeneratorLayoutProvider>();
+		}
+		return MakeShared<FRRJsonLayoutProvider>();
+	}
+
+	/** A new random run seed in [1, 999999999] (task-496 Q4: random for every run, Retry included). */
+	int32 DrawRunSeed()
+	{
+		return 1 + static_cast<int32>(GetTypeHash(FGuid::NewGuid()) % 999999999u);
+	}
+
 	/** Short log list of the snapshot cards: "Stat/Target" or "NewWeapon:<Class>". */
 	FString DescribeCards(const TArray<FRRRunPickedCard>& Cards)
 	{
@@ -91,7 +118,7 @@ URRRunSubsystem* URRRunSubsystem::Get(const UObject* WorldContext)
 void URRRunSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	LayoutProvider = MakeShared<FRRJsonLayoutProvider>();
+	LayoutProvider = MakeDefaultLayoutProvider();
 }
 
 void URRRunSubsystem::Deinitialize()
@@ -124,7 +151,11 @@ bool URRRunSubsystem::RequestLayoutByName(int32 InLevelIndex, const FString& InL
 	ClearLayoutRequest();
 	if (!LayoutProvider)
 	{
-		LayoutProvider = MakeShared<FRRJsonLayoutProvider>();
+		LayoutProvider = MakeDefaultLayoutProvider();
+	}
+	if (RunSeed == 0)
+	{
+		RunSeed = DrawRunSeed();
 	}
 
 	const uint32 Serial = ++RequestSerial;
@@ -136,9 +167,16 @@ bool URRRunSubsystem::RequestLayoutByName(int32 InLevelIndex, const FString& InL
 	FRRLayoutRequest Request;
 	Request.LevelIndex = InLevelIndex;
 	Request.LayoutName = InLayoutName;
+	Request.RunSeed = RunSeed;
+	Request.LevelSeed = DeriveLevelSeed(RunSeed, InLevelIndex);
+#if !UE_BUILD_SHIPPING
+	const int32 ForceFail = CVarForceGenFail.GetValueOnGameThread();
+	Request.bForceGeneratorFailure = ForceFail == -1 || (ForceFail > 0 && ForceFail == InLevelIndex);
+#endif
 	const TSharedRef<IRRLayoutProvider> Provider = LayoutProvider.ToSharedRef();
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout requested for level %d: %s (provider %s, worker thread)."),
-		InLevelIndex, *InLayoutName, *Provider->GetProviderName());
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout requested for level %d: %s (provider %s, run seed %d, level seed %d%s, worker thread)."),
+		InLevelIndex, *InLayoutName, *Provider->GetProviderName(), Request.RunSeed, Request.LevelSeed,
+		Request.bForceGeneratorFailure ? TEXT(", generation forced to fail") : TEXT(""));
 
 	// The worker only touches the provider and the request copy; the result is handed to the game thread by serial, so a
 	// request replaced or cleared meanwhile is simply dropped there.
@@ -176,8 +214,8 @@ void URRRunSubsystem::CompleteLayoutRequest(uint32 Serial)
 	const bool bSuccess = Layout.IsValid() && Layout->IsValid();
 	if (bSuccess)
 	{
-		UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout ready for level %d: %s, %d x %d, spawn (%d, %d), %.1f ms after the request."),
-			RequestedLevelIndex, *RequestedLayoutName, Layout->Width, Layout->Height, Layout->SpawnCell.X, Layout->SpawnCell.Y, Milliseconds);
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: layout ready for level %d: %s (%s), %d x %d, spawn (%d, %d), %.1f ms after the request."),
+			RequestedLevelIndex, *RequestedLayoutName, *Layout->Source, Layout->Width, Layout->Height, Layout->SpawnCell.X, Layout->SpawnCell.Y, Milliseconds);
 	}
 	else
 	{
@@ -227,20 +265,59 @@ TSharedPtr<const FRRLayoutData> URRRunSubsystem::WaitForPreparedLayout(int32 InL
 
 void URRRunSubsystem::SetLayoutProvider(TSharedPtr<IRRLayoutProvider> InProvider)
 {
-	LayoutProvider = InProvider ? InProvider : MakeShared<FRRJsonLayoutProvider>();
+	LayoutProvider = InProvider ? InProvider : MakeDefaultLayoutProvider();
+}
+
+int32 URRRunSubsystem::DeriveLevelSeed(int32 InRunSeed, int32 InLevelIndex)
+{
+	// Integer mix of (run seed, level): stable across platforms and builds; kept under 1e9 so the search (seed + k) cannot overflow.
+	uint32 Value = static_cast<uint32>(InRunSeed) * 0x9E3779B1u ^ static_cast<uint32>(InLevelIndex) * 0x85EBCA77u;
+	Value ^= Value >> 16;
+	Value *= 0x7FEB352Du;
+	Value ^= Value >> 15;
+	Value *= 0x846CA68Bu;
+	Value ^= Value >> 16;
+	return 1 + static_cast<int32>(Value % 999999000u);
+}
+
+bool URRRunSubsystem::PrepareNewRunLayout()
+{
+	if (bRunInProgress)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("URRRunSubsystem: new run preparation refused (a run is in progress)."));
+		return false;
+	}
+	RunSeed = DrawRunSeed();
+	bNewRunPrepared = true;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: next run prepared: run seed %d, level 1 layout requested now."), RunSeed);
+	if (!RequestLayout(1))
+	{
+		bNewRunPrepared = false;
+		return false;
+	}
+	return true;
 }
 
 void URRRunSubsystem::BeginRun(const FString& Level1LayoutName)
 {
+	// A prepared next run (PrepareNewRunLayout) keeps its seed and its level 1 request; otherwise a new seed, nothing requested.
+	const bool bPrepared = HasNewRunLayout();
+	bNewRunPrepared = false;
 	bRunInProgress = true;
 	LevelIndex = 1;
 	Level1LayoutOverride = Level1LayoutName;
 	LastSnapshot = FRRRunMinerSnapshot();
 	bSnapshotPending = false;
 	CaptureWorld.Reset();
-	ClearLayoutRequest();
+	if (!bPrepared)
+	{
+		ClearLayoutRequest();
+		RunSeed = DrawRunSeed();
+	}
 	const FString Layout = GetCurrentLayoutName();
-	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run started, level 1/%d on layout %s."), GetLevelCount(), *Layout);
+	UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run started, level 1/%d on layout %s, run seed %d (%s)."), GetLevelCount(), *Layout, RunSeed,
+		!bPrepared ? TEXT("new seed, level 1 not prepared: the grid's own layout")
+		: (bLayoutPending ? TEXT("prepared, level 1 layout pending") : (PreparedLayout.IsValid() && PreparedLayout->IsValid() ? TEXT("prepared, level 1 layout ready") : TEXT("prepared, level 1 layout failed"))));
 	OnRunStarted.Broadcast(LevelIndex, Layout);
 }
 
@@ -338,13 +415,24 @@ bool URRRunSubsystem::AdvanceToNextLevel()
 
 void URRRunSubsystem::ResetRun()
 {
+	// A next run already prepared and not begun (Main Menu then New Run) keeps its seed and level 1 layout; otherwise a new one.
+	const bool bKeepPrepared = HasNewRunLayout();
 	bRunInProgress = false;
 	LevelIndex = 0;
 	Level1LayoutOverride.Reset();
 	LastSnapshot = FRRRunMinerSnapshot();
 	bSnapshotPending = false;
 	CaptureWorld.Reset();
-	ClearLayoutRequest();
+	if (!bKeepPrepared)
+	{
+		ClearLayoutRequest();
+		PrepareNewRunLayout();
+	}
+	else
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRRunSubsystem: run reset keeps the prepared next run (run seed %d, level 1 layout %s)."),
+			RunSeed, bLayoutPending ? TEXT("pending") : TEXT("ready or failed"));
+	}
 	// Ore lasts one run (ore-economy, task-340): the secured bank starts the next run at 0.
 	const UGameInstance* GameInstance = GetGameInstance();
 	if (URROreBankSubsystem* Bank = GameInstance ? GameInstance->GetSubsystem<URROreBankSubsystem>() : nullptr)

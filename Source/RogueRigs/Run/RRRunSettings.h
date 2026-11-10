@@ -28,6 +28,24 @@ public:
 	TArray<FString> LevelLayouts;
 
 	/**
+	 * Run terrains from the C++ layout generator (task-496): true = FRRGeneratorLayoutProvider (the LevelLayouts files are the
+	 * fallback of a failed generation), false = the LevelLayouts hand files only. Read when the run subsystem starts.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Generator")
+	bool bGenerateRunLayouts = true;
+
+	/**
+	 * Generator params file of each level (index 0 = level 1), in Content/RogueRigs/Data/Levels (staged with the game, never
+	 * Tools/). Owner decision task-496 Q3: levels 2-4 keep the params stored beside their layouts, level 1 the default params.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Generator")
+	TArray<FString> LevelGeneratorParams;
+
+	/** Generator brief file of each level (index 0 = level 1), same folder; an empty entry = recipe checks only. */
+	UPROPERTY(Config, EditAnywhere, Category = "Run|Generator")
+	TArray<FString> LevelGeneratorBriefs;
+
+	/**
 	 * Map opened by the intermission Continue for levels 2+ (package name or short name, e.g. L_ArenaM1); empty = the map the
 	 * intermission was shown on (the arena grid then builds from the prepared layout).
 	 */

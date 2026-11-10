@@ -533,8 +533,13 @@ int32 FRRLayoutGenerator::CountNarrowCells() const
 
 uint32 FRRLayoutGenerator::HashGrid() const
 {
+	return HashCells(Grid);
+}
+
+uint32 FRRLayoutGenerator::HashCells(const TArray<ERRCellType>& Cells)
+{
 	uint32 Value = 2166136261u;
-	for (const ERRCellType Type : Grid)
+	for (const ERRCellType Type : Cells)
 	{
 		Value = (Value ^ static_cast<uint32>(Type)) * 16777619u;
 	}

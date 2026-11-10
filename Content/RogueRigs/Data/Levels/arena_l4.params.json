@@ -127,5 +127,28 @@
   "reach_min": 0.65,
   "reach_max": 0.86,
   "min_pockets": 4
+ },
+ "review": {
+  "window": 24,
+  "stride": 2,
+  "open_min": 0.05,
+  "open_max": 0.95,
+  "repair_open_min": 0.07,
+  "repair_open_max": 0.93,
+  "lane_max": 30,
+  "lane_width_min": 3,
+  "lane_width_max": 10,
+  "lane_tolerance": 1,
+  "pocket_max_dist": 15,
+  "outcrop_rho_min": 2.4,
+  "outcrop_rho_max": 3.6,
+  "lane_rho_min": 2.4,
+  "lane_rho_max": 3.2,
+  "outcrop_discs": 3,
+  "outcrop_step": 0.9,
+  "shape_noise": 0.6,
+  "max_actions": 80,
+  "max_tries": 8,
+  "passes": 3
  }
 }
