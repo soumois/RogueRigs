@@ -14,8 +14,8 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-496-01-generator-provider
-- started: 2026-11-10T19:50:16Z
+- next_step: task-496-02-request-timing
+- started: 2026-11-10T20:05:01Z
 - waiting_for: none
 - result: open
 

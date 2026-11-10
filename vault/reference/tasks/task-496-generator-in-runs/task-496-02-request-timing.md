@@ -3,7 +3,7 @@ id: task-496-02-request-timing
 description: "Cpp: Level 1 layout requested when the main menu opens and used at New Run; next level requested at the extractor board contact instead of later."
 parent: task-496-generator-in-runs
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator wired into real runs: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T20:05:01Z
 - waiting_for: none
 - result: open
 
