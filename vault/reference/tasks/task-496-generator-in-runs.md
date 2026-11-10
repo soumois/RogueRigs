@@ -14,8 +14,8 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-496-03-capture
-- started: 2026-11-10T20:16:14Z
+- next_step: task-496-04-doc
+- started: 2026-11-10T20:21:38Z
 - waiting_for: none
 - result: open
 

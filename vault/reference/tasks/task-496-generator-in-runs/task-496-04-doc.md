@@ -3,7 +3,7 @@ id: task-496-04-doc
 description: "Doc: Document the generator provider, the request timings and where layouts come from."
 parent: task-496-generator-in-runs
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator wired into real runs: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T20:21:38Z
 - waiting_for: none
 - result: open
 
