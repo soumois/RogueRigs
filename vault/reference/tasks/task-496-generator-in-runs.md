@@ -3,7 +3,7 @@ id: task-496-generator-in-runs
 description: "Global task: Every run level built from the C++ layout generator: level 1 prepared from the main menu, next level from the extractor contact, hand JSON as fallback."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Layout generator wired into real runs
 
@@ -14,10 +14,10 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-496-04-doc
+- next_step: none
 - started: 2026-11-10T20:21:38Z
-- waiting_for: none
-- result: open
+- waiting_for: cost recording: record-cost.js finds no usage (agent-usage.js reads ~/.claude/projects/C--Workspace-RogueRigs, absent; the transcripts are under C--Users-soumo-Claude-code), so no cost-log rows and task-status.js refuses status=done; fix the transcript path or decide how to record, then close the global
+- result: All 4 subtasks done (commits 4d85a6f3, 48b00b69, 43fcecb1). A1 levels 1-4 from FRRGeneratorLayoutProvider with run seed, level seed, params, brief and time in the log; two runs differ, same seed same cells (hash 86c36f6d, commandlet x2). A2 level 1 requested when the menu opens, worker thread, longest game-thread frame 1.0-2.5 ms (frame 1 engine start excluded), New Run uses it or waits behind the loading screen. A3 level N+1 requested in the board contact frame, stats screen, task-318 rebuild and Continue unchanged. A4 params and briefs from Content/RogueRigs/Data/Levels, no Tools/ path in the run log. A5 rr.Layout.ForceGenFail 2: Error line, arena_l2.json used, run continues. A6 Retry and Main Menu draw new seeds; rr.Level.New and RRLayoutGen work. A7 owner sheet Saved/Captures/task496_terrains2/owner_sheet.png (heal ore not told apart at capture scale: owner look). Deviations: level 1 brief arena_m1_fine.gen.brief.json (heal_ore 56, barrel 17-22) instead of the literal arena_m1_fine brief; review section added to arena_l2..l4 params. Logs: Saved/Logs/task496/.
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.
