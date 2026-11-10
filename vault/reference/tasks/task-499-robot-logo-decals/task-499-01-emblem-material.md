@@ -3,7 +3,7 @@ id: task-499-01-emblem-material
 description: "Art: The emblem decal source and material shared by the three robots, from the existing emblem cutout, as on the shield."
 parent: task-499-robot-logo-decals
 kind: task
-status: todo
+status: in-progress
 ---
 # Yellow Kessler-Voss emblem decal on Heavy, Kamikaze, Chaser v2: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T20:42:05Z
 - waiting_for: none
 - result: open
 
