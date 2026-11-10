@@ -3,7 +3,7 @@ id: task-496-01-generator-provider
 description: "Cpp: A run layout provider that generates each level with the C++ generator from a per-run seed, per-level params and brief from packaged content, hand JSON fallback."
 parent: task-496-generator-in-runs
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator wired into real runs: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T19:50:16Z
 - waiting_for: none
 - result: open
 

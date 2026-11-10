@@ -3,7 +3,7 @@ id: task-496-generator-in-runs
 description: "Global task: Every run level built from the C++ layout generator: level 1 prepared from the main menu, next level from the extractor contact, hand JSON as fallback."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator wired into real runs
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
 - next_step: task-496-01-generator-provider
-- started: open
+- started: 2026-11-10T19:50:16Z
 - waiting_for: none
 - result: open
 
