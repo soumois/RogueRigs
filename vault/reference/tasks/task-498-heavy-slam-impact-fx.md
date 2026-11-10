@@ -3,7 +3,7 @@ id: task-498-heavy-slam-impact-fx
 description: "Global task: Capture first whether the heavy slam already shows a dust ring and rock chips; build only what is missing, in the explosions cartoon style."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Heavy slam impact: dust ring and rock chips
 
@@ -16,8 +16,8 @@ status: in-progress
 - milestone: M2
 - next_step: task-498-01-capture-before
 - started: 2026-11-10T20:39:35Z
-- waiting_for: none
-- result: open
+- waiting_for: Owner decision on task-498-01: existing beige dust ring and pale chips seen at the slam (other style); rework to orange cartoon ring and violet chips, or keep?
+- result: Stopped after 01 per Q2: ring and chips already exist in another style; frames in Saved/Captures/task498_before.
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.
