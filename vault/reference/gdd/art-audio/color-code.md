@@ -24,7 +24,7 @@ status: approved
 | Command console, shuttle | white + teal (player side) |
 | Console marked rocks | pulsing white outline |
 | Enemy shots, targeting laser | red (moving lines) |
-| All robots | red eyes + yellow logo plate |
+| All robots | red eyes + yellow logo plate (Heavy, Kamikaze, Chaser v2 and shield chaser v2: the yellow Kessler-Voss emblem as a decal on the mesh like the shield emblem, on the top surface seen by the game camera, Meshy meshes not regenerated; owner 2026-11-10, provisional, [[task-499-robot-logo-decals]]) |
 | Chaser | company yellow |
 | Kamikaze | dark gunmetal + pulsing orange core |
 | Chaser shield | physical riot shield: charcoal #33363B plate front and back, yellow and black diagonal stripes on the cut corners and over the top edge, dark gunmetal grip and bolts, yellow Kessler-Voss logo (KV and facets only, no plate) on the front; its fragments use the same texture (owner 2026-10-17, provisional: charcoal chosen over yellow and light grey so the shield stands out from the yellow chaser and the floor, task-225, task-226; [[art-prompts-shield]]) |

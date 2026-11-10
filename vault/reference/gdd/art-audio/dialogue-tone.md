@@ -20,7 +20,7 @@ Each rule has an id that the critic cites ([[agent-style-guide]]). Owner update 
 - T9 Company text never orders the player to stop or do something that contradicts the objective; it states what the company does (owner 2026-10-10, found in a playtest: the shuttle countdown line "Cease all extraction" was misread).
 
 - Examples (reference only, T8): "Send the invoice to corporate." · "They noticed. Great. Love it when they notice." · "Of course it's on the other side of the rock."
-- Barks are nice-to-have; milestone M3.
+- Barks are nice-to-have; milestone M3. Pulled in (owner 2026-11-10, provisional, [[task-497-barks-in-game]]): rare, one line at a time; only on the key events horde_incoming, console_dropped, console_hacked, bonus_chest_opened, shuttle_landed; global cooldown 30 s; never while a Kessler-Voss alert line is shown (the alert keeps priority: a bark is dropped, an alert replaces a bark at once); a random line of the trigger, never the same line twice in a row; text only in the subtitle widget with the speaker name; Vesna's lines are her voice through the drone (L2).
 
 ## Relations
 - [[art-audio-index]] — parent index.

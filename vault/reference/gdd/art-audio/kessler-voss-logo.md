@@ -14,7 +14,7 @@ Chosen by the owner on 2026-10-11 among four variations of one idea (task-102).
 - Legibility: the name stays legible only at large sizes. "KESSLER-VOSS" alone survives about 64 px; "MINING CONSORTIUM" is for large signs and the lid sticker. For tiny logo plates use the round badge or the emblem.
 - Colours: company yellow is allowed; never orange (reserved for explosions), acid green or steel blue (enemy-only).
 - Text on logos and signs is allowed ([[art-style-guide]] A14 as amended). Slogans come only from [[company-voice]]; never invent a name.
-- Used: the sticker on the lid of the [[barrel-asset]]. Intended: robot logo plates and advertising panels.
+- Used: the sticker on the lid of the [[barrel-asset]]. Intended: robot logo plates and advertising panels. Robot emblem decals on Heavy, Kamikaze and Chaser v2 (owner 2026-11-10, [[task-499-robot-logo-decals]]): the plate fails every pillar test strictly; the owner keeps it.
 
 ## Relations
 - [[art-audio-index]] — parent index.

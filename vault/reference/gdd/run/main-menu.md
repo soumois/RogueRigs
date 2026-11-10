@@ -24,6 +24,7 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 
 ## Behaviour
 - New Run: resets the run and opens L_ArenaM1 at level 1 ([[run-structure]]) behind the loading screen of the level changes ([[wbp-loading]], "DROPPING IN", "Level 1"): drawn over the menu before the map opens, kept in the arena until level 1 is ready (gameplay held as between levels), then a 0.5 s fade in from black. The map loading has no measured progress, so the loading animation of [[intermission]] replaces the bar (owner 2026-10-30, provisional, task-379).
+- Level 1 terrain (owner 2026-11-10, provisional, [[task-496-generator-in-runs]]): generated in the background as soon as the menu opens, without blocking the menu; New Run builds level 1 from it, waiting behind the loading screen if it is not ready yet. Retry draws a new run and generates its level 1 the same way.
 - Options: shown greyed out, does nothing (built later).
 - Exit: quits the game.
 - Mouse cursor shown; keyboard focus on New Run (Enter starts a run).
