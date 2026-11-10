@@ -14,7 +14,7 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-499-04-chaser-v2-decal
+- next_step: task-499-05-capture
 - started: 2026-11-10T20:42:05Z
 - waiting_for: none
 - result: open

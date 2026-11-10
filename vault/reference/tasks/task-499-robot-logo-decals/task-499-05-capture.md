@@ -3,7 +3,7 @@ id: task-499-05-capture
 description: "Capture: A -game capture of the three robots with the emblem, beside frames before."
 parent: task-499-robot-logo-decals
 kind: task
-status: todo
+status: in-progress
 ---
 # Yellow Kessler-Voss emblem decal on Heavy, Kamikaze, Chaser v2: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T21:17:31Z
 - waiting_for: none
 - result: open
 
