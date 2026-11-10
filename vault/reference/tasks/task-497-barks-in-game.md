@@ -3,7 +3,7 @@ id: task-497-barks-in-game
 description: "Global task: Rare barks of Rook and Vesna (through the drone) shown as subtitles on key events, one line at a time, 30 s cooldown, alerts keep priority."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Rook and Vesna barks shown in game
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
 - next_step: task-497-01-bark-director
-- started: open
+- started: 2026-11-10T20:24:05Z
 - waiting_for: none
 - result: open
 

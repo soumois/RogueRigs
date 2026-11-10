@@ -3,7 +3,7 @@ id: task-497-01-bark-director
 description: "Cpp: Barks shown on the key events through the subtitle subsystem, with global cooldown, alert priority and no repeat."
 parent: task-497-barks-in-game
 kind: task
-status: todo
+status: in-progress
 ---
 # Rook and Vesna barks shown in game: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T20:24:05Z
 - waiting_for: none
 - result: open
 
