@@ -30,6 +30,7 @@ kind: doc
 - v1clips_291_03 (task-291-03, 2026-10-23): before = AnimTex T_ChaserV2AnimRunV1, RunRate 0.7 on MI_ChaserV2_Body and MI_RobotEye_ChaserV2. After = AnimTex /Game/RogueRigs/Art/ChaserV2/T_ChaserV2AnimV1Clips (new asset from the 291-01 EXR; 20 x 31, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp, read back), RunRate 0.7 (unchanged, equal on both), ClipOffset 0, Animated on. Revert: AnimTex back to T_ChaserV2AnimRunV1, delete T_ChaserV2AnimV1Clips. Shield chaser v2 instances untouched. Not verified: render, PIE, look. See [[bp-chaser-v2]].
 - v1clips_291_04 (task-291-04, 2026-10-23): shield chaser v2 instances. Before = AnimTex T_ShieldChaserV2Anim (master TextureObject and the two eye instances), RunRate 1.5 on the seven instances. After = /Game/RogueRigs/Art/ShieldChaserV2/T_ShieldChaserV2AnimV1Clips (20 x 62, same settings) in the M_ShieldChaserV2_Anim TextureObject (recompiled without error) and AnimTex of MI_RobotEye_ShieldChaserV2 and Plain; RunRate 0.7 on MI_ShieldChaserV2_Body, _BodyPlain, _Shield, _Emblem, _Hidden and both eyes; ClipOffset unchanged (0, plain 2). Read back. Revert: texture back to T_ShieldChaserV2Anim, RunRate 1.5. See [[bp-shield-chaser-v2]].
 - fwd_296_02 (task-296-02, 2026-10-23): shield chaser v2 texture. Before = AnimTex T_ShieldChaserV2AnimV1Clips (master TextureObject and the two eye instances). After = /Game/RogueRigs/Art/ShieldChaserV2/T_ShieldChaserV2AnimFwd (20 x 62, same settings, read back) in the M_ShieldChaserV2_Anim TextureObject (recompiled) and AnimTex of MI_RobotEye_ShieldChaserV2 and Plain. RunRate 0.7 and ClipOffset unchanged. Revert: texture back to T_ShieldChaserV2AnimV1Clips. See [[bp-shield-chaser-v2]].
+- emblem_499 (task-499, 2026-11-10): the emblem instances MI_Heavy_Emblem, MI_Kamikaze_Emblem, MI_ChaserV2_Emblem use their own masked masters (anim texture inside the master), RunRate equal to the body instance; sync rule in [[bp-robot-emblem-decal]].
 - owner_agent: agent-bp
 
 ## Relations
@@ -41,3 +42,4 @@ kind: doc
 - [[blueprints-enemies-index]] — parent index.
 - [[bp-robot-eye-material]] — M_RobotEye and MF_RobotAnimWPO that the master and the eye instances use.
 - [[bp-robot-readability]] — body glow parameters, for comparison.
+- [[bp-robot-emblem-decal]] — the Kessler-Voss emblem decal on its mesh (task-499).

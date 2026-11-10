@@ -18,6 +18,7 @@ The robot Blueprints: chaser, shield chaser, kamikaze, shooter, heavy.
 - [[bp-heavy]] — BP_Heavy, the heavy slam robot.
 - [[bp-robot-readability]] — brightness, saturation, roughness and rim parameters that stop the robots burning.
 - [[bp-robot-eye-material]] — M_RobotEye, MF_RobotAnimWPO and four instances for the robot eye slot.
+- [[bp-robot-emblem-decal]] — Kessler-Voss emblem decal meshes and materials of the heavy, kamikaze, chaser v2 and shield chaser v2.
 - [[bp-robot-meshy-material]] — M_RobotMeshy, body and eye instances for the heavy, kamikaze, shooter and chaser v2 meshes.
 
 ## Relations

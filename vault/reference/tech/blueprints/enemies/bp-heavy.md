@@ -33,6 +33,7 @@ kind: doc
 - run_rate: baked walk RunRate 1.0 kept on the body and eye instances (provisional, owner 2026-10-23).
 - task-297-02 (2026-10-23): before = class default DeathPuffSystem /Game/RogueRigs/FX/NS_RobotDeathPuff (pool 40). After = DeathPuffSystem /Game/RogueRigs/FX/NS_HeavyDeathPuff (3x robot puff, [[bp-heavy-death-puff]]), DeathPuffPoolSize 40 kept; nothing else changed. Read back from Default__BP_Heavy_C; BP_Chaser, BP_ChaserV2, BP_Kamikaze, BP_ShieldChaser, BP_ShieldChaserV2 and BP_Shooter read back still NS_RobotDeathPuff (pool 40). Compiled (no error), saved. Revert: set DeathPuffSystem back to NS_RobotDeathPuff, or `git checkout HEAD~1 -- Content/RogueRigs/Blueprints/Enemies/BP_Heavy.uasset` before this commit. Not verified: PIE, puff look and cost in game.
 - task-300-02 (2026-10-23): before = OnSlam (Location, Radius) empty. After = OnSlam: SpawnSystemAtLocation (System /Game/RogueRigs/FX/NS_HeavySlamImpact, Location = event Location) then SetNiagaraVariable(Float) on its returned component, name "User.Radius", value = event Radius ([[bp-heavy-slam-impact]]). Visual hook only, no logic; OnTelegraphStart and OnRecover unchanged. Read back by read_graph_dsl, compiled (no error), saved. Revert: delete the two OnSlam nodes, or `git checkout HEAD~1 -- Content/RogueRigs/Blueprints/Enemies/BP_Heavy.uasset` before this commit. Not verified: PIE, ring look, that the dust reaches the slam radius in game.
+- emblem_499 (task-499-02, 2026-11-10): before = BodyMesh StaticMesh SM_Heavy_Meshy_Anim. After = SM_Heavy_Meshy_AnimEmblem (same parts + emblem decal, slots body, robot_eye, robot_emblem = MI_Heavy_Emblem); OnTelegraphStart / OnRecover still swap slot 1 (robot_eye). See [[bp-robot-emblem-decal]].
 - owner_agent: agent-bp
 
 ## Relations
@@ -49,3 +50,4 @@ kind: doc
 - [[bp-heavy-death-puff]] — the heavy puff set as its DeathPuffSystem.
 - [[ground-telegraph]] — draws the slam zone now.
 - [[bp-heavy-slam-impact]] — the Niagara system OnSlam spawns.
+- [[bp-robot-emblem-decal]] — the Kessler-Voss emblem decal on its mesh (task-499).

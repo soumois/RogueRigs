@@ -21,6 +21,7 @@ kind: doc
 - task-436-01 (2026-11-05): before = DeathPuffSystem NS_RobotDeathPuff. After = class default DeathPuffSystem /Game/RogueRigs/FX/NS_KamikazeDeathPuff ([[bp-kamikaze-death-puff]], pool 40 kept), so the cartoon robot flash leaves the kamikaze death unchanged. Read back on the default object, compiled, saved. Revert: set DeathPuffSystem back to NS_RobotDeathPuff.
 - assets: /Game/RogueRigs/Materials/GreyBox/MI_GB_Kamikaze (dark gunmetal, Color 0.12, 0.13, 0.15), MI_GB_Core (bright orange, Color 1, 0.5, 0), MI_GB_Eye; instances of M_GreyBox.
 - run_rate: baked walk RunRate 0.35 kept on the body and eye instances (provisional, owner 2026-10-23).
+- emblem_499 (task-499-03, 2026-11-10): before = BodyMesh (inherited, class default) SM_Kamikaze_Meshy_Anim. After = SM_Kamikaze_Meshy_AnimEmblem (emblem decal on the head top, slot robot_emblem = MI_Kamikaze_Emblem); CoreMesh and CoreLight unchanged. See [[bp-robot-emblem-decal]].
 - owner_agent: agent-bp
 
 ## Relations
@@ -30,3 +31,4 @@ kind: doc
 - [[bp-pickup-xp]] — the pickup it drops.
 - [[bp-enemy-spawner]] — the spawner that creates it.
 - [[bp-kamikaze-death-puff]] — its death puff.
+- [[bp-robot-emblem-decal]] — the Kessler-Voss emblem decal on its mesh (task-499).

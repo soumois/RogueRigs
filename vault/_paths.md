@@ -140,6 +140,7 @@ bp-player-laser-shot-material  reference/tech/blueprints/fx/bp-player-laser-shot
 bp-projectile  reference/tech/blueprints/player/bp-projectile.md
 bp-robot-death-puff  reference/tech/blueprints/fx/bp-robot-death-puff.md
 bp-robot-debris  reference/tech/blueprints/fx/bp-robot-debris.md
+bp-robot-emblem-decal  reference/tech/blueprints/enemies/bp-robot-emblem-decal.md
 bp-robot-eye-material  reference/tech/blueprints/enemies/bp-robot-eye-material.md
 bp-robot-meshy-material  reference/tech/blueprints/enemies/bp-robot-meshy-material.md
 bp-robot-readability  reference/tech/blueprints/enemies/bp-robot-readability.md
