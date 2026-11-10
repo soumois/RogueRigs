@@ -3,7 +3,7 @@ id: task-499-04-chaser-v2-decal
 description: "Bp: Emblem placed on the Chaser v2, carried by the shield chaser v2."
 parent: task-499-robot-logo-decals
 kind: task
-status: todo
+status: in-progress
 ---
 # Yellow Kessler-Voss emblem decal on Heavy, Kamikaze, Chaser v2: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-10T21:16:40Z
 - waiting_for: none
 - result: open
 
