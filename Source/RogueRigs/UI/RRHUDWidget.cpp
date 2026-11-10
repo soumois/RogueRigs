@@ -817,6 +817,11 @@ void URRHUDWidget::ShowHordeAlertLine()
 void URRHUDWidget::HandleHordeIncoming(int32 HordeIndex, float SecondsUntil)
 {
 	ShowHordeAlertLine();
+	// Bark after the alert line (task-497-01): the alert keeps priority, so the bark is dropped while the alert is shown.
+	if (URRSubtitleSubsystem* Subtitles = URRSubtitleSubsystem::Get(this))
+	{
+		Subtitles->ShowBark(FName(TEXT("horde_incoming")));
+	}
 	OnHordeIncoming(SecondsUntil);
 }
 

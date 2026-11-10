@@ -97,9 +97,10 @@ public:
 
 	/**
 	 * Picks one bark of TriggerId (any speaker when SpeakerId is None) from Stream, never the previous pick of that
-	 * (trigger, speaker) when more than one matches. False when none matches.
+	 * (trigger, speaker) when more than one matches. False when none matches. OutSpeakerId (optional) receives the speaker of
+	 * the picked line.
 	 */
-	bool PickBark(FName TriggerId, FName SpeakerId, FRandomStream& Stream, FString& OutText);
+	bool PickBark(FName TriggerId, FName SpeakerId, FRandomStream& Stream, FString& OutText, FName* OutSpeakerId = nullptr);
 
 	/** Number of barks of TriggerId (any speaker when SpeakerId is None). */
 	int32 CountBarks(FName TriggerId, FName SpeakerId = NAME_None) const;

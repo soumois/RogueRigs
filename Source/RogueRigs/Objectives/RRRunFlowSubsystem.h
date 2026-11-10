@@ -561,6 +561,9 @@ protected:
 	 */
 	void PickAlertLine(const TCHAR* EventId);
 
+	/** Asks the subtitles for a bark of key event TriggerId (URRSubtitleSubsystem::ShowBark: cooldown, alert priority). */
+	void ShowBark(const TCHAR* TriggerId);
+
 	/** Pauses the game through player 0's controller and switches it to game-and-UI input with the cursor shown. */
 	void EnterEndPause();
 

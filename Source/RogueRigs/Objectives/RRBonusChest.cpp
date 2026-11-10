@@ -16,6 +16,7 @@
 #include "Player/RRMiner.h"
 #include "Progression/RRLevelUpComponent.h"
 #include "Progression/RRProgressionComponent.h"
+#include "Text/RRSubtitleSubsystem.h"
 #include "Weapons/RRWeapon.h"
 #include "World/RRBlobShadowComponent.h"
 #include "World/RRShadows.h"
@@ -238,6 +239,10 @@ void ARRBonusChest::OpenLid()
 	CollectActiveWorldEffects(EffectsBefore);
 	OnLidOpened(GetActorLocation());
 	TrackEffectsSpawnedSince(EffectsBefore, TEXT("OnLidOpened"));
+	if (URRSubtitleSubsystem* Subtitles = URRSubtitleSubsystem::Get(this))
+	{
+		Subtitles->ShowBark(FName(TEXT("bonus_chest_opened")));
+	}
 	GrantReward();
 }
 

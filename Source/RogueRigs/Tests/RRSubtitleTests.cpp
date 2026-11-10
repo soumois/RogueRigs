@@ -105,4 +105,54 @@ bool FRRSubtitleDurationTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSubtitleBarkTest, "RogueRigs.Subtitles.Barks",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSubtitleBarkTest::RunTest(const FString& Parameters)
+{
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRSubtitleBarkWorld"));
+	UWorld* World = TestWorld.Get();
+	URRSubtitleSubsystem* Subtitles = World->GetSubsystem<URRSubtitleSubsystem>();
+	if (!TestNotNull(TEXT("subtitle subsystem"), Subtitles))
+	{
+		return false;
+	}
+	const FName Hacked(TEXT("console_hacked"));
+	const FName Opened(TEXT("bonus_chest_opened"));
+
+	// A5: a trigger outside the key events never shows a bark.
+	TestFalse(TEXT("level_up refused"), Subtitles->ShowBark(TEXT("level_up")));
+	TestFalse(TEXT("nothing shown"), Subtitles->HasSubtitle());
+
+	// A1: first bark of the world shows at once, with the speaker name.
+	if (!TestTrue(TEXT("first bark shown"), Subtitles->ShowBark(Hacked)))
+	{
+		return false;
+	}
+	const FName Speaker = Subtitles->GetCurrentSpeakerId();
+	TestTrue(TEXT("speaker is Rook or Vesna"), Speaker == URRSubtitleSubsystem::SpeakerRook || Speaker == URRSubtitleSubsystem::SpeakerVesna);
+	TestTrue(TEXT("speaker name in front"), Subtitles->GetCurrentSubtitle().ToString().StartsWith(Subtitles->GetCurrentSpeaker().ToString() + TEXT(": ")));
+	const FString FirstLine = Subtitles->GetCurrentText().ToString();
+
+	// A3: an alert replaces the bark at once; a bark during an alert is dropped.
+	TestTrue(TEXT("alert shown"), Subtitles->ShowAlertLine(TEXT("horde_incoming")));
+	TestEqual(TEXT("alert replaced the bark"), Subtitles->GetCurrentSpeakerId(), URRSubtitleSubsystem::SpeakerKesslerVoss);
+	World->TimeSeconds += 31.0;
+	TestFalse(TEXT("bark dropped during the alert"), Subtitles->ShowBark(Opened));
+	TestEqual(TEXT("alert kept"), Subtitles->GetCurrentSpeakerId(), URRSubtitleSubsystem::SpeakerKesslerVoss);
+	Subtitles->Clear();
+
+	// A2: cooldown counted from the last bark shown.
+	World->TimeSeconds -= 31.0;
+	World->TimeSeconds += 10.0;
+	TestFalse(TEXT("bark within the cooldown dropped"), Subtitles->ShowBark(Opened));
+	TestTrue(TEXT("cooldown left about 20 s"), FMath::IsNearlyEqual(Subtitles->GetBarkCooldownRemaining(), 20.f, 0.01f));
+	World->TimeSeconds += 21.0;
+	TestTrue(TEXT("bark after the cooldown shown"), Subtitles->ShowBark(Hacked));
+
+	// A4: never the same line twice in a row for the trigger.
+	TestNotEqual(TEXT("no immediate repeat"), Subtitles->GetCurrentText().ToString(), FirstLine);
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS

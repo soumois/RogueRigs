@@ -447,7 +447,7 @@ int32 FRRTextContentLibrary::CountBarks(FName TriggerId, FName SpeakerId) const
 	return Count;
 }
 
-bool FRRTextContentLibrary::PickBark(FName TriggerId, FName SpeakerId, FRandomStream& Stream, FString& OutText)
+bool FRRTextContentLibrary::PickBark(FName TriggerId, FName SpeakerId, FRandomStream& Stream, FString& OutText, FName* OutSpeakerId)
 {
 	TArray<const FBark*> Matches;
 	for (const FBark& Bark : Barks)
@@ -464,6 +464,10 @@ bool FRRTextContentLibrary::PickBark(FName TriggerId, FName SpeakerId, FRandomSt
 	int32& Last = LastBarkIndex.FindOrAdd(RRTextContent::BarkKey(TriggerId, SpeakerId), INDEX_NONE);
 	Last = PickIndexAvoiding(Matches.Num(), Last, Stream);
 	OutText = Matches[Last]->Text;
+	if (OutSpeakerId)
+	{
+		*OutSpeakerId = Matches[Last]->Speaker;
+	}
 	return true;
 }
 

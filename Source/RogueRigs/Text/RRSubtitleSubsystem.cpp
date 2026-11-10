@@ -24,6 +24,10 @@ URRSubtitleSubsystem::URRSubtitleSubsystem()
 		{ SpeakerRook, LOCTEXT("SpeakerRook", "Rook") },
 		{ SpeakerVesna, LOCTEXT("SpeakerVesna", "Vesna") }
 	};
+	BarkTriggers = {
+		FName(TEXT("horde_incoming")), FName(TEXT("console_dropped")), FName(TEXT("console_hacked")),
+		FName(TEXT("bonus_chest_opened")), FName(TEXT("shuttle_landed"))
+	};
 }
 
 bool URRSubtitleSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) const
@@ -87,6 +91,8 @@ void URRSubtitleSubsystem::HandleLevelReady(int32 LevelIndex, const FString& Lay
 	{
 		SetSilenced(false, TEXT("level ready"));
 	}
+	// A new level starts without bark cooldown (task-497 Q4).
+	LastBarkTime = -1.0;
 }
 
 void URRSubtitleSubsystem::OnWorldBeginPlay(UWorld& InWorld)
@@ -178,7 +184,64 @@ bool URRSubtitleSubsystem::ShowAlertLine(FName EventId)
 	{
 		return false;
 	}
-	return Show(SpeakerKesslerVoss, FText::GetEmpty(), Line);
+	const bool bReplacesBark = bActive && CurrentSpeakerId != SpeakerKesslerVoss;
+	const FName ReplacedSpeaker = CurrentSpeakerId;
+	const bool bShown = Show(SpeakerKesslerVoss, FText::GetEmpty(), Line);
+	if (bShown && bReplacesBark)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: alert '%s' replaces the %s bark."), *EventId.ToString(), *ReplacedSpeaker.ToString());
+	}
+	return bShown;
+}
+
+float URRSubtitleSubsystem::GetBarkCooldownRemaining() const
+{
+	const UWorld* World = GetWorld();
+	if (LastBarkTime < 0.0 || !World)
+	{
+		return 0.f;
+	}
+	return FMath::Max(0.f, static_cast<float>(LastBarkTime + BarkCooldownSeconds - World->GetTimeSeconds()));
+}
+
+bool URRSubtitleSubsystem::ShowBark(FName TriggerId)
+{
+	const TCHAR* DropReason = nullptr;
+	if (!BarkTriggers.Contains(TriggerId))
+	{
+		DropReason = TEXT("not a bark trigger");
+	}
+	else if (bSilenced)
+	{
+		DropReason = TEXT("subtitles silenced");
+	}
+	else if (bActive)
+	{
+		DropReason = CurrentSpeakerId == SpeakerKesslerVoss ? TEXT("alert line shown") : TEXT("a bark is shown");
+	}
+	else if (GetBarkCooldownRemaining() > 0.f)
+	{
+		DropReason = TEXT("cooldown");
+	}
+	if (DropReason)
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: bark '%s' dropped (%s, cooldown left %.1f s)."), *TriggerId.ToString(), DropReason,
+			GetBarkCooldownRemaining());
+		return false;
+	}
+
+	URRTextContentSubsystem* TextContent = URRTextContentSubsystem::Get(this);
+	FName SpeakerId;
+	FText Line;
+	if (!TextContent || !TextContent->PickBarkLine(TriggerId, SpeakerId, Line) || !Show(SpeakerId, FText::GetEmpty(), Line))
+	{
+		return false;
+	}
+	const UWorld* World = GetWorld();
+	LastBarkTime = World ? World->GetTimeSeconds() : 0.0;
+	UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: bark '%s' shown (%s) at %.2f s, next bark after %.0f s."), *TriggerId.ToString(),
+		*SpeakerId.ToString(), LastBarkTime, BarkCooldownSeconds);
+	return true;
 }
 
 void URRSubtitleSubsystem::Clear()

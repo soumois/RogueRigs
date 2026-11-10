@@ -144,6 +144,25 @@ bool URRTextContentSubsystem::GetBark(FName TriggerId, FName SpeakerId, FText& O
 	return true;
 }
 
+bool URRTextContentSubsystem::PickBarkLine(FName TriggerId, FName& OutSpeakerId, FText& OutText)
+{
+	EnsureLoaded();
+	FString Text;
+	OutSpeakerId = NAME_None;
+	if (!Library.PickBark(TriggerId, NAME_None, RandomStream, Text, &OutSpeakerId))
+	{
+		OutText = FText::GetEmpty();
+		if (Library.GetBarkCount() > 0)
+		{
+			WarnOnce(TEXT("bark|") + TriggerId.ToString().ToLower() + TEXT("|none"),
+				FString::Printf(TEXT("no bark for trigger '%s', nothing shown."), *TriggerId.ToString()));
+		}
+		return false;
+	}
+	OutText = FText::FromString(Text);
+	return true;
+}
+
 bool URRTextContentSubsystem::GetScreenText(FName ScreenId, FRRScreenText& OutScreenText)
 {
 	EnsureLoaded();

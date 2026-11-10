@@ -436,6 +436,7 @@ ARRConsole* URRRunFlowSubsystem::DropConsole()
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: alert %.2f, console dropped on (%d, %d)."), GetAlert(), Cell.X, Cell.Y);
 	PickAlertLine(FRRTextContentLibrary::AlertConsoleDropped);
 	OnConsoleDropped.Broadcast(NewConsole);
+	ShowBark(TEXT("console_dropped"));
 	UpdateLocatorTarget();
 	return NewConsole;
 }
@@ -636,6 +637,7 @@ ARRShuttle* URRRunFlowSubsystem::LandShuttle()
 	PickAlertLine(FRRTextContentLibrary::AlertShuttleCountdown);
 	NewShuttle->InitializeShuttle(Grid, Miner, Cell, Countdown);
 	OnShuttleLanded.Broadcast(NewShuttle);
+	ShowBark(TEXT("shuttle_landed"));
 	UpdateLocatorTarget();
 	RefreshAlertBarEvents();
 	return NewShuttle;
@@ -1026,10 +1028,12 @@ void URRRunFlowSubsystem::HandleConsoleStateChanged(ARRConsole* InConsole, ERRCo
 	{
 		return;
 	}
-	if (NewState == ERRConsoleState::Complete && !bConsoleDone)
+	const bool bJustHacked = NewState == ERRConsoleState::Complete && !bConsoleDone;
+	if (bJustHacked)
 	{
 		bConsoleDone = true;
 		UE_LOG(LogRogueRigs, Log, TEXT("URRRunFlowSubsystem: console hacked, alert resumes at %.2f."), GetAlert());
+		ShowBark(TEXT("console_hacked"));
 	}
 	OnObjectiveChanged.Broadcast(InConsole, NewState, InConsole->GetMarkedRockCount(), InConsole->GetInitialMarkedRockCount());
 	BroadcastAlertIfChanged();
@@ -1050,6 +1054,14 @@ void URRRunFlowSubsystem::HandleConsoleMarkedRocksChanged(ARRConsole* InConsole,
 	if (InConsole == Console)
 	{
 		OnObjectiveChanged.Broadcast(InConsole, InConsole->GetConsoleState(), Remaining, Total);
+	}
+}
+
+void URRRunFlowSubsystem::ShowBark(const TCHAR* TriggerId)
+{
+	if (URRSubtitleSubsystem* Subtitles = URRSubtitleSubsystem::Get(this))
+	{
+		Subtitles->ShowBark(FName(TriggerId));
 	}
 }
 

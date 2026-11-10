@@ -15,7 +15,7 @@
  * (per file at load, per unknown id at lookup), never a crash. No AI at runtime: the files are written offline.
  * Hooks: URRUpgradeComponent::MakeCard (upgrade flavor), URRRunFlowSubsystem (console_dropped, bonus_chest_dropped,
  * extraction_ready, shuttle_countdown once per countdown start) and URRHUDWidget (horde_incoming) pick an alert line just before
- * raising their event, through URRSubtitleSubsystem::ShowAlertLine (shown as a subtitle); GetCurrentAlertLine still returns it. Barks are loaded but nothing displays them yet.
+ * raising their event, through URRSubtitleSubsystem::ShowAlertLine (shown as a subtitle); GetCurrentAlertLine still returns it. Barks of the key events are shown through URRSubtitleSubsystem::ShowBark (PickBarkLine).
  * Screen texts (screen_texts.json): the end, intermission and loading screen widgets read them by item id (GetScreenText).
  */
 UCLASS()
@@ -58,6 +58,9 @@ public:
 	/** Picks a bark of TriggerId by SpeakerId (None = any speaker), avoiding an immediate repeat. False (empty text) when none. */
 	UFUNCTION(BlueprintCallable, Category = "Text")
 	bool GetBark(FName TriggerId, FName SpeakerId, FText& OutText);
+
+	/** Picks a bark of TriggerId among every speaker's lines (no immediate repeat) and returns its speaker. False (empty text, None) when none. */
+	bool PickBarkLine(FName TriggerId, FName& OutSpeakerId, FText& OutText);
 
 	/**
 	 * Texts of screen item ScreenId of screen_texts.json (e.g. end_run_won): title, subtitle, lines, labels. False (empty struct,

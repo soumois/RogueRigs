@@ -41,7 +41,9 @@ struct FRRSubtitleSpeaker
  * is ticked here (world time, frozen while the game is paused), so the widget never polls: it binds OnSubtitleShown and
  * OnSubtitleCleared. Callers: URRRunFlowSubsystem (console_dropped, bonus_chest_dropped, extraction_ready, shuttle_countdown once
  * per countdown start) and URRHUDWidget (horde_incoming) through ShowAlertLine, which picks the Kessler-Voss line with
- * URRTextContentSubsystem::GetAlertLine. Barks (rook, vesna) can use Show later; nothing shows them yet. Silent during a run
+ * URRTextContentSubsystem::GetAlertLine. Barks (rook, vesna; task-497-01) go through ShowBark on the key events listed in
+ * BarkTriggers: one line at a time, BarkCooldownSeconds between two barks, dropped while any line is shown (an alert keeps
+ * priority) and replaced at once by an alert (ShowAlertLine replaces the current line). Silent during a run
  * transition (task-207-01): the intermission or the loading clears the current line and Show refuses lines until OnLevelReady.
  * Silent after the run end (task-211-01): OnRunEnded (end screen) or OnGameOver (death) clears the line and silences until
  * the world ends (restart = new world, allowed again). Game and PIE worlds.
@@ -102,6 +104,19 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Subtitles")
 	bool ShowAlertLine(FName EventId);
+
+	/**
+	 * Shows a bark of key event TriggerId (barks.json, any speaker, URRTextContentSubsystem::PickBarkLine: random, never the same
+	 * line twice in a row) with the speaker name. Dropped, not queued, and logged when TriggerId is not in BarkTriggers, while a
+	 * line is shown (an alert line keeps priority; a bark is never stacked), within BarkCooldownSeconds of the last bark shown,
+	 * while silenced, or when the trigger has no line. The first bark of a world (or after OnLevelReady) may show at once.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Subtitles")
+	bool ShowBark(FName TriggerId);
+
+	/** Seconds before the next bark may show (0 when it may show now). */
+	UFUNCTION(BlueprintPure, Category = "Subtitles")
+	float GetBarkCooldownRemaining() const;
 
 	/** Ends the current subtitle now and broadcasts OnSubtitleCleared; nothing when none is shown. */
 	UFUNCTION(BlueprintCallable, Category = "Subtitles")
@@ -200,6 +215,17 @@ protected:
 	/** Duration added per character of the line, seconds (owner decision 2026-10-10: 0.06). */
 	UPROPERTY(Config, EditAnywhere, Category = "Subtitles", meta = (ClampMin = "0"))
 	float SecondsPerCharacter = 0.06f;
+
+	/** Seconds after a bark is shown during which no other bark shows (owner 2026-11-10, task-497 Q4: 30, provisional). */
+	UPROPERTY(Config, EditAnywhere, Category = "Subtitles|Barks", meta = (ClampMin = "0"))
+	float BarkCooldownSeconds = 30.f;
+
+	/** Bark triggers that may show a bark (owner 2026-11-10, task-497 Q1: key events only). */
+	UPROPERTY(Config, EditAnywhere, Category = "Subtitles|Barks")
+	TArray<FName> BarkTriggers;
+
+	/** World time of the last bark shown; negative when none yet in this world or level. */
+	double LastBarkTime = -1.0;
 
 	/** True while a subtitle is shown. */
 	bool bActive = false;
