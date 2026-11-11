@@ -3,7 +3,7 @@ id: task-503-01-reading-list-and-definitions
 description: "Doc: Shorten the executor reading list and apply the specialist definitions decision."
 parent: task-503-executor-reading-list
 kind: task
-status: todo
+status: in-progress
 ---
 # Shorter executor reading list and specialist agent definitions: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-11T21:22:27Z
 - waiting_for: none
 - result: open
 

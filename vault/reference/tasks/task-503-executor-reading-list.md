@@ -3,7 +3,7 @@ id: task-503-executor-reading-list
 description: "Global task: executor reads runbook and quirks only on a script failure; specialist agent definitions handled as decided; no node merged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Shorter executor reading list and specialist agent definitions
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
 - next_step: task-503-01-reading-list-and-definitions
-- started: open
+- started: 2026-11-11T21:22:27Z
 - waiting_for: none
 - result: open
 
