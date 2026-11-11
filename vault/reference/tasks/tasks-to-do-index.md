@@ -14,6 +14,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-504-options-screen-look]] — Options screen look: one Kie.ai GPT Image 2 mockup validated by the owner, then every element mapped to an existing sprite or a new PNG. Status todo.
+- [[task-504-options-screen-look]] — Options screen look: one Kie.ai GPT Image 2 mockup validated by the owner, then every element mapped to an existing sprite or a new PNG. Status in-progress.
 - [[task-505-options-screen-sound-graphics]] — Options screen built from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened by the main menu Options button. Status todo.
 - [[task-506-options-gameplay-and-pause]] — Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu. Status todo.
