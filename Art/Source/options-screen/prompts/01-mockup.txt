@@ -1,0 +1,23 @@
+Same art style as Image 1 (the validated pause menu) and Image 2 (the level-end screen): keep exactly their visual language: the dimmed almost black arena behind with violet ore crystals in the corners, the big white title with the same riveted side bars as "PAUSED", the riveted teal and gunmetal frame with corner brackets and rust, thin divider lines, the cream rusty buttons with teal riveted ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.
+
+Make a new screen: the OPTIONS screen. Do not copy the pause texts. All text is English, crisp and readable at 1920x1080.
+
+Layout:
+- Top: title "OPTIONS" with the same riveted side bars as "PAUSED".
+- Under the title, a row of three tabs side by side, small riveted gunmetal plates with teal ends: "Sound", "Graphics", "Gameplay". "Graphics" is the selected tab: its plate is cream rusty like the buttons, brighter, and it joins the frame below; "Sound" and "Gameplay" are dark gunmetal with light text.
+- Centre: one large riveted teal and gunmetal frame (same frame as Image 1) holding the Graphics settings as rows, label left and control right, every row aligned, same font size, one thin divider line between the display group and the quality group:
+  "Window mode" with a left/right selector: small riveted arrow buttons "<" and ">" around the value "Fullscreen".
+  "Resolution" with a left/right selector, value "1920 x 1080".
+  "VSync" with an On/Off toggle switch showing "On".
+  "Frame rate limit" with a left/right selector, value "60".
+  "Resolution scale" with a horizontal slider: a dark gunmetal track, a teal riveted handle near the right end, value "100%" right of it.
+  then the divider line, then:
+  "Quality preset" with a left/right selector, value "High".
+  "Shadows" with a left/right selector, value "High".
+  "Effects" with a left/right selector, value "High".
+  "Anti-aliasing" with a left/right selector, value "High".
+  "Post-processing" with a left/right selector, value "High".
+  "Textures" with a left/right selector, value "High".
+- Bottom, under the frame: two buttons side by side, both in the style of the cream rusty "Resume" button with teal ends: "Reset to defaults" and "Back" (highlighted, slightly brighter).
+
+Toggle, slider and selectors use the same metal, teal, cream and rust materials as the frame and the buttons. Do not add anything else: no icons, no ore counter, no subtitle, no tooltip, no Apply button. No yellow, green or blue elements. Keep the text sizes consistent, balanced margins, no empty gap in the frame.

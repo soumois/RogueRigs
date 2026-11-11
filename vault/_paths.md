@@ -49,6 +49,7 @@ art-prompts-level-end-screen-mockup  reference/gdd/art-audio/art-prompts-level-e
 art-prompts-loading-screen  reference/gdd/art-audio/art-prompts-loading-screen.md
 art-prompts-main-menu-background  reference/gdd/art-audio/art-prompts-main-menu-background.md
 art-prompts-miner  reference/gdd/art-audio/art-prompts-miner.md
+art-prompts-options-screen-mockup  reference/gdd/art-audio/art-prompts-options-screen-mockup.md
 art-prompts-ore-deposit  reference/gdd/art-audio/art-prompts-ore-deposit.md
 art-prompts-pause-menu-mockup  reference/gdd/art-audio/art-prompts-pause-menu-mockup.md
 art-prompts-rigs  reference/gdd/art-audio/art-prompts-rigs.md

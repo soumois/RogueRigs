@@ -3,7 +3,7 @@ id: task-504-options-screen-look
 description: "Global task: Options screen look: one owner-validated Kie.ai GPT Image 2 mockup, then each element mapped to an existing or new sprite."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Options screen: Kie.ai mockup and its elements
 
@@ -17,7 +17,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-504-01-options-mockup
 - started: 2026-11-11T21:49:08Z
-- waiting_for: none
+- waiting_for: owner go on Art/Source/options-screen/20261111-224939-options-screen-1.png (round 1, 6 credits; je valide or a change request)
 - result: open
 
 ## Questions

@@ -1,0 +1,28 @@
+{
+  "run_id": "20261111-224939-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/01-mockup.txt",
+  "prompt": "Same art style as Image 1 (the validated pause menu) and Image 2 (the level-end screen): keep exactly their visual language: the dimmed almost black arena behind with violet ore crystals in the corners, the big white title with the same riveted side bars as \"PAUSED\", the riveted teal and gunmetal frame with corner brackets and rust, thin divider lines, the cream rusty buttons with teal riveted ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.\n\nMake a new screen: the OPTIONS screen. Do not copy the pause texts. All text is English, crisp and readable at 1920x1080.\n\nLayout:\n- Top: title \"OPTIONS\" with the same riveted side bars as \"PAUSED\".\n- Under the title, a row of three tabs side by side, small riveted gunmetal plates with teal ends: \"Sound\", \"Graphics\", \"Gameplay\". \"Graphics\" is the selected tab: its plate is cream rusty like the buttons, brighter, and it joins the frame below; \"Sound\" and \"Gameplay\" are dark gunmetal with light text.\n- Centre: one large riveted teal and gunmetal frame (same frame as Image 1) holding the Graphics settings as rows, label left and control right, every row aligned, same font size, one thin divider line between the display group and the quality group:\n  \"Window mode\" with a left/right selector: small riveted arrow buttons \"<\" and \">\" around the value \"Fullscreen\".\n  \"Resolution\" with a left/right selector, value \"1920 x 1080\".\n  \"VSync\" with an On/Off toggle switch showing \"On\".\n  \"Frame rate limit\" with a left/right selector, value \"60\".\n  \"Resolution scale\" with a horizontal slider: a dark gunmetal track, a teal riveted handle near the right end, value \"100%\" right of it.\n  then the divider line, then:\n  \"Quality preset\" with a left/right selector, value \"High\".\n  \"Shadows\" with a left/right selector, value \"High\".\n  \"Effects\" with a left/right selector, value \"High\".\n  \"Anti-aliasing\" with a left/right selector, value \"High\".\n  \"Post-processing\" with a left/right selector, value \"High\".\n  \"Textures\" with a left/right selector, value \"High\".\n- Bottom, under the frame: two buttons side by side, both in the style of the cream rusty \"Resume\" button with teal ends: \"Reset to defaults\" and \"Back\" (highlighted, slightly brighter).\n\nToggle, slider and selectors use the same metal, teal, cream and rust materials as the frame and the buttons. Do not add anything else: no icons, no ore counter, no subtitle, no tooltip, no Apply button. No yellow, green or blue elements. Keep the text sizes consistent, balanced margins, no empty gap in the frame.",
+  "refs": [
+    "Art/Source/pause-menu/20261102-223354-pause-menu-1.png",
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "c6e103fe850ad4a157aef8c28fe58bf3",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000c53081f7b9c43b154ea4d216.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261111-224939-options-screen-1.png"
+  ]
+}
