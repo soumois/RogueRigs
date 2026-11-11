@@ -3,7 +3,7 @@ id: task-497-barks-in-game
 description: "Global task: Rare barks of Rook and Vesna (through the drone) shown as subtitles on key events, one line at a time, 30 s cooldown, alerts keep priority."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Rook and Vesna barks shown in game
 
@@ -14,10 +14,10 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-497-03-doc
+- next_step: none
 - started: 2026-11-11T05:11:41Z
-- waiting_for: none
-- result: open
+- waiting_for: Cost recording only: all 3 subtasks done and acceptance A1-A6 passed, but agent-usage.js finds no transcript (looks in C--Workspace-RogueRigs), so record-cost.js wrote no cost-log rows and the closure gate refuses done.
+- result: A1-A6 passed: barks on the five key events (three after their own alert line, owner choix A), 30 s data cooldown, alert priority, no repeat, text only; frames of a Rook bark, a Vesna bark and an alert alone in Saved/Captures/task-497-barks/owner_sheet.png. Global not closed: cost rows missing (tooling).
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.

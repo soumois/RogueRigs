@@ -3,7 +3,7 @@ id: task-497-03-doc
 description: "Doc: Document the bark flow: triggers, cooldown, alert priority."
 parent: task-497-barks-in-game
 kind: task
-status: in-progress
+status: done
 ---
 # Rook and Vesna barks shown in game: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The nodes describe the triggers wired, the cooldown value and where it lives, and the alert priority; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: not measured
+- usage: not measured
+- runs: 1
 - milestone: M2
 - started: 2026-11-11T05:24:19Z
 - waiting_for: none
-- result: open
+- result: Commit 2e1e7755: sys-subtitles (barks bullet: triggers, BarkCooldownSeconds 30 and BarkTriggers / BarkTriggersAfterAlert as config of URRSubtitleSubsystem, C++ defaults; alert priority and replace; wait after alert; ShowBark callers; tests) and sys-text-content (PickBarkLine, bark display). Lint clean. Cost not recorded: agent-usage.js finds no transcript (known tooling issue).
 
 ## Relations
 - [[task-497-barks-in-game]] — parent global task.
