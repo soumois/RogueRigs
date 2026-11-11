@@ -1,6 +1,6 @@
 ---
 id: verification-levels
-description: "Verification level of a global task: criteria, verification size, indicative executor budget, shortened light acceptance, known limits. Open to plan or run a task."
+description: "Verification level of a task: criteria, verification size, executor budget that stops for the owner, light acceptance, limits. Open to plan or run a task."
 parent: agents-index
 kind: rule
 applies_to: orchestrator
@@ -15,7 +15,7 @@ Each global task carries `verification_level`, so that verification follows the 
 | standard | standard | New behaviour or new asset | As before this rule | 90 turns, 1.5 M units |
 | exploratory | exploratoire | A look to find; several loops likely | Capture loop with a fixed number of rounds | 150 turns, 3 M units |
 
-The figures are starting values (provisional, owner 2026-11-06). The budget is indicative for the Executor's whole run and never blocks: exceeding it is not a failure ([[agent-executor]] `budget`).
+The figures are starting values (provisional, owner 2026-11-06). The budget covers all Executor runs of the global. Reaching it at a subtask closing stops the Executor for the owner when subtasks are left; his "continue" grants one more budget of the same size (owner 2026-11-11, [[execution-protocol]] step 5.10). Exceeding it is not a failure ([[agent-executor]] `budget`).
 
 ## Limits of each level
 - Light without a before image: add one launch before the change, so 2 launches and 1 sheet. The comparison of [[orchestrator-lessons]] (owner 2026-10-16) stays; only its size changes.
@@ -39,6 +39,7 @@ Example, [[task-474-miner-scale-down]], one Blueprint value and one C++ line:
 - [[orchestration-protocol]] — step 3, where the Planner sets the level.
 - [[execution-protocol]] — where the Executor applies it.
 - [[agent-executor]] — budget rule.
+- [[task-502-executor-handover-budget]] — owner decision that the budget stops for the owner.
 - [[orchestrator-lessons]] — owner rule of 2026-10-16 whose size varies here.
 - [[umg-layout]] — the four resolutions a layout keeps.
 - [[task-474-miner-scale-down]] — the shortening example.

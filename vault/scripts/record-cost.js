@@ -3,7 +3,8 @@
 // cost-log totals and the usage snapshot (vault/scripts/usage-snapshot.json), and prints an ALERT line for each budget overrun
 // (thresholds in cost-rates.json): weighted units over token_ceiling (field written `- token_ceiling: <x> M units`, decimal allowed;
 // a legacy integer or `k` value, or `open`, gives no ceiling alert), start context too large, turn limit near or hit, and the
-// executor run of the global over the budget of its verification level (task-cost.js budgetAlert; never blocks).
+// executor run of the global over the budget of its verification level (task-cost.js budgetAlert: a BUDGET line, the owner-wait
+// trigger of task-502; the closing itself still completes).
 const fs = require('fs'), { execSync } = require('child_process');
 const R = require('path').resolve(__dirname, '..', '..').split(require('path').sep).join('/') + '/';
 process.chdir(R);
@@ -85,6 +86,6 @@ for (const a of alerts) console.log('ALERT ' + id + ': ' + a);
 // The executor run and the planner share live on the global node (the subtasks done by the executor say "included in the executor run").
 const taskCost = require('./task-cost');
 taskCost.write(data, [globalId]);
-// Non-blocking: the executor run so far against the budget of the level of its global (task-483).
+// The executor run so far against the budget of the level of its global (task-483); over it, a BUDGET line (task-502).
 const budget = taskCost.budgetAlert(data, globalId);
 if (budget) console.log(budget);

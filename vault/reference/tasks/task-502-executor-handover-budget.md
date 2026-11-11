@@ -31,3 +31,6 @@ Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisi
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-502-01-handover-and-budget]] — step 1, doc.
+- [[execution-protocol]] — steps 5.9 handover and 5.10 budget stop written by this task.
+- [[agent-executor]] — handover and budget fields written by this task.
+- [[verification-levels]] — budget that now stops for the owner.

@@ -50,21 +50,27 @@ function budgetOf(level) {
   return row ? { turns: +row[2], unitsM: +row[3] } : null;
 }
 
-// ALERT line when the executor run of a global, as far as it has gone, has passed the turns or the units of its level's budget;
-// null otherwise, and for a global without a level or without an executor run. Never throws: the alert must not block a closing.
+// BUDGET line when the executor runs of a global, as far as they have gone, have passed the turns or the units of its level's
+// budget times (1 + budget_grants), budget_grants being the field of the global node (absent = 0; each owner "continue" adds one,
+// owner Q7 of task-502, 2026-11-11). The line is the trigger: with subtasks left the executor sets wait-answers and continues only
+// on the owner word. null under the budget, and for a global without a level or without an executor run. Never throws: the
+// closing itself still completes.
 function budgetAlert(data, id) {
   const num = id.split('-')[1], task = 'task-' + num;
   try {
     const t = data.tasks.find(x => x.task === task);
     const f = fs.readdirSync(T).find(x => new RegExp('^task-' + num + '-.*\\.md$').test(x));
     if (!t || !t.pilotAgents || !f) return null;
-    const m = fs.readFileSync(path.join(T, f), 'utf8').match(/^- verification_level: ([a-z]+)\s*$/m);
+    const s = fs.readFileSync(path.join(T, f), 'utf8');
+    const m = s.match(/^- verification_level: ([a-z]+)\s*$/m);
     if (!m || m[1] === 'open') return null;
     const b = budgetOf(m[1]);
     if (!b) return `ALERT ${task}: level ${m[1]} has no budget in verification-levels, executor run not compared`;
+    const grants = parseInt((s.match(/^- budget_grants: (\d+)\s*$/m) || [, '0'])[1], 10);
+    const turns = b.turns * (1 + grants), units = b.unitsM * (1 + grants);
     const unitsM = parseFloat(Mu(t.pilot.units)); // same rounded figure as the executor_usage line
-    if (t.pilot.calls <= b.turns && unitsM <= b.unitsM) return null;
-    return `ALERT ${task}: executor run over the budget of level ${m[1]} (${b.turns} turns, ${b.unitsM} M units): ${t.pilot.calls} turns, ${Mu(t.pilot.units)} M units so far; write the cause in result and list it in the final report`;
+    if (t.pilot.calls <= turns && unitsM <= units) return null;
+    return `BUDGET ${task}: executor run over the budget of level ${m[1]} x${1 + grants} (${turns} turns, ${+units.toFixed(2)} M units): ${t.pilot.calls} turns, ${Mu(t.pilot.units)} M units so far; with subtasks left set wait-answers with done, remaining and an estimate and continue only on the owner word (execution-protocol step 5.10); write the cause in result`;
   } catch (e) { return `ALERT ${task}: budget not compared (${e.message})`; }
 }
 module.exports = { write, budgetAlert };

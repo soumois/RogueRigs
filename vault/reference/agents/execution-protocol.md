@@ -1,6 +1,6 @@
 ---
 id: execution-protocol
-description: "Execution procedure of the Executor, steps 5 and 6: start, do each subtask, check, close, owner wait, close the global. Open to change execution."
+description: "Executor procedure, steps 5 and 6: start, do and check each subtask, close, owner wait, handover, budget stop, close the global. Open to change execution."
 parent: agents-index
 kind: rule
 applies_to: orchestrator
@@ -21,6 +21,8 @@ Executor step 0: check `git status` and the task's `next_step`, then run `node v
 6. Fail: one focused correction and a new check. Second failure: set `blocked`, record why, stop and report. At the exploratory level a look not yet found is not a failure: it uses the capture rounds of [[verification-levels]], and at the limit goes to the owner wait below.
 7. Preview gate (visuel family, owner 2026-11-11): once the preview subtask has its mockup or capture, it always sets that subtask and the global `wait-answers` with `waiting_for=owner go on <image path>`, even when its own checklist passes, and reports the image path. On the go it closes the preview with `task-next.js` and builds; on a refusal the build subtasks stay `todo`, so nothing is reverted, and the owner's answer decides what follows.
 8. Owner wait: when it stops for an owner action or answer (close the editor, a missing decision), it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<the action or question>"`, commits them by path, and reports. On resume it sets both back with `status=in-progress` (or `task-start.js`; `task-next.js` does it for the next subtask), which resets `waiting_for` to `none`.
+9. Handover (owner 2026-11-11, [[task-502-executor-handover-budget]] Q6): at each closing `task-next.js` prints `context: <n>k`, and a `HANDOVER` line when that context is over the threshold of [[agent-executor]] `handover` with subtasks left. The Executor then writes a `## Handover` section in the global node, before `## Subtasks` (max 300 words: done, state of files, editor and builds, next, pitfalls), replacing an older one, commits it by path and stops with a report saying HANDOVER. It does not start the next subtask. A fresh Executor starts from that section: `task-start.js` is then a no-op that prints the open subtask path.
+10. Budget stop (owner 2026-11-11, Q7): when a closing prints a `BUDGET` line and subtasks are left, the Executor sets the next subtask and the global `wait-answers` with `waiting_for=budget: <done>; remaining <subtasks>; estimate <turns and M units>`, commits and reports. It continues only on the owner word: on "continue" it raises `budget_grants` of the global by one (`task-status.js <global>.md status=in-progress budget_grants=<n>`), which grants one more budget of the same size. On the last closing it only writes the cause in `result`. Combined with a HANDOVER line, it writes the handover section too, so the owner's go starts a fresh Executor.
 
 ## 6. Close
 Run the global acceptance checks, verify every subtask cost row and usage field is present, fill `result`, set `done`, `next_step: none`, commit, report to the owner. `task-status.js` enforces the cost gate when the global is closed.
@@ -32,5 +34,6 @@ Run the global acceptance checks, verify every subtask cost row and usage field 
 - [[orchestrator-runbook]] — the commands that apply them.
 - [[cost-log]] — where step 5 records tokens.
 - [[_navigation]] — execution exception for opening task nodes by path.
-- [[verification-levels]] — verification size and indicative budget per global.
+- [[verification-levels]] — verification size and budget per global.
+- [[task-502-executor-handover-budget]] — owner decision behind steps 5.9 and 5.10.
 - [[request-families]] — réglage globals and their wrong-family stop.
