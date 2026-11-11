@@ -3,7 +3,7 @@ id: task-501-visual-preview-gate
 description: "Global task: a visual or taste request first gets a mockup or one slice with a capture, then waits for the owner go."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Visual requests: preview and owner go before the full build
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
 - next_step: task-501-01-preview-rule
-- started: open
+- started: 2026-11-11T21:16:19Z
 - waiting_for: none
 - result: open
 

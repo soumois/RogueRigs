@@ -3,7 +3,7 @@ id: task-501-01-preview-rule
 description: "Doc: Write the preview-first rule for the planner and the owner-go wait for the executor."
 parent: task-501-visual-preview-gate
 kind: task
-status: todo
+status: in-progress
 ---
 # Visual requests: preview and owner go before the full build: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-11T21:16:19Z
 - waiting_for: none
 - result: open
 
