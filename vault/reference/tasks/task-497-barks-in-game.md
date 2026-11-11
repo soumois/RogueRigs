@@ -3,7 +3,7 @@ id: task-497-barks-in-game
 description: "Global task: Rare barks of Rook and Vesna (through the drone) shown as subtitles on key events, one line at a time, 30 s cooldown, alerts keep priority."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Rook and Vesna barks shown in game
 
@@ -15,8 +15,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
 - next_step: task-497-01-bark-director
-- started: 2026-11-10T20:24:05Z
-- waiting_for: Owner decision on task-497-01: barks of horde_incoming, console_dropped, shuttle_landed always dropped by their own same-frame alert (see subtask node).
+- started: 2026-11-11T05:11:41Z
+- waiting_for: none
 - result: open
 
 ## Questions
