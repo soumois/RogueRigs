@@ -3,7 +3,7 @@ id: task-504-02-options-elements
 description: "Art: Map every element of the validated mockup to an existing sprite or a new PNG."
 parent: task-504-options-screen-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen: Kie.ai mockup and its elements: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-11T21:53:25Z
 - waiting_for: none
 - result: open
 
