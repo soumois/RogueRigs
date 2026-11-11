@@ -510,3 +510,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-499-robot-logo-decals]] — The yellow Kessler-Voss emblem added as a decal on the Heavy, Kamikaze and Chaser v2 meshes, like the shield emblem, without regenerating the Meshy meshes. Status cancelled.
 - [[task-500-request-families]] — Crew workflow: the relay classifies a request (réglage, comportement, visuel, gros morceau); réglage skips the planner; gros morceau is split into several globals. Status done.
 - [[task-501-visual-preview-gate]] — Crew workflow: a visual or taste request plans a mockup or one slice with one capture first; the executor waits for the owner go before the full build. Status done.
+- [[task-502-executor-handover-budget]] — Crew workflow: at a subtask boundary over the context threshold the executor hands over to a fresh one; reaching the level budget triggers a stop and a question to the owner. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-502-executor-handover-budget
 description: "Global task: executor hands over to a fresh one over a context threshold; reaching the level budget stops and asks the owner."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Executor handover over a context threshold and a budget that triggers
 
@@ -14,10 +14,14 @@ status: in-progress
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
-- next_step: task-502-01-handover-and-budget
+- next_step: none
 - started: 2026-11-11T21:17:38Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 70, cache write 97194, cache read 2584163, output 25034
+- executor_usage: runs 1, turns 35, context start 15k peak 109k, resumes 0, 4 min, units 0.51 M
+- planning_tokens: input 5, cache write 12163, cache read 83526, output 4150
+- planning_usage: add7b373 "Plan crew workflow routing change" 1/4 (tasks 500, 501, 502, 503), units 0.04 M
+- result: Done. context-now.js prints the executor context (last turn of the newest executor transcript of the global, else the usage-snapshot trace); task-next.js prints context: <n>k and, over alerts.handoverContextTokens 120000 (cost-rates.json) with subtasks left, a HANDOVER line. BUDGET line from task-cost.js over the level budget times 1 + budget_grants (task-status.js inserts the field); execution-protocol steps 5.9 handover and 5.10 budget stop, agent-executor handover/budget/cost_alerts, verification-levels, runbook, cost-log, agents-index, task.md relay relaunch, executor.md step 8. A4 checked: task-502 live 86k, task-496 transcript 339k with HANDOVER, task-441 usage trace 318k with HANDOVER, RR_HANDOVER_TOKENS=20000 forces HANDOVER on the live run, BUDGET on task-496 (128 turns, 3.66 M) and task-499, grants x1/x2 on a fake figure. Q8 not done (default no). Commit f8c6dcf5.
 
 ## Questions
 Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-11.
@@ -29,7 +33,7 @@ Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisi
 1. task-502-01-handover-and-budget (vault/reference/tasks/task-502-executor-handover-budget/task-502-01-handover-and-budget.md) — doc: Rebuild the context measure and the HANDOVER line, the handover section and relay relaunch, and the budget trigger.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-502-01-handover-and-budget]] — step 1, doc.
 - [[execution-protocol]] — steps 5.9 handover and 5.10 budget stop written by this task.
 - [[agent-executor]] — handover and budget fields written by this task.
