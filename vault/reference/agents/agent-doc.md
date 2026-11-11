@@ -18,7 +18,7 @@ status: provisional
 - definition_of_done: every listed node matches the commits; lint clean; committed by explicit path.
 - must_not: write or edit code, Blueprints, assets, maps or Config; change a gdd value; edit task status or cost fields; search the vault; document anything the brief does not list; invent a value (write `open` and report it).
 - scope: cpp and bp only; art, 3d, level-design and text keep writing their own nodes (Q1 of [[task-325-doc-agent]]).
-- definition_file: `.claude/agents/doc.md` (tools Read, Write, Edit, Bash, Glob; 30 turns).
+- definition_file: none; removed 2026-11-11 (owner, task-503 Q9): the Executor applies these rules itself.
 - model: sonnet
 - token_ceiling: 0.3 M units (provisional, owner 2026-10-27)
 

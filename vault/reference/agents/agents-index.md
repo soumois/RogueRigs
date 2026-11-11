@@ -20,7 +20,7 @@ Lessons are filed by theme: owner rules for the Planner, [[bp-mcp-lessons]] for 
 - [[agent-cpp]] — writes and builds C++ and Node tooling, runs stress and tests, returns a change summary.
 - [[agent-bp]] — builds the editor layer through Unreal MCP, returns a change summary.
 - [[agent-capture]] — runs `-game` captures from a planner checklist, reports each point seen, not seen or ambiguous; Sonnet, edits nothing.
-- [[agent-doc]] — writes the `sys-*` and `bp-*` nodes of a task from the Executor's brief, in its own subtask.
+- [[agent-doc]] — rules for the `sys-*` and `bp-*` nodes of a task, written by the Executor in the doc subtask.
 - [[agent-text]] — writes player-facing text from the lore nodes, with a retrieval log.
 - [[agent-style-guide]] — the critic of text and images: verdict and correction per item against numbered rules.
 - [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).

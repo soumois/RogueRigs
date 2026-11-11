@@ -16,7 +16,7 @@ status: provisional
 - output_format: PNG through `node Tools/art/kie_image.js` (usage in the script header). Model GPT Image 2 on Kie.ai: `gpt-image-2-image-to-image` when reference images are attached (correction loop, same-style assets), `gpt-image-2-text-to-image` otherwise; aspect ratio 1:1, 16:9, 9:16, 4:3 or 3:4; resolution capped at 1K (owner 2026-10-11). Run log `<run-id>.json`: prompt verbatim, references, task ids, credits, result URLs, files. Key read from `KIE_API_KEY`.
 - definition_of_done: self-review per image against the A rules of [[art-style-guide]] finds no gap; [[agent-style-guide]] has reviewed the images and each fail is either corrected or kept by the owner's explicit choice; the owner validates the image and copies it to `vault/assets/`.
 - must_not: put an image in `vault/assets/`; invent a design absent from the specs; exceed the variant count the subtask allows; run two `kie_image.js` runs at once; write an API key anywhere.
-- definition_file: `.claude/agents/art.md`
+- definition_file: none; removed 2026-11-11 (owner, task-503 Q9): the Executor applies these rules itself.
 - model: sonnet
 - token_ceiling: 0.15 M units (provisional, owner 2026-10-27)
 

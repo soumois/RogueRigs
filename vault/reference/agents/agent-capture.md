@@ -21,7 +21,7 @@ status: provisional
 - output_format: per checklist point C1..Cn one verdict, seen / not seen / ambiguous, with the frame or crop path; then launches used, log lines of any defect, what is unverified. Ambiguous points go to the owner; the Executor does not decide them.
 - definition_of_done: every checklist point has a verdict with a path; at most 5 launches and 6 images opened.
 - must_not: edit code, assets, config or vault nodes; guess a cause; claim more than the images show. When a code or tool change is needed it stops and reports it. Stress runs, automation tests and the pacing bot stay with [[agent-cpp]].
-- definition_file: `.claude/agents/capture.md` (tools Read, Bash, PowerShell, Glob; 30 turns).
+- definition_file: none; removed 2026-11-11 (owner, task-503 Q9): the Executor applies these rules itself.
 - model: sonnet
 - token_ceiling: 0.4 M units (provisional, owner 2026-10-29)
 

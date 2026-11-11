@@ -17,7 +17,7 @@ status: provisional
 - blender_route (owner 2026-10-11, simple props such as the barrel): when the subtask says "Blender route", no Meshy call and no credit: the agent writes `Tools/art/blender/<asset>.py` (bpy) that builds the mesh from the validated image (flat shading, flat per-material colours, small textured decals only for stickers and signs, A1 as amended), then exports `Art/Meshes/<asset>/<SM_Name>.fbx` in centimetres and its `.report.json` (tris, dimensions, materials, UVs, warnings) with the same headless Blender as the cleanup; the script imports the shared helpers from `rr_blender` and never redefines them ([[blender-asset-route]]).
 - definition_of_done: the report is within budget and dimensions; the owner validates the mesh; [[agent-bp]] then imports it through Unreal MCP.
 - must_not: use the Blender route without the subtask naming it; start a paid generation from an image outside `vault/assets/`; start a second paid generation for the same image unless the subtask allows it; split into rigid parts or rig without a parts and bones list in the subtask; import into Unreal; call a viewport capture tool; write a key anywhere.
-- definition_file: `.claude/agents/3d.md`
+- definition_file: none; removed 2026-11-11 (owner, task-503 Q9): the Executor applies these rules itself.
 - model: sonnet
 - token_ceiling: 1.2 M units (provisional, owner 2026-10-27)
 

@@ -20,7 +20,7 @@ status: provisional
 - mcp_rules (task-361): send independent MCP calls in one message; no `list_toolsets` or `describe_toolset` for a tool on the sheet; `GetWidgetDescription` of the named widget rather than `GetWidgets` of the whole tree.
 - needs: the editor running with the MCP server started.
 - known_limits: [[bp-mcp-lessons]] (turn limit, captures, PIE, cross-Blueprint calls).
-- definition_file: `.claude/agents/bp.md` (80 turns since 2026-10-14; 40 before).
+- definition_file: none; removed 2026-11-11 (owner, task-503 Q9): the Executor applies these rules itself.
 - model: sonnet
 - token_ceiling: 1.0 M units (provisional, owner 2026-10-27)
 
