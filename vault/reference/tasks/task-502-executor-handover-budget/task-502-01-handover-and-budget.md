@@ -3,7 +3,7 @@ id: task-502-01-handover-and-budget
 description: "Doc: Rebuild the context measure and the HANDOVER line, the handover section and relay relaunch, and the budget trigger."
 parent: task-502-executor-handover-budget
 kind: task
-status: todo
+status: in-progress
 ---
 # Executor handover over a context threshold and a budget that triggers: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-11T21:17:38Z
 - waiting_for: none
 - result: open
 

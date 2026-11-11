@@ -3,7 +3,7 @@ id: task-502-executor-handover-budget
 description: "Global task: executor hands over to a fresh one over a context threshold; reaching the level budget stops and asks the owner."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Executor handover over a context threshold and a budget that triggers
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
 - next_step: task-502-01-handover-and-budget
-- started: open
+- started: 2026-11-11T21:17:38Z
 - waiting_for: none
 - result: open
 
