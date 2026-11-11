@@ -1,0 +1,42 @@
+---
+id: task-504-options-screen-look
+description: "Global task: Options screen look: one owner-validated Kie.ai GPT Image 2 mockup, then each element mapped to an existing or new sprite."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Options screen: Kie.ai mockup and its elements
+
+- request: Owner 2026-11-11, verbatim: "Ok, on va faire l'écran des options [...] Il va falloir passer par l'api chatgpt pour les images ( Kie ). Il faut prévoir aussi les options classiques pour le son, la qualité, et différents élément gamplay." Relay: family gros morceau, with a look to find (preview gate). "api chatgpt ( Kie )" = GPT Image 2 through Kie.ai, Tools/art/kie_image.js. No tests, bot runs or extra captures asked beyond what the rules require for a screen. The request will later be replayed once without the owner from the answers recorded here and in options-menu.
+- goal: The options screen has an owner-validated look and every element it needs exists as a sprite, before anything is built.
+- acceptance: A1 One mockup per round through Kie.ai GPT Image 2 image-to-image as options-menu Look says, showing the content of options-menu (title, three tabs, Graphics tab with all its options, Reset to defaults, Back), in the style of the pause menu mockup, no yellow, green or blue; prompt, command, image, log and credits per round recorded in a node under art-prompts; image files labelled keep in Art/Source/options-screen/. A2 The owner said "je valide" on one image; his words per round recorded; rounds only on his change requests, at most 3 before showing him where it stands. A3 Every element of the validated mockup is mapped to an existing sprite or a new PNG in the project, with 9-slice margins as UMG fractions where it is a plate, credits within the options-menu cap. A4 Lint clean, committed.
+- gdd_check: Read: run-index, main-menu (Options is a greyed plate that does nothing, "built later"), pause-menu (Resume and Exit only, look from a Kie.ai mockup off the level-end mockup), art-audio-index, ui-button-hover (Options listed as a disabled button), audio-direction (sound palette open, M3), art-prompts, art-prompts-pause-menu-mockup (method and sprites reused), milestones (options screen in no milestone; M3 ended 2026-11-09, so this is post-submission scope, requested by the owner), umg-layout, verification-levels, request-families. No conflict. Open values the work needed: the whole options content, opening points, persistence and look were undecided; proposed in options-menu as Q1 to Q9 defaults. Code facts, 3 targeted reads (step 2 exception) because Q3 depends on them: no sound, audio, music or mix asset under Content/, and no sound call in Source/ (so volume sliders have nothing audible yet); Config/DefaultEngine.ini already sets GameUserSettingsClassName=/Script/RogueRigs.RRGameUserSettings (Source/RogueRigs/Settings/RRGameUserSettings.h exists, content not read). Decisions: gdd node options-menu created (status open until confirmation); confirmation edits main-menu, pause-menu, ui-button-hover, run-index and options-menu.
+- verification_level: exploratory
+- family: gros
+- confirmed_by_owner: no (plan and questions handed back 2026-11-11)
+- milestone: M2
+- next_step: task-504-01-options-mockup
+- started: open
+- waiting_for: owner answers to Q1-Q9 (all three globals)
+- result: open
+
+## Questions
+Asked 2026-11-11, each with a default; open until the owner answers.
+- Q1 Ouverture : le bouton Options du menu principal devient actif et ouvre l'écran par-dessus le menu ; le menu pause reçoit un bouton "Options" entre Resume et Exit, le jeu reste en pause. Back ou Échap revient à l'écran d'origine. Défaut : les deux.
+- Q2 Disposition : titre "OPTIONS", trois onglets "Sound", "Graphics", "Gameplay", boutons "Reset to defaults" (onglet courant) et "Back" ; textes en anglais en dur. Chaque changement s'applique tout de suite, pas de bouton Apply ni de compte à rebours après un changement de résolution. Défaut : comme écrit.
+- Q3 Son : curseurs Master, Music, Effects de 0 à 100 %, pas de 5, 100 % par défaut. Le jeu n'a encore aucun son (M3) : les curseurs pilotent les groupes de volume que les futurs sons utiliseront, rien d'audible à vérifier maintenant. Défaut : ces trois, construits maintenant.
+- Q4 Graphismes : mode fenêtre (Fullscreen, Windowed fullscreen, Windowed), résolution (liste de l'écran), VSync On/Off, limite d'images (30, 60, 120, 144, Unlimited), préréglage de qualité (Low, Medium, High, Epic, Custom) qui règle Shadows, Effects, Anti-aliasing, Post-processing, Textures, chacun modifiable seul, et échelle de résolution 50 à 100 %. Valeurs au premier lancement : celles du jeu actuel. Défaut : comme écrit.
+- Q5 Gameplay : Damage numbers On/Off, Aim indicator (chevrons) On/Off, Screen shake On/Off (seulement si le jeu a un tremblement de caméra, sinon retiré), Pause quand la fenêtre perd le focus On/Off ; tous On par défaut. Défaut : ces quatre.
+- Q6 Sauvegarde : réglages enregistrés sur le disque à chaque changement (par utilisateur Windows, hors du dépôt), rechargés et appliqués à chaque lancement. Défaut : oui.
+- Q7 Look : une maquette Kie.ai GPT Image 2 image-to-image avec les maquettes validées du menu pause et de fin de niveau en référence, onglet Graphics affiché, 16:9, 1K, une image par tour, crédits rapportés, autres tours seulement sur tes demandes ; rien n'est découpé ni construit avant ton "je valide". Éléments : sprites existants d'abord, sinon découpés de la maquette, sinon régénérés par Kie.ai (1 variante chacun, 36 crédits max). Défaut : comme écrit.
+- Q8 Découpage en trois tâches lancées dans l'ordre, une fois toutes confirmées : 504 le look (maquette puis éléments), 505 l'écran avec Sound et Graphics ouvert depuis le menu principal, 506 l'onglet Gameplay et l'accès depuis le menu pause. Défaut : comme écrit.
+- Q9 Captures de l'écran aux quatre résolutions (1920x1080, 1280x720, 1920x1200, 2560x1080) dans 505 et 506. Défaut : les quatre.
+
+## Subtasks
+1. task-504-01-options-mockup (vault/reference/tasks/task-504-options-screen-look/task-504-01-options-mockup.md) — art: Make the options screen mockup through Kie.ai image-to-image and get the owner go.
+2. task-504-02-options-elements (vault/reference/tasks/task-504-options-screen-look/task-504-02-options-elements.md) — art: Map every element of the validated mockup to an existing sprite or a new PNG.
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-504-01-options-mockup]] — step 1, art.
+- [[task-504-02-options-elements]] — step 2, art.

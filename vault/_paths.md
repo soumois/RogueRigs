@@ -261,6 +261,7 @@ naming  reference/tech/conventions/naming.md
 objective-bonus-chest  reference/gdd/run/objective-bonus-chest.md
 objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
+options-menu  reference/gdd/run/options-menu.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 orchestrator-lessons  reference/agents/orchestrator-lessons.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md

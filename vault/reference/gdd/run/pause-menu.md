@@ -34,3 +34,4 @@ Requested by the owner 2026-11-03 ([[task-424-pause-menu-stats]]). Values provis
 - [[main-menu]] — where Exit leads; run-won Main Menu behaviour reused.
 - [[art-prompts-level-end-screen-mockup]] — the style reference and reusable sprites.
 - [[task-424-pause-menu-stats]] — the task that builds it.
+- [[options-menu]] — the options screen its Options button opens.
