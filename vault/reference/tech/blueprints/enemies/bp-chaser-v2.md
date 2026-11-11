@@ -23,7 +23,6 @@ kind: doc
 - run_rate: 0.7 on the body and eye instances (task-289-04, 2026-10-23, provisional, owner 2026-10-23; was 1.5).
 - run_v1_289_04 (task-289-04, 2026-10-23): rows 0..15 are the v1-motion run of task-289-02. The old T_ChaserV2Anim is kept; new T_ChaserV2AnimRunV1 (/Game/RogueRigs/Art/ChaserV2/, imported by MCP from Art/Meshes/chaser-v2-meshy/T_ChaserV2Anim.exr; MCP cannot reimport; 20 x 31, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp, World group, read back) is now AnimTex of MI_ChaserV2_Body and MI_RobotEye_ChaserV2, RunRate 0.7, ClipOffset 0, Animated on. Revert: AnimTex back to T_ChaserV2Anim, RunRate 1.5 (`git checkout <commit before task-289-04> -- Content/RogueRigs/Materials/Robots/MI_ChaserV2_Body.uasset Content/RogueRigs/Materials/Robots/MI_RobotEye_ChaserV2.uasset`), delete T_ChaserV2AnimRunV1. Shield chaser v2 untouched. Not verified: render, PIE, look.
 - v1clips_291_03 (task-291-03, 2026-10-23): new T_ChaserV2AnimV1Clips (/Game/RogueRigs/Art/ChaserV2/, imported by MCP from Art/Meshes/chaser-v2-meshy/T_ChaserV2Anim.exr of task-291-01: run and attack rebaked with the exact v1 curves, knee 55; 20 x 31, TC_HDR, no mips, Nearest, sRGB off, never stream, Clamp, World group, read back) is now AnimTex of MI_ChaserV2_Body and MI_RobotEye_ChaserV2; RunRate 0.7, ClipOffset 0, Animated on read back equal on both. T_ChaserV2AnimRunV1 kept unused for rollback. Revert: AnimTex back to T_ChaserV2AnimRunV1 (or git checkout the commit before task-291-03 for the two instances), delete T_ChaserV2AnimV1Clips. Shield chaser v2 and v1 untouched. Not verified: render, PIE, look.
-- emblem_499 (task-499-04, 2026-11-10): before = BodyMesh SM_ChaserV2_Meshy_Anim. After = SM_ChaserV2_Meshy_AnimEmblem (dark-rock emblem on the hood, slot 2 robot_emblem = MI_ChaserV2_Emblem from the mesh); overrides [None, MI_RobotEye_ChaserV2] unchanged. See [[bp-robot-emblem-decal]].
 - owner_agent: agent-bp
 
 ## Relations
@@ -32,4 +31,3 @@ kind: doc
 - [[bp-robot-meshy-material]] — the body and eye instances and RunRate.
 - [[robot-parts-bake-pipeline]] — bake and Unreal recipe of this mesh.
 - [[sys-enemies]] — the C++ class.
-- [[bp-robot-emblem-decal]] — the Kessler-Voss emblem decal on its mesh (task-499).
