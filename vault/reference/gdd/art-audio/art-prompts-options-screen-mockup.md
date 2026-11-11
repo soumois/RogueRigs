@@ -17,7 +17,7 @@ Content of [[options-menu]] (Graphics tab shown), style of [[art-prompts-pause-m
 - Self-review gaps: the VSync toggle thumb is grey; the selected tab sits just above the frame rather than joining it; values are placeholders.
 
 ## Owner words
-- Round 1: open (waiting for his go).
+- Round 1: "Je valide" (2026-11-11), after seeing the image and the three review points; no correction round. The slider knob at about 85 % for 100 %, the charcoal backdrop, the grey VSync thumb, the tab not joining the frame and the placeholder values are kept on purpose.
 
 ## Relations
 - [[art-prompts]] — parent: method and prompt nodes.

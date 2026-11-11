@@ -3,7 +3,7 @@ id: task-504-01-options-mockup
 description: "Art: Make the options screen mockup through Kie.ai image-to-image and get the owner go."
 parent: task-504-options-screen-look
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Options screen: Kie.ai mockup and its elements: art
 
@@ -20,8 +20,8 @@ status: wait-answers
 - usage: open
 - runs: open
 - milestone: M2
-- started: 2026-11-11T21:49:08Z
-- waiting_for: owner go on Art/Source/options-screen/20261111-224939-options-screen-1.png (round 1, 6 credits; je valide or a change request)
+- started: 2026-11-11T21:53:18Z
+- waiting_for: none
 - result: open
 
 ## Relations
