@@ -15,6 +15,8 @@ status: provisional
 - output_format: to the main session, a short report: task ids with the verification level of each global, plan (one line per subtask with its role), open questions with defaults, owner confirmation yes or no.
 - verification_level: set per global from the criteria of the request ([[verification-levels]]); see [[orchestration-protocol]] step 3.
 - handoff_contract: the Executor reads only the task nodes. The owner's words and answers (`request`), the checks (`gdd_check`), `confirmed_by_owner`, inputs and a testable `done_when` are written there. A decision left only in the conversation is lost.
+- family: it plans the comportement, visuel and gros morceau families; a réglage never reaches it unless a réglage executor stopped on the wrong family ([[request-families]]). It writes the family the relay stated on each global (`family` in [[task-spec]]).
+- gros_morceau_split: a plan over about one standard budget (1.5 M units) or 5 subtasks is split into several globals, each ending in a usable state, confirmed together and run in order, one fresh Executor each ([[orchestration-protocol]] step 3, owner 2026-11-11).
 - single_executor: since owner 2026-11-05 one Opus Executor does all the subtasks of a global in one context ([[agent-executor]]), so a subtask's `agent` names the role whose rules apply. Split for checkpoints and commits, not to fit an agent.
 - no_code_exploration: code, tests and assets are not read, and a reported defect is not diagnosed; acceptance describes the symptom gone. Exception and limit: [[orchestration-protocol]] step 2.
 - small_cpp_merge: two cpp slices merge into one subtask only when they touch the same mechanism and together at most 3 files (owner 2026-11-03, task-423 review).
@@ -31,3 +33,4 @@ status: provisional
 - [[task-spec]] — how it writes the plan.
 - [[orchestrator-lessons]] — owner rules it applies.
 - [[verification-levels]] — the level it sets per global.
+- [[request-families]] — which requests reach it and the split of a gros morceau.

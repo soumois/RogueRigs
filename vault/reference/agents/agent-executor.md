@@ -16,6 +16,8 @@ status: provisional
 - definition_of_done: every subtask `done` with its `done_when` passed, global `acceptance` passed, lint clean, committed, `next_step: none`.
 - start: at its step 0, `node vault/scripts/task-start.js <global-id>` sets the global and its first open subtask `in-progress` with `next_step`, lints and commits; it refuses a global without `confirmed_by_owner: yes` and is a no-op when already started ([[orchestrator-runbook]]). Its output holds only signal lines and ends with `next: <absolute path of the subtask>`; open that path directly.
 - owner_wait: when it stops for an owner action or answer, it sets the current subtask and its global `wait-answers` with `node vault/scripts/task-status.js <path>.md status=wait-answers "waiting_for=<action or question>"` and commits them by path; on resume `status=in-progress` (or `task-start.js`) resets `waiting_for` to `none` ([[execution-protocol]] step 5).
+- reglage: a global with `family: reglage` comes from `task-reglage.js`, without a planner ([[request-families]]): its one subtask has `agent: executor`; it works from the owner words in `request`, applies the role rules the change touches and checks at light size.
+- wrong_family: on a réglage global, a new asset or system, a value marked `open` or a design question means the wrong family: it stops before editing, cancels the global with `result=wrong family: <reason>` and reports, so the relay relaunches through the planner ([[request-families]], owner Q1 2026-11-11).
 - roles: a subtask's `agent` field names the role whose rules apply (`cpp`, `bp`, `capture`, `doc`, `level-design`, `text`, `art`, `3d`); the Executor applies them itself and does not launch those agents. They stay defined for a direct owner request. It remains the sole owner of the confirmed plan and does not call the Planner during execution.
 - critic: `style-guide` is the one agent it launches, after every text or image generation, with a description starting with the subtask id: a producer does not judge its own work against the style rules.
 - doc_subtask: the last subtask of a global with cpp or bp subtasks is a real node with `agent: doc`. The Executor writes the nodes of its `inputs` itself, following [[agent-doc]], and closes it with `task-next.js`.
@@ -46,3 +48,4 @@ status: provisional
 - [[agent-style-guide]] — the critic it launches.
 - [[_navigation]] — rule with the execution exception for task node paths.
 - [[verification-levels]] — verification size and budget it applies.
+- [[request-families]] — réglage path and wrong-family stop.

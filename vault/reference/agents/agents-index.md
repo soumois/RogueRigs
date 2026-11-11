@@ -26,6 +26,7 @@ Lessons are filed by theme: owner rules for the Planner, [[bp-mcp-lessons]] for 
 - [[agent-art]] — image prompts and candidate images with GPT Image 2 through Kie.ai (`Tools/art/kie_image.js`).
 - [[agent-3d]] — validated image to cleaned FBX through Meshy and headless Blender (`Tools/art/`).
 - [[cloud-session-git]] — committing, tagging and pushing from a cloud session linked to the PC: lock files, identity, trailers; open before a commit from the cloud.
+- [[request-families]] — entry routing of a request into réglage, comportement, visuel or gros morceau; open to relay a request or change the routing.
 - [[orchestration-protocol]] — planning procedure of the Planner for every request, steps 0 to 4.
 - [[execution-protocol]] — execution procedure of the Executor, steps 5 and 6, including resume.
 - [[task-spec]] — how a plan is written: task-create spec, defaults file, confirmation; read before writing a plan.

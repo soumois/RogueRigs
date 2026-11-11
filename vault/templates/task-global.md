@@ -12,6 +12,7 @@ status: todo
 - acceptance: <observable checks that prove the goal is met>
 - gdd_check: <nodes read; conflicts and open values found; owner's decision>
 - verification_level: light | standard | exploratory
+- family: reglage | comportement | visuel | gros (request family picked by the relay, request-families)
 - confirmed_by_owner: yes | no
 - milestone: M1 | M2 | M3
 - next_step: <id of the next subtask to run, or none>

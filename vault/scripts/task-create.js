@@ -11,6 +11,7 @@
 //
 // Spec v2 (task-358, Q3): module.exports = { anchor?, edits?, globals: [ <global>, ... ] }
 //   global: { num, slug, title, description, level ("light" | "standard" | "exploratory", written `- verification_level:`),
+//     family? ("reglage" | "comportement" | "visuel" | "gros", request family of the relay, written `- family:`, default "open"),
 //     request, goal, acceptance, gdd_check,
 //     confirmed_by_owner? (default "no (plan and questions handed back <today>)"), milestone? ("M2"),
 //     status? ("todo" | "wait-answers", default "todo"), waiting_for? (required with wait-answers),
@@ -138,7 +139,7 @@ if (isOld) {
     }
     const body = ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index', 'kind: task', `status: ${status}`, '---',
       `# ${g.title}`, '', `- request: ${g.request}`, `- goal: ${g.goal}`, `- acceptance: ${g.acceptance}`, `- gdd_check: ${g.gdd_check}`,
-      `- verification_level: ${g.level}`, `- confirmed_by_owner: ${g.confirmed_by_owner || `no (plan and questions handed back ${today})`}`, `- milestone: ${milestone}`,
+      `- verification_level: ${g.level}`, `- family: ${g.family || 'open'}`, `- confirmed_by_owner: ${g.confirmed_by_owner || `no (plan and questions handed back ${today})`}`, `- milestone: ${milestone}`,
       `- next_step: ${sids[0]}`, '- started: open', `- waiting_for: ${status === 'wait-answers' ? g.waiting_for : 'none'}`, '- result: open', ''];
     if (qs.length) body.push('## Questions', g.questions_header || `Asked ${today}, each with a default; open until the owner answers.`, ...qs.map(q => '- ' + q), '');
     body.push('## Subtasks', ...subLines, '', '## Relations', '- [[tasks-to-do-index]] — parent index.', ...relLines, '');

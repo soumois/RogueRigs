@@ -9,7 +9,7 @@ applies_to: orchestrator
 
 Follows the planning steps of [[orchestration-protocol]]. Since owner 2026-11-05 the [[agent-executor]] is one Opus agent per global task that does every subtask itself in one context; a subtask's `agent` names the role whose rules apply, and only [[agent-style-guide]] is launched. It owns all execution and resumes and does not recall the Planner. The nodes say what to reach; it chooses how, and reads the code it needs.
 
-Executor step 0: check `git status` and the task's `next_step`, then run `node vault/scripts/task-start.js <global-id>` (a no-op when already started) and open the subtask path on its last line `next: <path>` directly (execution exception of [[_navigation]], owner 2026-10-27: no descent, no search). It does not read `tasks-index` or report other tasks.
+Executor step 0: check `git status` and the task's `next_step`, then run `node vault/scripts/task-start.js <global-id>` (a no-op when already started) and open the subtask path on its last line `next: <path>` directly (execution exception of [[_navigation]], owner 2026-10-27: no descent, no search). It does not read `tasks-index` or report other tasks. A global with `family: reglage` was written by `task-reglage.js` without a planner; its wrong-family stop is in [[request-families]].
 
 ## 5. Execute, one subtask at a time
 1. Start the global with `task-start.js`: it sets the global and its first open subtask `in-progress` and `next_step` to it, lints and commits. Later subtasks are started by `task-next.js` when the previous one closes. Both print only lines that need action and end with `next: <absolute path>` or `next: none`. Refusals and failures print no `next:` line.
@@ -32,3 +32,4 @@ Run the global acceptance checks, verify every subtask cost row and usage field 
 - [[cost-log]] — where step 5 records tokens.
 - [[_navigation]] — execution exception for opening task nodes by path.
 - [[verification-levels]] — verification size and indicative budget per global.
+- [[request-families]] — réglage globals and their wrong-family stop.

@@ -304,6 +304,7 @@ ppv-xp-glow  reference/tech/blueprints/world/ppv-xp-glow.md
 production-index  reference/production/production-index.md
 rarities  reference/gdd/weapons/rarities.md
 readability-rules  reference/gdd/art-audio/readability-rules.md
+request-families  reference/agents/request-families.md
 robot-parts-bake-pipeline  reference/tech/pipelines/robot-parts-bake-pipeline.md
 robots-meshy-raw-2026-10-22  reference/tech/pipelines/robots-meshy-raw-2026-10-22.md
 rock-look-reference  reference/gdd/art-audio/rock-look-reference.md

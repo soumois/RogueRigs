@@ -10,12 +10,13 @@ Write the whole plan once: one spec module for the planning pass, one `node vaul
 
 ```js
 module.exports = { anchor: 'task-NNN-slug', edits: [{ file, old, new }], globals: [{
-  num, slug, title, description, level, request, goal, acceptance, gdd_check,
+  num, slug, title, description, level, family, request, goal, acceptance, gdd_check,
   status: 'wait-answers', waiting_for: '...', questions: ['Q1 ... Default: ...'], // omit the three when nothing is asked
   subtasks: [{ slug, agent, line, inputs: ['node-id', 'path/file.ext'], done_when }],
 }] };
 ```
 
+- `family`: `comportement`, `visuel` or `gros`, the family the relay stated ([[request-families]]), written `- family:` on the global; `open` when omitted. `reglage` is written only by `task-reglage.js`.
 - `level`: `light`, `standard` or `exploratory` ([[verification-levels]]), written as `verification_level` on the global; any other value or none is refused.
 - `request`: the owner's words verbatim. `acceptance`: one string, never a list (A1 ...; A2 ...). `gdd_check`: nodes read, conflicts, `open` values and decisions, no copied prose. `edits`: the gdd edits the defaults imply, exact text.
 - Subtask optional fields, only when they say something the Executor cannot decide: `goal` (default `line`), `expected_output`, `editor_state`, `token_ceiling`, `depends_on` (default the previous subtask), `milestone`.
@@ -33,3 +34,4 @@ module.exports = { anchor: 'task-NNN-slug', edits: [{ file, old, new }], globals
 - [[agent-planner]] — writes the plan.
 - [[orchestration-protocol]] — step 3 says what the plan holds.
 - [[verification-levels]] — the values of `level`.
+- [[request-families]] — the values of `family`.
