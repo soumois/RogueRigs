@@ -28,6 +28,7 @@ URRSubtitleSubsystem::URRSubtitleSubsystem()
 		FName(TEXT("horde_incoming")), FName(TEXT("console_dropped")), FName(TEXT("console_hacked")),
 		FName(TEXT("bonus_chest_opened")), FName(TEXT("shuttle_landed"))
 	};
+	BarkTriggersAfterAlert = { FName(TEXT("horde_incoming")), FName(TEXT("console_dropped")), FName(TEXT("shuttle_landed")) };
 }
 
 bool URRSubtitleSubsystem::DoesSupportWorldType(const EWorldType::Type WorldType) const
@@ -131,6 +132,7 @@ void URRSubtitleSubsystem::SetSilenced(bool bInSilenced, const TCHAR* Reason)
 	const bool bHadSubtitle = bActive;
 	if (bInSilenced)
 	{
+		PendingBarkTrigger = NAME_None;
 		Clear();
 	}
 	if (bSilenced == bInSilenced)
@@ -223,6 +225,13 @@ bool URRSubtitleSubsystem::ShowBark(FName TriggerId)
 	{
 		DropReason = TEXT("cooldown");
 	}
+	if (DropReason && bActive && CurrentSpeakerId == SpeakerKesslerVoss && !bSilenced && BarkTriggersAfterAlert.Contains(TriggerId))
+	{
+		PendingBarkTrigger = TriggerId;
+		UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: bark '%s' waits for the alert line to end (%.1f s left)."), *TriggerId.ToString(),
+			RemainingSeconds);
+		return false;
+	}
 	if (DropReason)
 	{
 		UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: bark '%s' dropped (%s, cooldown left %.1f s)."), *TriggerId.ToString(), DropReason,
@@ -280,7 +289,15 @@ void URRSubtitleSubsystem::Tick(float DeltaTime)
 		RemainingSeconds -= DeltaTime;
 		if (RemainingSeconds <= 0.f)
 		{
+			const bool bAlertEnded = CurrentSpeakerId == SpeakerKesslerVoss;
 			Clear();
+			if (bAlertEnded && !PendingBarkTrigger.IsNone())
+			{
+				const FName Pending = PendingBarkTrigger;
+				PendingBarkTrigger = NAME_None;
+				UE_LOG(LogRogueRigs, Log, TEXT("URRSubtitleSubsystem: alert line ended, trying the waiting bark '%s'."), *Pending.ToString());
+				ShowBark(Pending);
+			}
 		}
 	}
 }

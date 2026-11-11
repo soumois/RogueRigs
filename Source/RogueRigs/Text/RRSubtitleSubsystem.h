@@ -107,9 +107,10 @@ public:
 
 	/**
 	 * Shows a bark of key event TriggerId (barks.json, any speaker, URRTextContentSubsystem::PickBarkLine: random, never the same
-	 * line twice in a row) with the speaker name. Dropped, not queued, and logged when TriggerId is not in BarkTriggers, while a
-	 * line is shown (an alert line keeps priority; a bark is never stacked), within BarkCooldownSeconds of the last bark shown,
-	 * while silenced, or when the trigger has no line. The first bark of a world (or after OnLevelReady) may show at once.
+	 * line twice in a row) with the speaker name. Dropped and logged when TriggerId is not in BarkTriggers, while a line is shown
+	 * (an alert line keeps priority; a bark is never stacked), within BarkCooldownSeconds of the last bark shown, while silenced,
+	 * or when the trigger has no line. Exception: a trigger of BarkTriggersAfterAlert met by an alert line waits for that line to
+	 * run out, then is tried again (cooldown included). The first bark of a world (or after OnLevelReady) may show at once.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Subtitles")
 	bool ShowBark(FName TriggerId);
@@ -224,8 +225,19 @@ protected:
 	UPROPERTY(Config, EditAnywhere, Category = "Subtitles|Barks")
 	TArray<FName> BarkTriggers;
 
+	/**
+	 * Bark triggers whose event raises its own alert line in the same frame (owner 2026-11-10, task-497 answer "choix A"): a bark
+	 * of these dropped because an alert line is shown waits (one slot, the latest wins) and is tried once that line runs out,
+	 * under the cooldown. Every other bark that meets an alert is dropped.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Subtitles|Barks")
+	TArray<FName> BarkTriggersAfterAlert;
+
 	/** World time of the last bark shown; negative when none yet in this world or level. */
 	double LastBarkTime = -1.0;
+
+	/** Bark waiting for the current alert line to end (BarkTriggersAfterAlert); None when none. */
+	FName PendingBarkTrigger;
 
 	/** True while a subtitle is shown. */
 	bool bActive = false;

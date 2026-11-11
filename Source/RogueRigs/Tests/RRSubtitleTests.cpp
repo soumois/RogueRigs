@@ -152,6 +152,24 @@ bool FRRSubtitleBarkTest::RunTest(const FString& Parameters)
 
 	// A4: never the same line twice in a row for the trigger.
 	TestNotEqual(TEXT("no immediate repeat"), Subtitles->GetCurrentText().ToString(), FirstLine);
+
+	// Owner answer "choix A": a same-frame-alert trigger (horde_incoming) waits for its alert line to end, then shows.
+	Subtitles->Clear();
+	World->TimeSeconds += 31.0;
+	TestTrue(TEXT("horde alert shown"), Subtitles->ShowAlertLine(TEXT("horde_incoming")));
+	TestFalse(TEXT("horde bark not shown over the alert"), Subtitles->ShowBark(TEXT("horde_incoming")));
+	TestEqual(TEXT("alert still shown"), Subtitles->GetCurrentSpeakerId(), URRSubtitleSubsystem::SpeakerKesslerVoss);
+	Subtitles->Tick(Subtitles->GetRemainingSeconds() + 0.1f);
+	const FName After = Subtitles->GetCurrentSpeakerId();
+	TestTrue(TEXT("horde bark shown once the alert ended"), After == URRSubtitleSubsystem::SpeakerRook || After == URRSubtitleSubsystem::SpeakerVesna);
+
+	// A non-waiting trigger met by an alert is dropped for good.
+	Subtitles->Clear();
+	World->TimeSeconds += 31.0;
+	Subtitles->ShowAlertLine(TEXT("horde_incoming"));
+	TestFalse(TEXT("chest bark over the alert"), Subtitles->ShowBark(Opened));
+	Subtitles->Tick(Subtitles->GetRemainingSeconds() + 0.1f);
+	TestFalse(TEXT("chest bark not shown later"), Subtitles->HasSubtitle());
 	return true;
 }
 
