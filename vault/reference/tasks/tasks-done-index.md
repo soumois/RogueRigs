@@ -511,3 +511,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-500-request-families]] — Crew workflow: the relay classifies a request (réglage, comportement, visuel, gros morceau); réglage skips the planner; gros morceau is split into several globals. Status done.
 - [[task-501-visual-preview-gate]] — Crew workflow: a visual or taste request plans a mockup or one slice with one capture first; the executor waits for the owner go before the full build. Status done.
 - [[task-502-executor-handover-budget]] — Crew workflow: at a subtask boundary over the context threshold the executor hands over to a fresh one; reaching the level budget triggers a stop and a question to the owner. Status done.
+- [[task-503-executor-reading-list]] — Crew workflow: the executor reads runbook and quirks only when a script fails; the specialist agent definitions in .claude/agents are handled as the owner decides; no vault node is merged. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-503-executor-reading-list
 description: "Global task: executor reads runbook and quirks only on a script failure; specialist agent definitions handled as decided; no node merged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Shorter executor reading list and specialist agent definitions
 
@@ -14,10 +14,14 @@ status: in-progress
 - verification_level: light
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
-- next_step: task-503-01-reading-list-and-definitions
+- next_step: none
 - started: 2026-11-11T21:22:27Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 26, cache write 40620, cache read 470323, output 8074
+- executor_usage: runs 1, turns 13, context start 16k peak 51k, resumes 0, 1 min, units 0.14 M
+- planning_tokens: input 5, cache write 12163, cache read 83526, output 4150
+- planning_usage: add7b373 "Plan crew workflow routing change" 1/4 (tasks 500, 501, 502, 503), units 0.04 M
+- result: Done. A1 agent-executor reads and .claude/agents/executor.md step 1: runbook and quirks only when a script or command fails, role nodes on first use. A2 Q9: .claude/agents cpp, bp, capture, doc, art, 3d, text, level-design deleted; agent-executor roles, CLAUDE.md, runbook delegation and doc-subtask lines, agents-index agent-doc gloss and definition_file of six role nodes aligned. Q10: uncommitted ruvector.db line dropped from .gitignore, ruvector.db deleted. A3 no node merged. A4 lint clean, commit 096a7033. Left as is: README.md, assignments READMEs and .claude/commands/architect.md still link the removed definitions (historical deliverables, not in the request).
 
 ## Questions
 Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-11.
@@ -29,5 +33,5 @@ Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisi
 1. task-503-01-reading-list-and-definitions (vault/reference/tasks/task-503-executor-reading-list/task-503-01-reading-list-and-definitions.md) — doc: Shorten the executor reading list and apply the specialist definitions decision.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-503-01-reading-list-and-definitions]] — step 1, doc.
