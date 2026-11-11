@@ -3,7 +3,7 @@ id: task-505-03-main-menu-options
 description: "Bp: Main menu Options button opens the options screen."
 parent: task-505-options-screen-sound-graphics
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen with Sound and Graphics, opened from the main menu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-11T22:26:09Z
 - waiting_for: none
 - result: open
 
