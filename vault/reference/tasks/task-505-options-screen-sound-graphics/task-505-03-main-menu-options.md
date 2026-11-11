@@ -3,7 +3,7 @@ id: task-505-03-main-menu-options
 description: "Bp: Main menu Options button opens the options screen."
 parent: task-505-options-screen-sound-graphics
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Options screen with Sound and Graphics, opened from the main menu: bp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-11T22:26:09Z
-- waiting_for: none
+- waiting_for: budget: done 01, 02 (WBP_Options, -game checks); remaining 03 main menu Options (C++ ready uncommitted), 04 capture at four resolutions, 05 doc; estimate about 45 turns and 1.0 M units
 - result: open
 
 ## Relations

@@ -3,7 +3,7 @@ id: task-505-options-screen-sound-graphics
 description: "Global task: Options screen from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened from the main menu."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Options screen with Sound and Graphics, opened from the main menu
 
@@ -17,7 +17,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-505-03-main-menu-options
 - started: 2026-11-11T21:59:16Z
-- waiting_for: none
+- waiting_for: budget: done 01, 02 (WBP_Options, -game checks); remaining 03 main menu Options (C++ ready uncommitted), 04 capture at four resolutions, 05 doc; estimate about 45 turns and 1.0 M units
 - executor_tokens: input 212, cache write 321971, cache read 11418283, output 134789
 - executor_usage: runs 2, turns 104, context start 16k peak 188k, resumes 2, 27 min, units 2.22 M
 - planning_tokens: input 18, cache write 29764, cache read 464930, output 9627
@@ -29,6 +29,9 @@ Decided 2026-11-11 (owner "Owner 2026-11-11, verbatim: "ok pour tout, fait lui j
 - Q1-Q9: asked once on task-504-options-screen-look, they decide this global too.
 
 ## Handover
+- done (run 2): task-505-02 (868a1718, closing d7f83bf9). `URROptionsWidget` (UI/RROptionsWidget.h/.cpp) builds the 14 rows in C++ into `SoundList`/`GraphicsList`; WBP_Options (static layout, all names BindWidgetOptional) built by MCP JSON-RPC (Node script, `mcp__unreal` tools were unavailable). `rr.Options open|dump|tab <sound|graphics>|step <Row> <dir>|reset|back` (UI/RROptionsDebugCommands.cpp; `open` calls the main menu). Checked in -game at 1080, 1200, 720: rows, tabs, Reset per tab, Back, confirm panel, revert. Not checked: 2560 x 1080, the run-out of the countdown, Escape by key.
+- state run 2: UNCOMMITTED main menu C++ for 03, built green: `Menu/RRMainMenuWidget.h/.cpp` (`OptionsWidgetClass` soft class default WBP_Options, `OpenOptions`, `IsOptionsAvailable` true, OptionsButton enabled, hover attached, OnClicked bound by name, focus back on close). Commit it under 03. Editor left open. 03 still needs in WBP_MainMenu: OptionsButton focusable, an `OptionsFocus` outline and RefreshColours/OnHovered like New Run (wbp-main-menu). Budget: 104 turns, 2.22 M units over standard; owner word needed (wait-answers). GameUserSettings.ini now near defaults (Graphics reset in the check), volumes 100 %.
+- pitfalls run 2: `rr.Settings set` has no `windowmode` key; use `rr.Options step WindowMode 1`. Windowed resolutions sort by width (1707x1280 before 1920x1080).
 - done: task-505-01 (code 661107d9, closing 5fac2cdc). `URRGameUserSettings` holds every Sound and Graphics option: setters apply and save at once; `Step*` selectors, text helpers (`Get*Text`), `SyncDisplayFromWindow`, keep-or-revert (`RequestWindowMode`, `RequestResolution`, `ConfirmDisplayChange`, `RevertDisplayChange`, `GetDisplayConfirmSecondsLeft`, delegate `OnDisplayConfirmChanged`). Data in `URROptionsSettings` (15 s, steps, frame limits, asset paths). Volume assets `/Game/RogueRigs/Audio/SC_Master` (parent of `SC_Music`, `SC_Effects`) and `Mix_Volumes`, made by `Tools/unreal/create_volume_sound_classes.py`. Debug command `rr.Settings dump|set|keep|revert|reset`. Checked in -game (`Saved/Captures/task505_settings_run1`, `run2`): engine read-back, volumes, restart, countdown; do not re-run.
 - state: build green, editor closed, nothing uncommitted of this task. The user `Saved/Config/WindowsEditor/GameUserSettings.ini` holds test values (volumes 0.5/0.4/0.8, VSync on, 60 fps, shadows 2 others Low, scale 75): reset them with `rr.Settings reset sound` and `reset graphics` then `keep` after the capture.
 - next: task-505-02. Planned: C++ base `URROptionsWidget` (tabs, rows, confirm panel driven from C++, BindWidgetOptional, Escape = Back or Revert) and the main menu C++ for 03 (`IsOptionsAvailable` true, OptionsButton in `AttachNamed`, open the options widget, focus back on Options) in one build with the editor closed, then WBP_Options in the editor from the task-504 sprites.
