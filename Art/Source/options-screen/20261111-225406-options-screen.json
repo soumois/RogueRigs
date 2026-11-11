@@ -1,0 +1,27 @@
+{
+  "run_id": "20261111-225406-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/02-elements-sheet.txt",
+  "prompt": "Image 1 is the validated options screen mockup. Make a game UI asset sheet of its controls, in exactly the same style: same riveted teal and gunmetal metal, same rust chips and wear, same bolts, flat-shaded low-poly game UI look, same proportions as in Image 1.\n\nBackground: one flat, uniform pure magenta #FF00FF everywhere, no gradient, no shadow, no texture, no floor. Every element is isolated on that magenta with wide empty margins around it, nothing touching, no drop shadows, no glow on the background.\n\nSix elements, laid out in a 3 x 2 grid, each centred in its cell, seen straight on, flat, no perspective:\n1. Top left: the unselected tab plate of \"Sound\" and \"Gameplay\": a wide dark gunmetal plate with riveted teal end caps on the left and right, EMPTY, no text.\n2. Top middle: the small left arrow button of the selectors: a square riveted gunmetal and teal button with one light \"<\" chevron.\n3. Top right: the slider knob of \"Resolution scale\": the small round riveted teal knob with its light centre, alone.\n4. Bottom left: the slider track: the long thin dark gunmetal rail with metal end caps, EMPTY, no knob on it.\n5. Bottom middle: the toggle track of \"VSync\": the dark rounded rectangle switch with its metal rim, EMPTY, no text and no thumb.\n6. Bottom right: the toggle thumb: the small square light grey riveted metal thumb of the switch, alone.\n\nNo text anywhere, no labels, no numbers, no other elements. No yellow, green or blue. No magenta or violet on the elements themselves. 16:9.",
+  "refs": [
+    "Art/Source/options-screen/20261111-224939-options-screen-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "04fd3159836a60b1fc24a4fb9ce68a42",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000feac81f694e7b2b1532b4065.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261111-225406-options-screen-1.png"
+  ]
+}
