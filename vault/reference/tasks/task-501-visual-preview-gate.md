@@ -29,3 +29,4 @@ Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisi
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-501-01-preview-rule]] — step 1, doc.
+- [[orchestration-protocol]] — step 3 holds the preview gate this task wrote.

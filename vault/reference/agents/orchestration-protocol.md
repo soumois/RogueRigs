@@ -38,7 +38,8 @@ Global node: the owner's words, goal, acceptance, GDD check, questions. Add subt
 - Editor work: one main asset per bp subtask (owner 2026-10-14). Order: materials, then Niagara and widgets, then the Blueprint that wires them, then map placement.
 - Doc: a global with cpp or bp subtasks ends with one subtask `agent: doc` whose `inputs` are the `sys-*`, `bp-*` and tool nodes to create or update (owner 2026-10-27).
 - Visual check: one subtask `agent: capture` whose `done_when` is a checklist C1..Cn taken from `acceptance`, each point observable on a frame (owner 2026-10-29). For a screen or widget, the default stays the four resolutions of [[umg-layout]]: fewer only if the owner chooses it, asked as a question whose default is the four.
-- Uncertain result (owner 2026-11-01, only when the visual result or integration is materially uncertain): plan one representative slice, for example one shop card with its states or one clip in a game state, then its check, then expansion subtasks that depend on it. Record the expected result, references and rules to preserve. A validated mockup may replace the slice.
+- Visuel family, preview gate (owner 2026-11-11, [[task-501-visual-preview-gate]]): the first subtask is one preview: a mockup when the look is not decided, otherwise one single in-game slice, with one capture. Its `done_when` ends with the owner go; every build subtask depends on it.
+- Uncertain integration that is not a matter of taste (owner 2026-11-01): plan one representative slice, for example one shop card with its states or one clip in a game state, then its check, then expansion subtasks that depend on it. Record the expected result, references and rules to preserve. A passing slice needs no owner go; a look or taste to find takes the preview gate above.
 
 - Verification level (owner 2026-11-06): set `level` per global from the criteria of the request ([[verification-levels]]), standard when in doubt, and size `acceptance` and the capture checklist to it.
 
@@ -60,3 +61,4 @@ Status and defaults file: [[task-spec]].
 - [[umg-layout]] — the resolutions a screen is checked at.
 - [[verification-levels]] — the level set at step 3 and shown at step 4.
 - [[request-families]] — entry routing that sends a request here or past the Planner.
+- [[task-501-visual-preview-gate]] — owner decision behind the preview gate of step 3.

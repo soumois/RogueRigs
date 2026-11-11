@@ -16,7 +16,7 @@ The relay (main session) picks it from the owner sentence and states it in one l
 |---|---|---|
 | réglage | A setting on an existing system: a value, a scale, a timing, a parameter; no new asset, no new system, no design choice | No planner. `node vault/scripts/task-reglage.js "<owner words>"` writes the global (level light, one subtask) before the run; one fresh executor runs it |
 | comportement | New or changed behaviour or system | Planner, then one executor per global |
-| visuel | A look or taste to find | Planner, then executor; preview gate of [[task-501-visual-preview-gate]] once done |
+| visuel | A look or taste to find | Planner, then executor; preview first, then owner go before the build ([[orchestration-protocol]] step 3, [[execution-protocol]] step 5.7) |
 | gros morceau | Larger than one standard budget | Planner splits into several globals, one fresh executor each, in order ([[orchestration-protocol]] step 3) |
 
 Examples: réglage tasks 490, 491, 474; comportement 496, 497, 493; visuel 499, 461, 462; gros morceau 484, 424.
