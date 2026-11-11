@@ -508,3 +508,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-497-barks-in-game]] — Rare barks of Rook and Vesna (through the drone) shown as subtitles on key events, one line at a time, 30 s cooldown, alerts keep priority. Status done.
 - [[task-498-heavy-slam-impact-fx]] — Capture first whether the heavy slam already shows a dust ring and rock chips; build only what is missing, in the explosions cartoon style. Status cancelled.
 - [[task-499-robot-logo-decals]] — The yellow Kessler-Voss emblem added as a decal on the Heavy, Kamikaze and Chaser v2 meshes, like the shield emblem, without regenerating the Meshy meshes. Status cancelled.
+- [[task-500-request-families]] — Crew workflow: the relay classifies a request (réglage, comportement, visuel, gros morceau); réglage skips the planner; gros morceau is split into several globals. Status done.
