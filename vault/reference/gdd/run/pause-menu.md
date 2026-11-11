@@ -17,7 +17,7 @@ Requested by the owner 2026-11-03 ([[task-424-pause-menu-stats]]). Values provis
 ## Content (provisional, task-424 Q3)
 - Global: the miner's own stats of [[player-stats]] at their current value (max health and luck in points; move speed, pickup radius, XP gain, mining speed as a bonus % over base), then the sum of global weapon bonuses taken (damage %, fire rate %, reload speed %, critical chance and critical damage in points).
 - Per weapon: one block per owned weapon with its current damage, fire rate, reload speed, critical chance, critical damage, magazine and pierce; locked slots not shown.
-- Labels in English, hardcoded in the widget like [[main-menu]]; title "PAUSED"; buttons "Resume" and "Exit".
+- Labels in English, hardcoded in the widget like [[main-menu]]; title "PAUSED"; buttons "Resume", "Options" and "Exit" (Options added owner 2026-11-11, task-504: opens [[options-menu]], the game stays paused).
 
 ## Buttons (provisional, task-424 Q1)
 - Resume: closes the menu and unpauses.

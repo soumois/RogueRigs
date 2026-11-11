@@ -19,13 +19,13 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 - Full-screen image with a dark gradient behind a left column: title "ROGUE RIGS" (drawn by the widget, never in the image; no game logo yet), then the buttons "New Run", "Options", "Exit".
 - Labels in English, exactly these words, hardcoded in the widget (not in screen_texts.json).
 - Title font and colours as [[wbp-loading]]: Roboto Bold, white with outline.
-- Buttons (provisional, owner 2026-11-06, [[task-487-main-menu-buttons-plate]]; were bare white text turning orange): the cream rusty plate of the run-lost and pause buttons, dark brown Roboto Bold label, all three the same size, stacked in the left column under the title; Options is a greyed plate. Mouse hover is the plate hover of [[ui-button-hover]]; keyboard focus alone shows a thin orange (1, 0.35, 0.1) outline around the plate. Title, background image and left gradient unchanged.
+- Buttons (provisional, owner 2026-11-06, [[task-487-main-menu-buttons-plate]]; were bare white text turning orange): the cream rusty plate of the run-lost and pause buttons, dark brown Roboto Bold label, all three the same size, stacked in the left column under the title; Options is an active plate that opens [[options-menu]] (owner 2026-11-11, task-504; was greyed). Mouse hover is the plate hover of [[ui-button-hover]]; keyboard focus alone shows a thin orange (1, 0.35, 0.1) outline around the plate. Title, background image and left gradient unchanged.
 - No animation, no music.
 
 ## Behaviour
 - New Run: resets the run and opens L_ArenaM1 at level 1 ([[run-structure]]) behind the loading screen of the level changes ([[wbp-loading]], "DROPPING IN", "Level 1"): drawn over the menu before the map opens, kept in the arena until level 1 is ready (gameplay held as between levels), then a 0.5 s fade in from black. The map loading has no measured progress, so the loading animation of [[intermission]] replaces the bar (owner 2026-10-30, provisional, task-379).
 - Level 1 terrain (owner 2026-11-10, provisional, [[task-496-generator-in-runs]]): generated in the background as soon as the menu opens, without blocking the menu; New Run builds level 1 from it, waiting behind the loading screen if it is not ready yet. Retry draws a new run and generates its level 1 the same way.
-- Options: shown greyed out, does nothing (built later).
+- Options: opens the options screen over the menu ([[options-menu]], owner 2026-11-11, task-504).
 - Exit: quits the game.
 - Mouse cursor shown; keyboard focus on New Run (Enter starts a run).
 - Start-up: a launch outside the editor (-game, packaged) opens the menu map L_MainMenu; the editor and PIE keep L_ArenaM1 and start a run directly.

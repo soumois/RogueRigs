@@ -3,13 +3,13 @@ id: options-menu
 description: "Options screen: where it opens, Sound, Graphics and Gameplay settings, persistence, layout and Kie.ai mockup look. Open for options or settings work."
 parent: run-index
 kind: spec
-status: open
+status: provisional
 ---
 # Options screen
 
 Requested by the owner 2026-11-11 ([[task-504-options-screen-look]]): "Ok, on va faire l'écran des options [...] Il va falloir passer par l'api chatgpt pour les images ( Kie ). Il faut prévoir aussi les options classiques pour le son, la qualité, et différents élément gamplay."
 
-Values below: proposed defaults of task-504 Q1 to Q9, awaiting the owner.
+Values provisional, owner 2026-11-11: he accepted the defaults of task-504 Q1 to Q9, Q2 changed by his remark (keep-or-revert countdown after a resolution or window mode change); his words in its request.
 
 ## Opening (Q1)
 - Main menu: the Options plate becomes active (plate hover of [[ui-button-hover]]) and opens this screen over the menu.
@@ -18,7 +18,8 @@ Values below: proposed defaults of task-504 Q1 to Q9, awaiting the owner.
 
 ## Layout (Q2)
 - Title "OPTIONS", three tabs "Sound", "Graphics", "Gameplay", buttons "Reset to defaults" (current tab only) and "Back". Labels in English, hardcoded like [[main-menu]].
-- A change applies at once: no Apply button, no confirmation countdown after a resolution change.
+- A change applies at once, no Apply button. Exception (owner 2026-11-11, Q2 remark): a change of resolution or window mode shows a "keep these settings?" confirmation with a countdown; without confirmation it reverts to the previous values, so a mode the monitor refuses never leaves a black screen.
+- Confirmation (provisional, Planner 2026-11-11, not set by the owner): text "Keep these display settings?", buttons "Keep" and "Revert", countdown 15 s shown in seconds; Revert, Escape or the end of the countdown restore the previous resolution and window mode.
 - Mouse first; keyboard focus starts on the first tab; layout rule [[umg-layout]].
 
 ## Sound (Q3)
