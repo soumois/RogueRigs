@@ -3,7 +3,7 @@ id: task-500-01-routing-and-reglage-path
 description: "Doc: Write the family routing in the relay instructions, the réglage path with its node script, the wrong-family stop and the gros morceau split rule."
 parent: task-500-request-families
 kind: task
-status: todo
+status: in-progress
 ---
 # Route each owner request by family at the entry: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-11T21:12:19Z
 - waiting_for: none
 - result: open
 

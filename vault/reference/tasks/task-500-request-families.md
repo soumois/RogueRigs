@@ -3,7 +3,7 @@ id: task-500-request-families
 description: "Global task: Crew workflow: the relay classifies a request (réglage, comportement, visuel, gros morceau); réglage skips the planner; gros morceau is split into several globals."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Route each owner request by family at the entry
 
@@ -15,7 +15,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
 - next_step: task-500-01-routing-and-reglage-path
-- started: open
+- started: 2026-11-11T21:12:18Z
 - waiting_for: none
 - result: open
 
