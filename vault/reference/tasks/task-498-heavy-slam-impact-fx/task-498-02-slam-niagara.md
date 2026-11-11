@@ -3,7 +3,7 @@ id: task-498-02-slam-niagara
 description: "Bp: Only if C1 or C2 is missing: the Niagara effect with the missing ring and or chips, in the task-434 and task-446 style."
 parent: task-498-heavy-slam-impact-fx
 kind: task
-status: todo
+status: cancelled
 ---
 # Heavy slam impact: dust ring and rock chips: bp
 
@@ -22,7 +22,7 @@ status: todo
 - milestone: M2
 - started: open
 - waiting_for: none
-- result: open
+- result: Not run: owner keeps the existing slam ring and chips (2026-11-11).
 
 ## Relations
 - [[task-498-heavy-slam-impact-fx]] — parent global task.

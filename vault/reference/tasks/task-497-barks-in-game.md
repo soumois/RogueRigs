@@ -1,9 +1,9 @@
 ---
 id: task-497-barks-in-game
 description: "Global task: Rare barks of Rook and Vesna (through the drone) shown as subtitles on key events, one line at a time, 30 s cooldown, alerts keep priority."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Rook and Vesna barks shown in game
 
@@ -16,8 +16,12 @@ status: wait-answers
 - milestone: M2
 - next_step: none
 - started: 2026-11-11T05:11:41Z
-- waiting_for: Cost recording only: all 3 subtasks done and acceptance A1-A6 passed, but agent-usage.js finds no transcript (looks in C--Workspace-RogueRigs), so record-cost.js wrote no cost-log rows and the closure gate refuses done.
-- result: A1-A6 passed: barks on the five key events (three after their own alert line, owner choix A), 30 s data cooldown, alert priority, no repeat, text only; frames of a Rook bark, a Vesna bark and an alert alone in Saved/Captures/task-497-barks/owner_sheet.png. Global not closed: cost rows missing (tooling).
+- waiting_for: none
+- executor_tokens: input 156, cache write 299091, cache read 8892716, output 50418
+- executor_usage: runs 1, turns 76, context start 15k peak 175k, resumes 3, 542 min, units 1.52 M
+- planning_tokens: input 8, cache write 24613, cache read 213218, output 7990
+- planning_usage: accec2f2 "Planner: 4 architect tasks" 1/4 (tasks 496, 497, 498, 499), units 0.09 M
+- result: A1-A6 passed: barks on the five key events (three after their own alert line, owner choix A), 30 s data cooldown, alert priority, no repeat, text only; frames of a Rook bark, a Vesna bark and an alert alone in Saved/Captures/task-497-barks/owner_sheet.png. Global not closed: cost rows missing (tooling). Budget: 1.52 M units, marginally over 1.5 M: the first run stopped on the same-frame alert conflict and was resumed with the owner choice A (2026-11-11). Horde bark wait-then-show path proven by the automated test only; gdd dialogue-tone edit left for the owner or planner.
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.
@@ -33,7 +37,7 @@ Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisi
 3. task-497-03-doc (vault/reference/tasks/task-497-barks-in-game/task-497-03-doc.md) — doc: Document the bark flow: triggers, cooldown, alert priority.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-497-01-bark-director]] — step 1, cpp.
 - [[task-497-02-capture]] — step 2, capture.
 - [[task-497-03-doc]] — step 3, doc.

@@ -3,7 +3,7 @@ id: task-498-04-capture-after
 description: "Capture: Only if something was built: a -game capture of the slam after, beside the frames before."
 parent: task-498-heavy-slam-impact-fx
 kind: task
-status: todo
+status: cancelled
 ---
 # Heavy slam impact: dust ring and rock chips: capture
 
@@ -22,7 +22,7 @@ status: todo
 - milestone: M2
 - started: open
 - waiting_for: none
-- result: open
+- result: Not run: owner keeps the existing slam ring and chips (2026-11-11).
 
 ## Relations
 - [[task-498-heavy-slam-impact-fx]] — parent global task.

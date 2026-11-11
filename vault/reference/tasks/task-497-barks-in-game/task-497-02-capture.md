@@ -16,8 +16,8 @@ status: done
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: opus
-- tokens: not measured
-- usage: not measured
+- tokens: included in the executor run of task-497
+- usage: included in the executor run of task-497
 - runs: 1
 - milestone: M2
 - started: 2026-11-11T05:17:51Z

@@ -3,5 +3,6 @@
   "weights": { "input": 1, "cacheWrite": 1.25, "cacheRead": 0.1, "output": 5 },
   "usdPerMillionInputTokens": { "opus": null, "sonnet": null, "haiku": null, "fable": null },
   "alerts": { "startContextTokens": 25000, "turns": 55, "ceilingRatio": 1 },
-  "snapshotMaxBytes": 20000000
+  "snapshotMaxBytes": 20000000,
+  "extraProjectSlugs": ["C--Users-soumo-Claude-code"]
 }

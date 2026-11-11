@@ -3,7 +3,7 @@ id: task-498-03-slam-wiring
 description: "Bp: Only if slam-niagara ran: the effect plays on the heavy slam frame at the heavy, sized to its slam radius."
 parent: task-498-heavy-slam-impact-fx
 kind: task
-status: todo
+status: cancelled
 ---
 # Heavy slam impact: dust ring and rock chips: bp
 
@@ -22,7 +22,7 @@ status: todo
 - milestone: M2
 - started: open
 - waiting_for: none
-- result: open
+- result: Not run: owner keeps the existing slam ring and chips (2026-11-11).
 
 ## Relations
 - [[task-498-heavy-slam-impact-fx]] — parent global task.

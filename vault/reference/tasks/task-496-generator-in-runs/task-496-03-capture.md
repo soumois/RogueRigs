@@ -16,8 +16,8 @@ status: done
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: opus
-- tokens: not measured: record-cost.js found no usage for this executor run (no transcript folder for this repo path)
-- usage: included in the executor run of task-496 (not measurable)
+- tokens: included in the executor run of task-496
+- usage: included in the executor run of task-496
 - runs: 1
 - milestone: M2
 - started: 2026-11-10T20:16:14Z

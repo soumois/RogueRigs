@@ -1,9 +1,9 @@
 ---
 id: task-496-generator-in-runs
 description: "Global task: Every run level built from the C++ layout generator: level 1 prepared from the main menu, next level from the extractor contact, hand JSON as fallback."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Layout generator wired into real runs
 
@@ -16,8 +16,12 @@ status: wait-answers
 - milestone: M2
 - next_step: none
 - started: 2026-11-10T20:21:38Z
-- waiting_for: cost recording: record-cost.js finds no usage (agent-usage.js reads ~/.claude/projects/C--Workspace-RogueRigs, absent; the transcripts are under C--Users-soumo-Claude-code), so no cost-log rows and task-status.js refuses status=done; fix the transcript path or decide how to record, then close the global
-- result: All 4 subtasks done (commits 4d85a6f3, 48b00b69, 43fcecb1). A1 levels 1-4 from FRRGeneratorLayoutProvider with run seed, level seed, params, brief and time in the log; two runs differ, same seed same cells (hash 86c36f6d, commandlet x2). A2 level 1 requested when the menu opens, worker thread, longest game-thread frame 1.0-2.5 ms (frame 1 engine start excluded), New Run uses it or waits behind the loading screen. A3 level N+1 requested in the board contact frame, stats screen, task-318 rebuild and Continue unchanged. A4 params and briefs from Content/RogueRigs/Data/Levels, no Tools/ path in the run log. A5 rr.Layout.ForceGenFail 2: Error line, arena_l2.json used, run continues. A6 Retry and Main Menu draw new seeds; rr.Level.New and RRLayoutGen work. A7 owner sheet Saved/Captures/task496_terrains2/owner_sheet.png (heal ore not told apart at capture scale: owner look). Deviations: level 1 brief arena_m1_fine.gen.brief.json (heal_ore 56, barrel 17-22) instead of the literal arena_m1_fine brief; review section added to arena_l2..l4 params. Logs: Saved/Logs/task496/.
+- waiting_for: none
+- executor_tokens: input 256, cache write 339065, cache read 27271279, output 102144
+- executor_usage: runs 1, turns 128, context start 15k peak 339k, resumes 0, 34 min, units 3.66 M
+- planning_tokens: input 8, cache write 24613, cache read 213218, output 7990
+- planning_usage: accec2f2 "Planner: 4 architect tasks" 1/4 (tasks 496, 497, 498, 499), units 0.09 M
+- result: All 4 subtasks done (commits 4d85a6f3, 48b00b69, 43fcecb1). A1 levels 1-4 from FRRGeneratorLayoutProvider with run seed, level seed, params, brief and time in the log; two runs differ, same seed same cells (hash 86c36f6d, commandlet x2). A2 level 1 requested when the menu opens, worker thread, longest game-thread frame 1.0-2.5 ms (frame 1 engine start excluded), New Run uses it or waits behind the loading screen. A3 level N+1 requested in the board contact frame, stats screen, task-318 rebuild and Continue unchanged. A4 params and briefs from Content/RogueRigs/Data/Levels, no Tools/ path in the run log. A5 rr.Layout.ForceGenFail 2: Error line, arena_l2.json used, run continues. A6 Retry and Main Menu draw new seeds; rr.Level.New and RRLayoutGen work. A7 owner sheet Saved/Captures/task496_terrains2/owner_sheet.png (heal ore not told apart at capture scale: owner look). Deviations: level 1 brief arena_m1_fine.gen.brief.json (heal_ore 56, barrel 17-22) instead of the literal arena_m1_fine brief; review section added to arena_l2..l4 params. Logs: Saved/Logs/task496/. Budget: executor run 128 turns, 3.66 M units over the standard 1.5 M: three headless capture launches and frame-time measures, two params/brief fixes found at the first generation, and the transcript-path tooling issue that was fixed afterwards (owner 2026-11-11). Heal ore in C1 stays ambiguous at capture scale; a map played directly still builds level 1 from the hand layout.
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.
@@ -34,7 +38,7 @@ Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisi
 4. task-496-04-doc (vault/reference/tasks/task-496-generator-in-runs/task-496-04-doc.md) — doc: Document the generator provider, the request timings and where layouts come from.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-496-01-generator-provider]] — step 1, cpp.
 - [[task-496-02-request-timing]] — step 2, cpp.
 - [[task-496-03-capture]] — step 3, capture.

@@ -29,9 +29,15 @@ const agentDetailId = agentDetailIdx >= 0 ? args[agentDetailIdx + 1] : null;
 
 const repo = path.resolve(__dirname, '..', '..');
 const slug = repo.replace(/[:\\/ ]/g, '-');
-const projDir = path.join(os.homedir(), '.claude', 'projects', slug);
 const SNAP_FILE = path.join(__dirname, 'usage-snapshot.json');
 const RATES = JSON.parse(fs.readFileSync(path.join(__dirname, 'cost-rates.json'), 'utf8'));
+// Transcript folders: the one of the repo path, plus the sessions opened from another folder with the repo added as a
+// working directory (the desktop app keys them by the opening folder, e.g. C--Users-soumo-Claude-code).
+// Extra slugs: cost-rates.json "extraProjectSlugs" and the env var RR_USAGE_EXTRA_SLUGS (comma separated).
+const extraSlugs = [].concat(RATES.extraProjectSlugs || [], (process.env.RR_USAGE_EXTRA_SLUGS || '').split(',')).map(s => s.trim()).filter(Boolean);
+const projDirs = [slug, ...extraSlugs].filter((s, i, all) => all.indexOf(s) === i)
+  .map(s => path.join(os.homedir(), '.claude', 'projects', s)).filter(d => fs.existsSync(d));
+const projDir = projDirs.length ? projDirs.join(', ') : path.join(os.homedir(), '.claude', 'projects', slug);
 const W = RATES.weights;
 
 const modelKey = m => /opus/.test(m || '') ? 'opus' : /sonnet/.test(m || '') ? 'sonnet' : /haiku/.test(m || '') ? 'haiku' : /fable/.test(m || '') ? 'fable' : 'other';
@@ -290,9 +296,9 @@ function scan(file, meta, kind, session, id) {
 
 // 1. scan the transcripts still on disk
 const scanned = [];
-if (fs.existsSync(projDir)) {
-  for (const entry of fs.readdirSync(projDir)) {
-    const p = path.join(projDir, entry);
+if (projDirs.length) {
+  for (const dir of projDirs) for (const entry of fs.readdirSync(dir)) {
+    const p = path.join(dir, entry);
     if (entry.endsWith('.jsonl')) { scanned.push(scan(p, null, 'session', entry.slice(0, 8), entry.replace(/\.jsonl$/, ''))); continue; }
     const subDir = path.join(p, 'subagents');
     if (!fs.existsSync(subDir)) continue;

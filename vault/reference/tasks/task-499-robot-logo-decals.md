@@ -1,9 +1,9 @@
 ---
 id: task-499-robot-logo-decals
 description: "Global task: The yellow Kessler-Voss emblem added as a decal on the Heavy, Kamikaze and Chaser v2 meshes, like the shield emblem, without regenerating the Meshy meshes."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: cancelled
 ---
 # Yellow Kessler-Voss emblem decal on Heavy, Kamikaze, Chaser v2
 
@@ -14,10 +14,10 @@ status: wait-answers
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-499-07-doc
+- next_step: none
 - started: 2026-11-10T20:42:05Z
-- waiting_for: Owner: (1) emblem legibility at the default game camera failed the style review (chaser v2 and shield chaser v2 emblem not visible, heavy and kamikaze only a small yellow mark): keep the Q3 one-third sizes or enlarge (critic: 20-22 cm on the chasers; script --size reruns it); (2) heavy emblem looks fragmented on its dark recess: keep or move/sharpen; (3) cost not recorded for any subtask (agent-usage.js finds no transcript), so the global cannot be closed by task-status.js
-- result: open
+- waiting_for: none
+- result: Cancelled by the owner 2026-11-11: emblem results removed (content commits reverted 7f82e239..a8622887); legibility at the game camera was not accepted.
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.
@@ -36,7 +36,7 @@ Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisi
 7. task-499-07-doc (vault/reference/tasks/task-499-robot-logo-decals/task-499-07-doc.md) — doc: Document the emblem decal: asset, placement per robot, how it follows the animation.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-499-01-emblem-material]] — step 1, art.
 - [[task-499-02-heavy-decal]] — step 2, bp.
 - [[task-499-03-kamikaze-decal]] — step 3, bp.

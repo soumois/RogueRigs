@@ -504,3 +504,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-493-async-layout-loader]] — builds the grid from a layout JSON, loading its assets asynchronously and exposing a 0-100 load percentage for a future loading screen. Status done.
 - [[task-494-generator-test-map]] — a test map without robots where the owner generates a new layout on the fly with a console command and plays it. Status done.
 - [[task-495-generator-window-repair]] — the C++ layout generator enforces every layout review rule (24 x 24 windows, straight lanes, pocket distance) by repair and acceptance checks. Status done.
+- [[task-496-generator-in-runs]] — Every run level built from the C++ layout generator: level 1 prepared from the main menu, next level from the extractor contact, hand JSON as fallback. Status done.
+- [[task-497-barks-in-game]] — Rare barks of Rook and Vesna (through the drone) shown as subtitles on key events, one line at a time, 30 s cooldown, alerts keep priority. Status done.
+- [[task-498-heavy-slam-impact-fx]] — Capture first whether the heavy slam already shows a dust ring and rock chips; build only what is missing, in the explosions cartoon style. Status cancelled.
+- [[task-499-robot-logo-decals]] — The yellow Kessler-Voss emblem added as a decal on the Heavy, Kamikaze and Chaser v2 meshes, like the shield emblem, without regenerating the Meshy meshes. Status cancelled.

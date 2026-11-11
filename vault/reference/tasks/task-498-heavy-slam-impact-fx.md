@@ -1,9 +1,9 @@
 ---
 id: task-498-heavy-slam-impact-fx
 description: "Global task: Capture first whether the heavy slam already shows a dust ring and rock chips; build only what is missing, in the explosions cartoon style."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: cancelled
 ---
 # Heavy slam impact: dust ring and rock chips
 
@@ -14,10 +14,14 @@ status: wait-answers
 - verification_level: standard
 - confirmed_by_owner: yes (2026-11-10, "ok")
 - milestone: M2
-- next_step: task-498-01-capture-before
+- next_step: none
 - started: 2026-11-10T20:39:35Z
-- waiting_for: Owner decision on task-498-01: existing beige dust ring and pale chips seen at the slam (other style); rework to orange cartoon ring and violet chips, or keep?
-- result: Stopped after 01 per Q2: ring and chips already exist in another style; frames in Saved/Captures/task498_before.
+- waiting_for: none
+- executor_tokens: input 58, cache write 81481, cache read 1603793, output 9085
+- executor_usage: runs 1, turns 25, context start 15k peak 93k, resumes 4, 2 min, units 0.31 M
+- planning_tokens: input 8, cache write 24613, cache read 213218, output 7990
+- planning_usage: accec2f2 "Planner: 4 architect tasks" 1/4 (tasks 496, 497, 498, 499), units 0.09 M
+- result: Closed by the owner decision 2026-11-11: keep the existing slam ring and chips (task-300 NS_HeavySlamImpact, bp-heavy-slam-impact). Capture done (subtask 01), nothing built, subtasks 02-05 cancelled. Frames in Saved/Captures/task498_before.
 
 ## Questions
 Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-10.
@@ -33,7 +37,7 @@ Decided 2026-11-10 (owner "ok"): every default below is accepted; values provisi
 5. task-498-05-doc (vault/reference/tasks/task-498-heavy-slam-impact-fx/task-498-05-doc.md) — doc: Document the slam impact effect, or that it already existed.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-498-01-capture-before]] — step 1, capture.
 - [[task-498-02-slam-niagara]] — step 2, bp.
 - [[task-498-03-slam-wiring]] — step 3, bp.
