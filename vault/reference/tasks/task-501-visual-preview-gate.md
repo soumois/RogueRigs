@@ -1,9 +1,9 @@
 ---
 id: task-501-visual-preview-gate
 description: "Global task: a visual or taste request first gets a mockup or one slice with a capture, then waits for the owner go."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Visual requests: preview and owner go before the full build
 
@@ -14,10 +14,14 @@ status: in-progress
 - verification_level: light
 - confirmed_by_owner: yes (2026-11-11, "ok")
 - milestone: M2
-- next_step: task-501-01-preview-rule
+- next_step: none
 - started: 2026-11-11T21:16:19Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 20, cache write 36323, cache read 327742, output 5413
+- executor_usage: runs 1, turns 10, context start 15k peak 47k, resumes 0, 1 min, units 0.11 M
+- planning_tokens: input 5, cache write 12163, cache read 83526, output 4150
+- planning_usage: add7b373 "Plan crew workflow routing change" 1/4 (tasks 500, 501, 502, 503), units 0.04 M
+- result: Done. Preview gate written: orchestration-protocol step 3 (visuel global starts with one preview subtask, mockup if look undecided else one in-game slice with one capture, done_when ends on owner go, build subtasks depend on it); execution-protocol step 5.7 and agent-executor preview_gate (always wait-answers with the image path, build only on go, refusal leaves build todo); agent-planner visuel_preview; representative_slice restricted to uncertain non-taste integration (Q5); request-families row points to the rule.
 
 ## Questions
 Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-11.
@@ -27,6 +31,6 @@ Decided 2026-11-11 (owner "ok"): every default below is accepted; values provisi
 1. task-501-01-preview-rule (vault/reference/tasks/task-501-visual-preview-gate/task-501-01-preview-rule.md) — doc: Write the preview-first rule for the planner and the owner-go wait for the executor.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-501-01-preview-rule]] — step 1, doc.
 - [[orchestration-protocol]] — step 3 holds the preview gate this task wrote.
