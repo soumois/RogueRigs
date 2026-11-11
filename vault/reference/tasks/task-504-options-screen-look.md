@@ -1,9 +1,9 @@
 ---
 id: task-504-options-screen-look
 description: "Global task: Options screen look: one owner-validated Kie.ai GPT Image 2 mockup, then each element mapped to an existing or new sprite."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Options screen: Kie.ai mockup and its elements
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-11, "Owner 2026-11-11, verbatim: "ok pour tout, fait lui juste la remarque pour le Q2 pour la confirmation. Si la maquette est proche et que je n'ai pas fait de commentaire, tu pourras valider ( ou si mon commentaire est valable pour la maquette aussi". The Q2 remark he accepts, as shown to him verbatim: "Q2, pas de confirmation après un changement de résolution. C'est le défaut le plus risqué : une résolution ou un mode d'affichage que l'écran n'accepte pas peut laisser le joueur devant un écran noir, sans moyen de revenir. Le compte à rebours « garder ces réglages ? » existe pour ça. Je le demanderais au moins pour la résolution et le mode fenêtre." Decided: Q1 to Q9 defaults, except Q2: a change of resolution or window mode shows a keep-or-revert countdown that reverts if not confirmed; other changes apply at once, no Apply button. Countdown 15 s and its wording are provisional (Planner), in options-menu. His second sentence concerns only the later replay without him: there the main session may validate a mockup close to the one he validates now, or one his comments still fit. In this run his own go on the mockup stays required.")
 - milestone: M2
-- next_step: task-504-02-options-elements
+- next_step: none
 - started: 2026-11-11T21:53:18Z
 - waiting_for: none
-- executor_tokens: input 44, cache write 72630, cache read 986568, output 9410
-- executor_usage: runs 1, turns 20, context start 16k peak 73k, resumes 1, 4 min, units 0.24 M
+- executor_tokens: input 100, cache write 105101, cache read 3365989, output 23880
+- executor_usage: runs 1, turns 47, context start 16k peak 105k, resumes 1, 10 min, units 0.59 M
 - planning_tokens: input 18, cache write 29764, cache read 464930, output 9627
 - planning_usage: ade39ac3 "Plan options screen request" 1/3 (tasks 504, 505, 506), units 0.13 M
-- result: open
+- result: Done. Every element of the validated mockup mapped (table in art-prompts-options-screen-mockup): frame, title rails, buttons and selected tab reused; unselected tab, selector arrow, slider track and knob, toggle track and thumb cut from one Kie.ai sheet (6 credits, cap 36), imported to /Game/RogueRigs/UI/Options. Task credits 12. Gap: slider knob shape differs from the mockup.
 
 ## Questions
 Decided 2026-11-11 (owner "Owner 2026-11-11, verbatim: "ok pour tout, fait lui juste la remarque pour le Q2 pour la confirmation. Si la maquette est proche et que je n'ai pas fait de commentaire, tu pourras valider ( ou si mon commentaire est valable pour la maquette aussi". The Q2 remark he accepts, as shown to him verbatim: "Q2, pas de confirmation après un changement de résolution. C'est le défaut le plus risqué : une résolution ou un mode d'affichage que l'écran n'accepte pas peut laisser le joueur devant un écran noir, sans moyen de revenir. Le compte à rebours « garder ces réglages ? » existe pour ça. Je le demanderais au moins pour la résolution et le mode fenêtre." Decided: Q1 to Q9 defaults, except Q2: a change of resolution or window mode shows a keep-or-revert countdown that reverts if not confirmed; other changes apply at once, no Apply button. Countdown 15 s and its wording are provisional (Planner), in options-menu. His second sentence concerns only the later replay without him: there the main session may validate a mockup close to the one he validates now, or one his comments still fit. In this run his own go on the mockup stays required."): every default below is accepted; values provisional, owner 2026-11-11.
@@ -41,6 +41,6 @@ Decided 2026-11-11 (owner "Owner 2026-11-11, verbatim: "ok pour tout, fait lui j
 2. task-504-02-options-elements (vault/reference/tasks/task-504-options-screen-look/task-504-02-options-elements.md) — art: Map every element of the validated mockup to an existing sprite or a new PNG.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-504-01-options-mockup]] — step 1, art.
 - [[task-504-02-options-elements]] — step 2, art.
