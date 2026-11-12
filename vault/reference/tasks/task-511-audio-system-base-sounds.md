@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "ok")
 - milestone: M2
-- next_step: task-511-01-audio-system
+- next_step: task-511-02-sound-candidates
 - started: 2026-11-12T21:01:39Z
 - waiting_for: none
+- executor_tokens: input 140, cache write 343151, cache read 7864266, output 63700
+- executor_usage: runs 1, turns 69, context start 16k peak 193k, resumes 1, 230 min, units 1.53 M, USD 4.56
+- planning_tokens: input 26, cache write 54769, cache read 468394, output 14795
+- planning_usage: a23f106d "Plan audio tranche 1" 1/1 (tasks 511), units 0.19 M, USD 0.66
 - result: open
 
 ## Questions
