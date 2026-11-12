@@ -3,7 +3,7 @@ id: task-511-audio-system-base-sounds
 description: "Global task: Data-driven C++ audio system (event -> sound table) on the existing sound classes, with owner-picked CC0 sounds for 8 events."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Audio system and the first 8 sound effects
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-12, "ok")
 - milestone: M2
 - next_step: task-511-01-audio-system
-- started: open
+- started: 2026-11-12T17:20:35Z
 - waiting_for: none
 - result: open
 

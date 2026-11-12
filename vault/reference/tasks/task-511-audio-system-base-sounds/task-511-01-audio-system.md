@@ -3,7 +3,7 @@ id: task-511-01-audio-system
 description: "Cpp: Audio system with the event table, wired to the sound classes and to the 8 events, mix rules applied."
 parent: task-511-audio-system-base-sounds
 kind: task
-status: todo
+status: in-progress
 ---
 # Audio system and the first 8 sound effects: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T17:20:35Z
 - waiting_for: none
 - result: open
 

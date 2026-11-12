@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-511-audio-system-base-sounds]] — Data-driven C++ audio system (event -> sound table) wired to the existing sound classes, with CC0 sounds picked by the owner for 8 events. Status todo.
+- [[task-511-audio-system-base-sounds]] — Data-driven C++ audio system (event -> sound table) wired to the existing sound classes, with CC0 sounds picked by the owner for 8 events. Status in-progress.
