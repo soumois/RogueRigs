@@ -33,7 +33,7 @@ kind: doc
 - events: none in the graph; buttons, sliders and toggles are bound by the C++ base.
 - logic_in_bp: none.
 - assets: T_Shop_TitleBar, T_Shop_ButtonContinue, T_LevelEnd_Frame, T_LevelEnd_DividerV, and `/Game/RogueRigs/UI/Options/T_Options_*` (Tab 396x77, SelectorPlate 346x46, Arrow, SliderTrack 263x20, SliderFill 263x19, SliderKnob, ToggleOn and ToggleOff 164x40, ToggleKnob). Box sprites are stored at their drawn size: Slate sizes Box margins from the texture, not from ImageSize.
-- verified (task-510-10): -game captures at 1920x1080, 1280x720, 1920x1200, 2560x1080 (`Saved/Captures/t500_c_*`, sheets `Saved/Captures/t500_sheets/`).
+- verified (task-510-10): -game captures at 1920x1080, 1280x720, 1920x1200, 2560x1080 (`Saved/Captures/t500_c_*`, sheets `Saved/Captures/t500_sheets/`). Re-checked on master after the import ([[task-509-options-old-workflow-on-master]], 2026-11-12): same four resolutions from the main menu and the pause menu, frames identical to the old ones (`Saved/Captures/t509_c_*`, sheets `Saved/Captures/t509_sheets/`); the t500 captures are in the worktree C:/Workspace/RogueRigs-old.
 - owner_agent: agent-bp
 
 ## Relations
