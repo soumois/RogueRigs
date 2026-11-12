@@ -517,4 +517,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-506-options-gameplay-and-pause]] — Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu. Status done.
 - [[task-507-budget-no-block]] — Réglage (no planner): Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ... Status done.
 - [[task-508-workflow-back-to-old]] — Removes gros-morceau split, 120k context handover and active budget from the crew rules; keeps reglage route, preview gate, task-confirm, failure-only runbook, extraProjectSlugs, three agents. Status done.
+- [[task-509-options-old-workflow-on-master]] — Replaces the new-workflow options screen on master with the old-workflow one from exp/old-workflow-options (code, Blueprints, assets, images, docs), renumbers its task to 510, then pushes master. Status done.
 - [[task-510-options-screen]] — options screen opened from the main and pause menus, sound, quality and gameplay settings saved, look from an owner-validated Kie.ai mockup (old workflow, imported by task-509). Status done.

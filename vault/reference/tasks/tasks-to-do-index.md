@@ -14,4 +14,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-509-options-old-workflow-on-master]] — Replaces the new-workflow options screen on master with the old-workflow one from exp/old-workflow-options (code, Blueprints, assets, images, docs), renumbers its task to 510, then pushes master. Status wait-answers.

@@ -1,9 +1,9 @@
 ---
 id: task-509-options-old-workflow-on-master
 description: "Global task: Replaces the new-workflow options screen on master with the old-workflow one from exp/old-workflow-options (code, Blueprints, assets, images, docs), renumbers its task to 510, then pushes master."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: wait-answers
+status: done
 ---
 # Écran Options : version de l'ancien workflow sur master, puis push
 
@@ -15,14 +15,14 @@ status: wait-answers
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "Ok pour tout")
 - milestone: M2
-- next_step: task-509-03-options-doc-push
-- started: 2026-11-12T12:27:40Z
-- waiting_for: owner action: git push origin master failed (fatal: could not read Username for https://github.com, the Git Credential Manager sign-in got no answer); nothing pushed, master 12 commits ahead of origin. Sign in to GitHub on this machine (or run git push origin master yourself), then resume task-509-03 to push and close
-- executor_tokens: input 126, cache write 125026, cache read 5206053, output 24882
-- executor_usage: runs 1, turns 60, context start 16k peak 135k, resumes 5, 12 min, units 0.80 M
+- next_step: none
+- started: 2026-11-12T13:30:58Z
+- waiting_for: none
+- executor_tokens: input 170, cache write 290452, cache read 7952627, output 35295
+- executor_usage: runs 1, turns 80, context start 16k peak 154k, resumes 6, 64 min, units 1.33 M
 - planning_tokens: input 8, cache write 21578, cache read 106665, output 6155
 - planning_usage: a5862d1d "Plan screen swap and rule rollback" 1/2 (tasks 508, 509), units 0.07 M
-- result: open
+- result: Done. 1cf36a89. A1 old-workflow options screen on master (code, Blueprints, sprites, sound classes, Art/Source images from e0968216 in 1abc6245; vault docs options-screen, sys-options, wbp-options, menu, hover, damage-numbers, art-prompt nodes). A2 the 504-506 code, assets and docs (options-menu, sys-game-settings, sys-options-screen) removed, no gdd or tech node names them; tasks 504, 505, 506 carry 'remplacée par task-510-options-screen'. A3 maps and Config identical to master, tasks 500-503, 507, 508 and both cost histories kept. A4 old task imported as task-510-options-screen. A5 build exit 0, RogueRigs.DamageNumbers and Pickups.OreNumber 11/11, game launch without crash. A6 captures at four resolutions from the main menu and the pause menu match the old ones (task-509-02, Saved/Captures/t509_sheets). A7 not verified: the keep-or-revert countdown reaching 0, a real window mode change, the gameplay toggles during combat, real mouse clicks. A8 lint clean; master pushed to origin by the relay after the owner signed in to GitHub (12717257..811dcc71, origin/master == master); the first push by the executor failed without credentials. The closing commit is pushed by the relay.
 
 ## Questions
 Decided 2026-11-12 (owner "Ok pour tout"): every default below is accepted; values provisional, owner 2026-11-12.
@@ -36,7 +36,7 @@ Decided 2026-11-12 (owner "Ok pour tout"): every default below is accepted; valu
 3. task-509-03-options-doc-push (vault/reference/tasks/task-509-options-old-workflow-on-master/task-509-03-options-doc-push.md) — doc: vault docs of the old version in place, new-version docs removed, 504 to 506 marked superseded, lint, push master
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-509-01-merge-old-options]] — step 1, executor.
 - [[task-509-02-options-capture]] — step 2, capture.
 - [[task-509-03-options-doc-push]] — step 3, doc.
