@@ -3,7 +3,7 @@ id: task-506-02-options-gameplay-tab
 description: "Bp: Gameplay tab in the options screen."
 parent: task-506-options-gameplay-and-pause
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen: Gameplay tab and access from the pause menu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T04:59:14Z
 - waiting_for: none
 - result: open
 
