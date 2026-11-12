@@ -33,6 +33,25 @@ namespace RROptionsWidget
 			|| Row == ERROptionRow::ResolutionScale;
 	}
 
+	bool ToGameplayOption(ERROptionRow Row, ERRGameplayOption& OutOption)
+	{
+		switch (Row)
+		{
+		case ERROptionRow::DamageNumbers: OutOption = ERRGameplayOption::DamageNumbers; return true;
+		case ERROptionRow::AimIndicator: OutOption = ERRGameplayOption::AimIndicator; return true;
+		case ERROptionRow::ScreenShake: OutOption = ERRGameplayOption::ScreenShake; return true;
+		case ERROptionRow::PauseOnFocusLoss: OutOption = ERRGameplayOption::PauseOnFocusLoss; return true;
+		default: return false;
+		}
+	}
+
+	/** On/Off toggle rows: VSync and the Gameplay options. */
+	bool IsToggleRow(ERROptionRow Row)
+	{
+		ERRGameplayOption Option;
+		return Row == ERROptionRow::VSync || ToGameplayOption(Row, Option);
+	}
+
 	bool IsVolumeRow(ERROptionRow Row)
 	{
 		return Row == ERROptionRow::MasterVolume || Row == ERROptionRow::MusicVolume || Row == ERROptionRow::EffectsVolume;
@@ -145,6 +164,10 @@ FText URROptionsWidget::GetRowLabel(ERROptionRow Row)
 	case ERROptionRow::AntiAliasing: return NSLOCTEXT("RogueRigs", "OptAA", "Anti-aliasing");
 	case ERROptionRow::PostProcessing: return NSLOCTEXT("RogueRigs", "OptPost", "Post-processing");
 	case ERROptionRow::Textures: return NSLOCTEXT("RogueRigs", "OptTextures", "Textures");
+	case ERROptionRow::DamageNumbers: return NSLOCTEXT("RogueRigs", "OptDamageNumbers", "Damage numbers");
+	case ERROptionRow::AimIndicator: return NSLOCTEXT("RogueRigs", "OptAimIndicator", "Aim indicator");
+	case ERROptionRow::ScreenShake: return NSLOCTEXT("RogueRigs", "OptScreenShake", "Screen shake");
+	case ERROptionRow::PauseOnFocusLoss: return NSLOCTEXT("RogueRigs", "OptFocusPause", "Pause when the window loses focus");
 	}
 	return FText::GetEmpty();
 }
@@ -162,6 +185,12 @@ void URROptionsWidget::NativeOnInitialized()
 
 	if (SoundTabButton) { SoundTabButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleSoundTabClicked); }
 	if (GraphicsTabButton) { GraphicsTabButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleGraphicsTabClicked); }
+	if (GameplayTabButton)
+	{
+		// Shown disabled until task-506 in the asset: enabled here when the Gameplay list exists.
+		GameplayTabButton->SetIsEnabled(GameplayList != nullptr);
+		GameplayTabButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleGameplayTabClicked);
+	}
 	if (ResetButton) { ResetButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleResetClicked); }
 	if (BackButton) { BackButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleBackClicked); }
 	if (KeepButton) { KeepButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleKeepClicked); }
@@ -170,6 +199,7 @@ void URROptionsWidget::NativeOnInitialized()
 	// Plate hover of ui-button-hover: a tab grows with its selected plate and label.
 	URRButtonHoverSubsystem::Attach(SoundTabButton, true, SoundTab);
 	URRButtonHoverSubsystem::Attach(GraphicsTabButton, true, GraphicsTab);
+	URRButtonHoverSubsystem::Attach(GameplayTabButton, true, GameplayTab);
 	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("ResetButton"), TEXT("BackButton"), TEXT("KeepButton"), TEXT("RevertButton")});
 
 	if (!IsDesignTime())
@@ -240,6 +270,20 @@ void URROptionsWidget::BuildRows()
 		AddRow(GraphicsList, ERROptionRow::PostProcessing);
 		AddRow(GraphicsList, ERROptionRow::Textures);
 	}
+	if (GameplayList)
+	{
+		GameplayList->ClearChildren();
+		AddRow(GameplayList, ERROptionRow::DamageNumbers);
+		AddRow(GameplayList, ERROptionRow::AimIndicator);
+		AddRow(GameplayList, ERROptionRow::ScreenShake);
+		AddRow(GameplayList, ERROptionRow::PauseOnFocusLoss);
+		// Same row height as the Graphics list: 11 rows and the divider.
+		USpacer* Spacer = WidgetTree->ConstructWidget<USpacer>(USpacer::StaticClass(), TEXT("GameplayListSpacer"));
+		UVerticalBoxSlot* SpacerSlot = GameplayList->AddChildToVerticalBox(Spacer);
+		FSlateChildSize SpacerSize(ESlateSizeRule::Fill);
+		SpacerSize.Value = 7.f + DividerRowWeight;
+		SpacerSlot->SetSize(SpacerSize);
+	}
 	AppliedRowHeight = 0.f;
 	ApplyRowHeight(40.f);
 	AppliedRowHeight = 0.f;
@@ -308,7 +352,7 @@ void URROptionsWidget::AddRow(UVerticalBox* List, ERROptionRow Row)
 	Value->SetColorAndOpacity(FSlateColor(ValueColour));
 	Widgets.Value = Value;
 
-	if (Row == ERROptionRow::VSync)
+	if (RROptionsWidget::IsToggleRow(Row))
 	{
 		Value->SetVisibility(ESlateVisibility::Collapsed);
 		Canvas->AddChildToCanvas(Value);
@@ -497,14 +541,21 @@ FReply URROptionsWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
 
 void URROptionsWidget::ShowTab(ERROptionsTab Tab)
 {
+	if (Tab == ERROptionsTab::Gameplay && !GameplayList)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Options screen: no GameplayList in the layout; Gameplay tab not shown."));
+		return;
+	}
 	CurrentTab = Tab;
-	const bool bSound = Tab == ERROptionsTab::Sound;
-	if (SoundList) { SoundList->SetVisibility(bSound ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed); }
-	if (GraphicsList) { GraphicsList->SetVisibility(bSound ? ESlateVisibility::Collapsed : ESlateVisibility::SelfHitTestInvisible); }
-	if (SoundTabSelected) { SoundTabSelected->SetVisibility(bSound ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden); }
-	if (GraphicsTabSelected) { GraphicsTabSelected->SetVisibility(bSound ? ESlateVisibility::Hidden : ESlateVisibility::HitTestInvisible); }
-	if (SoundTabText) { SoundTabText->SetColorAndOpacity(FSlateColor(bSound ? SelectedTabTextColour : TabTextColour)); }
-	if (GraphicsTabText) { GraphicsTabText->SetColorAndOpacity(FSlateColor(bSound ? TabTextColour : SelectedTabTextColour)); }
+	auto ShowOne = [this](UWidget* List, UWidget* Selected, UTextBlock* Text, bool bOn)
+	{
+		if (List) { List->SetVisibility(bOn ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed); }
+		if (Selected) { Selected->SetVisibility(bOn ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden); }
+		if (Text) { Text->SetColorAndOpacity(FSlateColor(bOn ? SelectedTabTextColour : TabTextColour)); }
+	};
+	ShowOne(SoundList, SoundTabSelected, SoundTabText, Tab == ERROptionsTab::Sound);
+	ShowOne(GraphicsList, GraphicsTabSelected, GraphicsTabText, Tab == ERROptionsTab::Graphics);
+	ShowOne(GameplayList, GameplayTabSelected, GameplayTabText, Tab == ERROptionsTab::Gameplay);
 	RefreshValues();
 }
 
@@ -527,14 +578,12 @@ void URROptionsWidget::ResetCurrentTab()
 	{
 		return;
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("Options screen: Reset to defaults (%s tab)."), CurrentTab == ERROptionsTab::Sound ? TEXT("Sound") : TEXT("Graphics"));
-	if (CurrentTab == ERROptionsTab::Sound)
+	UE_LOG(LogRogueRigs, Log, TEXT("Options screen: Reset to defaults (%s tab)."), *GetTabName(CurrentTab));
+	switch (CurrentTab)
 	{
-		Settings->ResetSoundToDefaults();
-	}
-	else
-	{
-		Settings->ResetGraphicsToDefaults();
+	case ERROptionsTab::Sound: Settings->ResetSoundToDefaults(); break;
+	case ERROptionsTab::Graphics: Settings->ResetGraphicsToDefaults(); break;
+	case ERROptionsTab::Gameplay: Settings->ResetGameplayToDefaults(); break;
 	}
 	RefreshValues();
 }
@@ -590,6 +639,10 @@ void URROptionsWidget::StepRow(ERROptionRow Row, int32 Direction)
 		if (RROptionsWidget::ToDetail(Row, Detail))
 		{
 			Settings->StepGraphicsDetail(Detail, Dir);
+		}
+		else if (ERRGameplayOption Option; RROptionsWidget::ToGameplayOption(Row, Option))
+		{
+			Settings->SetGameplayOption(Option, !Settings->GetGameplayOption(Option));
 		}
 		break;
 	}
@@ -674,8 +727,13 @@ void URROptionsWidget::RefreshRow(FRROptionsRowWidgets& Widgets)
 		break;
 	}
 	case ERROptionRow::VSync:
+	case ERROptionRow::DamageNumbers:
+	case ERROptionRow::AimIndicator:
+	case ERROptionRow::ScreenShake:
+	case ERROptionRow::PauseOnFocusLoss:
 	{
-		const bool bOn = Settings->IsVSyncEnabled();
+		ERRGameplayOption Option;
+		const bool bOn = RROptionsWidget::ToGameplayOption(Widgets.Row, Option) ? Settings->GetGameplayOption(Option) : Settings->IsVSyncEnabled();
 		Text = URRGameUserSettings::GetOnOffText(bOn);
 		if (Widgets.ToggleText)
 		{
@@ -719,6 +777,16 @@ void URROptionsWidget::HandleSoundTabClicked()
 void URROptionsWidget::HandleGraphicsTabClicked()
 {
 	ShowTab(ERROptionsTab::Graphics);
+}
+
+void URROptionsWidget::HandleGameplayTabClicked()
+{
+	ShowTab(ERROptionsTab::Gameplay);
+}
+
+FString URROptionsWidget::GetTabName(ERROptionsTab Tab)
+{
+	return Tab == ERROptionsTab::Sound ? TEXT("Sound") : Tab == ERROptionsTab::Graphics ? TEXT("Graphics") : TEXT("Gameplay");
 }
 
 void URROptionsWidget::HandleResetClicked()

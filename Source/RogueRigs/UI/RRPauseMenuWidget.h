@@ -11,6 +11,7 @@ class ARRMiner;
 class ARRPlayerController;
 class ARRWeapon;
 class UButton;
+class URROptionsWidget;
 
 /** Current stats of one owned weapon for the pause menu (pause-menu gdd, Content): numbers and the texts drawn by the widget. */
 USTRUCT(BlueprintType)
@@ -211,6 +212,27 @@ class ROGUERIGS_API URRPauseMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	/** Sets OptionsWidgetClass to WBP_Options. */
+	URRPauseMenuWidget(const FObjectInitializer& ObjectInitializer);
+
+	/**
+	 * Options button (options-menu, Opening): adds the options screen over the pause menu at OptionsZOrder, the game stays paused.
+	 * Back or Escape closes it and puts the focus back on OptionsButton. False when already open or OptionsWidgetClass is missing.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Pause Menu")
+	bool OpenOptions();
+
+	/** Back on the open options screen (as its Back button). False when it is not open. */
+	UFUNCTION(BlueprintCallable, Category = "Pause Menu")
+	bool CloseOptions();
+
+	/** True while the options screen opened from this menu is on screen. */
+	UFUNCTION(BlueprintPure, Category = "Pause Menu")
+	bool IsOptionsOpen() const;
+
+	/** The options screen opened from this menu, or null. */
+	URROptionsWidget* GetOptionsWidget() const { return OptionsWidget; }
+
 	/** Resume button: ARRPlayerController::ClosePauseMenu (menu removed, game unpaused). False when the menu was not open. */
 	UFUNCTION(BlueprintCallable, Category = "Pause Menu")
 	bool Resume();
@@ -241,8 +263,35 @@ public:
 	static FString DescribeStats(const FRRPauseMenuStats& Stats);
 
 protected:
-	/** Makes the widget focusable and binds ResumeButton / ExitButton clicks. */
+	/** Makes the widget focusable and binds ResumeButton / OptionsButton / ExitButton clicks. */
 	virtual void NativeOnInitialized() override;
+
+	/** Removes an options screen still open (Exit, or the menu closed another way). */
+	virtual void NativeDestruct() override;
+
+	/** OptionsButton click: OpenOptions. */
+	UFUNCTION()
+	void HandleOptionsClicked();
+
+	/** Options screen closed (Back or Escape): focus back on OptionsButton. */
+	UFUNCTION()
+	void HandleOptionsClosed();
+
+	/** Optional Options button of the Blueprint layout (name OptionsButton), between Resume and Exit. */
+	UPROPERTY(BlueprintReadOnly, Category = "Pause Menu", meta = (BindWidgetOptional))
+	TObjectPtr<UButton> OptionsButton;
+
+	/** Options screen class (WBP_Options, shared with the main menu). */
+	UPROPERTY(EditDefaultsOnly, Category = "Pause Menu|Options")
+	TSoftClassPtr<URROptionsWidget> OptionsWidgetClass;
+
+	/** Viewport Z-order of the options screen: above the pause menu (40), below the run-lost screen (45). */
+	UPROPERTY(EditDefaultsOnly, Category = "Pause Menu|Options")
+	int32 OptionsZOrder = 42;
+
+	/** The options screen opened from this menu. */
+	UPROPERTY(Transient)
+	TObjectPtr<URROptionsWidget> OptionsWidget;
 
 
 	/** Draw GetStats: called after each RefreshStats (once when the menu opens). Implement in Blueprint. */

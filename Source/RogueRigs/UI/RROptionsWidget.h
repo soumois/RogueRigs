@@ -1,4 +1,4 @@
-// Rogue Rigs - C++ base of the options screen (WBP_Options, task-505-02): Sound and Graphics tabs, one row per option of
+// Rogue Rigs - C++ base of the options screen (WBP_Options, task-505-02): Sound, Graphics and Gameplay (task-506) tabs, one row per option of
 // options-menu built here, Reset to defaults (current tab), Back, and the keep-or-revert panel of a display change.
 
 #pragma once
@@ -19,12 +19,13 @@ class UTexture2D;
 class UVerticalBox;
 class URROptionsWidget;
 
-/** Tab of the options screen (Gameplay comes with task-506). */
+/** Tab of the options screen. */
 UENUM(BlueprintType)
 enum class ERROptionsTab : uint8
 {
 	Sound,
-	Graphics
+	Graphics,
+	Gameplay
 };
 
 /** One option row of the screen, in display order. */
@@ -44,7 +45,11 @@ enum class ERROptionRow : uint8
 	Effects,
 	AntiAliasing,
 	PostProcessing,
-	Textures
+	Textures,
+	DamageNumbers,
+	AimIndicator,
+	ScreenShake,
+	PauseOnFocusLoss
 };
 
 /** Fired when the screen closes (Back or Escape); the screen that opened it puts its focus back. */
@@ -111,8 +116,8 @@ struct FRROptionsRowWidgets
 
 /**
  * Options screen (options-menu gdd). The Blueprint subclass holds the static layout (backdrop, title, tabs, frame, the two
- * row lists, Reset to defaults, Back, the confirmation panel); this base builds the option rows into SoundList and
- * GraphicsList (label, selector arrows and value, slider, or toggle), keeps them in sync with URRGameUserSettings and sizes
+ * row lists, Reset to defaults, Back, the confirmation panel); this base builds the option rows into SoundList,
+ * GraphicsList and GameplayList (label, selector arrows and value, slider, or toggle), keeps them in sync with URRGameUserSettings and sizes
  * the arrows, knob and thumb from the row height, so the rows follow the frame anchors at every resolution. Every change
  * goes through URRGameUserSettings and applies at once; a window mode or resolution change shows ConfirmPanel until Keep,
  * Revert, Escape or the end of the countdown. Escape: Revert while the panel shows, else Back. Debug: rr.Options.
@@ -164,6 +169,9 @@ public:
 	/** Label of a row as drawn ("Window mode"). */
 	static FText GetRowLabel(ERROptionRow Row);
 
+	/** "Sound", "Graphics" or "Gameplay" (log lines). */
+	static FString GetTabName(ERROptionsTab Tab);
+
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
@@ -179,6 +187,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UButton> GraphicsTabButton;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
+	TObjectPtr<UButton> GameplayTabButton;
+
 	/** Cream plate drawn over the tab button when the tab is selected. */
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UWidget> SoundTabSelected;
@@ -187,10 +198,16 @@ protected:
 	TObjectPtr<UWidget> GraphicsTabSelected;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
+	TObjectPtr<UWidget> GameplayTabSelected;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> SoundTabText;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> GraphicsTabText;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> GameplayTabText;
 
 	/** Container of a tab (button, selected plate, label): the widget that grows on hover. */
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
@@ -199,12 +216,18 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UWidget> GraphicsTab;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
+	TObjectPtr<UWidget> GameplayTab;
+
 	/** Row lists filled by this class (keep them empty in the designer). */
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UVerticalBox> SoundList;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UVerticalBox> GraphicsList;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
+	TObjectPtr<UVerticalBox> GameplayList;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Options", meta = (BindWidgetOptional))
 	TObjectPtr<UButton> ResetButton;
@@ -323,6 +346,9 @@ private:
 
 	UFUNCTION()
 	void HandleGraphicsTabClicked();
+
+	UFUNCTION()
+	void HandleGameplayTabClicked();
 
 	UFUNCTION()
 	void HandleResetClicked();

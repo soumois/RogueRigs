@@ -12,6 +12,8 @@
 #include "Player/RRMiner.h"
 #include "UI/RRButtonHover.h"
 #include "Player/RRPlayerController.h"
+#include "RogueRigs.h"
+#include "UI/RROptionsWidget.h"
 #include "Upgrades/RRUpgradeComponent.h"
 #include "Weapons/RRTurretLauncher.h"
 #include "Weapons/RRWeapon.h"
@@ -178,6 +180,12 @@ FString URRPauseMenuWidget::DescribeStats(const FRRPauseMenuStats& InStats)
 	return Line;
 }
 
+URRPauseMenuWidget::URRPauseMenuWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	OptionsWidgetClass = TSoftClassPtr<URROptionsWidget>(FSoftObjectPath(TEXT("/Game/RogueRigs/UI/WBP_Options.WBP_Options_C")));
+}
+
 void URRPauseMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -186,13 +194,87 @@ void URRPauseMenuWidget::NativeOnInitialized()
 	{
 		ResumeButton->OnClicked.AddUniqueDynamic(this, &URRPauseMenuWidget::HandleResumeClicked);
 	}
+	if (OptionsButton)
+	{
+		OptionsButton->OnClicked.AddUniqueDynamic(this, &URRPauseMenuWidget::HandleOptionsClicked);
+	}
 	if (ExitButton)
 	{
 		ExitButton->OnClicked.AddUniqueDynamic(this, &URRPauseMenuWidget::HandleExitClicked);
 	}
-	// Mouse hover of both plates (ui-button-hover, task-485-01).
+	// Mouse hover of the plates (ui-button-hover, task-485-01).
 	URRButtonHoverSubsystem::Attach(ResumeButton);
+	URRButtonHoverSubsystem::Attach(OptionsButton);
 	URRButtonHoverSubsystem::Attach(ExitButton);
+}
+
+void URRPauseMenuWidget::NativeDestruct()
+{
+	if (OptionsWidget)
+	{
+		OptionsWidget->OnOptionsClosed.RemoveDynamic(this, &URRPauseMenuWidget::HandleOptionsClosed);
+		if (OptionsWidget->IsInViewport())
+		{
+			OptionsWidget->Back();
+		}
+		OptionsWidget = nullptr;
+	}
+	Super::NativeDestruct();
+}
+
+bool URRPauseMenuWidget::IsOptionsOpen() const
+{
+	return OptionsWidget && OptionsWidget->IsInViewport();
+}
+
+bool URRPauseMenuWidget::OpenOptions()
+{
+	if (IsOptionsOpen())
+	{
+		return false;
+	}
+	UClass* Class = OptionsWidgetClass.LoadSynchronous();
+	APlayerController* Controller = GetOwningPlayer();
+	if (!Class || !Controller)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Pause menu Options: refused (class %s, controller %d)."), *OptionsWidgetClass.ToString(), Controller ? 1 : 0);
+		return false;
+	}
+	OptionsWidget = CreateWidget<URROptionsWidget>(Controller, Class);
+	if (!OptionsWidget)
+	{
+		return false;
+	}
+	OptionsWidget->OnOptionsClosed.AddUniqueDynamic(this, &URRPauseMenuWidget::HandleOptionsClosed);
+	OptionsWidget->AddToViewport(OptionsZOrder);
+	OptionsWidget->FocusFirstTab();
+	UE_LOG(LogRogueRigs, Log, TEXT("Pause menu Options: options screen opened over the pause menu (%s), game still paused."), *Class->GetName());
+	return true;
+}
+
+bool URRPauseMenuWidget::CloseOptions()
+{
+	if (!IsOptionsOpen())
+	{
+		return false;
+	}
+	OptionsWidget->Back();
+	return true;
+}
+
+void URRPauseMenuWidget::HandleOptionsClicked()
+{
+	OpenOptions();
+}
+
+void URRPauseMenuWidget::HandleOptionsClosed()
+{
+	OptionsWidget = nullptr;
+	if (OptionsButton)
+	{
+		OptionsButton->SetKeyboardFocus();
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("Pause menu Options: closed, focus on Options."));
 }
 
 void URRPauseMenuWidget::RefreshStats()

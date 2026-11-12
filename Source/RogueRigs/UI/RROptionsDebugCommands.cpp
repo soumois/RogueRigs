@@ -1,5 +1,5 @@
 // Rogue Rigs - options screen debug console command (task-505-02, compiled out of shipping):
-// rr.Options dump|tab <sound|graphics>|step <Row> <dir>|reset|back on the open options screen (same functions as its buttons).
+// rr.Options dump|tab <sound|graphics|gameplay>|step <Row> <dir>|reset|back on the open options screen (same functions as its buttons).
 
 #include "CoreMinimal.h"
 
@@ -51,7 +51,8 @@ namespace RROptionsDebug
 		const UEnum* RowEnum = StaticEnum<ERROptionRow>();
 		if (Action == TEXT("tab") && Args.Num() > 1)
 		{
-			Widget->ShowTab(Args[1].ToLower() == TEXT("sound") ? ERROptionsTab::Sound : ERROptionsTab::Graphics);
+			const FString Tab = Args[1].ToLower();
+			Widget->ShowTab(Tab == TEXT("sound") ? ERROptionsTab::Sound : Tab == TEXT("gameplay") ? ERROptionsTab::Gameplay : ERROptionsTab::Graphics);
 		}
 		else if (Action == TEXT("step") && Args.Num() > 2)
 		{
@@ -78,12 +79,12 @@ namespace RROptionsDebug
 			const ERROptionRow Row = ERROptionRow(RowEnum->GetValueByIndex(Index));
 			Line += FString::Printf(TEXT("%s=%s; "), *RowEnum->GetNameStringByIndex(Index), *Widget->GetRowValueString(Row));
 		}
-		UE_LOG(LogRogueRigs, Log, TEXT("RROPTIONS tab=%s %s"), Widget->GetCurrentTab() == ERROptionsTab::Sound ? TEXT("Sound") : TEXT("Graphics"), *Line);
+		UE_LOG(LogRogueRigs, Log, TEXT("RROPTIONS tab=%s %s"), *URROptionsWidget::GetTabName(Widget->GetCurrentTab()), *Line);
 	}
 
 	FAutoConsoleCommandWithWorldAndArgs Command(
 		TEXT("rr.Options"),
-		TEXT("Open options screen: rr.Options dump | tab sound|graphics | step <Row> <1|-1> | reset | back."),
+		TEXT("Open options screen: rr.Options dump | tab sound|graphics|gameplay | step <Row> <1|-1> | reset | back (open: from the main menu; in a run, rr.Debug.PauseMenu options)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Run),
 		ECVF_Cheat);
 }
