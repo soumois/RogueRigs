@@ -3,7 +3,7 @@ id: task-509-03-options-doc-push
 description: "Doc: vault docs of the old version in place, new-version docs removed, 504 to 506 marked superseded, lint, push master"
 parent: task-509-options-old-workflow-on-master
 kind: task
-status: todo
+status: in-progress
 ---
 # Écran Options : version de l'ancien workflow sur master, puis push: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T12:39:02Z
 - waiting_for: none
 - result: open
 

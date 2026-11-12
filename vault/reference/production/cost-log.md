@@ -1256,6 +1256,7 @@ kind: note
 | [[task-510-10-options-capture]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-510-11-doc-options-screen]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-509-01-merge-old-options]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-509-02-options-capture]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
@@ -1267,7 +1268,7 @@ Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token 
 | model none | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | 210.31 | 0k | 47.03 M | 1049.76 M | 9314k |
 | model sonnet | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 120.10 | 14k | 25.13 M | 662.44 M | 4487k |
+| Executors and legacy orchestrators that ran a task (pilot) | 120.43 | 14k | 25.15 M | 664.91 M | 4496k |
 | Planning runs (planners and legacy planning passes) | 46.37 | 5k | 13.81 M | 164.90 M | 2523k |
 | Agents without a subtask id (other) | 17.07 | 2k | 3.05 M | 104.54 M | 559k |
 | Main sessions (all of them, also chat outside tasks) | 300.88 | 83k | 62.45 M | 1838.28 M | 7781k |
