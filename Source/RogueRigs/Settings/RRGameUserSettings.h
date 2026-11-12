@@ -1,4 +1,4 @@
-﻿// Rogue Rigs - player settings saved in GameUserSettings.ini: damage number toggle, Sound and Graphics options (options-menu).
+﻿// Rogue Rigs - player settings saved in GameUserSettings.ini: Gameplay toggles, Sound and Graphics options (options-menu).
 
 #pragma once
 
@@ -27,6 +27,16 @@ enum class ERRGraphicsDetail : uint8
 	AntiAliasing,
 	PostProcessing,
 	Textures
+};
+
+/** On/off option of the Gameplay tab (options-menu, Gameplay). */
+UENUM(BlueprintType)
+enum class ERRGameplayOption : uint8
+{
+	DamageNumbers,
+	AimIndicator,
+	ScreenShake,
+	PauseOnFocusLoss
 };
 
 /** Fired when the display confirmation starts (true) or ends by Keep, Revert or the end of the countdown (false). */
@@ -58,7 +68,34 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Settings")
 	bool GetShowDamageNumbers() const { return bShowDamageNumbers; }
 
-	/** Engine defaults plus the project options (damage numbers on, volumes 100 %, resolution scale 100 %). */
+	// ---- Gameplay ----------------------------------------------------------------------------------------------------
+
+	/** Value of a Gameplay option (all default On). */
+	UFUNCTION(BlueprintPure, Category = "Settings|Gameplay")
+	bool GetGameplayOption(ERRGameplayOption Option) const;
+
+	/** Sets a Gameplay option and saves; the game systems read it at their next use (damage number, laser refresh, shake,
+	 * focus loss). */
+	UFUNCTION(BlueprintCallable, Category = "Settings|Gameplay")
+	void SetGameplayOption(ERRGameplayOption Option, bool bOn);
+
+	/** Every Gameplay option back On, saved (Reset to defaults of the Gameplay tab). */
+	UFUNCTION(BlueprintCallable, Category = "Settings|Gameplay")
+	void ResetGameplayToDefaults();
+
+	/** Aim laser drawn (aim-indicator). */
+	bool GetShowAimIndicator() const { return bShowAimIndicator; }
+
+	/** Camera shakes played (URRCameraShakeLibrary). */
+	bool GetScreenShakeOn() const { return bScreenShake; }
+
+	/** The run pauses (pause menu) when the game window loses focus. */
+	bool GetPauseOnFocusLoss() const { return bPauseOnFocusLoss; }
+
+	/** Gameplay setting of the running game: the engine's settings as this class, true (default On) without one. */
+	static bool IsGameplayOptionOn(ERRGameplayOption Option);
+
+	/** Engine defaults plus the project options (gameplay options on, volumes 100 %, resolution scale 100 %). */
 	virtual void SetToDefaults() override;
 
 	/** Also registers the map-load hook that pushes the volumes again. */
@@ -233,6 +270,18 @@ protected:
 	/** Player toggle of the floating damage numbers (damage-numbers). */
 	UPROPERTY(Config)
 	bool bShowDamageNumbers = true;
+
+	/** Player toggle of the aim laser (aim-indicator). */
+	UPROPERTY(Config)
+	bool bShowAimIndicator = true;
+
+	/** Player toggle of every camera shake. */
+	UPROPERTY(Config)
+	bool bScreenShake = true;
+
+	/** Player toggle of the pause on focus loss (in a run). */
+	UPROPERTY(Config)
+	bool bPauseOnFocusLoss = true;
 
 	/** Master slider, 0..1. */
 	UPROPERTY(Config)

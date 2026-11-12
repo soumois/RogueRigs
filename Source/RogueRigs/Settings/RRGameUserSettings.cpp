@@ -52,8 +52,44 @@ URRGameUserSettings* URRGameUserSettings::GetRRGameUserSettings()
 void URRGameUserSettings::SetToDefaults()
 {
 	Super::SetToDefaults();
-	bShowDamageNumbers = true;
+	bShowDamageNumbers = bShowAimIndicator = bScreenShake = bPauseOnFocusLoss = true;
 	MasterVolume = MusicVolume = EffectsVolume = 1.f;
+}
+
+bool URRGameUserSettings::GetGameplayOption(ERRGameplayOption Option) const
+{
+	switch (Option)
+	{
+	case ERRGameplayOption::DamageNumbers: return bShowDamageNumbers;
+	case ERRGameplayOption::AimIndicator: return bShowAimIndicator;
+	case ERRGameplayOption::ScreenShake: return bScreenShake;
+	case ERRGameplayOption::PauseOnFocusLoss: return bPauseOnFocusLoss;
+	}
+	return true;
+}
+
+void URRGameUserSettings::SetGameplayOption(ERRGameplayOption Option, bool bOn)
+{
+	switch (Option)
+	{
+	case ERRGameplayOption::DamageNumbers: bShowDamageNumbers = bOn; break;
+	case ERRGameplayOption::AimIndicator: bShowAimIndicator = bOn; break;
+	case ERRGameplayOption::ScreenShake: bScreenShake = bOn; break;
+	case ERRGameplayOption::PauseOnFocusLoss: bPauseOnFocusLoss = bOn; break;
+	}
+	SaveSettings();
+}
+
+void URRGameUserSettings::ResetGameplayToDefaults()
+{
+	bShowDamageNumbers = bShowAimIndicator = bScreenShake = bPauseOnFocusLoss = true;
+	SaveSettings();
+}
+
+bool URRGameUserSettings::IsGameplayOptionOn(ERRGameplayOption Option)
+{
+	const URRGameUserSettings* Settings = GetRRGameUserSettings();
+	return Settings == nullptr || Settings->GetGameplayOption(Option);
 }
 
 void URRGameUserSettings::LoadSettings(bool bForceReload)
@@ -570,13 +606,14 @@ FString URRGameUserSettings::DescribeSettings() const
 			FMath::RoundToInt(Size.X), FMath::RoundToInt(Size.Y));
 	}
 	return FString::Printf(
-		TEXT("stored: master=%.2f music=%.2f effects=%.2f mode=%s res=%dx%d vsync=%d fps=%d preset=%s shadows=%d effects=%d aa=%d pp=%d textures=%d scale=%.0f pending=%d | ")
+		TEXT("stored: master=%.2f music=%.2f effects=%.2f mode=%s res=%dx%d vsync=%d fps=%d preset=%s shadows=%d effects=%d aa=%d pp=%d textures=%d scale=%.0f pending=%d dmgnum=%d aim=%d shake=%d focuspause=%d | ")
 		TEXT("engine: window=%s r.VSync=%d t.MaxFPS=%.0f sg.Shadow=%d sg.Effects=%d sg.AA=%d sg.PP=%d sg.Texture=%d sg.Resolution=%.0f r.ScreenPercentage=%.0f"),
 		MasterVolume, MusicVolume, EffectsVolume, *GetWindowModeText(GetFullscreenMode()).ToString(), GetScreenResolution().X,
 		GetScreenResolution().Y, IsVSyncEnabled() ? 1 : 0, GetFrameRateLimitValue(), *GetQualityLevelText(GetQualityPreset()).ToString(),
 		GetGraphicsDetail(ERRGraphicsDetail::Shadows), GetGraphicsDetail(ERRGraphicsDetail::Effects),
 		GetGraphicsDetail(ERRGraphicsDetail::AntiAliasing), GetGraphicsDetail(ERRGraphicsDetail::PostProcessing),
 		GetGraphicsDetail(ERRGraphicsDetail::Textures), GetResolutionScalePercent(), bDisplayConfirmPending ? 1 : 0,
+		bShowDamageNumbers ? 1 : 0, bShowAimIndicator ? 1 : 0, bScreenShake ? 1 : 0, bPauseOnFocusLoss ? 1 : 0,
 		*WindowRead, ReadCVarInt(TEXT("r.VSync")), ReadCVarFloat(TEXT("t.MaxFPS")), Engine.ShadowQuality, Engine.EffectsQuality,
 		Engine.AntiAliasingQuality, Engine.PostProcessQuality, Engine.TextureQuality, Engine.ResolutionQuality,
 		ReadCVarFloat(TEXT("r.ScreenPercentage")));

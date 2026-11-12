@@ -43,8 +43,8 @@ namespace RRSettingsDebug
 
 	FAutoConsoleCommand SettingsCommand(
 		TEXT("rr.Settings"),
-		TEXT("rr.Settings dump | set <master|music|effects|mode|res|vsync|fps|preset|shadows|fx|aa|pp|textures|scale> <value> | keep | revert | reset <sound|graphics>: ")
-		TEXT("calls the options screen functions (mode 0 Fullscreen, 1 Windowed fullscreen, 2 Windowed; res WxH; volumes 0..1) and logs a RRSETTINGS line."),
+		TEXT("rr.Settings dump | set <master|music|effects|mode|res|vsync|fps|preset|shadows|fx|aa|pp|textures|scale|dmgnum|aim|shake|focuspause> <value> | keep | revert | reset <sound|graphics|gameplay>: ")
+		TEXT("calls the options screen functions (mode 0 Fullscreen, 1 Windowed fullscreen, 2 Windowed; res WxH; volumes 0..1; gameplay 0/1) and logs a RRSETTINGS line."),
 		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 		{
 			URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
@@ -81,6 +81,10 @@ namespace RRSettingsDebug
 				else if (Key == TEXT("pp")) { Settings->SetGraphicsDetail(ERRGraphicsDetail::PostProcessing, IntValue); }
 				else if (Key == TEXT("textures")) { Settings->SetGraphicsDetail(ERRGraphicsDetail::Textures, IntValue); }
 				else if (Key == TEXT("scale")) { Settings->SetResolutionScalePercent(FloatValue); }
+				else if (Key == TEXT("dmgnum")) { Settings->SetGameplayOption(ERRGameplayOption::DamageNumbers, IntValue != 0); }
+				else if (Key == TEXT("aim")) { Settings->SetGameplayOption(ERRGameplayOption::AimIndicator, IntValue != 0); }
+				else if (Key == TEXT("shake")) { Settings->SetGameplayOption(ERRGameplayOption::ScreenShake, IntValue != 0); }
+				else if (Key == TEXT("focuspause")) { Settings->SetGameplayOption(ERRGameplayOption::PauseOnFocusLoss, IntValue != 0); }
 				else
 				{
 					UE_LOG(LogRogueRigs, Warning, TEXT("rr.Settings set: unknown key '%s'."), *Key);
@@ -91,12 +95,14 @@ namespace RRSettingsDebug
 			else if (Action == TEXT("revert")) { Settings->RevertDisplayChange(); }
 			else if (Action == TEXT("reset") && Args.Num() >= 2)
 			{
-				if (Args[1].ToLower() == TEXT("sound")) { Settings->ResetSoundToDefaults(); }
+				const FString Tab = Args[1].ToLower();
+				if (Tab == TEXT("sound")) { Settings->ResetSoundToDefaults(); }
+				else if (Tab == TEXT("gameplay")) { Settings->ResetGameplayToDefaults(); }
 				else { Settings->ResetGraphicsToDefaults(); }
 			}
 			else if (Action != TEXT("dump"))
 			{
-				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Settings: usage rr.Settings dump|set <key> <value>|keep|revert|reset sound|graphics."));
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Settings: usage rr.Settings dump|set <key> <value>|keep|revert|reset sound|graphics|gameplay."));
 				return;
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("RRSETTINGS %s: %s"), *FString::Join(Args, TEXT(" ")), *Settings->DescribeSettings());

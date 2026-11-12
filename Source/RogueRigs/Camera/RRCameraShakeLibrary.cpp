@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "Settings/RRGameUserSettings.h"
 
 UCameraShakeBase* URRCameraShakeLibrary::PlayCameraShake(const UObject* WorldContextObject, float Scale, TSubclassOf<UCameraShakeBase> ShakeClass)
 {
@@ -92,6 +93,12 @@ URRCameraShakeModifier* URRCameraShakeLibrary::GetOrAddShakeModifier(APlayerCame
 
 UCameraShakeBase* URRCameraShakeLibrary::StartShake(APlayerCameraManager* CameraManager, float Scale, TSubclassOf<UCameraShakeBase> ShakeClass)
 {
+	// Screen shake option of the Gameplay tab (options-menu): Off plays no shake at all.
+	if (!URRGameUserSettings::IsGameplayOptionOn(ERRGameplayOption::ScreenShake))
+	{
+		return nullptr;
+	}
+
 	URRCameraShakeModifier* ShakeModifier = GetOrAddShakeModifier(CameraManager);
 	if (!ShakeModifier)
 	{

@@ -14,6 +14,8 @@
 #include "Player/RRGameMode.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Settings/RRGameUserSettings.h"
 #include "UI/RRHUDWidget.h"
 #include "UI/RRIntermissionWidget.h"
 #include "Engine/GameViewportClient.h"
@@ -70,6 +72,13 @@ void ARRPlayerController::BeginPlay()
 			BoundRunLost = RunLost;
 			RunLost->OnRunLost.AddUniqueDynamic(this, &ARRPlayerController::HandleRunLost);
 		}
+	}
+
+	// Pause on focus loss (options-menu, Gameplay): the main menu has its own controller, so this is a run only.
+	if (IsLocalPlayerController() && GetLocalPlayer() && FSlateApplication::IsInitialized())
+	{
+		ApplicationActivationHandle = FSlateApplication::Get().OnApplicationActivationStateChanged()
+			.AddUObject(this, &ARRPlayerController::HandleApplicationActivationChanged);
 	}
 
 	RestoreGameInputMode();
@@ -144,8 +153,32 @@ void ARRPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		RunLost->OnRunLost.RemoveDynamic(this, &ARRPlayerController::HandleRunLost);
 	}
 	BoundRunLost.Reset();
+	if (ApplicationActivationHandle.IsValid() && FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().OnApplicationActivationStateChanged().Remove(ApplicationActivationHandle);
+	}
+	ApplicationActivationHandle.Reset();
 	RemoveScreenFadeOverlay();
 	Super::EndPlay(EndPlayReason);
+}
+
+void ARRPlayerController::HandleApplicationActivationChanged(const bool bIsActive)
+{
+	if (!bIsActive)
+	{
+		HandleWindowFocusLost();
+	}
+}
+
+bool ARRPlayerController::HandleWindowFocusLost()
+{
+	if (!URRGameUserSettings::IsGameplayOptionOn(ERRGameplayOption::PauseOnFocusLoss))
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: window focus lost, no pause (option Off)."), *GetName());
+		return false;
+	}
+	// Refused quietly when another screen already paused the game or the menu is open (OpenPauseMenu logs the reason).
+	return OpenPauseMenu(TEXT("window focus lost"));
 }
 
 void ARRPlayerController::RestoreGameInputMode()
@@ -562,7 +595,18 @@ UInputAction* ARRPlayerController::ResolvePlaceTurretAction(UEnhancedInputLocalP
 
 void ARRPlayerController::HandlePauseMenu(const FInputActionValue& Value)
 {
-	TogglePauseMenu(TEXT("pause key"));
+	PressPauseKey();
+}
+
+bool ARRPlayerController::PressPauseKey()
+{
+	// Options opened from the pause menu (options-menu, Opening): the pause key goes back to the pause menu, it does not close it.
+	if (bPauseMenuOpen && PauseMenuWidget && PauseMenuWidget->IsOptionsOpen())
+	{
+		UE_LOG(LogRogueRigs, Log, TEXT("%s: pause key with the options screen open: Back to the pause menu."), *GetName());
+		return PauseMenuWidget->CloseOptions();
+	}
+	return TogglePauseMenu(TEXT("pause key"));
 }
 
 UInputAction* ARRPlayerController::ResolvePauseMenuAction(UEnhancedInputLocalPlayerSubsystem* Subsystem)

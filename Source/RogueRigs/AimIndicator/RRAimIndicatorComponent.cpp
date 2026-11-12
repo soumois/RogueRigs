@@ -14,6 +14,7 @@
 #include "Misc/PackageName.h"
 #include "Player/RRMiner.h"
 #include "RogueRigs.h"
+#include "Settings/RRGameUserSettings.h"
 #include "Weapons/RRWeapon.h"
 
 const FName URRAimIndicatorComponent::ColorParameterName(TEXT("Color"));
@@ -220,7 +221,9 @@ float URRAimIndicatorComponent::FindRobotDistance(const ARRMiner& Miner, const F
 void URRAimIndicatorComponent::RefreshIndicator()
 {
 	const ARRMiner* Miner = GetOwnerMiner();
-	if (!IndicatorMaterialInstance || !LaserMesh || !IsValid(Miner) || Miner->IsActorBeingDestroyed() || Miner->IsDead())
+	// Aim indicator option of the Gameplay tab (options-menu): Off hides the laser, read each refresh so it follows at once.
+	if (!IndicatorMaterialInstance || !LaserMesh || !IsValid(Miner) || Miner->IsActorBeingDestroyed() || Miner->IsDead()
+		|| !URRGameUserSettings::IsGameplayOptionOn(ERRGameplayOption::AimIndicator))
 	{
 		HideIndicator();
 		return;
