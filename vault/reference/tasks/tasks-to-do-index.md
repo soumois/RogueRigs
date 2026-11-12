@@ -14,5 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-505-options-screen-sound-graphics]] — Options screen built from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened by the main menu Options button. Status in-progress.
 - [[task-506-options-gameplay-and-pause]] — Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu. Status todo.

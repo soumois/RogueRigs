@@ -513,3 +513,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-502-executor-handover-budget]] — Crew workflow: at a subtask boundary over the context threshold the executor hands over to a fresh one; reaching the level budget triggers a stop and a question to the owner. Status done.
 - [[task-503-executor-reading-list]] — Crew workflow: the executor reads runbook and quirks only when a script fails; the specialist agent definitions in .claude/agents are handled as the owner decides; no vault node is merged. Status done.
 - [[task-504-options-screen-look]] — Options screen look: one Kie.ai GPT Image 2 mockup validated by the owner, then every element mapped to an existing sprite or a new PNG. Status done.
+- [[task-505-options-screen-sound-graphics]] — Options screen built from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened by the main menu Options button. Status done.
