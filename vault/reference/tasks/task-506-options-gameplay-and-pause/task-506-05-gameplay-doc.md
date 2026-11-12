@@ -3,7 +3,7 @@ id: task-506-05-gameplay-doc
 description: "Doc: Update the settings, options widget and pause menu docs."
 parent: task-506-options-gameplay-and-pause
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen: Gameplay tab and access from the pause menu: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T05:14:43Z
 - waiting_for: none
 - result: open
 

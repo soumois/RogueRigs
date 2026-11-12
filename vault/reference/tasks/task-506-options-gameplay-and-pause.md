@@ -15,11 +15,11 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-11, "Owner 2026-11-11, verbatim: "ok pour tout, fait lui juste la remarque pour le Q2 pour la confirmation. Si la maquette est proche et que je n'ai pas fait de commentaire, tu pourras valider ( ou si mon commentaire est valable pour la maquette aussi". The Q2 remark he accepts, as shown to him verbatim: "Q2, pas de confirmation après un changement de résolution. C'est le défaut le plus risqué : une résolution ou un mode d'affichage que l'écran n'accepte pas peut laisser le joueur devant un écran noir, sans moyen de revenir. Le compte à rebours « garder ces réglages ? » existe pour ça. Je le demanderais au moins pour la résolution et le mode fenêtre." Decided: Q1 to Q9 defaults, except Q2: a change of resolution or window mode shows a keep-or-revert countdown that reverts if not confirmed; other changes apply at once, no Apply button. Countdown 15 s and its wording are provisional (Planner), in options-menu. His second sentence concerns only the later replay without him: there the main session may validate a mockup close to the one he validates now, or one his comments still fit. In this run his own go on the mockup stays required.")
 - milestone: M2
-- next_step: task-506-04-gameplay-capture
+- next_step: task-506-05-gameplay-doc
 - started: 2026-11-12T04:46:27Z
 - waiting_for: none
-- executor_tokens: input 252, cache write 355885, cache read 12484641, output 80095
-- executor_usage: runs 3, turns 126, context start 16k peak 205k, resumes 0, 22 min, units 2.09 M
+- executor_tokens: input 320, cache write 410258, cache read 16254838, output 95889
+- executor_usage: runs 3, turns 156, context start 16k peak 205k, resumes 4, 28 min, units 2.62 M
 - planning_tokens: input 18, cache write 29764, cache read 464930, output 9627
 - planning_usage: ade39ac3 "Plan options screen request" 1/3 (tasks 504, 505, 506), units 0.13 M
 - result: open; budget overrun at the 02 closing: 95 turns, 1.69 M units, 1.1x standard (90 turns, 1.5 M); cause: run 1 closed 01 and wrote the C++ of 02 and 03 ahead (63 turns, 1.28 M, context peak 196k), run 2 did 02 with an editor launch and a -game check
