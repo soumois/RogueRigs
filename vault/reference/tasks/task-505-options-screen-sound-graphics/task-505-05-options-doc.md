@@ -3,7 +3,7 @@ id: task-505-05-options-doc
 description: "Doc: Document the settings system and the options widget."
 parent: task-505-options-screen-sound-graphics
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Options screen with Sound and Graphics, opened from the main menu: doc
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-12T04:27:17Z
-- waiting_for: none
+- waiting_for: budget: done 01, 02, 03 (main menu Options), 04 (capture, four resolutions, countdown run-out); remaining 05 doc (sys-* and bp-* nodes); estimate about 20 turns and 0.5 M units
 - result: open
 
 ## Relations
