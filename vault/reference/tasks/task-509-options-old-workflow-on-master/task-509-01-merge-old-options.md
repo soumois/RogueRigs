@@ -3,7 +3,7 @@ id: task-509-01-merge-old-options
 description: "Executor: bring the old-workflow options screen onto master, remove the new-workflow one, renumber the old task to 510"
 parent: task-509-options-old-workflow-on-master
 kind: task
-status: todo
+status: in-progress
 ---
 # Écran Options : version de l'ancien workflow sur master, puis push: executor
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T12:27:40Z
 - waiting_for: none
 - result: open
 

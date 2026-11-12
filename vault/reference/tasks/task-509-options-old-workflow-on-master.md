@@ -3,7 +3,7 @@ id: task-509-options-old-workflow-on-master
 description: "Global task: Replaces the new-workflow options screen on master with the old-workflow one from exp/old-workflow-options (code, Blueprints, assets, images, docs), renumbers its task to 510, then pushes master."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Écran Options : version de l'ancien workflow sur master, puis push
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-12, "Ok pour tout")
 - milestone: M2
 - next_step: task-509-01-merge-old-options
-- started: open
+- started: 2026-11-12T12:27:40Z
 - waiting_for: none
 - result: open
 
