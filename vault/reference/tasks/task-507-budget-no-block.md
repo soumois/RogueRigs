@@ -1,9 +1,9 @@
 ---
 id: task-507-budget-no-block
 description: "Global task: Réglage (no planner): Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ..."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Réglage: Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ...
 
@@ -15,15 +15,19 @@ status: in-progress
 - family: reglage
 - confirmed_by_owner: yes (2026-11-12, the request itself, réglage family)
 - milestone: M2
-- next_step: task-507-01-budget-no-block
+- next_step: none
 - started: 2026-11-12T04:43:01Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 52, cache write 67868, cache read 1496349, output 19158
+- executor_usage: runs 1, turns 26, context start 16k peak 80k, resumes 0, 3 min, units 0.33 M
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
+- result: Done. Budget overrun no longer waits for the owner: task-cost.js budgetAlert now compares the executor runs with the figures of the previous closing (previousUsage, read by record-cost.js before the executor_usage line is rewritten); the closing that crosses the budget prints a BUDGET handover request (fresh executor with subtasks left), later closings an information line, and only the closing that crosses alerts.budgetStopFactor = 5 (cost-rates.json) times the budget prints BUDGET STOP (handover + wait-answers). Every BUDGET line asks for the overrun and its cause in result and the final report. budget_grants removed from task-status.js and the docs. Rule text updated in execution-protocol 5.10, verification-levels, agent-executor, orchestrator-runbook, cost-log, .claude/agents/executor.md, .claude/commands/task.md. Light check: budgetAlert run on 7 synthetic cases (under, crossing 1x by turns and by units, still over, crossing 5x, 5x and 1x in one closing, past 5x) gives the expected line each time; previousUsage reads task-505 (210 turns, 3.70 M). Commit b19288c2.
 
 ## Subtasks
 1. task-507-01-budget-no-block (vault/reference/tasks/task-507-budget-no-block/task-507-01-budget-no-block.md) — executor: Apply the setting change of the request and check it at light size.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-507-01-budget-no-block]] — step 1, executor.
 - [[request-families]] — the family path this task follows.
