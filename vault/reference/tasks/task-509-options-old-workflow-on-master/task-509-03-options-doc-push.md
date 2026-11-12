@@ -21,7 +21,7 @@ status: wait-answers
 - runs: open
 - milestone: M2
 - started: 2026-11-12T12:39:02Z
-- waiting_for: owner action: git push origin master (10 commits, 1cf36a89) is held by a Git Credential Manager sign-in for github.com; complete the sign-in (or run git push origin master yourself), then resume task-509-03 to close it
+- waiting_for: owner action: git push origin master failed (fatal: could not read Username for https://github.com, the Git Credential Manager sign-in got no answer); nothing pushed, master 12 commits ahead of origin. Sign in to GitHub on this machine (or run git push origin master yourself), then resume task-509-03 to push and close
 - result: 1cf36a89. Vault docs of the old version in place since task-509-01 (options-screen, sys-options, wbp-options, menu, hover, damage-numbers and art-prompt nodes); options-menu, sys-game-settings, sys-options-screen removed, no gdd or tech node names the 504-506 code or assets (checked). Tasks 504, 505, 506 carry 'superseded: remplacée par task-510-options-screen' and a relation to it. wbp-options records the master re-check (t509 captures). A7 unverified: the keep-or-revert countdown reaching 0 (auto revert), a real window mode change, the gameplay toggles during combat (damage numbers, aim indicator, screen shake, pause on focus loss), real mouse clicks. Lint clean. Push: pending, held by the credential sign-in.
 
 ## Relations

@@ -17,7 +17,7 @@ status: wait-answers
 - milestone: M2
 - next_step: task-509-03-options-doc-push
 - started: 2026-11-12T12:27:40Z
-- waiting_for: owner action: git push origin master (10 commits, 1cf36a89) is held by a Git Credential Manager sign-in for github.com; complete the sign-in (or run git push origin master yourself), then resume task-509-03 to close it
+- waiting_for: owner action: git push origin master failed (fatal: could not read Username for https://github.com, the Git Credential Manager sign-in got no answer); nothing pushed, master 12 commits ahead of origin. Sign in to GitHub on this machine (or run git push origin master yourself), then resume task-509-03 to push and close
 - executor_tokens: input 126, cache write 125026, cache read 5206053, output 24882
 - executor_usage: runs 1, turns 60, context start 16k peak 135k, resumes 5, 12 min, units 0.80 M
 - planning_tokens: input 8, cache write 21578, cache read 106665, output 6155
