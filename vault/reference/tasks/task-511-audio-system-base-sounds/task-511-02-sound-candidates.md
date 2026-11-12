@@ -3,7 +3,7 @@ id: task-511-02-sound-candidates
 description: "Sound: Find three CC0 candidates per event against the palette and get the owner's pick."
 parent: task-511-audio-system-base-sounds
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Audio system and the first 8 sound effects: sound
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-12T21:11:14Z
-- waiting_for: none
+- waiting_for: owner pick by ear: one candidate per event in Saved/Scratch/audio-candidates/<event>/ (list liste.md), e.g. tir 1, impact 2 ... or <event>: autre série
 - result: open
 
 ## Relations
