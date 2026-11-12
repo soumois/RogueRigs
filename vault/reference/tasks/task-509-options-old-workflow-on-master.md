@@ -3,7 +3,7 @@ id: task-509-options-old-workflow-on-master
 description: "Global task: Replaces the new-workflow options screen on master with the old-workflow one from exp/old-workflow-options (code, Blueprints, assets, images, docs), renumbers its task to 510, then pushes master."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Écran Options : version de l'ancien workflow sur master, puis push
 
@@ -17,7 +17,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-509-03-options-doc-push
 - started: 2026-11-12T12:27:40Z
-- waiting_for: none
+- waiting_for: owner action: git push origin master (10 commits, 1cf36a89) is held by a Git Credential Manager sign-in for github.com; complete the sign-in (or run git push origin master yourself), then resume task-509-03 to close it
 - executor_tokens: input 126, cache write 125026, cache read 5206053, output 24882
 - executor_usage: runs 1, turns 60, context start 16k peak 135k, resumes 5, 12 min, units 0.80 M
 - planning_tokens: input 8, cache write 21578, cache read 106665, output 6155
