@@ -14,4 +14,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-506-options-gameplay-and-pause]] — Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu. Status in-progress.

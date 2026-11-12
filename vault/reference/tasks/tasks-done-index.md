@@ -514,4 +514,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-503-executor-reading-list]] — Crew workflow: the executor reads runbook and quirks only when a script fails; the specialist agent definitions in .claude/agents are handled as the owner decides; no vault node is merged. Status done.
 - [[task-504-options-screen-look]] — Options screen look: one Kie.ai GPT Image 2 mockup validated by the owner, then every element mapped to an existing sprite or a new PNG. Status done.
 - [[task-505-options-screen-sound-graphics]] — Options screen built from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened by the main menu Options button. Status done.
+- [[task-506-options-gameplay-and-pause]] — Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu. Status done.
 - [[task-507-budget-no-block]] — Réglage (no planner): Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ... Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-506-options-gameplay-and-pause
 description: "Global task: Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Options screen: Gameplay tab and access from the pause menu
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-11, "Owner 2026-11-11, verbatim: "ok pour tout, fait lui juste la remarque pour le Q2 pour la confirmation. Si la maquette est proche et que je n'ai pas fait de commentaire, tu pourras valider ( ou si mon commentaire est valable pour la maquette aussi". The Q2 remark he accepts, as shown to him verbatim: "Q2, pas de confirmation après un changement de résolution. C'est le défaut le plus risqué : une résolution ou un mode d'affichage que l'écran n'accepte pas peut laisser le joueur devant un écran noir, sans moyen de revenir. Le compte à rebours « garder ces réglages ? » existe pour ça. Je le demanderais au moins pour la résolution et le mode fenêtre." Decided: Q1 to Q9 defaults, except Q2: a change of resolution or window mode shows a keep-or-revert countdown that reverts if not confirmed; other changes apply at once, no Apply button. Countdown 15 s and its wording are provisional (Planner), in options-menu. His second sentence concerns only the later replay without him: there the main session may validate a mockup close to the one he validates now, or one his comments still fit. In this run his own go on the mockup stays required.")
 - milestone: M2
-- next_step: task-506-05-gameplay-doc
+- next_step: none
 - started: 2026-11-12T04:46:27Z
 - waiting_for: none
-- executor_tokens: input 320, cache write 410258, cache read 16254838, output 95889
-- executor_usage: runs 3, turns 156, context start 16k peak 205k, resumes 4, 28 min, units 2.62 M
+- executor_tokens: input 372, cache write 490441, cache read 18264853, output 114201
+- executor_usage: runs 4, turns 182, context start 16k peak 205k, resumes 4, 31 min, units 3.01 M
 - planning_tokens: input 18, cache write 29764, cache read 464930, output 9627
 - planning_usage: ade39ac3 "Plan options screen request" 1/3 (tasks 504, 505, 506), units 0.13 M
-- result: open; budget overrun: 1.1x at the 02 closing (run 1 wrote the C++ of 02 and 03 ahead, run 2 did 02 with an editor launch and a -game check); 1.4x at 03 and 1.7x at 04 (run 3: 03 needed a label size correction, 04 needed 6 -game launches: one frame with plates missing during shader warm-up, no hits until aim was fixed on a spawned Heavy, one frame lost to frame lag at 2560x1080)
+- result: Done. done (d24d2cc6): sys-game-settings (Gameplay options, ERRGameplayOption, readers, rr.Settings keys, verified line), sys-options-screen (GameplayList rows, Gameplay tab bindings, pause menu opening, rr.Options gameplay), sys-pause-menu (Options, PressPauseKey, focus-loss pause, rr.Debug.PauseMenu options|key|focuslost), wbp-options (GameplayList, tab enabled, verified 506-04), wbp-pause-menu (OptionsButton, stretch anchors, labels 30), ui index glosses; lint clean. Editor not used. Note: the aim indicator is the laser line; the global acceptance A3 and 04 C4 say chevrons, options-menu itself only says aim indicator (no gdd edit).
 
 ## Questions
 Decided 2026-11-11 (owner "Owner 2026-11-11, verbatim: "ok pour tout, fait lui juste la remarque pour le Q2 pour la confirmation. Si la maquette est proche et que je n'ai pas fait de commentaire, tu pourras valider ( ou si mon commentaire est valable pour la maquette aussi". The Q2 remark he accepts, as shown to him verbatim: "Q2, pas de confirmation après un changement de résolution. C'est le défaut le plus risqué : une résolution ou un mode d'affichage que l'écran n'accepte pas peut laisser le joueur devant un écran noir, sans moyen de revenir. Le compte à rebours « garder ces réglages ? » existe pour ça. Je le demanderais au moins pour la résolution et le mode fenêtre." Decided: Q1 to Q9 defaults, except Q2: a change of resolution or window mode shows a keep-or-revert countdown that reverts if not confirmed; other changes apply at once, no Apply button. Countdown 15 s and its wording are provisional (Planner), in options-menu. His second sentence concerns only the later replay without him: there the main session may validate a mockup close to the one he validates now, or one his comments still fit. In this run his own go on the mockup stays required."): every default below is accepted; values provisional, owner 2026-11-11.
@@ -45,7 +45,7 @@ Decided 2026-11-11 (owner "Owner 2026-11-11, verbatim: "ok pour tout, fait lui j
 5. task-506-05-gameplay-doc (vault/reference/tasks/task-506-options-gameplay-and-pause/task-506-05-gameplay-doc.md) — doc: Update the settings, options widget and pause menu docs.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-506-01-settings-gameplay]] — step 1, cpp.
 - [[task-506-02-options-gameplay-tab]] — step 2, bp.
 - [[task-506-03-pause-menu-options]] — step 3, bp.

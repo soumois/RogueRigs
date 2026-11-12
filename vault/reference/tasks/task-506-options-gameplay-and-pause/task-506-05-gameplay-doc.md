@@ -3,7 +3,7 @@ id: task-506-05-gameplay-doc
 description: "Doc: Update the settings, options widget and pause menu docs."
 parent: task-506-options-gameplay-and-pause
 kind: task
-status: in-progress
+status: done
 ---
 # Options screen: Gameplay tab and access from the pause menu: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: The settings system node, the options widget node and wbp-pause-menu describe the Gameplay tab and the Options button; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-506
+- usage: included in the executor run of task-506
+- runs: 1
 - milestone: M2
 - started: 2026-11-12T05:14:43Z
 - waiting_for: none
-- result: open
+- result: done (d24d2cc6): sys-game-settings (Gameplay options, ERRGameplayOption, readers, rr.Settings keys, verified line), sys-options-screen (GameplayList rows, Gameplay tab bindings, pause menu opening, rr.Options gameplay), sys-pause-menu (Options, PressPauseKey, focus-loss pause, rr.Debug.PauseMenu options|key|focuslost), wbp-options (GameplayList, tab enabled, verified 506-04), wbp-pause-menu (OptionsButton, stretch anchors, labels 30), ui index glosses; lint clean. Editor not used. Note: the aim indicator is the laser line; the global acceptance A3 and 04 C4 say chevrons, options-menu itself only says aim indicator (no gdd edit).
 
 ## Relations
 - [[task-506-options-gameplay-and-pause]] — parent global task.
