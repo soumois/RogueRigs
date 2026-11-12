@@ -26,6 +26,8 @@ ARRTurret::ARRTurret(const FObjectInitializer& ObjectInitializer)
 	bStartFiringOnAcquire = false;
 	// task-414 Q3: turret bullets show no muzzle flash (it has no hand weapon anyway; cleared so the intent is explicit).
 	MuzzleFlashSystem = nullptr;
+	// Turret shots are not in the first sound events (task-511 Q1).
+	ShotSoundEvent = NAME_None;
 
 	// Fixed base, yawing head (task-350-01): the Muzzle (created under Root by ARRWeapon) follows the head.
 	HeadPivot = CreateDefaultSubobject<USceneComponent>(TEXT("HeadPivot"));

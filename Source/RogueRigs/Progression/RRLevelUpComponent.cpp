@@ -1,6 +1,7 @@
 // Rogue Rigs - level-up flow of the miner: heal, effect event, delayed pause on the upgrade offer, chained choice screens.
 
 #include "Progression/RRLevelUpComponent.h"
+#include "Audio/RRAudioSubsystem.h"
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
@@ -119,6 +120,7 @@ void URRLevelUpComponent::HandleLevelUp(int32 NewLevel)
 	ApplyLevelUpHeal();
 	OnLevelUpEffect.Broadcast(NewLevel);
 	PlayLevelUpBurst();
+	URRAudioSubsystem::PlayEvent(this, TEXT("LevelUp"));
 
 	if (bChoicesBlocked)
 	{

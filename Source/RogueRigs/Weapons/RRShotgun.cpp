@@ -78,6 +78,11 @@ void ARRShotgun::FireOnce()
 		}
 	}
 	++ShotCount;
+	if (LastPelletsSpawned > 0)
+	{
+		// One shot sound for the 7 pellets.
+		PlayShotSound(Placement.Origin);
+	}
 
 	// task-414 Q3: one flash per volley (not per pellet), along the aim.
 	if (LastPelletsSpawned > 0)

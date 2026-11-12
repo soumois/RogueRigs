@@ -200,6 +200,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact", meta = (ClampMin = "0"))
 	int32 ImpactSparkPoolSize = 24;
 
+	/** Sound event played with the impact sparks, at the same place (task-511, URRAudioSubsystem). None = silent (robot and turret shots). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact")
+	FName ImpactSoundEvent = TEXT("Impact");
+
 	/** Damage spec made by the weapon's ASC at fire time; applied on impact (the target ASC works on its own copy). */
 	FGameplayEffectSpecHandle DamageSpec;
 

@@ -1,6 +1,7 @@
 // Rogue Rigs - the miner: player character owning the player ASC, top-down camera, world-space move and aim.
 
 #include "Player/RRMiner.h"
+#include "Audio/RRAudioSubsystem.h"
 
 #include "AimIndicator/RRAimIndicatorComponent.h"
 #include "Camera/CameraComponent.h"
@@ -522,6 +523,10 @@ void ARRMiner::HandleDamageReceived(float Damage, bool bIsCritical, float Health
 	if (Damage > 0.f && HitShakeClass)
 	{
 		URRCameraShakeLibrary::PlayCameraShake(this, 1.f, HitShakeClass);
+	}
+	if (Damage > 0.f)
+	{
+		URRAudioSubsystem::PlayEvent(this, TEXT("PlayerHit"));
 	}
 
 	// A lethal hit gets no i-frames: the death handler takes over.

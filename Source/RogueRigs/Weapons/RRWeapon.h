@@ -264,6 +264,9 @@ protected:
 	 */
 	virtual void FireOnce();
 
+	/** Shot sound of one shot (task-511): event ShotSoundEvent refined by StatsRowName at Location; nothing when ShotSoundEvent is None. */
+	void PlayShotSound(const FVector& Location) const;
+
 	/**
 	 * Muzzle flash of one shot (task-414): plays MuzzleFlashSystem once, attached to the hand weapon's Muzzle (FindHandWeapon, the
 	 * same Muzzle as GetShotPlacement) at its location, +X along ShotRotation, so it follows the hand; auto-destroyed when the
@@ -334,6 +337,13 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|FX")
 	TObjectPtr<UNiagaraSystem> MuzzleFlashSystem;
+
+	/**
+	 * Sound event of each shot, played at the shot origin (task-511, URRAudioSubsystem) as <ShotSoundEvent>.<StatsRowName>, so a row
+	 * Shot.Shotgun in the event table gives one weapon its own sound and the others keep row Shot. None = silent (ARRTurret clears it).
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Sound")
+	FName ShotSoundEvent = TEXT("Shot");
 
 	/** Row of WeaponStats.csv applied at acquisition (e.g. BurstRifle). Must be set by the Blueprint subclass. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon|Stats")

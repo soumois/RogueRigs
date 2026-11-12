@@ -1,6 +1,7 @@
 // Rogue Rigs - pickup actor dropped by ore and heal ore blocks and by dying robots: pops out in an arc, rests, then is magnetized into the miner within its pickup radius.
 
 #include "Pickups/RRPickup.h"
+#include "Audio/RRAudioSubsystem.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -789,6 +790,10 @@ void ARRPickup::Collect(ARRMiner* Miner)
 		if (PickupType == ERRPickupType::XP && Miner->GetProgression())
 		{
 			Miner->GetProgression()->AddXP(XPAmount);
+		}
+		if (PickupType == ERRPickupType::XP)
+		{
+			URRAudioSubsystem::PlayEvent(this, TEXT("XPPickup"));
 		}
 		if (PickupType == ERRPickupType::Heal)
 		{

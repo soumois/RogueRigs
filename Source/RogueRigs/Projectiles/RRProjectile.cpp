@@ -4,6 +4,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Audio/RRAudioSubsystem.h"
 #include "Components/CapsuleComponent.h"
 #include "Enemies/RREnemy.h"
 #include "Engine/World.h"
@@ -171,17 +172,21 @@ void ARRProjectile::PrewarmImpactSparks(UWorld* World, TSubclassOf<ARRProjectile
 
 void ARRProjectile::PlayImpactSpark(const FHitResult* Impact)
 {
-	URRNiagaraPoolSubsystem* FXPool = ImpactSparkSystem && GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
-	if (FXPool == nullptr)
-	{
-		return;
-	}
 	// The shot's own height, where the player sees the shot: a tall Muzzle capsule (task-412) may touch far below the shot mesh.
 	FVector Location = GetActorLocation();
 	if (Impact && !Impact->bStartPenetrating)
 	{
 		Location.X = Impact->ImpactPoint.X;
 		Location.Y = Impact->ImpactPoint.Y;
+	}
+	if (!ImpactSoundEvent.IsNone())
+	{
+		URRAudioSubsystem::PlayEventAt(this, ImpactSoundEvent, Location);
+	}
+	URRNiagaraPoolSubsystem* FXPool = ImpactSparkSystem && GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
+	if (FXPool == nullptr)
+	{
+		return;
 	}
 	FXPool->Spawn(ImpactSparkSystem, Location, FRotator::ZeroRotator, ImpactSparkPoolSize);
 }

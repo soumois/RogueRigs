@@ -7,4 +7,6 @@
 ARRTurretBullet::ARRTurretBullet(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	// Turret sounds are not in the first sound events (task-511 Q1): a turret bullet impact stays silent.
+	ImpactSoundEvent = NAME_None;
 }

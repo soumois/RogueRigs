@@ -1,6 +1,7 @@
 // Rogue Rigs - base weapon actor: own ASC and weapon attributes, CSV stats, auto-fire toward the owning miner's aim.
 
 #include "Weapons/RRWeapon.h"
+#include "Audio/RRAudioSubsystem.h"
 
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
@@ -390,6 +391,15 @@ void ARRWeapon::FireOnce()
 	{
 		// task-414 Q3: one flash per bullet (3 per rifle burst); none for a turret (no hand weapon).
 		SpawnMuzzleFlash(ShotRotation);
+		PlayShotSound(Placement.Origin);
+	}
+}
+
+void ARRWeapon::PlayShotSound(const FVector& Location) const
+{
+	if (!ShotSoundEvent.IsNone())
+	{
+		URRAudioSubsystem::PlayEventAt(this, ShotSoundEvent, Location, StatsRowName);
 	}
 }
 
