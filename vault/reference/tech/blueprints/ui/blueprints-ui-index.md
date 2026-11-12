@@ -27,6 +27,7 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[hud-refactor-audit]] — audit of WBP_HUD: tick cost, per-feature tables, sub-widget plan, missing C++ events.
 - [[m-card-burn]] — M_CardBurn and MI_CardBurn, the dissolve material with fire edge for discarded cards.
 - [[wbp-main-menu]] — WBP_MainMenu, the main menu screen: background, title, New Run, Options, Exit.
+- [[wbp-options]] — WBP_Options, the options screen: tabs, frame with row lists, Reset, Back, keep-or-revert panel, anchors table.
 - [[wbp-pause-menu]] — WBP_PauseMenu, the pause screen: miner stats, weapon blocks, Resume and Exit, anchors table.
 - [[wbp-run-lost]] — WBP_RunLost, the run-lost screen after a death or a missed shuttle: recap, Retry, Main Menu, appearance, anchors table.
 

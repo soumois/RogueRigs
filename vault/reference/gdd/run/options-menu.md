@@ -31,7 +31,7 @@ Values provisional, owner 2026-11-11: he accepted the defaults of task-504 Q1 to
 - VSync: On, Off. Frame rate limit: 30, 60, 120, 144, Unlimited.
 - Quality preset: Low, Medium, High, Epic, Custom. It sets Shadows, Effects, Anti-aliasing, Post-processing and Textures (Low to Epic each), each changeable alone (the preset then reads Custom).
 - Resolution scale: 50 to 100 %, step 5.
-- First-launch values: what the game uses today, recorded here by the build task.
+- First-launch values (recorded by task-505-01, what the game used before the screen): Windowed fullscreen at the desktop resolution, VSync Off, frame rate limit Unlimited, preset Epic (all five details Epic), resolution scale 100 %. Reset to defaults of the Graphics tab restores them.
 
 ## Gameplay (Q5)
 - Damage numbers ([[damage-numbers]]): On, Off; default On.
@@ -56,3 +56,6 @@ Values provisional, owner 2026-11-11: he accepted the defaults of task-504 Q1 to
 - [[aim-indicator]] — turned off by a Gameplay toggle.
 - [[art-prompts-pause-menu-mockup]] — style reference of the mockup.
 - [[task-504-options-screen-look]] — the task that decides and draws it.
+- [[sys-game-settings]] — the C++ settings as built.
+- [[sys-options-screen]] — the screen C++ as built.
+- [[wbp-options]] — the widget Blueprint and its anchors.

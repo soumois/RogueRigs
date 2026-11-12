@@ -351,6 +351,7 @@ sys-enemy-ai  reference/tech/systems/enemies/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/combat/sys-explosions.md
 sys-flow-field  reference/tech/systems/world/sys-flow-field.md
 sys-flow-field-updates  reference/tech/systems/world/sys-flow-field/sys-flow-field-updates.md
+sys-game-settings  reference/tech/systems/ui/sys-game-settings.md
 sys-gas-core  reference/tech/systems/core/sys-gas-core.md
 sys-gen-test-mode  reference/tech/systems/world/sys-grid/sys-gen-test-mode.md
 sys-grid  reference/tech/systems/world/sys-grid.md
@@ -379,6 +380,7 @@ sys-objectives-events  reference/tech/systems/world/sys-objectives/sys-objective
 sys-objectives-ore-counter  reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md
 sys-objectives-run-flow  reference/tech/systems/world/sys-objectives/sys-objectives-run-flow.md
 sys-objectives-shuttle  reference/tech/systems/world/sys-objectives/sys-objectives-shuttle.md
+sys-options-screen  reference/tech/systems/ui/sys-options-screen.md
 sys-pause-menu  reference/tech/systems/ui/sys-pause-menu.md
 sys-pickups  reference/tech/systems/world/sys-pickups.md
 sys-pickups-lifecycle  reference/tech/systems/world/sys-pickups/sys-pickups-lifecycle.md
@@ -465,6 +467,7 @@ wbp-intermission  reference/tech/blueprints/ui/wbp-intermission.md
 wbp-loading  reference/tech/blueprints/ui/wbp-loading.md
 wbp-main-menu  reference/tech/blueprints/ui/wbp-main-menu.md
 wbp-minimap-locator  reference/tech/blueprints/ui/wbp-minimap-locator.md
+wbp-options  reference/tech/blueprints/ui/wbp-options.md
 wbp-ore-counter  reference/tech/blueprints/ui/wbp-ore-counter.md
 wbp-pause-menu  reference/tech/blueprints/ui/wbp-pause-menu.md
 wbp-run-lost  reference/tech/blueprints/ui/wbp-run-lost.md
