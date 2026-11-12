@@ -31,7 +31,7 @@ status: in-progress
 - runs: 2
 - result: open
 `
-const DIR = 'C:/Users/soumo/Documents/Unreal Projects/RogueRigs/vault/reference/tasks'
+const DIR = 'C:/Workspace/RogueRigs/vault/reference/tasks'
 const file = (name: string) => ({ name, kind: 'file' as const, size: 1, mtimeMs: 1, isLink: false })
 const dir = (name: string) => ({ name, kind: 'dir' as const, size: 0, mtimeMs: 0, isLink: false })
 

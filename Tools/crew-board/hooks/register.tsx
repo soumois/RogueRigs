@@ -628,7 +628,7 @@ export const register: Register = (on, options) => {
       c.runs += 1
       c.seconds += Math.round(Number(r.seconds ?? 0) / share)
       for (const m of Array.isArray(r.models) ? (r.models as string[]) : []) {
-        const short = /opus/.test(m) ? 'opus' : /sonnet/.test(m) ? 'sonnet' : /haiku/.test(m) ? 'haiku' : m
+        const short = /fable/.test(m) ? 'fable' : /opus/.test(m) ? 'opus' : /sonnet/.test(m) ? 'sonnet' : /haiku/.test(m) ? 'haiku' : m
         if (!c.models.includes(short)) c.models.push(short)
       }
       c.shareOf = Math.max(c.shareOf, share)
