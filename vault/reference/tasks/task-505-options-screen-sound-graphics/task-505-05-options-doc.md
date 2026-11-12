@@ -3,7 +3,7 @@ id: task-505-05-options-doc
 description: "Doc: Document the settings system and the options widget."
 parent: task-505-options-screen-sound-graphics
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen with Sound and Graphics, opened from the main menu: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T04:27:17Z
 - waiting_for: none
 - result: open
 
