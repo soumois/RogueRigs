@@ -516,3 +516,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-505-options-screen-sound-graphics]] — Options screen built from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened by the main menu Options button. Status done.
 - [[task-506-options-gameplay-and-pause]] — Adds the Gameplay tab (damage numbers, aim indicator, screen shake, focus-loss pause) and an Options button to the pause menu. Status done.
 - [[task-507-budget-no-block]] — Réglage (no planner): Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ... Status done.
+- [[task-508-workflow-back-to-old]] — Removes gros-morceau split, 120k context handover and active budget from the crew rules; keeps reglage route, preview gate, task-confirm, failure-only runbook, extraProjectSlugs, three agents. Status done.

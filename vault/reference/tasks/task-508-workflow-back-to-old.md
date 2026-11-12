@@ -1,9 +1,9 @@
 ---
 id: task-508-workflow-back-to-old
 description: "Global task: Removes gros-morceau split, 120k context handover and active budget from the crew rules; keeps reglage route, preview gate, task-confirm, failure-only runbook, extraProjectSlugs, three agents."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Workflow : retour à l'ancien, en gardant routeur réglage, porte visuelle et outils
 
@@ -15,10 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "Ok pour tout")
 - milestone: M2
-- next_step: task-508-01-rules-scripts-claude-files
+- next_step: none
 - started: 2026-11-12T12:23:45Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 52, cache write 109850, cache read 1807492, output 18608
+- executor_usage: runs 1, turns 26, context start 16k peak 110k, resumes 0, 3 min, units 0.41 M
+- planning_tokens: input 8, cache write 21578, cache read 106665, output 6155
+- planning_usage: a5862d1d "Plan screen swap and rule rollback" 1/2 (tasks 508, 509), units 0.07 M
+- result: Done. Commit 7ad6f50e. Removed: gros-morceau split (orchestration-protocol step 3, agent-planner gros_morceau_split, request-families row now one global, task.md); 120k context handover (context-now.js deleted, task-next.js prints no context/HANDOVER line, alerts.handoverContextTokens gone, execution-protocol 5.9 and agent-executor handover removed, task.md and executor.md handover relaunch removed); active budget (budgetAlert back to the pre-502 non-blocking ALERT line, previousUsage and alerts.budgetStopFactor gone; execution-protocol 5.9, verification-levels, agent-executor, runbook, cost-log, agents-index say budget only recorded). Kept: reglage route and task-reglage.js, preview gate 5.7, task-confirm.js on pure ok, runbook/quirks read on failure only, extraProjectSlugs, agents planner/executor/style-guide. style-loop.md general-purpose text-role fix committed. Checks: node --check task-next.js and record-cost.js, cost-rates.json parses, budgetAlert gives ALERT on task-505/496/506 and null on task-507, grep finds no HANDOVER/BUDGET STOP/handoverContextTokens/budgetStopFactor in .claude, rule nodes or scripts, lint clean (pre-existing warnings only); this closing ran the edited task-next.js and record-cost.js. Tasks 500-503 and 507 untouched.
 
 ## Questions
 Decided 2026-11-12 (owner "Ok pour tout"): every default below is accepted; values provisional, owner 2026-11-12.
@@ -28,5 +32,5 @@ Decided 2026-11-12 (owner "Ok pour tout"): every default below is accepted; valu
 1. task-508-01-rules-scripts-claude-files (vault/reference/tasks/task-508-workflow-back-to-old/task-508-01-rules-scripts-claude-files.md) — executor: remove the three points from rule nodes, scripts and Claude files, keep the six others, commit the style-loop fix
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-508-01-rules-scripts-claude-files]] — step 1, executor.

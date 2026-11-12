@@ -3,7 +3,7 @@ id: task-508-01-rules-scripts-claude-files
 description: "Executor: remove the three points from rule nodes, scripts and Claude files, keep the six others, commit the style-loop fix"
 parent: task-508-workflow-back-to-old
 kind: task
-status: in-progress
+status: done
 ---
 # Workflow : retour à l'ancien, en gardant routeur réglage, porte visuelle et outils: executor
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: A1 to A6 of the global hold; lint clean; committed by explicit path.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-508
+- usage: included in the executor run of task-508
+- runs: 1
 - milestone: M2
 - started: 2026-11-12T12:23:45Z
 - waiting_for: none
-- result: open
+- result: Commit 7ad6f50e. Removed: gros-morceau split (orchestration-protocol step 3, agent-planner gros_morceau_split, request-families row now one global, task.md); 120k context handover (context-now.js deleted, task-next.js prints no context/HANDOVER line, alerts.handoverContextTokens gone, execution-protocol 5.9 and agent-executor handover removed, task.md and executor.md handover relaunch removed); active budget (budgetAlert back to the pre-502 non-blocking ALERT line, previousUsage and alerts.budgetStopFactor gone; execution-protocol 5.9, verification-levels, agent-executor, runbook, cost-log, agents-index say budget only recorded). Kept: reglage route and task-reglage.js, preview gate 5.7, task-confirm.js on pure ok, runbook/quirks read on failure only, extraProjectSlugs, agents planner/executor/style-guide. style-loop.md general-purpose text-role fix committed. Checks: node --check task-next.js and record-cost.js, cost-rates.json parses, budgetAlert gives ALERT on task-505/496/506 and null on task-507, grep finds no HANDOVER/BUDGET STOP/handoverContextTokens/budgetStopFactor in .claude, rule nodes or scripts, lint clean (pre-existing warnings only); this closing ran the edited task-next.js and record-cost.js. Tasks 500-503 and 507 untouched.
 
 ## Relations
 - [[task-508-workflow-back-to-old]] — parent global task.
