@@ -3,7 +3,7 @@ id: task-509-02-options-capture
 description: "Capture: capture the merged Options screen from main menu and pause at the four resolutions"
 parent: task-509-options-old-workflow-on-master
 kind: task
-status: todo
+status: in-progress
 ---
 # Écran Options : version de l'ancien workflow sur master, puis push: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T12:33:00Z
 - waiting_for: none
 - result: open
 

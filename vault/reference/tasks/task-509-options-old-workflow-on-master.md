@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "Ok pour tout")
 - milestone: M2
-- next_step: task-509-01-merge-old-options
+- next_step: task-509-02-options-capture
 - started: 2026-11-12T12:27:40Z
 - waiting_for: none
+- executor_tokens: input 78, cache write 95554, cache read 2733319, output 15917
+- executor_usage: runs 1, turns 39, context start 16k peak 106k, resumes 0, 6 min, units 0.47 M
+- planning_tokens: input 8, cache write 21578, cache read 106665, output 6155
+- planning_usage: a5862d1d "Plan screen swap and rule rollback" 1/2 (tasks 508, 509), units 0.07 M
 - result: open
 
 ## Questions
