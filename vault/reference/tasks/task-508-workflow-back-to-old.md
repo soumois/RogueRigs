@@ -3,7 +3,7 @@ id: task-508-workflow-back-to-old
 description: "Global task: Removes gros-morceau split, 120k context handover and active budget from the crew rules; keeps reglage route, preview gate, task-confirm, failure-only runbook, extraProjectSlugs, three agents."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Workflow : retour à l'ancien, en gardant routeur réglage, porte visuelle et outils
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-12, "Ok pour tout")
 - milestone: M2
 - next_step: task-508-01-rules-scripts-claude-files
-- started: open
+- started: 2026-11-12T12:23:45Z
 - waiting_for: none
 - result: open
 

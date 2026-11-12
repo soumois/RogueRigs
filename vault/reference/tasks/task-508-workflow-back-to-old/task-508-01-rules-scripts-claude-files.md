@@ -3,7 +3,7 @@ id: task-508-01-rules-scripts-claude-files
 description: "Executor: remove the three points from rule nodes, scripts and Claude files, keep the six others, commit the style-loop fix"
 parent: task-508-workflow-back-to-old
 kind: task
-status: todo
+status: in-progress
 ---
 # Workflow : retour à l'ancien, en gardant routeur réglage, porte visuelle et outils: executor
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T12:23:45Z
 - waiting_for: none
 - result: open
 
