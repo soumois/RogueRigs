@@ -67,7 +67,7 @@ export type Cost = {
   ids: string[]
 }
 
-export type TaskCost = { executor: Cost | null; planner: Cost | null }
+export type TaskCost = { executor: Cost | null; planner: Cost | null; relay?: Cost | null }
 
 export type Live = {
   id: string

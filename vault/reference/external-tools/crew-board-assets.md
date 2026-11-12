@@ -9,7 +9,7 @@ kind: doc
 - responsibility: give each agent type an icon and a colour on the board.
 - main_files: `Art/Source/crew-icons/` (prompts, run logs, chosen sheets, 96 px icons), `Tools/art/crew_icons_cut.js`, `Tools/art/crew_icon_one.js`, `Tools/crew-board/build_icons.js`, `Tools/crew-board/hooks/icons.ts` (generated, do not edit).
 - entry_points: `node Tools/crew-board/build_icons.js Art/Source/crew-icons/icons 32` rewrites `icons.ts`.
-- data: eleven mascots with a colour each: cpp blue, bp green, art pink, 3d violet, level-design lime, text gold, style-guide orange, planner cyan, executor yellow, doc coral, claude grey.
+- data: eleven mascots with a colour each: cpp blue, bp green, art pink, 3d violet, level-design lime, text gold, style-guide orange, planner cyan, executor yellow, doc coral, claude grey; plus `capture` teal, a camera drawn by code (`Tools/art/crew_icon_capture.js` writes `icons/capture.png`, no image generation), to replace by a mascot when one is prompted. `relay` (main session) has a colour and no icon of its own: it shows the claude mascot.
 - depends_on: the art agent and `Tools/art/kie_image.js` (GPT Image 2).
 - implements: none.
 - gotchas: the pane draws pictures as SVG only (the image element is terminal-only), so each icon is converted to 32x32 coloured rectangles, about 10 KB each; keep a page of cards under a few hundred KB.

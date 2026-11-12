@@ -384,9 +384,9 @@ for (const r of all.filter(x => x.role === 'planning')) {
 }
 if (doSnapshot) {
   // The crew-board mod reads at most 4 MiB per file and the snapshot passed that with the debug traces: it reads this
-  // compact copy instead (agent records without traces, planners with the tasks they created; git-ignored, rebuilt with
+  // compact copy instead (agent and main session records without traces, planners with the tasks they created; git-ignored, rebuilt with
   // every snapshot).
-  fs.writeFileSync(path.join(__dirname, 'usage-agents.json'), '[\n' + all.filter(r => r.kind === 'agent').map(({ plannerTrace, agentTrace, ...r }) => JSON.stringify(r)).join(',\n') + '\n]\n');
+  fs.writeFileSync(path.join(__dirname, 'usage-agents.json'), '[\n' + all.filter(r => r.kind === 'agent' || r.kind === 'session').map(({ plannerTrace, agentTrace, ...r }) => JSON.stringify(r)).join(',\n') + '\n]\n');
 }
 const taskIds = new Set([...subtasks.map(s => s.id.split('-')[1]), ...pilots.filter(p => p.globalTask && +p.globalTask >= fromTask).map(p => p.globalTask),
   ...Object.keys(plannerShares).filter(n => +n >= fromTask)]);

@@ -31,11 +31,14 @@ status: in-progress
 - runs: 2
 - result: open
 `
-const DIR = 'C:/Workspace/RogueRigs/vault/reference/tasks'
+const DIR = 'C:/Game/vault/reference/tasks'
+const PROJ = 'C:/Users/me/.claude/projects/C--Game'
+// the folders are given, so the tests do not depend on where this repository sits
+const OPTS = { options: { tasksDir: DIR, transcriptsDir: PROJ } }
 const file = (name: string) => ({ name, kind: 'file' as const, size: 1, mtimeMs: 1, isLink: false })
 const dir = (name: string) => ({ name, kind: 'dir' as const, size: 0, mtimeMs: 0, isLink: false })
 
-test('the board lists a task read from the vault, on every surface', async ($, on) => {
+test('the board lists a task read from the vault, on every surface', OPTS, async ($, on) => {
   const clock = mock.clock(on)
   on('command.register', () => ({ value: { command: 'crew' } }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
@@ -85,7 +88,7 @@ test('the pane draws its header on every surface', async ($, on) => {
   }
 })
 
-test('a running subagent found in the transcripts is shown with its task, tokens and last tool', async ($, on) => {
+test('a running subagent found in the transcripts is shown with its task, tokens and last tool', OPTS, async ($, on) => {
   const clock = mock.clock(on)
   on('command.register', () => ({ value: { command: 'crew' } }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
@@ -116,7 +119,7 @@ test('a running subagent found in the transcripts is shown with its task, tokens
   await ui.unmount()
 })
 
-test('the task view shows the token table and the executor cost from the usage snapshot', async ($, on) => {
+test('the task view shows the token table and the executor cost from the usage snapshot', OPTS, async ($, on) => {
   const clock = mock.clock(on)
   on('command.register', () => ({ value: { command: 'crew' } }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
@@ -168,7 +171,7 @@ test('the task view shows the token table and the executor cost from the usage s
   await ui.unmount()
 })
 
-test('a usage snapshot over 4 MiB is read through its compact copy usage-agents.json', async ($, on) => {
+test('a usage snapshot over 4 MiB is read through its compact copy usage-agents.json', OPTS, async ($, on) => {
   const clock = mock.clock(on)
   on('command.register', () => ({ value: { command: 'crew' } }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
@@ -204,7 +207,7 @@ test('a usage snapshot over 4 MiB is read through its compact copy usage-agents.
   await ui.unmount()
 })
 
-test('a running planner and a big executor transcript are read through the helper script', async ($, on) => {
+test('a running planner and a big executor transcript are read through the helper script', OPTS, async ($, on) => {
   const clock = mock.clock(on)
   on('command.register', () => ({ value: { command: 'crew' } }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
@@ -247,5 +250,135 @@ test('a running planner and a big executor transcript are read through the helpe
   await ui.press({ key: 't-task-318-preload' })
   expect((await ui.find({ type: 'Text', text: /\+2k tok running now/ }))?.text).toMatch(/running now/)
   expect((await ui.find({ type: 'Text', text: /\+600k tok running now/ }))?.text).toMatch(/running now/)
+  await ui.unmount()
+})
+
+test('folders left empty are found from the mod folder, and a missing one is named in red', async ($, on) => {
+  const clock = mock.clock(on)
+  on('command.register', () => ({ value: { command: 'crew' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  mock.env(on, { USERPROFILE: 'C:/Users/me' })
+  const fwd = (p: string) => p.split(String.fromCharCode(92)).join('/')
+  const asked: string[] = []
+  on('fs.list', (_, e) => {
+    const p = fwd(e.path)
+    asked.push(p)
+    // the vault is there, the transcripts folder is not
+    if (p.includes('/.claude/projects/')) throw new Error('ENOENT')
+    if (p.endsWith('/vault/reference/tasks')) return { value: [file('task-318-preload.md'), dir('task-318-preload')] }
+    if (p.endsWith('/task-318-preload')) return { value: [file('task-318-01-preload.md')] }
+
+    return { value: [] }
+  })
+  on('fs.read', (_, e) => ({ value: fwd(e.path).endsWith('/task-318-preload.md') ? TASK : SUB }))
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  await clock.advance(2500)
+
+  // <repo>/Tools/crew-board -> <repo>/vault/reference/tasks, and ~/.claude/projects/<repo path, dashes>
+  const tasks = asked.find(p => p.endsWith('/vault/reference/tasks')) ?? ''
+  expect(tasks).not.toMatch(/crew-board/)
+  const slug = tasks.slice(0, -'/vault/reference/tasks'.length).replace(/[^A-Za-z0-9]/g, '-')
+  expect(asked).toContain(`C:/Users/me/.claude/projects/${slug}`)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  expect((await ui.find({ type: 'Text', text: /Preload the next level/ }))?.text).toMatch(/Preload/)
+  expect((await ui.find({ type: 'Text', text: /transcripts folder not found/ }))?.text).toMatch(/Users.me/)
+  await ui.unmount()
+})
+
+test('a missing tasks folder is named in red', OPTS, async ($, on) => {
+  const clock = mock.clock(on)
+  on('command.register', () => ({ value: { command: 'crew' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('fs.list', () => {
+    throw new Error('ENOENT')
+  })
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  await clock.advance(200)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  expect((await ui.find({ type: 'Text', text: /tasks folder not found/ }))?.text).toMatch(/C:.Game.vault.reference.tasks/)
+  await ui.unmount()
+})
+
+test('the main session is live and its cost is shared among the tasks it launched, with the weights of cost-rates.json', OPTS, async ($, on) => {
+  const clock = mock.clock(on)
+  on('command.register', () => ({ value: { command: 'crew' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  const fwd = (p: string) => p.split(String.fromCharCode(92)).join('/')
+  const SESSION = '11111111-2222-3333-4444-555555555555'
+  const agents = JSON.stringify([
+    { kind: 'agent', id: 'exec1', session: '11111111', role: 'pilot', type: 'executor', globalTask: '318', input: 0, cacheWrite: 0, cacheRead: 0, output: 1000, seconds: 60, models: ['claude-opus-5-5'] },
+    { kind: 'agent', id: 'exec2', session: '11111111', role: 'pilot', type: 'executor', globalTask: '400', input: 0, cacheWrite: 0, cacheRead: 0, output: 1000, seconds: 60, models: ['claude-opus-5-5'] },
+    { kind: 'session', id: SESSION, session: '11111111', role: 'session', type: 'main', input: 0, cacheWrite: 0, cacheRead: 0, output: 400000, seconds: 900, models: ['claude-fable-5-2'] },
+  ])
+  on('fs.list', (_, e) => {
+    const p = fwd(e.path)
+    if (p === PROJ) return { value: [{ name: `${SESSION}.jsonl`, kind: 'file' as const, size: 500, mtimeMs: Date.now(), isLink: false }] }
+    if (p.endsWith('/vault/scripts')) return { value: [file('usage-agents.json'), file('cost-rates.json')] }
+    if (p === DIR) return { value: [file('task-318-preload.md'), dir('task-318-preload')] }
+    if (p.endsWith('/task-318-preload')) return { value: [file('task-318-01-preload.md')] }
+
+    return { value: [] }
+  })
+  on('fs.read', (_, e) => {
+    const p = fwd(e.path)
+    if (p.endsWith('usage-agents.json')) return { value: agents }
+    // output weighs 10 here, not the built-in 5
+    if (p.endsWith('cost-rates.json')) return { value: JSON.stringify({ weights: { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 10 } }) }
+    if (p.endsWith('.jsonl')) return { value: '' }
+
+    return { value: p.endsWith('/task-318-preload.md') ? TASK : SUB }
+  })
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  await clock.advance(2500)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  expect((await ui.find({ type: 'Text', text: /main session 11111111/ }))?.text).toMatch(/main session/)
+  await ui.press({ key: 't-task-318-preload' })
+  // 400k output tokens for two tasks: 200k each, 2.00 units at weight 10
+  expect((await ui.find({ type: 'Text', text: /shared by 2 tasks/ }))?.text).toMatch(/fable/)
+  expect((await ui.find({ type: 'Text', text: /2\.00 units · out 200k/ }))?.text).toMatch(/2\.00 units/)
+  await ui.unmount()
+})
+
+test('an agent silent for ten minutes stays live while its tool call has no result yet', OPTS, async ($, on) => {
+  const clock = mock.clock(on)
+  on('command.register', () => ({ value: { command: 'crew' } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  const fwd = (p: string) => p.split(String.fromCharCode(92)).join('/')
+  const old = (name: string) => ({ name, kind: 'file' as const, size: 500, mtimeMs: Date.now() - 10 * 60 * 1000, isLink: false })
+  on('fs.list', (_, e) => {
+    const p = fwd(e.path)
+    if (p.endsWith('/subagents')) return { value: [old('agent-build.meta.json'), old('agent-build.jsonl'), old('agent-idle.meta.json'), old('agent-idle.jsonl')] }
+    if (p === PROJ) return { value: [dir('session-1')] }
+
+    return { value: [] }
+  })
+  on('fs.read', (_, e) => ({
+    value: JSON.stringify({ agentType: 'executor', description: fwd(e.path).includes('agent-build') ? 'Long build' : 'Stopped agent', finished: false }),
+  }))
+  on('process.run', (_, e) => ({
+    value: {
+      exitCode: 0,
+      stdout: JSON.stringify({ tokens: { input: 1, cacheWrite: 0, cacheRead: 0, output: 1 }, tool: 'Bash', head: 'task-318-preload', created: [], pending: e.argv.join(' ').includes('agent-build') }),
+      stderr: '',
+    },
+  }))
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+  await clock.advance(2500)
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  expect((await ui.find({ type: 'Text', text: /Long build/ }))?.text).toMatch(/Long build/)
+  expect((await ui.find({ type: 'Text', text: /in a long tool call/ }))?.text).toMatch(/Bash/)
+  expect(await ui.find({ type: 'Text', text: /Stopped agent/ })).toBeUndefined()
   await ui.unmount()
 })

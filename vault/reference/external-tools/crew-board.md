@@ -15,14 +15,14 @@ kind: doc
 - gotchas: native buttons keep the app's own colours and the text inside a button ignores colour props, so card text sits outside buttons; the whole-card click is transparent button rows laid over the card; icons are SVG and show on desktop surfaces only (terminal shows a coloured glyph).
 
 ## Install
-Set in `~/.claude/settings.json`, `env`: `CLAUDE_CODE_PLUGIN_DIRS` = absolute path of `Tools/crew-board` and `CLAUDE_CODE_PLUGIN_DIR_WATCH` = `1`, then start a new session. Options (`plugin.json`): `refreshSeconds` (5), `tasksDir`, `transcriptsDir`, `openAtStart`. Defaults point at this repository and this machine.
+Set in `~/.claude/settings.json`, `env`: `CLAUDE_CODE_PLUGIN_DIRS` = absolute path of `Tools/crew-board` and `CLAUDE_CODE_PLUGIN_DIR_WATCH` = `1`, then start a new session. Options (`plugin.json`): `refreshSeconds` (5), `tasksDir`, `transcriptsDir`, `openAtStart`. The two folders are empty by default and found from the mod's own folder (see [[crew-board-data]]), so a moved or cloned repository only needs `CLAUDE_CODE_PLUGIN_DIRS` updated. A folder that is missing is named in red under the header.
 
 ## Screens
 - List: filters All, To do, In progress, Wait, Done, Cancel (each with its count), pages, one card per task (status icon, title, bar, steps, tokens and units). A click anywhere on a card opens it.
-- Task: title with status, description and the agents running, a foldable token table (workers, executor, planner, total), an Executor card, a Planner card, one card per subtask that unfolds its goal, tokens, run and result.
+- Task: title with status, description and the agents running, a foldable token table (workers, executor, planner, relay, total), an Executor card, a Planner card, a Relay card (main session), one card per subtask that unfolds its goal, tokens, run and result.
 
 ## Check
-`claude plugin validate Tools/crew-board` and `claude plugin test Tools/crew-board` (five tests: fake vault, snapshot costs, live agents, helper script).
+`claude plugin validate Tools/crew-board` and `claude plugin test Tools/crew-board` (ten tests: fake vault, snapshot costs, live agents, helper script, derived folders, missing folders, relay cost and weights, long tool call); use the `claude` build of the desktop app, the older one on the PATH knows neither the module format nor `plugin test`.
 
 ## Relations
 - [[external-tools-index]] — parent index.

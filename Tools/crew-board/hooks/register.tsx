@@ -16,6 +16,7 @@ type Io = {
   setCosts: (costs: Record<string, TaskCost>) => Promise<unknown>
   run: (argv: readonly string[]) => Promise<{ exitCode: number; stdout: string }>
   root: () => Promise<string>
+  home: () => Promise<string | undefined>
 }
 
 const PANE = 'crew-board'
@@ -54,6 +55,8 @@ const AGENTS: Record<string, { glyph: string; color: string }> = {
   planner: { glyph: '☰', color: C.cyan },
   executor: { glyph: '▶', color: C.yellow },
   orchestrator: { glyph: '♜', color: C.yellow },
+  capture: { glyph: '◙', color: C.teal },
+  relay: { glyph: '♜', color: C.white },
   claude: { glyph: '◉', color: C.grey },
 }
 const agentOf = (name: string) => AGENTS[name] ?? { glyph: '◉', color: C.grey }
@@ -91,10 +94,11 @@ const eff = (r: TaskRow, isLive: boolean): Norm => {
   return n
 }
 
-// cost-rates.json weights and alert thresholds
-const WEIGHTS = { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 }
-const ALERT_TURNS = 55
-const ALERT_START_CTX = 25000
+// Weights and alert thresholds: read from vault/scripts/cost-rates.json at every scan (loadRates); these stand until then
+// and when the file is missing or unreadable.
+let WEIGHTS = { input: 1, cacheWrite: 1.25, cacheRead: 0.1, output: 5 }
+let ALERT_TURNS = 55
+let ALERT_START_CTX = 25000
 
 const rowsAtom = atom({ plugin: 'crew-board', key: 'rows' } as const, [] as TaskRow[])
 const liveAtom = atom({ plugin: 'crew-board', key: 'live' } as const, [] as Live[])
@@ -314,17 +318,45 @@ const bar = (done: number, total: number, width: number) => {
 export const register: Register = (on, options) => {
   const refreshMs = Math.max(1, Number(options.refreshSeconds ?? 5)) * 1000
   const fwd = (p: string) => p.split(String.fromCharCode(92)).join('/')
-  const dir = fwd(String(options.tasksDir ?? '')).replace(/\/+$/, '')
-  const scriptsDir = dir.replace(/\/reference\/tasks$/, '/scripts')
+  const clean = (p: unknown) => fwd(String(p ?? '')).replace(/\/+$/, '')
+  // an empty option is filled in session.start from the mod's own folder (resolvePaths)
+  let dir = clean(options.tasksDir)
+  let scriptsDir = dir.replace(/\/reference\/tasks$/, '/scripts')
+  let projDir = clean(options.transcriptsDir)
+  let pathsReady: Promise<void> | undefined
   const cache = new Map<string, TaskRec>()
   let io = undefined as unknown as Io
   let isBusy = false
   let isLiveBusy = false
-  const projDir = String(options.transcriptsDir ?? '')
-    .split(String.fromCharCode(92))
-    .join('/')
-    .replace(/\/+$/, '')
   let signature = ''
+
+  // The mod sits in <repo>/Tools/crew-board: the vault is two folders up, and Claude keeps the repository's transcripts
+  // under ~/.claude/projects/<repo path with every non-alphanumeric character turned into a dash>. So a moved or cloned
+  // repository needs no setting.
+  const resolvePaths = async () => {
+    const repo = clean(await io.root()).replace(/\/[^/]+\/[^/]+$/, '')
+    if (dir === '') dir = `${repo}/vault/reference/tasks`
+    scriptsDir = dir.replace(/\/reference\/tasks$/, '/scripts')
+    if (projDir !== '') return
+    let home: string | undefined
+    try {
+      home = await io.home()
+    } catch {
+      home = undefined
+    }
+    if (home) projDir = `${clean(home)}/.claude/projects/${repo.replace(/[^A-Za-z0-9]/g, '-')}`
+  }
+
+  // What stops the board from showing something, one entry per source, drawn in red under the header.
+  const problems = { tasks: '', live: '', costs: '' }
+  let shownProblems = ''
+  const problemText = () => [problems.tasks, problems.live, problems.costs].filter(Boolean).join(' · ')
+  const syncProblems = async () => {
+    const text = problemText()
+    if (text === shownProblems) return
+    shownProblems = text
+    await io.patchScan(s => ({ ...s, error: text }))
+  }
 
   const refreshTask = async (id: string, mtime: number, hasFolder: boolean) => {
     const prev = cache.get(id)
@@ -380,10 +412,12 @@ export const register: Register = (on, options) => {
   // Live agents: every subagent of every session of this project leaves agent-<id>.meta.json (type, description,
   // finished) and agent-<id>.jsonl (its transcript, written as it works) under <projects>/<project>/<session>/subagents.
   // Running = not finished and its transcript was written to recently. Works across sessions on this machine.
-  const metaCache = new Map<string, { type: string; description: string; finished: boolean }>()
+  const metaCache = new Map<string, { type: string; description: string; finished: boolean; mtime: number }>()
   const linkCache = new Map<string, { taskNum: number | null; subId: string | null }>()
   const STALE_MS = 3 * 60 * 1000
   const WORKING_MS = 30 * 1000
+  // an agent silent for longer is still live while a tool call waits for its result (a build, a capture), up to this long
+  const LONG_TOOL_MS = 60 * 60 * 1000
   // a worker's prompt names its node (task-319-03-verify-...), the executor's names the global one; the planner and the
   // generic agents only mention tasks, so they are never linked to one
   const SUB_REF = /task-(\d{3})-(\d{2})-[a-z]/
@@ -406,9 +440,11 @@ export const register: Register = (on, options) => {
     return { type: String(j.agentType ?? '?'), description: String(j.description ?? ''), finished: Boolean(j.finished) }
   }
 
-  type LiveUsage = { at: number; tokens: number; tool: string; head: string; created: string[]; tok: Tok | null; models: string[]; seconds: number }
+  type LiveUsage = { at: number; mtime: number; tokens: number; tool: string; head: string; created: string[]; tok: Tok | null; models: string[]; seconds: number; isPending: boolean }
+  const NO_USAGE: LiveUsage = { at: 0, mtime: 0, tokens: 0, tool: '', head: '', created: [], tok: null, models: [], seconds: 0, isPending: false }
   const usageCache = new Map<string, LiveUsage>()
   const USAGE_EVERY_MS = 6000
+  const RELAY_EVERY_MS = 30000
   let pluginRoot = ''
 
   // The helper script reads any size (the module reads 4 MiB at most); the regex pass over a small file is the fallback.
@@ -421,6 +457,8 @@ export const register: Register = (on, options) => {
 
         return {
           at: Date.now(),
+          mtime: 0,
+          isPending: Boolean(j.pending),
           tokens: tokTotal(j.tokens),
           tool: String(j.tool ?? ''),
           head: String(j.head ?? ''),
@@ -440,19 +478,64 @@ export const register: Register = (on, options) => {
       for (const u of text.matchAll(USAGE)) tokens += Number(u[1]) + Number(u[2]) + Number(u[3]) + Number(u[4])
       const tools = [...text.matchAll(TOOL_USE)]
 
-      return { at: Date.now(), tokens, tool: tools.length > 0 ? tools[tools.length - 1][1] : '', head: text.slice(0, 8000), created: [], tok: null, models: [], seconds: 0 }
+      return { at: Date.now(), mtime: 0, isPending: false, tokens, tool: tools.length > 0 ? tools[tools.length - 1][1] : '', head: text.slice(0, 8000), created: [], tok: null, models: [], seconds: 0 }
     } catch {
       return undefined
     }
   }
 
   const pollLive = async () => {
-    if (isLiveBusy || projDir === '') return
+    if (isLiveBusy) return
     isLiveBusy = true
     try {
+      await pathsReady
+      if (projDir === '') {
+        problems.live = 'transcripts folder unknown: set the transcriptsDir option'
+        await syncProblems()
+        return
+      }
       const now = Date.now()
       const live: Live[] = []
-      const sessions = (await io.list(projDir)).filter(e => e.kind === 'dir')
+      let entries: FsEntry[]
+      try {
+        entries = await io.list(projDir)
+      } catch {
+        problems.live = `transcripts folder not found: ${projDir}`
+        await syncProblems()
+        return
+      }
+      problems.live = ''
+      // a transcript is read again only once it has changed, and at most every `everyMs`
+      const usageFor = async (key: string, path: string, log: FsEntry, everyMs: number) => {
+        let usage = usageCache.get(key)
+        if (!usage || (usage.mtime !== log.mtimeMs && now - usage.at > everyMs)) {
+          usage = { ...((await readUsage(path, log.size)) ?? usage ?? NO_USAGE), at: now, mtime: log.mtimeMs }
+          usageCache.set(key, usage)
+        }
+
+        return usage
+      }
+      // the main session of each conversation (the relay that launches the planner and the executors): its transcript
+      // <session>.jsonl sits beside the session's folder
+      for (const f of entries) {
+        const m = f.kind === 'file' ? f.name.match(/^([0-9a-f]{8})-[0-9a-f-]{27}\.jsonl$/) : null
+        const age = now - f.mtimeMs
+        if (!m || age > STALE_MS) continue
+        const usage = await usageFor(`main-${f.name}`, `${projDir}/${f.name}`, f, RELAY_EVERY_MS)
+        live.push({
+          id: f.name.replace(/\.jsonl$/, ''),
+          type: 'relay',
+          description: `main session ${m[1]}`,
+          status: age < WORKING_MS ? 'running' : usage.isPending ? 'tool' : 'waiting',
+          taskNum: null,
+          tasks: [],
+          subId: null,
+          tokens: usage.tokens,
+          tool: usage.tool,
+          ageSec: Math.max(0, Math.round(age / 1000)),
+        })
+      }
+      const sessions = entries.filter(e => e.kind === 'dir')
       await pool(sessions, 6, async session => {
         const folder = `${projDir}/${session.name}/subagents`
         let files: FsEntry[]
@@ -472,24 +555,25 @@ export const register: Register = (on, options) => {
         }
         for (const [id, slot] of byId) {
           if (!slot.meta || !slot.log) continue
-          if (metaCache.get(id)?.finished) continue
-          if (now - slot.log.mtimeMs > STALE_MS) continue
           let meta = metaCache.get(id)
-          try {
-            meta = await readMeta(`${folder}/agent-${id}.meta.json`)
-            metaCache.set(id, meta)
-          } catch {
-            if (!meta) continue
+          if (meta?.finished) continue
+          const age = now - slot.log.mtimeMs
+          if (age > LONG_TOOL_MS) continue
+          if (!meta || age <= STALE_MS || meta.mtime !== slot.meta.mtimeMs) {
+            try {
+              meta = { ...(await readMeta(`${folder}/agent-${id}.meta.json`)), mtime: slot.meta.mtimeMs }
+              metaCache.set(id, meta)
+            } catch {
+              if (!meta) continue
+            }
           }
           if (meta.finished) continue
           // the transcript says which task the agent works on (its first prompt, or the tasks a planner created), how much it
-          // has used (each API message once) and its last tool; usage_of.js reads it whatever its size, at most every few seconds
-          let usage = usageCache.get(id)
-          if (!usage || now - usage.at > USAGE_EVERY_MS) {
-            const fresh = await readUsage(`${folder}/agent-${id}.jsonl`, slot.log.size)
-            usage = fresh ?? usage ?? { at: now, tokens: 0, tool: '', head: '', created: [], tok: null, models: [], seconds: 0 }
-            usageCache.set(id, { ...usage, at: now })
-          }
+          // has used (each API message once), its last tool and whether that tool still runs; usage_of.js reads it whatever
+          // its size, when it changed and at most every few seconds
+          const usage = await usageFor(id, `${folder}/agent-${id}.jsonl`, slot.log, USAGE_EVERY_MS)
+          // silent for over 3 minutes: live only while a tool call waits for its result, else the agent stopped
+          if (age > STALE_MS && !usage.isPending) continue
           let link = linkCache.get(id)
           if (!link) {
             link = linkOf(meta.type, usage.head)
@@ -500,13 +584,13 @@ export const register: Register = (on, options) => {
             id,
             type: meta.type,
             description: meta.description,
-            status: now - slot.log.mtimeMs < WORKING_MS ? 'running' : 'waiting',
+            status: age < WORKING_MS ? 'running' : usage.isPending ? 'tool' : 'waiting',
             taskNum: tasks.length > 0 ? tasks[0] : link.taskNum,
             tasks,
             subId: link.subId,
             tokens: usage.tokens,
             tool: usage.tool,
-            ageSec: Math.max(0, Math.round((now - slot.log.mtimeMs) / 1000)),
+            ageSec: Math.max(0, Math.round(age / 1000)),
           })
         }
       })
@@ -516,9 +600,10 @@ export const register: Register = (on, options) => {
         signature = sig
         await io.setLive(live)
       }
+      await syncProblems()
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      await io.patchScan(s => ({ ...s, error: `live: ${msg}` }))
+      problems.live = `live agents: ${err instanceof Error ? err.message : String(err)}`
+      await syncProblems()
     } finally {
       isLiveBusy = false
     }
@@ -533,6 +618,31 @@ export const register: Register = (on, options) => {
   const extras = new Map<string, Record<string, unknown>>()
   const seenFinished = new Set<string>()
   const DAY_MS = 24 * 60 * 60 * 1000
+  const relayRead = new Map<string, { mtime: number; at: number }>()
+  const RELAY_COST_EVERY_MS = 60 * 1000
+
+  // cost-rates.json holds the weights that turn the four token kinds into units and the alert thresholds
+  let ratesMtime = -1
+  const loadRates = async () => {
+    try {
+      const entry = (await io.list(scriptsDir)).find(f => f.name === 'cost-rates.json')
+      if (!entry || entry.mtimeMs === ratesMtime) return
+      const j = JSON.parse(await io.read(`${scriptsDir}/cost-rates.json`))
+      const pick = (v: unknown, fallback: number) => (typeof v === 'number' && Number.isFinite(v) ? v : fallback)
+      const w = j.weights ?? {}
+      WEIGHTS = {
+        input: pick(w.input, WEIGHTS.input),
+        cacheWrite: pick(w.cacheWrite, WEIGHTS.cacheWrite),
+        cacheRead: pick(w.cacheRead, WEIGHTS.cacheRead),
+        output: pick(w.output, WEIGHTS.output),
+      }
+      ALERT_TURNS = pick(j.alerts?.turns, ALERT_TURNS)
+      ALERT_START_CTX = pick(j.alerts?.startContextTokens, ALERT_START_CTX)
+      ratesMtime = entry.mtimeMs
+    } catch {
+      // missing or unreadable: the values in hand stay
+    }
+  }
 
   const loadUsage = async () => {
     let changed = false
@@ -544,19 +654,39 @@ export const register: Register = (on, options) => {
     if (entry && entry.mtimeMs !== usageMtime) {
       if (compact) snapRecords = JSON.parse(await io.read(`${scriptsDir}/usage-agents.json`)) as Record<string, unknown>[]
       else if (entry.size < 4 * 1024 * 1024)
-        snapRecords = ((JSON.parse(await io.read(`${scriptsDir}/usage-snapshot.json`)).records ?? []) as Record<string, unknown>[]).filter(r => r.kind === 'agent')
+        snapRecords = ((JSON.parse(await io.read(`${scriptsDir}/usage-snapshot.json`)).records ?? []) as Record<string, unknown>[]).filter(r => r.kind === 'agent' || r.kind === 'session')
       else throw new Error('usage-snapshot.json is over 4 MiB and usage-agents.json is missing: run node vault/scripts/agent-usage.js --snapshot')
       usageMtime = entry.mtimeMs
       changed = true
       // a new snapshot holds the agents read from transcripts since the last one: read them again only if they changed after it
       extras.clear()
       seenFinished.clear()
+      relayRead.clear()
       // publish what the file holds right away: the transcript pass below starts processes and may be slow
       for (const r of snapRecords) if (r.role === 'planning' && Array.isArray(r.createdTasks)) plannerTasks.set(String(r.id), (r.createdTasks as unknown[]).map(String))
       await publishCosts([])
     }
     const snapIds = new Set(snapRecords.map(r => String(r.id)))
-    const sessions = projDir === '' ? [] : (await io.list(projDir)).filter(e => e.kind === 'dir')
+    let top: FsEntry[] = []
+    try {
+      top = projDir === '' ? [] : await io.list(projDir)
+    } catch {
+      // a missing transcripts folder is reported by pollLive; the snapshot's costs still show
+    }
+    const sessions = top.filter(e => e.kind === 'dir')
+
+    // main sessions (the relay) written to after the snapshot: read from their transcript, at most once a minute each
+    for (const f of top) {
+      const m = f.kind === 'file' ? f.name.match(/^([0-9a-f]{8}-[0-9a-f-]{27})\.jsonl$/) : null
+      if (!m || Date.now() - f.mtimeMs > 2 * DAY_MS || f.mtimeMs <= usageMtime) continue
+      const seen = relayRead.get(m[1])
+      if (seen && (seen.mtime === f.mtimeMs || Date.now() - seen.at < RELAY_COST_EVERY_MS)) continue
+      const got = await readUsage(`${projDir}/${f.name}`, f.size)
+      relayRead.set(m[1], { mtime: f.mtimeMs, at: Date.now() })
+      if (!got || !got.tok) continue
+      extras.set(m[1], { kind: 'session', id: m[1], session: m[1].slice(0, 8), type: 'main', role: 'session', seconds: got.seconds, models: got.models, ...got.tok })
+      changed = true
+    }
 
     for (const session of sessions) {
       let files: FsEntry[]
@@ -582,8 +712,9 @@ export const register: Register = (on, options) => {
         } catch {
           continue
         }
-        // an agent stopped by the owner is never marked finished: a transcript untouched for 10 minutes counts as ended
-        const ended = meta.finished || Date.now() - log.mtimeMs > 10 * 60 * 1000
+        // an agent stopped by the owner is never marked finished: a transcript untouched for 10 minutes counts as ended,
+        // unless a tool call still waits for its result (pollLive keeps that agent live)
+        const ended = meta.finished || (Date.now() - log.mtimeMs > 10 * 60 * 1000 && usageCache.get(m[1])?.isPending !== true)
         if (!ended || (meta.type !== 'planner' && meta.type !== 'executor')) {
           if (ended) seenFinished.add(m[1])
           continue
@@ -611,10 +742,11 @@ export const register: Register = (on, options) => {
     await publishCosts(sessions)
   }
 
-  let costTasks = 0
   const publishCosts = async (sessions: FsEntry[]) => {
     const costs: Record<string, TaskCost> = {}
-    const add = (num: string, role: 'executor' | 'planner', r: Record<string, unknown>, share: number) => {
+    const sessionTasks = new Map<string, Set<string>>()
+    const add = (num: string, role: 'executor' | 'planner' | 'relay', r: Record<string, unknown>, share: number) => {
+      if (role !== 'relay') sessionTasks.set(String(r.session), (sessionTasks.get(String(r.session)) ?? new Set()).add(num))
       const t = (r.input === undefined ? ZERO : r) as unknown as Tok
       const scaled: Tok = {
         input: Math.round(Number(t.input) / share),
@@ -622,7 +754,7 @@ export const register: Register = (on, options) => {
         cacheRead: Math.round(Number(t.cacheRead) / share),
         output: Math.round(Number(t.output) / share),
       }
-      const entry2 = costs[num] ?? { executor: null, planner: null }
+      const entry2 = costs[num] ?? { executor: null, planner: null, relay: null }
       const c: Cost = entry2[role] ?? { tok: ZERO, runs: 0, seconds: 0, models: [], shareOf: 1, ids: [] }
       c.tok = addTok(c.tok, scaled)
       c.runs += 1
@@ -654,7 +786,13 @@ export const register: Register = (on, options) => {
         for (const n of tasks) add(String(n), 'planner', r, tasks.length)
       }
     }
-    costTasks = Object.keys(costs).length
+    // the relay: a main session's cost is split equally among the tasks whose planner or executor it launched; a session
+    // that launched none (a discussion, tooling work) belongs to no task
+    for (const r of records) {
+      if (r.role !== 'session') continue
+      const tasks = [...(sessionTasks.get(String(r.session)) ?? [])]
+      for (const n of tasks) add(n, 'relay', r, tasks.length)
+    }
     await io.setCosts(costs)
   }
 
@@ -662,8 +800,20 @@ export const register: Register = (on, options) => {
     if (isBusy) return
     isBusy = true
     try {
+      await pathsReady
       const first = cache.size === 0
-      const entries = await io.list(dir)
+      let entries: FsEntry[]
+      try {
+        entries = await io.list(dir)
+      } catch {
+        problems.tasks = `tasks folder not found: ${dir === '' ? '(no path: set the tasksDir option)' : dir}`
+        shownProblems = problemText()
+        await io.patchScan(s => ({ ...s, phase: 'error', error: shownProblems }))
+
+        return
+      }
+      problems.tasks = ''
+      await loadRates()
       const folders = new Set(entries.filter(e => e.kind === 'dir').map(e => e.name))
       // finished tasks are skipped unless their own node changed on disk; every other task is re-read, subtasks by mtime
       const toRead = entries
@@ -686,15 +836,16 @@ export const register: Register = (on, options) => {
       let files = 0
       for (const rec of cache.values()) files += 1 + rec.subs.size
       await publish()
-      let usageError = ''
       try {
         await loadUsage()
+        problems.costs = ''
       } catch (err) {
-        // a missing or half-written snapshot is retried at the next change; the reason is shown under the board
+        // a missing or half-written snapshot is retried at the next change; the reason is shown under the header
         usageMtime = -1
-        usageError = `costs: ${err instanceof Error ? err.message : String(err)}`
+        problems.costs = `costs: ${err instanceof Error ? err.message : String(err)}`
       }
       await pollLive()
+      shownProblems = problemText()
       await io.patchScan(s => ({
         ...s,
         phase: 'ready',
@@ -703,12 +854,12 @@ export const register: Register = (on, options) => {
         files,
         at: Date.now(),
         frame: s.frame + 1,
-        // the cost count tells which build runs and whether the costs loaded
-        error: usageError || `costs v3: ${costTasks} tasks`,
+        error: shownProblems,
       }))
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      await io.patchScan(s => ({ ...s, phase: 'error', error: msg }))
+      problems.tasks = `tasks: ${err instanceof Error ? err.message : String(err)}`
+      shownProblems = problemText()
+      await io.patchScan(s => ({ ...s, phase: 'error', error: shownProblems }))
     } finally {
       isBusy = false
     }
@@ -726,7 +877,9 @@ export const register: Register = (on, options) => {
       setCosts: costs => update($, costsAtom, () => costs),
       run: argv => $.process.run(argv, { timeoutMs: 15000 }),
       root: () => Promise.resolve($.plugin.root),
+      home: async () => (await $.env.get('USERPROFILE')) ?? (await $.env.get('HOME')),
     }
+    pathsReady = resolvePaths()
     await $.command.register({ name: 'crew', description: 'Open the crew board: vault tasks, agents, tokens' })
     if (options.openAtStart !== false) void $.ui.open({ id: PANE, title: 'Crew board' })
     $.clock.after(50, () => void scan())
@@ -835,7 +988,9 @@ export const register: Register = (on, options) => {
             <Text color={C.white}> {trunc(l.description || (l.taskNum !== null ? `task-${l.taskNum}` : l.id), Math.max(12, cols - 24))}</Text>
           </Text>
           <Text color={C.grey}>
-            <Text color={l.status === 'running' ? C.cyan : C.yellow}>{l.status === 'running' ? '● working' : '◐ waiting'}</Text>
+            <Text color={l.status === 'waiting' ? C.yellow : C.cyan}>
+              {l.status === 'running' ? '● working' : l.status === 'tool' ? '● in a long tool call' : '◐ waiting'}
+            </Text>
             {l.tool !== '' ? ` · ${l.tool}` : ''}
             <Text color={C.orange}>
               {l.tokens > 0
@@ -861,8 +1016,9 @@ export const register: Register = (on, options) => {
     const counts = { todo: 0, 'in-progress': 0, wait: 0, done: 0, cancel: 0 }
     const taskCost = (r: TaskRow) => {
       const c = costs[String(r.num)]
-      const tok = (c?.executor ? tokTotal(c.executor.tok) : 0) + (c?.planner ? tokTotal(c.planner.tok) : 0)
-      const units = (c?.executor ? tokUnits(c.executor.tok) : 0) + (c?.planner ? tokUnits(c.planner.tok) : 0)
+      const parts = [c?.executor, c?.planner, c?.relay]
+      const tok = parts.reduce((a, p) => a + (p ? tokTotal(p.tok) : 0), 0)
+      const units = parts.reduce((a, p) => a + (p ? tokUnits(p.tok) : 0), 0)
 
       return { tokens: r.tokens + tok, units: r.units + units }
     }
@@ -894,10 +1050,13 @@ export const register: Register = (on, options) => {
         <Text color={C.grey} dimColor>
           {scanInfo.phase === 'loading'
             ? `reading the vault… ${scanInfo.loaded}/${scanInfo.total}`
-            : scanInfo.phase === 'error'
-              ? `error: ${scanInfo.error}`
-              : `updated ${clock(scanInfo.at)} · every ${Math.round(refreshMs / 1000)}s · ${scanInfo.files} nodes cached${scanInfo.error ? ` · ${scanInfo.error}` : ''}`}
+            : `updated ${clock(scanInfo.at)} · every ${Math.round(refreshMs / 1000)}s · ${scanInfo.files} nodes cached`}
         </Text>
+        {scanInfo.error !== '' && (
+          <Text color={C.red} bold>
+            ⚠ {scanInfo.error}
+          </Text>
+        )}
       </Box>
     )
 
@@ -907,12 +1066,13 @@ export const register: Register = (on, options) => {
       const taskLive = liveByTask.get(taskNum) ?? []
       const row = rows.find(r => r.id === detail.id)
       const st = row ? STATUS[eff(row, taskLive.length > 0)] : statusOf(detail.status)
-      const cost = costs[String(taskNum)] ?? { executor: null, planner: null }
+      const cost = costs[String(taskNum)] ?? { executor: null, planner: null, relay: null }
+      const relayTok = cost.relay?.tok ?? ZERO
       const workers = detail.subs.reduce((a, s) => addTok(a, s.tokens), ZERO)
       const workerRuns = detail.subs.reduce((a, s) => a + (s.runs ?? 0), 0)
       const execTok = cost.executor?.tok ?? ZERO
       const planTok = cost.planner?.tok ?? ZERO
-      const allTok = addTok(addTok(workers, execTok), planTok)
+      const allTok = addTok(addTok(addTok(workers, execTok), planTok), relayTok)
       const runsOf = (c: { runs: number } | null) => (c ? c.runs : 0)
       const liveExec = taskLive.filter(l => l.type === 'executor' && !(cost.executor?.ids ?? []).includes(l.id))
       const liveExecTokens = liveExec.reduce((a, l) => a + l.tokens, 0)
@@ -936,7 +1096,7 @@ export const register: Register = (on, options) => {
           {cells.join('')}
         </Text>
       )
-      const roleCard = (name: string, agent: string, c: Cost | null, liveTokens: number, empty: string) => (
+      const roleCard = (name: string, agent: string, c: Cost | null, liveTokens: number, empty: string, unit = 'launches') => (
         <Box borderStyle="round" borderColor={C.edge} backgroundColor={C.panel} paddingX={1} gap={1} alignItems="center">
           {icon(agent, 34)}
           <Box flexDirection="column" flexGrow={1}>
@@ -945,17 +1105,19 @@ export const register: Register = (on, options) => {
                 {name}
               </Text>
               <Text color={C.grey}>
-                {c ? ` ${c.models.join(', ')}${c.shareOf > 1 ? ` · 1/${c.shareOf} of ~${fmtN(tokTotal(c.tok) * c.shareOf)} tok (one run for ${c.shareOf} tasks)` : ''}` : ` ${empty}`}
+                {c ? ` ${c.models.join(', ')}${c.shareOf > 1 ? ` · 1/${c.shareOf} of ~${fmtN(tokTotal(c.tok) * c.shareOf)} tok (shared by ${c.shareOf} tasks)` : ''}` : ` ${empty}`}
               </Text>
             </Text>
             <Text color={C.grey}>
-              {c ? `${tokUnits(c.tok).toFixed(2)} units · out ${fmtN(c.tok.output)} · ${Math.round(c.seconds / 60)} min` : ''}
+              {c ? `${tokUnits(c.tok).toFixed(2)} units · out ${fmtN(c.tok.output)}${unit === 'launches' ? ` · ${Math.round(c.seconds / 60)} min` : ''}` : ''}
               <Text color={C.cyan}>{liveTokens > 0 ? ` · +${fmtN(liveTokens)} tok running now` : ''}</Text>
             </Text>
           </Box>
           <Box flexDirection="column" alignItems="flex-end">
             <Text color={C.orange}>{c ? `${fmtN(tokTotal(c.tok))} tok` : '-'}</Text>
-            <Text color={C.violet}>{runsOf(c)} launches</Text>
+            <Text color={C.violet}>
+              {runsOf(c)} {unit}
+            </Text>
           </Box>
         </Box>
       )
@@ -1005,24 +1167,29 @@ export const register: Register = (on, options) => {
             </Box>
             {nav.costsOpen && (
               <Box flexDirection="column" paddingTop={1}>
-            {tableRow('Tokens', ['Workers', 'Executor', 'Planner', 'Total'].map(h => h.padStart(9)), C.grey)}
+            {tableRow('Tokens', ['Workers', 'Executor', 'Planner', 'Relay', 'Total'].map(h => h.padStart(9)), C.grey)}
             {kinds.map(([label, key]) =>
               tableRow(
                 label,
-                [workers[key], execTok[key], planTok[key], allTok[key]].map(n => num7(n).padStart(9)),
+                [workers[key], execTok[key], planTok[key], relayTok[key], allTok[key]].map(n => num7(n).padStart(9)),
                 key === 'output' ? C.steel : C.white,
               ),
             )}
-            {tableRow('Total', [tokTotal(workers), tokTotal(execTok), tokTotal(planTok), tokTotal(allTok)].map(n => num7(n).padStart(9)), C.orange, true)}
+            {tableRow(
+              'Total',
+              [tokTotal(workers), tokTotal(execTok), tokTotal(planTok), tokTotal(relayTok), tokTotal(allTok)].map(n => num7(n).padStart(9)),
+              C.orange,
+              true,
+            )}
             {tableRow(
               'Units',
-              [workers, execTok, planTok, allTok].map(t => tokUnits(t).toFixed(2).padStart(9)),
+              [workers, execTok, planTok, relayTok, allTok].map(t => tokUnits(t).toFixed(2).padStart(9)),
               C.orange,
             )}
             {tableRow(
               'Launches',
-              [workerRuns, runsOf(cost.executor), runsOf(cost.planner), workerRuns + runsOf(cost.executor) + runsOf(cost.planner)].map(n =>
-                String(n).padStart(9),
+              [String(workerRuns), String(runsOf(cost.executor)), String(runsOf(cost.planner)), '-', String(workerRuns + runsOf(cost.executor) + runsOf(cost.planner))].map(n =>
+                n.padStart(9),
               ),
               C.violet,
             )}
@@ -1031,6 +1198,7 @@ export const register: Register = (on, options) => {
           </Box>
           {roleCard('Executor', 'executor', cost.executor, liveExecTokens, 'not run yet')}
           {(cost.planner || livePlan.length > 0) && roleCard('Planner', 'planner', cost.planner, livePlanTokens, 'running')}
+          {cost.relay && roleCard('Relay (main session)', 'relay', cost.relay, 0, '', 'sessions')}
           {detail.subs.length === 0 && <Text color={C.grey}>no subtask</Text>}
           {detail.subs.map(s => {
             // an agent linked to the whole task works on its in-progress step; one linked to a step, on that step
