@@ -3,7 +3,7 @@ id: task-507-budget-no-block
 description: "Global task: Réglage (no planner): Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ..."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Réglage: Hum, j'ai mal lu cette régle, si ça engendre ce genre de comportement, ça n'est pas ...
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-12, the request itself, réglage family)
 - milestone: M2
 - next_step: task-507-01-budget-no-block
-- started: open
+- started: 2026-11-12T04:43:01Z
 - waiting_for: none
 - result: open
 
