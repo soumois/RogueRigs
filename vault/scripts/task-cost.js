@@ -11,15 +11,16 @@ const LEVELS = path.join(R, 'vault', 'reference', 'agents', 'verification-levels
 const r0 = n => Math.round(n);
 const k = n => Math.round(n / 1000) + 'k';
 const Mu = n => (n / 1e6).toFixed(2);
+const usd = x => (x === null || x === undefined ? '' : ', USD ' + x.toFixed(2));
 const tok = t => `input ${r0(t.input)}, cache write ${r0(t.cacheWrite)}, cache read ${r0(t.cacheRead)}, output ${r0(t.output)}`;
 
 function linesFor(t) {
   const p = t.pilot, pl = t.planning;
   return {
     executor_tokens: t.pilotAgents ? tok(p) : 'none (no executor run)',
-    executor_usage: t.pilotAgents ? `runs ${t.pilotAgents}, turns ${p.calls}, context start ${k(p.firstCtx)} peak ${k(p.peakCtx)}, resumes ${p.resumes}, ${Math.round(p.seconds / 60)} min, units ${Mu(p.units)} M` : 'none',
+    executor_usage: t.pilotAgents ? `runs ${t.pilotAgents}, turns ${p.calls}, context start ${k(p.firstCtx)} peak ${k(p.peakCtx)}, resumes ${p.resumes}, ${Math.round(p.seconds / 60)} min, units ${Mu(p.units)} M${usd(p.usd)}` : 'none',
     planning_tokens: pl.planners.length ? tok(pl) : 'none (no planner run attributed)',
-    planning_usage: pl.planners.length ? pl.planners.map(x => `${x.id.slice(0, 8)} "${x.description}" 1/${x.tasks.length} (tasks ${x.tasks.join(', ')})`).join('; ') + `, units ${Mu(pl.units)} M` : 'none',
+    planning_usage: pl.planners.length ? pl.planners.map(x => `${x.id.slice(0, 8)} "${x.description}" 1/${x.tasks.length} (tasks ${x.tasks.join(', ')})`).join('; ') + `, units ${Mu(pl.units)} M${usd(pl.usd)}` : 'none',
   };
 }
 

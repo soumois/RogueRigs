@@ -19,7 +19,7 @@ const NOISE = [
   /^vault OK\b/,
   /LF will be replaced by CRLF|CRLF will be replaced by LF/,
   /^The file will have its original line endings in your working directory/,
-  /^task-\d+-\d+ .*units [\d.]+ M, \d+ turns$/,
+  /^task-\d+-\d+ .*units [\d.]+ M, \d+ turns(, USD [\d.]+)?$/,
 ];
 const isNoise = l => NOISE.some(re => re.test(l));
 const lines = s => s.split(/\r?\n/).filter(l => l.trim() && !isNoise(l));

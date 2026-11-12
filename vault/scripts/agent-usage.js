@@ -8,7 +8,9 @@
 // Attribution: an agent whose description starts with a subtask id (task-NNN-SS) is a worker of that subtask; an executor (or a
 //   legacy orchestrator launched with "Run global task ...") is the pilot of the first task number in its prompt; a planner (or a
 //   legacy orchestrator planning pass) is listed apart as planning: it creates tasks later than its prompt, so no task is guessed.
-// Unit: input-token equivalents, weights in cost-rates.json (cache write 1.25, cache read 0.1, output 5). USD only when prices are set there.
+// Cost: USD at the API list price of each model (pricing.js, prices in cost-rates.json), counted per API message with its own
+//   5-minute and 1-hour cache writes. A record saved before that (no `usd`) is priced from its per-family tokens.
+// Legacy unit, kept for token_ceiling and the executor budgets: input-token equivalents, weights in cost-rates.json.
 // --snapshot merges the records into vault/scripts/usage-snapshot.json (committed): Claude Code deletes old transcripts, the
 //   snapshot keeps their numbers. A record found in a transcript wins over the snapshot copy.
 // --agent-debug keeps a trace per turn for planners, executors, bp and cpp (sizes, tools and paths, never content), saved in the
@@ -39,6 +41,8 @@ const projDirs = [slug, ...extraSlugs].filter((s, i, all) => all.indexOf(s) === 
   .map(s => path.join(os.homedir(), '.claude', 'projects', s)).filter(d => fs.existsSync(d));
 const projDir = projDirs.length ? projDirs.join(', ') : path.join(os.homedir(), '.claude', 'projects', slug);
 const W = RATES.weights;
+const pricing = require('./pricing');
+const PRICES = RATES.prices;
 
 const modelKey = m => /opus/.test(m || '') ? 'opus' : /sonnet/.test(m || '') ? 'sonnet' : /haiku/.test(m || '') ? 'haiku' : /fable/.test(m || '') ? 'fable' : 'other';
 const unitsOf = t => t.input * W.input + t.cacheWrite * W.cacheWrite + t.cacheRead * W.cacheRead + t.output * W.output;
@@ -84,16 +88,19 @@ function toolPath(input) {
   const safe = relative.replace(/\\/g, '/');
   return /(^|\/)(?:\.env(?:\.|$)|[^/]*(?:secret|credential|password|token)[^/]*)$/i.test(safe) ? '[redacted-path]' : safe;
 }
-// USD from the per-model split; null as soon as one model has no price.
-function usdOf(byModel) {
+// USD of a record saved without one (before the per-message price): its per-family tokens at the family's current price,
+// every cache write taken as 1 hour for a main session and 5 minutes for an agent; null as soon as one family has no price.
+function legacyUsd(r) {
   let usd = 0;
-  for (const [k, t] of Object.entries(byModel)) {
-    const p = RATES.usdPerMillionInputTokens[k];
-    if (p === null || p === undefined) return null;
-    usd += unitsOf(t) * p / 1e6;
+  for (const [k, t] of Object.entries(r.byModel || {})) {
+    const x = pricing.usdOfTokens(PRICES, k, t, r.kind === 'session');
+    if (x === null) return null;
+    usd += x;
   }
   return usd;
 }
+// Sum of the records' USD; null as soon as one has none.
+const usdSum = recs => recs.reduce((a, r) => (a === null || r.usd === null || r.usd === undefined ? null : a + r.usd), 0);
 const zeroTok = () => ({ input: 0, cacheWrite: 0, cacheRead: 0, output: 0 });
 const addTok = (a, b) => { for (const k of ['input', 'cacheWrite', 'cacheRead', 'output']) a[k] += b[k] || 0; return a; };
 
@@ -202,13 +209,16 @@ function scan(file, meta, kind, session, id) {
     }
   }
   const t = zeroTok(), byModel = {}, models = {};
-  let firstCtx = null, peakCtx = 0;
+  let firstCtx = null, peakCtx = 0, usd = 0, cacheWrite1h = 0;
   const turnDetails = [], toolCounts = {}, readPaths = {}, lookupPaths = {}, writePaths = {};
   const taskReadPaths = {}, taskWritePaths = {}, taskWorkflowCounts = {}, taskWorkflowOutcomes = {};
   for (const [messageId, { model, u, userMessages = [], triggerTimestamp = null, responseTimestamp = null }] of byId) {
     const tok = { input: u.input_tokens || 0, cacheWrite: u.cache_creation_input_tokens || 0, cacheRead: u.cache_read_input_tokens || 0, output: u.output_tokens || 0 };
     addTok(t, tok);
     if (model && model !== '<synthetic>') { addTok(byModel[modelKey(model)] || (byModel[modelKey(model)] = zeroTok()), tok); models[model] = (models[model] || 0) + 1; }
+    const turnUsd = model && model !== '<synthetic>' ? pricing.usdOfUsage(PRICES, model, u) : 0;
+    usd = usd === null || turnUsd === null ? null : usd + turnUsd;
+    cacheWrite1h += (u.cache_creation && u.cache_creation.ephemeral_1h_input_tokens) || 0;
     const ctx = tok.input + tok.cacheWrite + tok.cacheRead;
     if (firstCtx === null) firstCtx = ctx;
     if (ctx > peakCtx) peakCtx = ctx;
@@ -240,7 +250,7 @@ function scan(file, meta, kind, session, id) {
         outcomes[outcome] = (outcomes[outcome] || 0) + 1;
       }
     }
-    const turn = { model: modelKey(model), triggerTimestamp, responseTimestamp, triggerGapSeconds: null, ...tok, units: unitsOf(tok), usd: usdOf({ [modelKey(model)]: tok }), contextTokens: ctx, tools };
+    const turn = { model: modelKey(model), triggerTimestamp, responseTimestamp, triggerGapSeconds: null, ...tok, units: unitsOf(tok), usd: turnUsd, contextTokens: ctx, tools };
     if (captureDebug) {
       const toolInputChars = tools.reduce((n, tool) => n + (tool.debugInput && tool.debugInput.chars || 0), 0);
       const toolResultChars = tools.reduce((n, tool) => n + (tool.debugResult && tool.debugResult.chars || 0), 0);
@@ -276,7 +286,7 @@ function scan(file, meta, kind, session, id) {
   const rec = {
     kind, id, session, type, role, desc, sub, start, end,
     seconds: start && end ? Math.round((Date.parse(end) - Date.parse(start)) / 1000) : 0,
-    calls: byId.size, ...t, models: Object.keys(models), byModel, firstCtx: firstCtx || 0, peakCtx,
+    calls: byId.size, ...t, cacheWrite1h, usd, models: Object.keys(models), byModel, firstCtx: firstCtx || 0, peakCtx,
     resumes: Object.values(resumeReasons).reduce((a, b) => a + b, 0), resumeReasons,
   };
   if (role === 'pilot') rec.globalTask = ((prompt.match(/task-(\d{2,3})\b/) || [])[1]) || null;
@@ -320,6 +330,9 @@ for (const r of scanned) {
   records.set(key, r);
 }
 const all = [...records.values()].sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+// records whose transcript is gone were saved without a price: give them the per-family one (recomputed at each run, so a
+// price change in cost-rates.json reaches them; a record read from a transcript carries its exact per-message price)
+for (const r of all) if (r.usd === undefined || r.usdLegacy) { r.usd = legacyUsd(r); r.usdLegacy = true; }
 if (doSnapshot) {
   // Size limit of the committed snapshot (snapshotMaxBytes in cost-rates.json): over it, the traces of the oldest executors go,
   // their numbers stay. A trace rebuilt from a transcript still on disk is removed again here at each run.
@@ -347,7 +360,7 @@ const sumRecs = recs => {
     addTok(t, r); calls += r.calls; resumes += r.resumes; seconds += r.seconds;
     for (const [k, v] of Object.entries(r.byModel)) addTok(byModel[k] || (byModel[k] = zeroTok()), v);
   }
-  return { ...t, calls, resumes, seconds, byModel, units: unitsOf(t), usd: usdOf(byModel) };
+  return { ...t, calls, resumes, seconds, byModel, units: unitsOf(t), usd: usdSum(recs) };
 };
 
 const workers = {};
@@ -398,10 +411,11 @@ const tasks = [...taskIds].sort().map(n => {
   const pl = zeroTok();
   for (const { rec, share } of plannerShares[n] || []) for (const k of Object.keys(pl)) pl[k] += rec[k] * share;
   const planningUnits = unitsOf(pl);
+  const planningUsd = (plannerShares[n] || []).reduce((a, { rec, share }) => (a === null || rec.usd === null || rec.usd === undefined ? null : a + rec.usd * share), 0);
   return { task: 'task-' + n, workersUnits: w.units, pilotUnits: p.units, pilotAgents: pr.length, pilotModels: Object.keys(p.byModel), planningUnits, totalUnits: w.units + p.units + planningUnits,
-    usd: w.usd !== null && p.usd !== null ? w.usd + p.usd : null,
-    pilot: { ...tokFields(p), calls: p.calls, resumes: p.resumes, seconds: p.seconds, firstCtx: pr.length ? pr[0].firstCtx : 0, peakCtx: pr.length ? Math.max(...pr.map(r => r.peakCtx)) : 0 },
-    planning: { ...tokFields({ ...pl, units: planningUnits }), planners: (plannerShares[n] || []).map(({ rec, share, tasks }) => ({ id: rec.id, description: rec.desc, share, tasks })) } };
+    usd: w.usd !== null && p.usd !== null && planningUsd !== null ? w.usd + p.usd + planningUsd : null,
+    pilot: { ...tokFields(p), usd: p.usd, calls: p.calls, resumes: p.resumes, seconds: p.seconds, firstCtx: pr.length ? pr[0].firstCtx : 0, peakCtx: pr.length ? Math.max(...pr.map(r => r.peakCtx)) : 0 },
+    planning: { ...tokFields({ ...pl, units: planningUnits }), usd: planningUsd, planners: (plannerShares[n] || []).map(({ rec, share, tasks }) => ({ id: rec.id, description: rec.desc, share, tasks })) } };
 });
 const planning = all.filter(r => r.role === 'planning').map(r => ({ id: r.id, session: r.session, start: r.start, description: r.desc, models: r.models, calls: r.calls, resumes: r.resumes, resumeReasons: r.resumeReasons, firstCtx: r.firstCtx, peakCtx: r.peakCtx, input: r.input, cacheWrite: r.cacheWrite, cacheRead: r.cacheRead, output: r.output, units: unitsOf(r), promptStart: r.promptStart, handbackTasks: r.handbackTasks, trace: r.plannerTrace || null }));
 const sessions = all.filter(r => r.kind === 'session').map(r => ({ id: r.session, start: r.start, end: r.end, calls: r.calls, firstCtx: r.firstCtx, peakCtx: r.peakCtx, units: unitsOf(r), tasksMentioned: r.tasksMentioned }));
@@ -506,4 +520,5 @@ console.log('\nMain sessions:');
 for (const s of sessions) console.log(`  ${s.id} ${s.start.slice(0, 10)}..${s.end.slice(0, 10)} ${M(s.units)} M, ${s.calls} turns, peak ctx ${k(s.peakCtx)}${s.tasksMentioned && s.tasksMentioned.length ? ', tasks: ' + s.tasksMentioned.join(' ') : ''}`);
 const T = totals;
 console.log(`\nTotals (M units): workers ${M(T.workers.units)}, pilots ${M(T.pilots.units)}, planning ${M(T.planning.units)}, other agents ${M(T.other.units)}, main sessions ${M(T.sessions.units)}. Records: ${all.length}${doSnapshot ? ' (snapshot written)' : ''}.`);
-if (T.workers.usd !== null) console.log(`USD: workers ${T.workers.usd.toFixed(2)}, pilots ${T.pilots.usd === null ? 'n/a' : T.pilots.usd.toFixed(2)}`);
+const usdTxt = x => (x.usd === null || x.usd === undefined ? 'n/a' : x.usd.toFixed(2));
+console.log(`USD (API list price): workers ${usdTxt(T.workers)}, pilots ${usdTxt(T.pilots)}, planning ${usdTxt(T.planning)}, other agents ${usdTxt(T.other)}, main sessions ${usdTxt(T.sessions)}.`);

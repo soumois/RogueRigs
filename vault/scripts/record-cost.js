@@ -60,12 +60,13 @@ for (const line of section.match(/^\| \[\[task-[^\]]+\]\] \|.*$/gm) || []) {
   const nums = [kv(p[4]), kv(p[5]), kv(p[6]), kv(p[7]), parseFloat(p[8].replace('~', '')) * 1e6];
   for (const key of ['all', p[2].includes('+') ? 'mixed' : p[2]]) { const t = key === 'all' ? tot.all : (byModel[key] = byModel[key] || [0, 0, 0, 0, 0]); nums.forEach((n, i) => { t[i] += n; }); }
 }
-const fmt = t => `| ${Mu(t[4])} | ${(t[0] / 1000).toFixed(0)}k | ${Mu(t[1])} M | ${Mu(t[2])} M | ${(t[3] / 1000).toFixed(0)}k |`;
-const fmtX = x => `| ${Mu(x.units)} | ${k(x.input)} | ${Mu(x.cacheWrite)} M | ${Mu(x.cacheRead)} M | ${k(x.output)} |`;
-const totals = ['## Totals', 'Rebuilt by `record-cost.js` at each closing; do not edit. Units are input-token equivalents (weights in `vault/scripts/cost-rates.json`). Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).', '',
-  '| Scope | Units (M) | Input | Cache write | Cache read | Output |', '|---|---|---|---|---|---|',
-  `| All subtask rows above | ${fmt(tot.all).slice(2)}`,
-  ...Object.entries(byModel).sort().map(([m, t]) => `| model ${m} | ${fmt(t).slice(2)}`),
+const fmt = (t, x) => `| ${usdCell(x)} | ${Mu(t[4])} | ${(t[0] / 1000).toFixed(0)}k | ${Mu(t[1])} M | ${Mu(t[2])} M | ${(t[3] / 1000).toFixed(0)}k |`;
+const usdCell = x => (x === null || x === undefined ? '—' : x.toFixed(2));
+const fmtX = x => `| ${usdCell(x.usd)} | ${Mu(x.units)} | ${k(x.input)} | ${Mu(x.cacheWrite)} M | ${Mu(x.cacheRead)} M | ${k(x.output)} |`;
+const totals = ['## Totals', 'Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).', '',
+  '| Scope | USD | Units (M) | Input | Cache write | Cache read | Output |', '|---|---|---|---|---|---|---|',
+  `| All subtask rows above (workers) | ${fmt(tot.all, data.totals.workers.usd).slice(2)}`,
+  ...Object.entries(byModel).sort().map(([m, t]) => `| model ${m} | ${fmt(t, null).slice(2)}`),
   `| Executors and legacy orchestrators that ran a task (pilot) | ${fmtX(data.totals.pilots).slice(2)}`,
   `| Planning runs (planners and legacy planning passes) | ${fmtX(data.totals.planning).slice(2)}`,
   `| Agents without a subtask id (other) | ${fmtX(data.totals.other).slice(2)}`,
@@ -73,7 +74,7 @@ const totals = ['## Totals', 'Rebuilt by `record-cost.js` at each closing; do no
 c = c.replace(/## Totals\n[\s\S]*?(?=\n## Lessons for estimates)/, totals + '\n');
 fs.writeFileSync(C, c);
 
-console.log(id, model, k(r.cacheWrite), k(r.cacheRead), k(r.output), 'units ' + Mu(r.units) + ' M,', r.calls + ' turns');
+console.log(id, model, k(r.cacheWrite), k(r.cacheRead), k(r.output), 'units ' + Mu(r.units) + ' M,', r.calls + ' turns' + (r.usd === null || r.usd === undefined ? '' : ', USD ' + r.usd.toFixed(2)));
 const alerts = [];
 const unitsM = parseFloat(Mu(r.units)); // same rounded figure as the usage line
 if (ceiling && unitsM > ceiling * rates.alerts.ceilingRatio) alerts.push(`units ${Mu(r.units)} M is over token_ceiling ${ceilingM[1]} M (${(unitsM / ceiling).toFixed(2)}x): the subtask was too big, split the next similar one`);
