@@ -3,7 +3,7 @@ id: task-506-01-settings-gameplay
 description: "Cpp: Gameplay settings of options-menu stored and obeyed by the game systems."
 parent: task-506-options-gameplay-and-pause
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen: Gameplay tab and access from the pause menu: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T04:46:27Z
 - waiting_for: none
 - result: open
 
