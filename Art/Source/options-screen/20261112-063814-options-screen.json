@@ -1,0 +1,27 @@
+{
+  "run_id": "20261112-063814-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/04-slider.txt",
+  "prompt": "Image 1 is the validated options screen mockup: see the \"Resolution scale\" slider (gunmetal track, teal filled part, riveted metal handle). It is only a visual reference. Draw, as clean own versions at high resolution, THREE separate UI pieces on a flat magenta FF00FF background, stacked one above the other with wide empty magenta gaps between them, nothing touching:\nTOP (about 85 percent of the image width): the EMPTY slider track for a 3-slice sprite, ratio about 14 to 1: a long thin recessed dark gunmetal groove with a thin worn bevelled rim and rounded ends; uniform along its whole length, NO rivet, NO marks, NO ornament in the middle.\nMIDDLE (same width and height as the track): the FILL bar that sits inside the track: a long thin flat teal bar with a slightly lighter teal top edge and rounded ends, uniform along its whole length, no glow.\nBOTTOM (centred, small, square-ish, about one tenth of the image width): ONE slider handle: a riveted worn steel knob, a short vertical bevelled metal block with one central rivet and a thin teal edge line, rust chips.\nPerfectly axis-aligned, flat front view, no perspective. Flat-shaded low-poly game UI look, flat colour planes, strong directional light with lifted shadows. Background flat magenta FF00FF everywhere else, no shadow, no glow. No text, no letters, no numbers, no icons.",
+  "refs": [
+    "Art/Source/options-screen/20261112-062655-options-screen-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "f19e7299aab2b6de59f1c374d148827c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/a2/f19e7299aab2b6de59f1c374d148827c_1794462098204.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261112-063814-options-screen-1.png"
+  ]
+}

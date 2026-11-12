@@ -1,0 +1,27 @@
+{
+  "run_id": "20261112-063653-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/03-selector.txt",
+  "prompt": "Image 1 is the validated options screen mockup: see the arrow selectors on the right of each row (\"< Fullscreen >\", \"< High >\"): a small dark gunmetal plate with a thin worn rim and a small teal arrow at each end. It is only a visual reference. Draw, as clean own versions at high resolution, TWO separate UI pieces on a flat magenta FF00FF background, one above the other, with a wide empty magenta gap between them, nothing touching:\nTOP (fills about 85 percent of the image width, upper half of the image): the EMPTY selector plate for a 3-slice sprite, ratio about 6 to 1: a dark charcoal gunmetal plate with a thin bevelled worn gunmetal rim and small rust chips only at its two rounded ends; between the ends the plate is a plain uniform dark strip of identical height, NO arrow, NO bolt, NO text, NO ornament in the middle.\nBOTTOM (lower half, centred, about one fifth of the image width): ONE single arrow button pointing RIGHT: a bold faceted teal chevron arrow, worn edge, like the arrows of Image 1, on no plate.\nPerfectly axis-aligned, flat front view, no perspective. Flat-shaded low-poly game UI look, flat colour planes, strong directional light with lifted shadows. Background flat magenta FF00FF everywhere else, no shadow, no glow. No text, no letters, no numbers, no other icons.",
+  "refs": [
+    "Art/Source/options-screen/20261112-062655-options-screen-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "c0da36566eb5024019ddce740bd1a7d8",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000006fd081f79939f3e844fad6af.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261112-063653-options-screen-1.png"
+  ]
+}

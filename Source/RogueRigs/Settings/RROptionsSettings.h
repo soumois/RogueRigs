@@ -1,16 +1,19 @@
-// Rogue Rigs - project data of the options screen (options-menu gdd): volume group assets, step sizes, display confirmation.
+// Rogue Rigs - tunables of the options screen (options-screen gdd, task-500-03): sound classes, steps, lists, countdown.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "UObject/SoftObjectPath.h"
+#include "UObject/SoftObjectPtr.h"
 #include "RROptionsSettings.generated.h"
 
+class USoundClass;
+class UTexture2D;
+class URROptionsWidget;
+
 /**
- * Data of the Sound and Graphics options, read with GetDefault<URROptionsSettings>() by URRGameUserSettings. Not a
- * UDeveloperSettings (the module does not link DeveloperSettings, same choice as URRRunSettings). Override without code in
- * Config/DefaultGame.ini, section [/Script/RogueRigs.RROptionsSettings]. Values provisional (owner 2026-11-11, options-menu).
+ * Data of the options screen, read with GetDefault<URROptionsSettings>(). C++ defaults, overridable without code in
+ * Config/DefaultGame.ini, section [/Script/RogueRigs.RROptionsSettings] (not a UDeveloperSettings, same choice as URRRunSettings).
  */
 UCLASS(Config = Game, DefaultConfig)
 class ROGUERIGS_API URROptionsSettings : public UObject
@@ -20,43 +23,66 @@ class ROGUERIGS_API URROptionsSettings : public UObject
 public:
 	URROptionsSettings();
 
-	/** Sound class of the Master slider: parent of the Music and Effects classes, its volume scales both. */
-	UPROPERTY(Config, EditAnywhere, Category = "Sound", meta = (AllowedClasses = "/Script/Engine.SoundClass"))
-	FSoftObjectPath MasterSoundClass;
+	/** Sound class of the Master slider (parent of Music and Effects). */
+	UPROPERTY(Config, EditAnywhere, Category = "Sound")
+	TSoftObjectPtr<USoundClass> MasterSoundClass;
 
-	/** Sound class of the Music slider; future music sounds use it. */
-	UPROPERTY(Config, EditAnywhere, Category = "Sound", meta = (AllowedClasses = "/Script/Engine.SoundClass"))
-	FSoftObjectPath MusicSoundClass;
+	/** Sound class of the Music slider. */
+	UPROPERTY(Config, EditAnywhere, Category = "Sound")
+	TSoftObjectPtr<USoundClass> MusicSoundClass;
 
-	/** Sound class of the Effects slider; future effect sounds use it. */
-	UPROPERTY(Config, EditAnywhere, Category = "Sound", meta = (AllowedClasses = "/Script/Engine.SoundClass"))
-	FSoftObjectPath EffectsSoundClass;
+	/** Sound class of the Effects slider. */
+	UPROPERTY(Config, EditAnywhere, Category = "Sound")
+	TSoftObjectPtr<USoundClass> EffectsSoundClass;
 
-	/** Sound mix pushed once per map that carries the three slider volumes as class overrides. */
-	UPROPERTY(Config, EditAnywhere, Category = "Sound", meta = (AllowedClasses = "/Script/Engine.SoundMix"))
-	FSoftObjectPath VolumeSoundMix;
-
-	/** Slider step of the volumes (fraction, 0.05 = 5 %). */
+	/** Volume slider step (0.05 = 5 %). */
 	UPROPERTY(Config, EditAnywhere, Category = "Sound")
 	float VolumeStep = 0.05f;
 
-	/** Frame rate limit choices in selector order; 0 = Unlimited. */
+	/** Frame rate limit choices in order, 0 = Unlimited (30, 60, 120, 144, Unlimited). */
 	UPROPERTY(Config, EditAnywhere, Category = "Graphics")
-	TArray<int32> FrameRateLimitOptions;
+	TArray<int32> FrameRateLimits;
 
-	/** Lowest resolution scale offered (percent). */
+	/** Resolution scale range and step, percent (50 to 100). */
 	UPROPERTY(Config, EditAnywhere, Category = "Graphics")
 	float MinResolutionScalePercent = 50.f;
 
-	/** Highest resolution scale offered (percent). */
 	UPROPERTY(Config, EditAnywhere, Category = "Graphics")
 	float MaxResolutionScalePercent = 100.f;
 
-	/** Slider step of the resolution scale (percent). */
 	UPROPERTY(Config, EditAnywhere, Category = "Graphics")
-	float ResolutionScaleStepPercent = 5.f;
+	float ResolutionScaleStep = 5.f;
 
-	/** Seconds the "Keep these display settings?" countdown lasts before it reverts (provisional, Planner 2026-11-11). */
+	/** Seconds of the keep-or-revert dialog after a window mode or resolution change (15). */
 	UPROPERTY(Config, EditAnywhere, Category = "Graphics")
 	float DisplayConfirmSeconds = 15.f;
+
+	/** Options screen class opened by the main and pause menus (WBP_Options). */
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	TSoftClassPtr<URROptionsWidget> OptionsWidgetClass;
+
+	/** Z order of the options screen above the menu it opens from. */
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	int32 OptionsZOrderAbove = 5;
+
+	/** Plate of the active tab (the cream button plate) and its horizontal 3-slice margin (fraction). */
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	TSoftObjectPtr<UTexture2D> ActiveTabTexture;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	float ActiveTabMargin = 0.155f;
+
+	/** Plate of the inactive tabs (dark plate) and its horizontal 3-slice margin (fraction). */
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	TSoftObjectPtr<UTexture2D> InactiveTabTexture;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	float InactiveTabMargin = 0.10f;
+
+	/** Tab label colours: dark on the cream active plate, light on the dark inactive plates. */
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	FLinearColor ActiveTabTextColor = FLinearColor(0.05f, 0.04f, 0.03f, 1.f);
+
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	FLinearColor InactiveTabTextColor = FLinearColor(0.85f, 0.85f, 0.82f, 1.f);
 };

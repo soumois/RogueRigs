@@ -13,9 +13,8 @@ HUD, minimap, pressure events, subtitles, text content: player-facing display sy
 - [[sys-subtitles]] — subtitle subsystem: one voice line at a time, speaker prefix, C++ timer, company alert hooks, widget delegates.
 - [[sys-text-content]] — runtime loader of the A4 text files: upgrade flavor, alert lines, barks, fallback, hooks.
 - [[sys-main-menu]] — main menu: menu game mode, controller, widget base (New Run, Exit), L_MainMenu start-up map, rr.Menu commands.
-- [[sys-pause-menu]] — pause menu: controller open/resume/exit, Options, focus-loss pause, pause keys, stats struct and text formats, rr.Debug.PauseMenu.
-- [[sys-game-settings]] — player settings: Sound volumes, Graphics options, Gameplay toggles, display keep-or-revert, saved per user, rr.Settings.
-- [[sys-options-screen]] — options screen widget base: Sound, Graphics and Gameplay rows, tabs, Reset, Back, main and pause menu opening, rr.Options.
+- [[sys-pause-menu]] — pause menu: controller open/resume/exit, pause keys, stats struct and text formats, rr.Debug.PauseMenu.
+- [[sys-options]] — options: settings class, options subsystem (sound mix, keep-or-revert, focus loss), options widget base, rr.Options commands.
 - [[sys-button-hover]] — shared mouse hover of screen buttons: subsystem, plate material, settings, attach calls, rr.Debug.CursorOn.
 
 ## Relations

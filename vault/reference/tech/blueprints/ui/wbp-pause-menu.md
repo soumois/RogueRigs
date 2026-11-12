@@ -1,6 +1,6 @@
 ---
 id: wbp-pause-menu
-description: "WBP_PauseMenu, the pause screen: miner stats, bonuses, up to four weapon blocks, Resume, Options and Exit; anchors table and the OnStatsRefreshed graph."
+description: "WBP_PauseMenu, the pause screen: miner stats, bonuses, up to four weapon blocks, Resume and Exit; anchors table and the OnStatsRefreshed graph."
 parent: blueprints-ui-index
 kind: doc
 ---
@@ -37,20 +37,20 @@ kind: doc
 | WeaponLine<i> | (0.017,0.192)-(0.99,0.192) | |
 | WeaponLabels<i> | (0.048,0.224)-(0.60,0.97) | size 17 |
 | WeaponValues<i> | (0.40,0.224)-(0.945,0.97) | size 17, right |
-| ResumeButton | (0.195,0.819)-(0.385,0.905) | T_Shop_ButtonContinue Box margin L/R 0.155, image 640x163, tints 1/1.3/0.7/0.35 |
-| OptionsButton | (0.405,0.819)-(0.595,0.905) | same style; opens [[wbp-options]] (task-506-03) |
-| ExitButton | (0.615,0.819)-(0.805,0.905) | same style |
+| ResumeButton | point (0.3013,0.8619), align (0.5,0.5) | size 380x100 (task-510-09; was 440x108 at 0.3756); T_Shop_ButtonContinue Box margin L/R 0.155, image 640x163, tints 1/1.3/0.7/0.35 |
+| OptionsButton | point (0.5003,0.8619), align (0.5,0.5) | task-510-09: same style, label OptionsText "Options" (ResumeText font); opens [[wbp-options]] |
+| ExitButton | point (0.6993,0.8619), align (0.5,0.5) | same style (was 0.6274) |
 
-- button labels: ResumeText, OptionsText ("Options"), ExitText, Roboto Bold 30 (36 before task-506-03), colour (0.05,0.04,0.03). The three buttons were point anchors 440x108 before cb093af1.
+- button labels: ResumeText and ExitText, Roboto Bold 36, colour (0.05,0.04,0.03).
 - exposed_defaults: none on the widget. [[bp-rr-player-controller]] `PauseMenuWidgetClass` = /Game/RogueRigs/UI/WBP_PauseMenu.WBP_PauseMenu_C.
-- events: `OnStatsRefreshed(NewStats)` only. It breaks the struct, sets MinerValues and BonusValues (newline-joined `*Text`), and for each block i = 1..4 sets visibility (SelfHitTestInvisible if Length(Weapons) > i-1, else Collapsed) and fills the name and the seven value texts; it also sets the two weapon dividers' visibility. Resume, Options and Exit (click and hover) are bound by the C++ base; Back or the pause key on the options screen closes it only, focus back on OptionsButton.
+- events: `OnStatsRefreshed(NewStats)` only. It breaks the struct, sets MinerValues and BonusValues (newline-joined `*Text`), and for each block i = 1..4 sets visibility (SelfHitTestInvisible if Length(Weapons) > i-1, else Collapsed) and fills the name and the seven value texts; it also sets the two weapon dividers' visibility. Resume and Exit are bound by the C++ base.
 - logic_in_bp: display only.
 - assets: the textures above; font Roboto Bold (no stencil font asset exists, so the title is plain Roboto Bold).
 - verified (task-424-05): build clean, -game captures `Saved/Captures/pmfix_*/pm_00.png` at four resolutions with one weapon. Not verified: two and four weapon layouts.
-- verified (task-506-04, cb093af1): Resume, Options, Exit on their plates at 1280x720, 1920x1080, 1920x1200, 2560x1080 (`Saved/Captures/t506_04_sheet.png`), labels inside the beige centres (tight at 1920x1200). Not seen: mouse hover on OptionsButton, focus (log only).
 - owner_agent: agent-bp
 
-- button_hover (task-485-01, 01a90440; OptionsButton since task-506-03): ResumeButton and ExitButton attached in URRPauseMenuWidget::NativeOnInitialized: at runtime the Normal brush draws through M_UI_ButtonPlate and the Hovered brush becomes the Normal one (the 1.3 hovered tint above is no longer drawn); the plate brightens and grows on mouse hover. Asset unchanged. Verified: -game at the four resolutions (Saved/Captures/task485_slice/crops.png, task485_resA/sheet_pm.png, task485_resA1200). See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
+- options (task-510-09, d4f9f754): OptionsButton bound by the C++ base (click = URROptionsWidget::OpenOptions over the paused arena, plate hover). Verified -game at four resolutions (Saved/Captures/t500_c_*/pm_00.png).
+- button_hover (task-485-01, 01a90440): ResumeButton and ExitButton attached in URRPauseMenuWidget::NativeOnInitialized: at runtime the Normal brush draws through M_UI_ButtonPlate and the Hovered brush becomes the Normal one (the 1.3 hovered tint above is no longer drawn); the plate brightens and grows on mouse hover. Asset unchanged. Verified: -game at the four resolutions (Saved/Captures/task485_slice/crops.png, task485_resA/sheet_pm.png, task485_resA1200). See [[sys-button-hover]]; values of [[ui-button-hover]] (scale 1.05, about +25 %, 0.1 s real time).
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.

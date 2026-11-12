@@ -1,4 +1,4 @@
-// Rogue Rigs - C++ base of the main menu screen (WBP_MainMenu, task-338-01): New Run, Options (task-505-03), Exit.
+// Rogue Rigs - C++ base of the main menu screen (WBP_MainMenu, task-338-01): New Run, Options (task-500-04), Exit.
 
 #pragma once
 
@@ -6,13 +6,13 @@
 #include "Blueprint/UserWidget.h"
 #include "RRMainMenuWidget.generated.h"
 
+class UButton;
 class UWorld;
-class URROptionsWidget;
 
 /**
- * Main menu screen (main-menu gdd). Created by ARRMainMenuGameMode for the local player. Layout (title, labels, background,
- * Options greyed out) lives in the Blueprint subclass: its New Run button calls StartNewRun, its Exit button QuitGame, and its
- * Options button (named OptionsButton) is bound here: enabled when IsOptionsAvailable, it opens OptionsWidgetClass over the menu. Set DesiredFocusWidget to the New Run button in the designer:
+ * Main menu screen (main-menu gdd). Created by ARRMainMenuGameMode for the local player. Layout (title, labels, background)
+ * lives in the Blueprint subclass: its New Run button calls StartNewRun, its Exit button QuitGame; the Options button (name
+ * OptionsButton) is enabled and bound here and opens the options screen. Set DesiredFocusWidget to the New Run button in the designer:
  * the widget is focusable and forwards its focus there, so Enter starts a run. The debug commands rr.Menu.NewRun and
  * rr.Menu.Exit call the same static functions (StartNewRunInWorld, QuitGameInWorld) without a widget.
  */
@@ -33,28 +33,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	void QuitGame();
 
-	URRMainMenuWidget(const FObjectInitializer& ObjectInitializer);
-
-	/** Options button state: true when OptionsWidgetClass is set (options-menu, task-505). */
+	/** Options button state: true when the options screen class loads (URROptionsWidget::IsOptionsAvailable, task-500-04). */
 	UFUNCTION(BlueprintPure, Category = "Menu")
-	bool IsOptionsAvailable() const { return !OptionsWidgetClass.IsNull(); }
+	bool IsOptionsAvailable() const;
 
-	/** Options button: opens the options screen over the menu (Z order OptionsZOrder); Back or Escape closes it and puts the
-	 * keyboard focus back on OptionsButton. False when no class is set or the screen is already open. */
+	/** Options button: opens the options screen over this menu (URROptionsWidget::OpenOptions). False when refused. */
 	UFUNCTION(BlueprintCallable, Category = "Menu")
 	bool OpenOptions();
-
-	/** The open options screen, or null. */
-	UFUNCTION(BlueprintPure, Category = "Menu")
-	URROptionsWidget* GetOptionsWidget() const { return OptionsWidget; }
-
-	/** Options screen class (WBP_Options). */
-	UPROPERTY(EditDefaultsOnly, Category = "Menu")
-	TSoftClassPtr<URROptionsWidget> OptionsWidgetClass;
-
-	/** Viewport Z order of the options screen (the menu is 0). */
-	UPROPERTY(EditDefaultsOnly, Category = "Menu")
-	int32 OptionsZOrder = 10;
 
 	/**
 	 * Shared New Run action (widget button and rr.Menu.NewRun): URRRunTransitionSubsystem::StartNewRun on
@@ -72,17 +57,13 @@ protected:
 	 * and Exit the hover growth of ui-button-hover. */
 	virtual void NativeOnInitialized() override;
 
+	/** Optional Options button of the layout (name OptionsButton): enabled from IsOptionsAvailable, click calls OpenOptions, focused again when the options screen closes. */
+	UPROPERTY(BlueprintReadOnly, Category = "Menu", meta = (BindWidgetOptional))
+	TObjectPtr<UButton> OptionsButton;
+
+	/** OptionsButton click. */
 	UFUNCTION()
 	void HandleOptionsClicked();
-
-	UFUNCTION()
-	void HandleOptionsClosed();
-
-	UFUNCTION()
-	void HandleOptionsHovered();
-
-	UPROPERTY(Transient)
-	TObjectPtr<URROptionsWidget> OptionsWidget;
 
 	/** True once StartNewRun requested the travel: guards against a double press. */
 	bool bNewRunRequested = false;

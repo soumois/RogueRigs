@@ -1,0 +1,28 @@
+{
+  "run_id": "20261112-101341-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/06-toggle-faceted.txt",
+  "prompt": "Keep this exact image (Image 1): same three pieces in the same places and sizes on the same flat magenta FF00FF background, same teal ON fill, same dark charcoal OFF fill, same worn steel rim with rust chips, same flat front view. Image 2 is the slider track of the same game: match its chamfered octagonal ends. Change ONE thing: the shapes become faceted instead of round. The two toggle tracks get chamfered octagonal ends (straight 45 degree cut corners, like Image 2) instead of fully rounded pill ends, and the knob becomes an octagonal steel knob with flat bevelled facets (flat colour planes, a small central rivet) instead of a smooth round brushed disc. Flat-shaded low-poly look, no smooth gradients, no concentric brushed shading. Nothing touching, wide magenta gaps between the pieces. No text, no letters, no numbers, no icons, no shadow, no glow.",
+  "refs": [
+    "Art/Source/options-screen/20261112-064153-options-screen-1.png",
+    "Art/UI/Options/T_Options_SliderTrack.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "923de03aab9a59c4546055416b17d29f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000001b34821286b4c3f104740edc.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261112-101341-options-screen-1.png"
+  ]
+}

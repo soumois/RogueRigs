@@ -12,9 +12,9 @@ Requested by the owner 2026-11-06 ([[task-485-ui-button-hover]]): "il faudrait d
 Values provisional: the owner accepted the defaults of task-485 Q1 to Q7 (his words in its request).
 
 ## Scope (Q4, Q5)
-- Every clickable button: main menu New Run, Options and Exit; pause menu Resume, Options and Exit; options screen tabs, Reset to defaults and Back (owner 2026-11-11, task-504); run-lost Retry and Main Menu; stats screen Continue; shop Reroll, Continue and the Buy button of each card; level-up Reroll; run-won end screen button.
+- Every clickable button: main menu New Run and Exit; pause menu Resume and Exit; run-lost Retry and Main Menu; stats screen Continue; shop Reroll, Continue and the Buy button of each card; level-up Reroll; run-won end screen button.
 - Not changed: the level-up cards keep their own hover (scale, glow, sheen, [[wbp-upgrade-choice]]); the shop card body has no hover, only its Buy button; the invisible skip area of the run-lost screen.
-- A disabled button (greyed Reroll or Buy) shows no hover effect.
+- A disabled button (greyed Reroll or Buy) shows no hover effect. The main menu and pause menu Options buttons and the [[options-screen]] buttons take the plate hover (task-510, provisional, owner 2026-11-12).
 
 ## Look (Q1, Q2, Q3)
 - Plate buttons (cream rusty plates): the plate brightens visibly, about +25 % brightness, same hue, and the button grows to 1.05; the label keeps its colour.

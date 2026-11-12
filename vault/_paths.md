@@ -262,7 +262,7 @@ naming  reference/tech/conventions/naming.md
 objective-bonus-chest  reference/gdd/run/objective-bonus-chest.md
 objective-console  reference/gdd/run/objective-console.md
 objective-variants  reference/gdd/run/objective-variants.md
-options-menu  reference/gdd/run/options-menu.md
+options-screen  reference/gdd/run/options-screen.md
 orchestration-protocol  reference/agents/orchestration-protocol.md
 orchestrator-lessons  reference/agents/orchestrator-lessons.md
 orchestrator-runbook  reference/agents/orchestrator-runbook.md
@@ -351,7 +351,6 @@ sys-enemy-ai  reference/tech/systems/enemies/sys-enemy-ai.md
 sys-explosions  reference/tech/systems/combat/sys-explosions.md
 sys-flow-field  reference/tech/systems/world/sys-flow-field.md
 sys-flow-field-updates  reference/tech/systems/world/sys-flow-field/sys-flow-field-updates.md
-sys-game-settings  reference/tech/systems/ui/sys-game-settings.md
 sys-gas-core  reference/tech/systems/core/sys-gas-core.md
 sys-gen-test-mode  reference/tech/systems/world/sys-grid/sys-gen-test-mode.md
 sys-grid  reference/tech/systems/world/sys-grid.md
@@ -380,7 +379,7 @@ sys-objectives-events  reference/tech/systems/world/sys-objectives/sys-objective
 sys-objectives-ore-counter  reference/tech/systems/world/sys-objectives/sys-objectives-ore-counter.md
 sys-objectives-run-flow  reference/tech/systems/world/sys-objectives/sys-objectives-run-flow.md
 sys-objectives-shuttle  reference/tech/systems/world/sys-objectives/sys-objectives-shuttle.md
-sys-options-screen  reference/tech/systems/ui/sys-options-screen.md
+sys-options  reference/tech/systems/ui/sys-options.md
 sys-pause-menu  reference/tech/systems/ui/sys-pause-menu.md
 sys-pickups  reference/tech/systems/world/sys-pickups.md
 sys-pickups-lifecycle  reference/tech/systems/world/sys-pickups/sys-pickups-lifecycle.md

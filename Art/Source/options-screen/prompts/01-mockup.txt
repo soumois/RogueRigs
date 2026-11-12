@@ -1,23 +1,25 @@
-Same art style as Image 1 (the validated pause menu) and Image 2 (the level-end screen): keep exactly their visual language: the dimmed almost black arena behind with violet ore crystals in the corners, the big white title with the same riveted side bars as "PAUSED", the riveted teal and gunmetal frame with corner brackets and rust, thin divider lines, the cream rusty buttons with teal riveted ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.
+Same art style as Image 1 (the validated pause menu mockup) and Image 2 (the level-end screen mockup). Keep exactly their visual language: the dimmed almost black arena behind with violet ore crystals in the corners, the title with riveted side bars, the riveted teal and gunmetal frame with teal corner brackets, thin divider lines under headers, the cream rusty buttons with teal ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.
 
-Make a new screen: the OPTIONS screen. Do not copy the pause texts. All text is English, crisp and readable at 1920x1080.
+Make a new screen: the OPTIONS screen. Do not copy the pause menu or level-end texts. All text is English, crisp and readable.
 
 Layout:
 - Top: title "OPTIONS" with the same riveted side bars as "PAUSED".
-- Under the title, a row of three tabs side by side, small riveted gunmetal plates with teal ends: "Sound", "Graphics", "Gameplay". "Graphics" is the selected tab: its plate is cream rusty like the buttons, brighter, and it joins the frame below; "Sound" and "Gameplay" are dark gunmetal with light text.
-- Centre: one large riveted teal and gunmetal frame (same frame as Image 1) holding the Graphics settings as rows, label left and control right, every row aligned, same font size, one thin divider line between the display group and the quality group:
-  "Window mode" with a left/right selector: small riveted arrow buttons "<" and ">" around the value "Fullscreen".
-  "Resolution" with a left/right selector, value "1920 x 1080".
-  "VSync" with an On/Off toggle switch showing "On".
-  "Frame rate limit" with a left/right selector, value "60".
-  "Resolution scale" with a horizontal slider: a dark gunmetal track, a teal riveted handle near the right end, value "100%" right of it.
-  then the divider line, then:
-  "Quality preset" with a left/right selector, value "High".
-  "Shadows" with a left/right selector, value "High".
-  "Effects" with a left/right selector, value "High".
-  "Anti-aliasing" with a left/right selector, value "High".
-  "Post-processing" with a left/right selector, value "High".
-  "Textures" with a left/right selector, value "High".
-- Bottom, under the frame: two buttons side by side, both in the style of the cream rusty "Resume" button with teal ends: "Reset to defaults" and "Back" (highlighted, slightly brighter).
+- Under the title, a row of three tabs side by side, in gunmetal with teal trim: "Sound", "Graphics", "Gameplay". The "Graphics" tab is the active one: brighter, cream plate, connected to the frame below. "Sound" and "Gameplay" are dark and inactive.
+- Centre: one large riveted teal and gunmetal frame (same frame as Image 1) holding the Graphics settings in two columns separated by a thin vertical divider line, each column with a header under a thin line. Each row has its label on the left and its control on the right, all controls right-aligned in the column.
+  1. Column "Display", rows:
+     "Window mode" with an arrow selector "<  Fullscreen  >",
+     "Resolution" with an arrow selector "<  1920 x 1080  >",
+     "VSync" with an On/Off toggle switch set to On (teal),
+     "Frame rate limit" with an arrow selector "<  60  >",
+     "Resolution scale" with a horizontal slider (gunmetal track, teal filled part, riveted handle) at 100 %, value "100%" on its right.
+  2. Column "Quality", rows:
+     "Quality preset" with an arrow selector "<  High  >",
+     "Shadows" with an arrow selector "<  High  >",
+     "Effects" with an arrow selector "<  High  >",
+     "Anti-aliasing" with an arrow selector "<  High  >",
+     "Post-processing" with an arrow selector "<  High  >",
+     "Textures" with an arrow selector "<  High  >".
+  The arrow selectors are small dark gunmetal plates with two small teal arrow buttons at the ends and the value centred between them.
+- Bottom: two buttons side by side, both in the style of the cream rusty "Resume" button with teal ends: "Reset to defaults" and "Back".
 
-Toggle, slider and selectors use the same metal, teal, cream and rust materials as the frame and the buttons. Do not add anything else: no icons, no ore counter, no subtitle, no tooltip, no Apply button. No yellow, green or blue elements. Keep the text sizes consistent, balanced margins, no empty gap in the frame.
+Do not add anything else: no ore counter, no subtitle, no icons, no Apply button. No yellow, green or blue elements. Keep the text sizes consistent and every row aligned.

@@ -1,591 +1,152 @@
-// Rogue Rigs - C++ base of the options screen (WBP_Options, task-505-02).
+// Rogue Rigs - C++ base of the options screen (WBP_Options, task-500-04): Sound, Graphics and Gameplay tabs bound to
+// URRGameUserSettings / URROptionsSubsystem, Reset to defaults, Back and Escape, keep-or-revert display dialog.
 
 #include "UI/RROptionsWidget.h"
 
-#include "Blueprint/WidgetTree.h"
 #include "Components/Button.h"
-#include "Components/ButtonSlot.h"
-#include "Components/CanvasPanel.h"
-#include "Components/CanvasPanelSlot.h"
-#include "Components/Image.h"
-#include "Components/Overlay.h"
+#include "Components/CheckBox.h"
+#include "Components/HorizontalBoxSlot.h"
 #include "Components/OverlaySlot.h"
-#include "Components/SizeBox.h"
-#include "Components/SizeBoxSlot.h"
+#include "Components/ProgressBar.h"
 #include "Components/Slider.h"
-#include "Components/Spacer.h"
 #include "Components/TextBlock.h"
-#include "Components/VerticalBox.h"
-#include "Components/VerticalBoxSlot.h"
+#include "Components/WidgetSwitcher.h"
 #include "Engine/Texture2D.h"
+#include "Engine/World.h"
+#include "Framework/Application/SlateApplication.h"
 #include "InputCoreTypes.h"
 #include "RogueRigs.h"
-#include "Settings/RRGameUserSettings.h"
 #include "Settings/RROptionsSettings.h"
-#include "Styling/CoreStyle.h"
+#include "Settings/RROptionsSubsystem.h"
 #include "UI/RRButtonHover.h"
 
-namespace RROptionsWidget
-{
-	bool IsSliderRow(ERROptionRow Row)
-	{
-		return Row == ERROptionRow::MasterVolume || Row == ERROptionRow::MusicVolume || Row == ERROptionRow::EffectsVolume
-			|| Row == ERROptionRow::ResolutionScale;
-	}
+TWeakObjectPtr<URROptionsWidget> URROptionsWidget::OpenScreen;
 
-	bool ToGameplayOption(ERROptionRow Row, ERRGameplayOption& OutOption)
+namespace RROptionsText
+{
+	static const TCHAR* const VolumeKeys[] = {TEXT("Master"), TEXT("Music"), TEXT("Effects")};
+	static const TCHAR* const QualityKeys[] = {TEXT("Shadows"), TEXT("EffectsQuality"), TEXT("AntiAliasing"), TEXT("PostProcessing"), TEXT("Textures")};
+	static const TCHAR* const ToggleKeys[] = {TEXT("DamageNumbers"), TEXT("AimIndicator"), TEXT("ScreenShake"), TEXT("PauseOnFocusLoss")};
+
+	static FText Percent(float Percent) { return FText::FromString(FString::Printf(TEXT("%d%%"), FMath::RoundToInt(Percent))); }
+
+	static FText QualityName(int32 Level)
 	{
-		switch (Row)
+		switch (Level)
 		{
-		case ERROptionRow::DamageNumbers: OutOption = ERRGameplayOption::DamageNumbers; return true;
-		case ERROptionRow::AimIndicator: OutOption = ERRGameplayOption::AimIndicator; return true;
-		case ERROptionRow::ScreenShake: OutOption = ERRGameplayOption::ScreenShake; return true;
-		case ERROptionRow::PauseOnFocusLoss: OutOption = ERRGameplayOption::PauseOnFocusLoss; return true;
-		default: return false;
+		case 0: return FText::FromString(TEXT("Low"));
+		case 1: return FText::FromString(TEXT("Medium"));
+		case 2: return FText::FromString(TEXT("High"));
+		case 3: return FText::FromString(TEXT("Epic"));
+		default: return FText::FromString(TEXT("Custom"));
 		}
 	}
 
-	/** On/Off toggle rows: VSync and the Gameplay options. */
-	bool IsToggleRow(ERROptionRow Row)
+	static FText WindowModeName(EWindowMode::Type Mode)
 	{
-		ERRGameplayOption Option;
-		return Row == ERROptionRow::VSync || ToGameplayOption(Row, Option);
-	}
-
-	bool IsVolumeRow(ERROptionRow Row)
-	{
-		return Row == ERROptionRow::MasterVolume || Row == ERROptionRow::MusicVolume || Row == ERROptionRow::EffectsVolume;
-	}
-
-	ERRVolumeGroup ToVolumeGroup(ERROptionRow Row)
-	{
-		return Row == ERROptionRow::MusicVolume ? ERRVolumeGroup::Music
-			: Row == ERROptionRow::EffectsVolume ? ERRVolumeGroup::Effects : ERRVolumeGroup::Master;
-	}
-
-	bool ToDetail(ERROptionRow Row, ERRGraphicsDetail& OutDetail)
-	{
-		switch (Row)
+		switch (Mode)
 		{
-		case ERROptionRow::Shadows: OutDetail = ERRGraphicsDetail::Shadows; return true;
-		case ERROptionRow::Effects: OutDetail = ERRGraphicsDetail::Effects; return true;
-		case ERROptionRow::AntiAliasing: OutDetail = ERRGraphicsDetail::AntiAliasing; return true;
-		case ERROptionRow::PostProcessing: OutDetail = ERRGraphicsDetail::PostProcessing; return true;
-		case ERROptionRow::Textures: OutDetail = ERRGraphicsDetail::Textures; return true;
-		default: return false;
+		case EWindowMode::Fullscreen: return FText::FromString(TEXT("Fullscreen"));
+		case EWindowMode::WindowedFullscreen: return FText::FromString(TEXT("Windowed fullscreen"));
+		default: return FText::FromString(TEXT("Windowed"));
 		}
 	}
 
-	FSlateBrush MakeImageBrush(UTexture2D* Texture, const FLinearColor& Tint = FLinearColor::White)
+	static FText FrameLimitName(int32 Limit) { return Limit <= 0 ? FText::FromString(TEXT("Unlimited")) : FText::AsNumber(Limit); }
+
+	static int32 QualityIndex(const FString& Key)
 	{
-		FSlateBrush Brush;
-		Brush.SetResourceObject(Texture);
-		Brush.DrawAs = ESlateBrushDrawType::Image;
-		Brush.TintColor = FSlateColor(Tint);
-		if (Texture)
+		for (int32 Index = 0; Index < UE_ARRAY_COUNT(QualityKeys); ++Index)
 		{
-			Brush.ImageSize = FVector2D(Texture->GetSizeX(), Texture->GetSizeY());
+			if (Key == QualityKeys[Index]) { return Index; }
 		}
-		return Brush;
+		return INDEX_NONE;
 	}
 
-	FSlateBrush MakeBoxBrush(UTexture2D* Texture, const FMargin& Margin, const FLinearColor& Tint = FLinearColor::White)
+	static int32 ToggleIndex(const FString& Key)
 	{
-		FSlateBrush Brush = MakeImageBrush(Texture, Tint);
-		Brush.DrawAs = ESlateBrushDrawType::Box;
-		Brush.Margin = Margin;
-		return Brush;
-	}
-
-	FButtonStyle MakeButtonStyle(const FSlateBrush& Normal)
-	{
-		FButtonStyle Style;
-		Style.SetNormal(Normal);
-		Style.SetHovered(Normal);
-		FSlateBrush Pressed = Normal;
-		Pressed.TintColor = FSlateColor(FLinearColor(0.7f, 0.7f, 0.7f, 1.f));
-		Style.SetPressed(Pressed);
-		FSlateBrush Disabled = Normal;
-		Disabled.TintColor = FSlateColor(FLinearColor(0.4f, 0.4f, 0.4f, 0.6f));
-		Style.SetDisabled(Disabled);
-		Style.SetNormalPadding(FMargin(0.f));
-		Style.SetPressedPadding(FMargin(0.f));
-		return Style;
-	}
-
-	float TextureAspect(const UTexture2D* Texture)
-	{
-		return Texture && Texture->GetSizeY() > 0 ? float(Texture->GetSizeX()) / float(Texture->GetSizeY()) : 1.f;
-	}
-}
-
-URROptionsWidget::URROptionsWidget(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	ArrowTexture = TSoftObjectPtr<UTexture2D>(FSoftObjectPath(TEXT("/Game/RogueRigs/UI/Options/T_Options_ArrowButton.T_Options_ArrowButton")));
-	SliderTrackTexture = TSoftObjectPtr<UTexture2D>(FSoftObjectPath(TEXT("/Game/RogueRigs/UI/Options/T_Options_SliderTrack.T_Options_SliderTrack")));
-	SliderKnobTexture = TSoftObjectPtr<UTexture2D>(FSoftObjectPath(TEXT("/Game/RogueRigs/UI/Options/T_Options_SliderKnob.T_Options_SliderKnob")));
-	ToggleTrackTexture = TSoftObjectPtr<UTexture2D>(FSoftObjectPath(TEXT("/Game/RogueRigs/UI/Options/T_Options_ToggleTrack.T_Options_ToggleTrack")));
-	ToggleThumbTexture = TSoftObjectPtr<UTexture2D>(FSoftObjectPath(TEXT("/Game/RogueRigs/UI/Options/T_Options_ToggleThumb.T_Options_ToggleThumb")));
-	RowFont = FCoreStyle::GetDefaultFontStyle("Bold", 24);
-}
-
-void URROptionsRowHandler::HandleClicked()
-{
-	if (Owner)
-	{
-		Owner->StepRow(Row, Direction);
-	}
-}
-
-void URROptionsRowHandler::HandleValueChanged(float Value)
-{
-	if (Owner)
-	{
-		Owner->SetRowSliderValue(Row, Value);
-	}
-}
-
-FText URROptionsWidget::GetRowLabel(ERROptionRow Row)
-{
-	switch (Row)
-	{
-	case ERROptionRow::MasterVolume: return NSLOCTEXT("RogueRigs", "OptMaster", "Master");
-	case ERROptionRow::MusicVolume: return NSLOCTEXT("RogueRigs", "OptMusic", "Music");
-	case ERROptionRow::EffectsVolume: return NSLOCTEXT("RogueRigs", "OptEffects", "Effects");
-	case ERROptionRow::WindowMode: return NSLOCTEXT("RogueRigs", "OptWindowMode", "Window mode");
-	case ERROptionRow::Resolution: return NSLOCTEXT("RogueRigs", "OptResolution", "Resolution");
-	case ERROptionRow::VSync: return NSLOCTEXT("RogueRigs", "OptVSync", "VSync");
-	case ERROptionRow::FrameRateLimit: return NSLOCTEXT("RogueRigs", "OptFrameLimit", "Frame rate limit");
-	case ERROptionRow::ResolutionScale: return NSLOCTEXT("RogueRigs", "OptResScale", "Resolution scale");
-	case ERROptionRow::QualityPreset: return NSLOCTEXT("RogueRigs", "OptPreset", "Quality preset");
-	case ERROptionRow::Shadows: return NSLOCTEXT("RogueRigs", "OptShadows", "Shadows");
-	case ERROptionRow::Effects: return NSLOCTEXT("RogueRigs", "OptFx", "Effects");
-	case ERROptionRow::AntiAliasing: return NSLOCTEXT("RogueRigs", "OptAA", "Anti-aliasing");
-	case ERROptionRow::PostProcessing: return NSLOCTEXT("RogueRigs", "OptPost", "Post-processing");
-	case ERROptionRow::Textures: return NSLOCTEXT("RogueRigs", "OptTextures", "Textures");
-	case ERROptionRow::DamageNumbers: return NSLOCTEXT("RogueRigs", "OptDamageNumbers", "Damage numbers");
-	case ERROptionRow::AimIndicator: return NSLOCTEXT("RogueRigs", "OptAimIndicator", "Aim indicator");
-	case ERROptionRow::ScreenShake: return NSLOCTEXT("RogueRigs", "OptScreenShake", "Screen shake");
-	case ERROptionRow::PauseOnFocusLoss: return NSLOCTEXT("RogueRigs", "OptFocusPause", "Pause when the window loses focus");
-	}
-	return FText::GetEmpty();
-}
-
-void URROptionsWidget::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
-	SetIsFocusable(true);
-
-	LoadedArrow = ArrowTexture.LoadSynchronous();
-	LoadedTrack = SliderTrackTexture.LoadSynchronous();
-	LoadedKnob = SliderKnobTexture.LoadSynchronous();
-	LoadedToggleTrack = ToggleTrackTexture.LoadSynchronous();
-	LoadedThumb = ToggleThumbTexture.LoadSynchronous();
-
-	if (SoundTabButton) { SoundTabButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleSoundTabClicked); }
-	if (GraphicsTabButton) { GraphicsTabButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleGraphicsTabClicked); }
-	if (GameplayTabButton)
-	{
-		// Shown disabled until task-506 in the asset: enabled here when the Gameplay list exists.
-		GameplayTabButton->SetIsEnabled(GameplayList != nullptr);
-		GameplayTabButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleGameplayTabClicked);
-	}
-	if (ResetButton) { ResetButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleResetClicked); }
-	if (BackButton) { BackButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleBackClicked); }
-	if (KeepButton) { KeepButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleKeepClicked); }
-	if (RevertButton) { RevertButton->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::HandleRevertClicked); }
-
-	// Plate hover of ui-button-hover: a tab grows with its selected plate and label.
-	URRButtonHoverSubsystem::Attach(SoundTabButton, true, SoundTab);
-	URRButtonHoverSubsystem::Attach(GraphicsTabButton, true, GraphicsTab);
-	URRButtonHoverSubsystem::Attach(GameplayTabButton, true, GameplayTab);
-	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("ResetButton"), TEXT("BackButton"), TEXT("KeepButton"), TEXT("RevertButton")});
-
-	if (!IsDesignTime())
-	{
-		BuildRows();
-	}
-}
-
-void URROptionsWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	bClosing = false;
-	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
-	{
-		Settings->SyncDisplayFromWindow();
-		Settings->OnDisplayConfirmChanged.AddUniqueDynamic(this, &URROptionsWidget::HandleDisplayConfirmChanged);
-		HandleDisplayConfirmChanged(Settings->IsDisplayConfirmPending());
-	}
-	else
-	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("Options screen: no URRGameUserSettings; rows show no values."));
-		if (ConfirmPanel) { ConfirmPanel->SetVisibility(ESlateVisibility::Collapsed); }
-	}
-	ShowTab(ERROptionsTab::Sound);
-	FocusFirstTab();
-	UE_LOG(LogRogueRigs, Log, TEXT("Options screen opened (%d rows)."), Rows.Num());
-}
-
-void URROptionsWidget::NativeDestruct()
-{
-	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
-	{
-		Settings->OnDisplayConfirmChanged.RemoveDynamic(this, &URROptionsWidget::HandleDisplayConfirmChanged);
-	}
-	Super::NativeDestruct();
-}
-
-void URROptionsWidget::BuildRows()
-{
-	Rows.Reset();
-	Handlers.Reset();
-	if (SoundList)
-	{
-		SoundList->ClearChildren();
-		AddRow(SoundList, ERROptionRow::MasterVolume);
-		AddRow(SoundList, ERROptionRow::MusicVolume);
-		AddRow(SoundList, ERROptionRow::EffectsVolume);
-		// Same row height as the Graphics list: 11 rows and the divider.
-		USpacer* Spacer = WidgetTree->ConstructWidget<USpacer>(USpacer::StaticClass(), TEXT("SoundListSpacer"));
-		UVerticalBoxSlot* SpacerSlot = SoundList->AddChildToVerticalBox(Spacer);
-		FSlateChildSize SpacerSize(ESlateSizeRule::Fill);
-		SpacerSize.Value = 8.f + DividerRowWeight;
-		SpacerSlot->SetSize(SpacerSize);
-	}
-	if (GraphicsList)
-	{
-		GraphicsList->ClearChildren();
-		AddRow(GraphicsList, ERROptionRow::WindowMode);
-		AddRow(GraphicsList, ERROptionRow::Resolution);
-		AddRow(GraphicsList, ERROptionRow::VSync);
-		AddRow(GraphicsList, ERROptionRow::FrameRateLimit);
-		AddRow(GraphicsList, ERROptionRow::ResolutionScale);
-		AddDivider(GraphicsList);
-		AddRow(GraphicsList, ERROptionRow::QualityPreset);
-		AddRow(GraphicsList, ERROptionRow::Shadows);
-		AddRow(GraphicsList, ERROptionRow::Effects);
-		AddRow(GraphicsList, ERROptionRow::AntiAliasing);
-		AddRow(GraphicsList, ERROptionRow::PostProcessing);
-		AddRow(GraphicsList, ERROptionRow::Textures);
-	}
-	if (GameplayList)
-	{
-		GameplayList->ClearChildren();
-		AddRow(GameplayList, ERROptionRow::DamageNumbers);
-		AddRow(GameplayList, ERROptionRow::AimIndicator);
-		AddRow(GameplayList, ERROptionRow::ScreenShake);
-		AddRow(GameplayList, ERROptionRow::PauseOnFocusLoss);
-		// Same row height as the Graphics list: 11 rows and the divider.
-		USpacer* Spacer = WidgetTree->ConstructWidget<USpacer>(USpacer::StaticClass(), TEXT("GameplayListSpacer"));
-		UVerticalBoxSlot* SpacerSlot = GameplayList->AddChildToVerticalBox(Spacer);
-		FSlateChildSize SpacerSize(ESlateSizeRule::Fill);
-		SpacerSize.Value = 7.f + DividerRowWeight;
-		SpacerSlot->SetSize(SpacerSize);
-	}
-	AppliedRowHeight = 0.f;
-	ApplyRowHeight(40.f);
-	AppliedRowHeight = 0.f;
-}
-
-URROptionsRowHandler* URROptionsWidget::MakeHandler(ERROptionRow Row, int32 Direction)
-{
-	URROptionsRowHandler* Handler = NewObject<URROptionsRowHandler>(this);
-	Handler->Owner = this;
-	Handler->Row = Row;
-	Handler->Direction = Direction;
-	Handlers.Add(Handler);
-	return Handler;
-}
-
-UButton* URROptionsWidget::MakeArrow(UCanvasPanel* Canvas, ERROptionRow Row, int32 Direction, float AnchorX, USizeBox*& OutBox)
-{
-	const FString RowName = StaticEnum<ERROptionRow>()->GetNameStringByValue(int64(Row));
-	USizeBox* Box = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(),
-		*FString::Printf(TEXT("%s%sBox"), *RowName, Direction < 0 ? TEXT("Left") : TEXT("Right")));
-	UButton* Button = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(),
-		*FString::Printf(TEXT("%s%sButton"), *RowName, Direction < 0 ? TEXT("Left") : TEXT("Right")));
-	Button->SetStyle(RROptionsWidget::MakeButtonStyle(RROptionsWidget::MakeImageBrush(LoadedArrow)));
-	Box->AddChild(Button);
-	if (Direction > 0)
-	{
-		// The sprite points left; the right arrow is its mirror.
-		Box->SetRenderScale(FVector2D(-1.f, 1.f));
-	}
-	UCanvasPanelSlot* BoxSlot = Canvas->AddChildToCanvas(Box);
-	BoxSlot->SetAnchors(FAnchors(AnchorX, 0.5f));
-	BoxSlot->SetAlignment(FVector2D(0.5f, 0.5f));
-	BoxSlot->SetAutoSize(true);
-	BoxSlot->SetPosition(FVector2D::ZeroVector);
-	Button->OnClicked.AddUniqueDynamic(MakeHandler(Row, Direction), &URROptionsRowHandler::HandleClicked);
-	URRButtonHoverSubsystem::Attach(Button);
-	OutBox = Box;
-	return Button;
-}
-
-void URROptionsWidget::AddRow(UVerticalBox* List, ERROptionRow Row)
-{
-	const FString RowName = StaticEnum<ERROptionRow>()->GetNameStringByValue(int64(Row));
-	FRROptionsRowWidgets Widgets;
-	Widgets.Row = Row;
-
-	UCanvasPanel* Canvas = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), *(RowName + TEXT("Row")));
-	Widgets.Canvas = Canvas;
-	UVerticalBoxSlot* RowSlot = List->AddChildToVerticalBox(Canvas);
-	RowSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-	RowSlot->SetHorizontalAlignment(HAlign_Fill);
-	RowSlot->SetVerticalAlignment(VAlign_Fill);
-
-	UTextBlock* Label = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), *(RowName + TEXT("Label")));
-	Label->SetText(GetRowLabel(Row));
-	Label->SetFont(RowFont);
-	Label->SetColorAndOpacity(FSlateColor(LabelColour));
-	UCanvasPanelSlot* LabelSlot = Canvas->AddChildToCanvas(Label);
-	LabelSlot->SetAnchors(FAnchors(0.f, 0.5f));
-	LabelSlot->SetAlignment(FVector2D(0.f, 0.5f));
-	LabelSlot->SetAutoSize(true);
-	LabelSlot->SetPosition(FVector2D::ZeroVector);
-
-	UTextBlock* Value = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), *(RowName + TEXT("Value")));
-	Value->SetFont(RowFont);
-	Value->SetColorAndOpacity(FSlateColor(ValueColour));
-	Widgets.Value = Value;
-
-	if (RROptionsWidget::IsToggleRow(Row))
-	{
-		Value->SetVisibility(ESlateVisibility::Collapsed);
-		Canvas->AddChildToCanvas(Value);
-		UButton* Toggle = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), *(RowName + TEXT("Toggle")));
-		Toggle->SetStyle(RROptionsWidget::MakeButtonStyle(RROptionsWidget::MakeBoxBrush(LoadedToggleTrack, ToggleTrackMargin)));
-		UOverlay* Content = WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass(), *(RowName + TEXT("ToggleContent")));
-		UButtonSlot* ContentSlot = Cast<UButtonSlot>(Toggle->AddChild(Content));
-		ContentSlot->SetPadding(FMargin(0.f));
-		ContentSlot->SetHorizontalAlignment(HAlign_Fill);
-		ContentSlot->SetVerticalAlignment(VAlign_Fill);
-		UTextBlock* ToggleText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), *(RowName + TEXT("ToggleText")));
-		ToggleText->SetFont(RowFont);
-		ToggleText->SetColorAndOpacity(FSlateColor(ValueColour));
-		Content->AddChildToOverlay(ToggleText)->SetVerticalAlignment(VAlign_Center);
-		USizeBox* ThumbBox = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(), *(RowName + TEXT("ThumbBox")));
-		UImage* Thumb = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), *(RowName + TEXT("Thumb")));
-		Thumb->SetBrush(RROptionsWidget::MakeImageBrush(LoadedThumb));
-		ThumbBox->AddChild(Thumb);
-		Content->AddChildToOverlay(ThumbBox)->SetVerticalAlignment(VAlign_Center);
-		UCanvasPanelSlot* ToggleSlot = Canvas->AddChildToCanvas(Toggle);
-		ToggleSlot->SetAnchors(FAnchors(ToggleMinX, 0.06f, 1.f, 0.94f));
-		ToggleSlot->SetOffsets(FMargin(0.f));
-		Toggle->OnClicked.AddUniqueDynamic(MakeHandler(Row, 1), &URROptionsRowHandler::HandleClicked);
-		URRButtonHoverSubsystem::Attach(Toggle);
-		Widgets.Toggle = Toggle;
-		Widgets.ToggleText = ToggleText;
-		Widgets.ThumbBox = ThumbBox;
-	}
-	else if (RROptionsWidget::IsSliderRow(Row))
-	{
-		USlider* Slider = WidgetTree->ConstructWidget<USlider>(USlider::StaticClass(), *(RowName + TEXT("Slider")));
-		const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
-		if (RROptionsWidget::IsVolumeRow(Row))
+		for (int32 Index = 0; Index < UE_ARRAY_COUNT(ToggleKeys); ++Index)
 		{
-			Slider->SetMinValue(0.f);
-			Slider->SetMaxValue(1.f);
-			Slider->SetStepSize(Options->VolumeStep);
+			if (Key == ToggleKeys[Index]) { return Index; }
 		}
-		else
-		{
-			Slider->SetMinValue(Options->MinResolutionScalePercent);
-			Slider->SetMaxValue(Options->MaxResolutionScalePercent);
-			Slider->SetStepSize(Options->ResolutionScaleStepPercent);
-		}
-		Slider->SetSliderBarColor(FLinearColor::White);
-		Slider->SetSliderHandleColor(FLinearColor::White);
-		FSliderStyle Style = Slider->GetWidgetStyle();
-		const FSlateBrush Bar = RROptionsWidget::MakeBoxBrush(LoadedTrack, SliderTrackMargin);
-		Style.SetNormalBarImage(Bar);
-		Style.SetHoveredBarImage(Bar);
-		Style.SetDisabledBarImage(Bar);
-		const FSlateBrush Knob = RROptionsWidget::MakeImageBrush(LoadedKnob);
-		Style.SetNormalThumbImage(Knob);
-		Style.SetHoveredThumbImage(RROptionsWidget::MakeImageBrush(LoadedKnob, FLinearColor(1.25f, 1.25f, 1.25f, 1.f)));
-		Style.SetDisabledThumbImage(Knob);
-		Slider->SetWidgetStyle(Style);
-		UCanvasPanelSlot* SliderSlot = Canvas->AddChildToCanvas(Slider);
-		SliderSlot->SetAnchors(FAnchors(SliderMinX, 0.f, SliderMaxX, 1.f));
-		SliderSlot->SetOffsets(FMargin(0.f));
-		Slider->OnValueChanged.AddUniqueDynamic(MakeHandler(Row, 0), &URROptionsRowHandler::HandleValueChanged);
-		Widgets.Slider = Slider;
-
-		Value->SetJustification(ETextJustify::Right);
-		UCanvasPanelSlot* ValueSlot = Canvas->AddChildToCanvas(Value);
-		ValueSlot->SetAnchors(FAnchors(1.f, 0.5f));
-		ValueSlot->SetAlignment(FVector2D(1.f, 0.5f));
-		ValueSlot->SetAutoSize(true);
-		ValueSlot->SetPosition(FVector2D::ZeroVector);
-	}
-	else
-	{
-		USizeBox* LeftBox = nullptr;
-		USizeBox* RightBox = nullptr;
-		MakeArrow(Canvas, Row, -1, LeftArrowX, LeftBox);
-		Widgets.LeftBox = LeftBox;
-		Widgets.LeftButton = Cast<UButton>(Widgets.LeftBox->GetContent());
-		MakeArrow(Canvas, Row, 1, RightArrowX, RightBox);
-		Widgets.RightBox = RightBox;
-		Widgets.RightButton = Cast<UButton>(Widgets.RightBox->GetContent());
-		Value->SetJustification(ETextJustify::Center);
-		UCanvasPanelSlot* ValueSlot = Canvas->AddChildToCanvas(Value);
-		ValueSlot->SetAnchors(FAnchors(ValueX, 0.5f));
-		ValueSlot->SetAlignment(FVector2D(0.5f, 0.5f));
-		ValueSlot->SetAutoSize(true);
-		ValueSlot->SetPosition(FVector2D::ZeroVector);
-	}
-	Rows.Add(Widgets);
-}
-
-void URROptionsWidget::AddDivider(UVerticalBox* List)
-{
-	UImage* Divider = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("GraphicsDivider"));
-	FSlateBrush Brush;
-	Brush.DrawAs = ESlateBrushDrawType::Image;
-	Brush.ImageSize = FVector2D(2.f, 2.f);
-	Brush.TintColor = FSlateColor(DividerColour);
-	Divider->SetBrush(Brush);
-	UVerticalBoxSlot* DividerSlot = List->AddChildToVerticalBox(Divider);
-	FSlateChildSize Size(ESlateSizeRule::Fill);
-	Size.Value = DividerRowWeight;
-	DividerSlot->SetSize(Size);
-	DividerSlot->SetHorizontalAlignment(HAlign_Fill);
-	DividerSlot->SetVerticalAlignment(VAlign_Center);
-}
-
-void URROptionsWidget::ApplyRowHeight(float RowHeight)
-{
-	if (RowHeight <= 1.f || FMath::Abs(RowHeight - AppliedRowHeight) < 0.5f)
-	{
-		return;
-	}
-	AppliedRowHeight = RowHeight;
-	const float ArrowHeight = RowHeight * ArrowHeightFraction;
-	const float ArrowWidth = ArrowHeight * RROptionsWidget::TextureAspect(LoadedArrow);
-	const float KnobHeight = RowHeight * KnobHeightFraction;
-	const float ThumbHeight = RowHeight * ThumbHeightFraction;
-	for (FRROptionsRowWidgets& Widgets : Rows)
-	{
-		for (USizeBox* Box : {Widgets.LeftBox.Get(), Widgets.RightBox.Get()})
-		{
-			if (Box)
-			{
-				Box->SetHeightOverride(ArrowHeight);
-				Box->SetWidthOverride(ArrowWidth);
-			}
-		}
-		if (Widgets.ThumbBox)
-		{
-			Widgets.ThumbBox->SetHeightOverride(ThumbHeight);
-			Widgets.ThumbBox->SetWidthOverride(ThumbHeight * RROptionsWidget::TextureAspect(LoadedThumb));
-		}
-		if (Widgets.Slider)
-		{
-			FSliderStyle Style = Widgets.Slider->GetWidgetStyle();
-			FSlateBrush Knob = Style.NormalThumbImage;
-			Knob.ImageSize = FVector2D(KnobHeight * RROptionsWidget::TextureAspect(LoadedKnob), KnobHeight);
-			Style.SetNormalThumbImage(Knob);
-			Style.SetDisabledThumbImage(Knob);
-			FSlateBrush Hovered = Style.HoveredThumbImage;
-			Hovered.ImageSize = Knob.ImageSize;
-			Style.SetHoveredThumbImage(Hovered);
-			Style.SetBarThickness(RowHeight * SliderBarFraction);
-			Widgets.Slider->SetWidgetStyle(Style);
-		}
+		return INDEX_NONE;
 	}
 }
 
-void URROptionsWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+// ---- Proxy ----
+
+void URROptionsControlProxy::HandleClicked()
 {
-	Super::NativeTick(MyGeometry, InDeltaTime);
-	for (const FRROptionsRowWidgets& Widgets : Rows)
+	if (URROptionsWidget* Widget = Screen.Get())
 	{
-		const float Height = Widgets.Canvas ? Widgets.Canvas->GetCachedGeometry().GetLocalSize().Y : 0.f;
-		if (Height > 1.f)
-		{
-			ApplyRowHeight(Height);
-			break;
-		}
-	}
-	const URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
-	if (ConfirmCountdownText && Settings && Settings->IsDisplayConfirmPending())
-	{
-		ConfirmCountdownText->SetText(FText::Format(NSLOCTEXT("RogueRigs", "OptRevertIn", "Reverting in {0} s"),
-			FText::AsNumber(Settings->GetDisplayConfirmSecondsLeft())));
+		Widget->StepSelector(Key, Direction);
 	}
 }
 
-FReply URROptionsWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+void URROptionsControlProxy::HandleValueChanged(float Value)
 {
-	if (InKeyEvent.GetKey() == EKeys::Escape)
+	if (URROptionsWidget* Widget = Screen.Get())
 	{
-		URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
-		if (Settings && Settings->IsDisplayConfirmPending())
-		{
-			UE_LOG(LogRogueRigs, Log, TEXT("Options screen: Escape reverts the display change."));
-			Settings->RevertDisplayChange();
-		}
-		else
-		{
-			Back();
-		}
-		return FReply::Handled();
-	}
-	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
-}
-
-void URROptionsWidget::ShowTab(ERROptionsTab Tab)
-{
-	if (Tab == ERROptionsTab::Gameplay && !GameplayList)
-	{
-		UE_LOG(LogRogueRigs, Warning, TEXT("Options screen: no GameplayList in the layout; Gameplay tab not shown."));
-		return;
-	}
-	CurrentTab = Tab;
-	auto ShowOne = [this](UWidget* List, UWidget* Selected, UTextBlock* Text, bool bOn)
-	{
-		if (List) { List->SetVisibility(bOn ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed); }
-		if (Selected) { Selected->SetVisibility(bOn ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Hidden); }
-		if (Text) { Text->SetColorAndOpacity(FSlateColor(bOn ? SelectedTabTextColour : TabTextColour)); }
-	};
-	ShowOne(SoundList, SoundTabSelected, SoundTabText, Tab == ERROptionsTab::Sound);
-	ShowOne(GraphicsList, GraphicsTabSelected, GraphicsTabText, Tab == ERROptionsTab::Graphics);
-	ShowOne(GameplayList, GameplayTabSelected, GameplayTabText, Tab == ERROptionsTab::Gameplay);
-	RefreshValues();
-}
-
-void URROptionsWidget::FocusFirstTab()
-{
-	if (SoundTabButton)
-	{
-		SoundTabButton->SetKeyboardFocus();
-	}
-	else
-	{
-		SetKeyboardFocus();
+		Widget->OnSliderChanged(Key, Value);
 	}
 }
 
-void URROptionsWidget::ResetCurrentTab()
+void URROptionsControlProxy::HandleCheckChanged(bool bIsChecked)
 {
-	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
-	if (!Settings)
+	if (URROptionsWidget* Widget = Screen.Get())
 	{
-		return;
+		Widget->OnToggleChanged(Key, bIsChecked);
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("Options screen: Reset to defaults (%s tab)."), *GetTabName(CurrentTab));
-	switch (CurrentTab)
+}
+
+// ---- Opening and closing ----
+
+bool URROptionsWidget::IsOptionsAvailable()
+{
+	return GetDefault<URROptionsSettings>()->OptionsWidgetClass.LoadSynchronous() != nullptr;
+}
+
+URROptionsWidget* URROptionsWidget::FindOpen(const UWorld* World)
+{
+	URROptionsWidget* Screen = OpenScreen.Get();
+	return Screen && (!World || Screen->GetWorld() == World) && Screen->IsInViewport() ? Screen : nullptr;
+}
+
+URROptionsWidget* URROptionsWidget::OpenOptions(UUserWidget* FromMenu, ERROptionsTab Tab)
+{
+	if (!FromMenu || !FromMenu->GetOwningPlayer())
 	{
-	case ERROptionsTab::Sound: Settings->ResetSoundToDefaults(); break;
-	case ERROptionsTab::Graphics: Settings->ResetGraphicsToDefaults(); break;
-	case ERROptionsTab::Gameplay: Settings->ResetGameplayToDefaults(); break;
+		UE_LOG(LogRogueRigs, Warning, TEXT("Options: refused (no menu or no owning player)."));
+		return nullptr;
 	}
-	RefreshValues();
+	if (URROptionsWidget* Existing = FindOpen(FromMenu->GetWorld()))
+	{
+		Existing->ShowTab(Tab);
+		return Existing;
+	}
+	const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
+	UClass* Class = Options->OptionsWidgetClass.LoadSynchronous();
+	if (!Class)
+	{
+		UE_LOG(LogRogueRigs, Warning, TEXT("Options: refused (URROptionsSettings::OptionsWidgetClass %s does not load)."), *Options->OptionsWidgetClass.ToString());
+		return nullptr;
+	}
+	URROptionsWidget* Screen = CreateWidget<URROptionsWidget>(FromMenu->GetOwningPlayer(), Class);
+	if (!Screen)
+	{
+		return nullptr;
+	}
+	Screen->FromMenu = FromMenu;
+	Screen->FromMenuVisibility = FromMenu->GetVisibility();
+	Screen->CurrentTab = Tab;
+	// Menus live at Z 0 (main menu) to 40 (pause menu): the screen goes above both.
+	const int32 ZOrder = 40 + Options->OptionsZOrderAbove;
+	Screen->AddToViewport(ZOrder);
+	FromMenu->SetVisibility(ESlateVisibility::Collapsed);
+	OpenScreen = Screen;
+	Screen->SetKeyboardFocus();
+	UE_LOG(LogRogueRigs, Log, TEXT("Options: opened from %s on the %s tab."), *FromMenu->GetClass()->GetName(), *UEnum::GetDisplayValueAsText(Tab).ToString());
+	return Screen;
 }
 
 void URROptionsWidget::Back()
@@ -595,239 +156,445 @@ void URROptionsWidget::Back()
 		return;
 	}
 	bClosing = true;
-	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
+	if (URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this); Subsystem && Subsystem->IsDisplayConfirmPending())
 	{
-		if (Settings->IsDisplayConfirmPending())
-		{
-			Settings->RevertDisplayChange();
-		}
+		Subsystem->RevertDisplay();
 	}
-	UE_LOG(LogRogueRigs, Log, TEXT("Options screen: Back, closed."));
 	RemoveFromParent();
-	OnOptionsClosed.Broadcast();
+	if (OpenScreen.Get() == this)
+	{
+		OpenScreen.Reset();
+	}
+	if (UUserWidget* Menu = FromMenu.Get())
+	{
+		Menu->SetVisibility(FromMenuVisibility);
+		UWidget* FocusTarget = Menu->GetWidgetFromName(TEXT("OptionsButton"));
+		(FocusTarget ? FocusTarget : static_cast<UWidget*>(Menu))->SetFocus();
+	}
+	UE_LOG(LogRogueRigs, Log, TEXT("Options: closed (Back)."));
 }
 
-void URROptionsWidget::StepRow(ERROptionRow Row, int32 Direction)
+void URROptionsWidget::HandleEscape()
 {
-	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
-	if (!Settings || Direction == 0)
+	URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this);
+	if (Subsystem && Subsystem->IsDisplayConfirmPending())
 	{
+		Subsystem->RevertDisplay();
 		return;
 	}
-	const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
-	const int32 Dir = Direction > 0 ? 1 : -1;
-	ERRGraphicsDetail Detail;
-	switch (Row)
-	{
-	case ERROptionRow::WindowMode: Settings->StepWindowMode(Dir); break;
-	case ERROptionRow::Resolution: Settings->StepResolution(Dir); break;
-	case ERROptionRow::VSync: Settings->SetVSyncOn(!Settings->IsVSyncEnabled()); break;
-	case ERROptionRow::FrameRateLimit: Settings->StepFrameRateLimit(Dir); break;
-	case ERROptionRow::QualityPreset: Settings->StepQualityPreset(Dir); break;
-	case ERROptionRow::ResolutionScale:
-		Settings->SetResolutionScalePercent(Settings->GetResolutionScalePercent() + Dir * Options->ResolutionScaleStepPercent);
-		break;
-	case ERROptionRow::MasterVolume:
-	case ERROptionRow::MusicVolume:
-	case ERROptionRow::EffectsVolume:
-	{
-		const ERRVolumeGroup Group = RROptionsWidget::ToVolumeGroup(Row);
-		Settings->SetVolume(Group, Settings->GetVolume(Group) + Dir * Options->VolumeStep);
-		break;
-	}
-	default:
-		if (RROptionsWidget::ToDetail(Row, Detail))
-		{
-			Settings->StepGraphicsDetail(Detail, Dir);
-		}
-		else if (ERRGameplayOption Option; RROptionsWidget::ToGameplayOption(Row, Option))
-		{
-			Settings->SetGameplayOption(Option, !Settings->GetGameplayOption(Option));
-		}
-		break;
-	}
-	RefreshValues();
-	UE_LOG(LogRogueRigs, Log, TEXT("Options screen: %s %s -> %s"), *GetRowLabel(Row).ToString(), Dir > 0 ? TEXT("next") : TEXT("previous"),
-		*GetRowValueString(Row));
+	Back();
 }
 
-void URROptionsWidget::SetRowSliderValue(ERROptionRow Row, float Value)
+FReply URROptionsWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
 {
-	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
+	const FKey Key = InKeyEvent.GetKey();
+	if (Key == EKeys::Escape || Key == EKeys::Gamepad_FaceButton_Right || Key == EKeys::Gamepad_Special_Right)
+	{
+		HandleEscape();
+		return FReply::Handled();
+	}
+	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
+}
+
+// ---- Setup ----
+
+void URROptionsWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	SetIsFocusable(true);
+	BindControls();
+	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("ResetButton"), TEXT("BackButton"), TEXT("KeepButton"), TEXT("RevertButton")});
+}
+
+void URROptionsWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
+	{
+		SettingsChangedHandle = Settings->OnSettingsChanged.AddUObject(this, &URROptionsWidget::RefreshFromSettings);
+	}
+	URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this);
+	if (Subsystem)
+	{
+		Subsystem->OnDisplayConfirmChanged.AddUniqueDynamic(this, &URROptionsWidget::HandleDisplayConfirmChanged);
+	}
+	ShowTab(CurrentTab);
+	RefreshFromSettings();
+	HandleDisplayConfirmChanged(Subsystem && Subsystem->IsDisplayConfirmPending());
+}
+
+void URROptionsWidget::NativeDestruct()
+{
+	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
+	{
+		Settings->OnSettingsChanged.Remove(SettingsChangedHandle);
+	}
+	if (URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this))
+	{
+		Subsystem->OnDisplayConfirmChanged.RemoveDynamic(this, &URROptionsWidget::HandleDisplayConfirmChanged);
+	}
+	Super::NativeDestruct();
+}
+
+void URROptionsWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	UpdateCountdownText();
+}
+
+void URROptionsWidget::BindControls()
+{
+#define RR_BIND_CLICK(Name, Function) if (UButton* Button = Find<UButton>(TEXT(Name))) { Button->OnClicked.AddUniqueDynamic(this, &URROptionsWidget::Function); }
+	RR_BIND_CLICK("SoundTabButton", HandleSoundTab)
+	RR_BIND_CLICK("GraphicsTabButton", HandleGraphicsTab)
+	RR_BIND_CLICK("GameplayTabButton", HandleGameplayTab)
+	RR_BIND_CLICK("KeepButton", HandleKeep)
+	RR_BIND_CLICK("RevertButton", HandleRevert)
+	RR_BIND_CLICK("BackButton", HandleBackClicked)
+	RR_BIND_CLICK("ResetButton", HandleResetClicked)
+#undef RR_BIND_CLICK
+
+	for (const TCHAR* Key : RROptionsText::VolumeKeys) { BindSlider(Key); }
+	BindSlider(TEXT("ResolutionScale"));
+	for (const TCHAR* Key : {TEXT("WindowMode"), TEXT("Resolution"), TEXT("FrameLimit"), TEXT("Preset")}) { BindSelector(Key); }
+	for (const TCHAR* Key : RROptionsText::QualityKeys) { BindSelector(Key); }
+	BindToggle(TEXT("VSync"));
+	for (const TCHAR* Key : RROptionsText::ToggleKeys) { BindToggle(Key); }
+}
+
+void URROptionsWidget::BindSlider(const FString& Key)
+{
+	if (USlider* Slider = Find<USlider>(Key + TEXT("Slider")))
+	{
+		URROptionsControlProxy* Proxy = NewObject<URROptionsControlProxy>(this);
+		Proxy->Screen = this;
+		Proxy->Key = Key;
+		Proxies.Add(Proxy);
+		Slider->SetMinValue(0.f);
+		Slider->SetMaxValue(1.f);
+		Slider->SetStepSize(Key == TEXT("ResolutionScale") ? 0.1f : GetDefault<URROptionsSettings>()->VolumeStep);
+		Slider->OnValueChanged.AddUniqueDynamic(Proxy, &URROptionsControlProxy::HandleValueChanged);
+	}
+}
+
+void URROptionsWidget::BindSelector(const FString& Key)
+{
+	for (const int32 Direction : {-1, 1})
+	{
+		if (UButton* Button = Find<UButton>(Key + (Direction < 0 ? TEXT("Prev") : TEXT("Next"))))
+		{
+			URROptionsControlProxy* Proxy = NewObject<URROptionsControlProxy>(this);
+			Proxy->Screen = this;
+			Proxy->Key = Key;
+			Proxy->Direction = Direction;
+			Proxies.Add(Proxy);
+			Button->OnClicked.AddUniqueDynamic(Proxy, &URROptionsControlProxy::HandleClicked);
+		}
+	}
+}
+
+void URROptionsWidget::BindToggle(const FString& Key)
+{
+	if (UCheckBox* CheckBox = Find<UCheckBox>(Key + TEXT("Toggle")))
+	{
+		URROptionsControlProxy* Proxy = NewObject<URROptionsControlProxy>(this);
+		Proxy->Screen = this;
+		Proxy->Key = Key;
+		Proxies.Add(Proxy);
+		CheckBox->OnCheckStateChanged.AddUniqueDynamic(Proxy, &URROptionsControlProxy::HandleCheckChanged);
+	}
+}
+
+// ---- Tabs ----
+
+void URROptionsWidget::ShowTab(ERROptionsTab Tab)
+{
+	CurrentTab = Tab;
+	if (UWidgetSwitcher* Switcher = Find<UWidgetSwitcher>(TEXT("TabSwitcher")))
+	{
+		Switcher->SetActiveWidgetIndex(static_cast<int32>(Tab));
+	}
+	StyleTabButton(Find<UButton>(TEXT("SoundTabButton")), Find<UTextBlock>(TEXT("SoundTabText")), Tab == ERROptionsTab::Sound);
+	StyleTabButton(Find<UButton>(TEXT("GraphicsTabButton")), Find<UTextBlock>(TEXT("GraphicsTabText")), Tab == ERROptionsTab::Graphics);
+	StyleTabButton(Find<UButton>(TEXT("GameplayTabButton")), Find<UTextBlock>(TEXT("GameplayTabText")), Tab == ERROptionsTab::Gameplay);
+	OnTabShown(Tab);
+}
+
+void URROptionsWidget::StyleTabButton(UButton* Button, UTextBlock* Label, bool bActive)
+{
+	const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
+	if (Button)
+	{
+		UTexture2D* Texture = (bActive ? Options->ActiveTabTexture : Options->InactiveTabTexture).LoadSynchronous();
+		const float Margin = bActive ? Options->ActiveTabMargin : Options->InactiveTabMargin;
+		if (Texture)
+		{
+			FButtonStyle Style = Button->GetStyle();
+			// Keep the plate height of the layout (the Box margins are drawn at ImageSize), width from the texture aspect.
+			const float Height = Style.Normal.ImageSize.Y > 1.f ? Style.Normal.ImageSize.Y : 77.f;
+			const FVector2D Size(Height * Texture->GetSizeX() / FMath::Max(Texture->GetSizeY(), 1), Height);
+			for (FSlateBrush* Brush : {&Style.Normal, &Style.Hovered, &Style.Pressed})
+			{
+				Brush->SetResourceObject(Texture);
+				Brush->DrawAs = ESlateBrushDrawType::Box;
+				Brush->Margin = FMargin(Margin, 0.f);
+				Brush->ImageSize = Size;
+			}
+			Style.Normal.TintColor = FSlateColor(FLinearColor::White);
+			Style.Hovered.TintColor = FSlateColor(FLinearColor(1.15f, 1.15f, 1.15f, 1.f));
+			Style.Pressed.TintColor = FSlateColor(FLinearColor(0.8f, 0.8f, 0.8f, 1.f));
+			Button->SetStyle(Style);
+		}
+	}
+	if (Label)
+	{
+		Label->SetColorAndOpacity(FSlateColor(bActive ? Options->ActiveTabTextColor : Options->InactiveTabTextColor));
+	}
+}
+
+void URROptionsWidget::HandleSoundTab() { ShowTab(ERROptionsTab::Sound); }
+void URROptionsWidget::HandleGraphicsTab() { ShowTab(ERROptionsTab::Graphics); }
+void URROptionsWidget::HandleGameplayTab() { ShowTab(ERROptionsTab::Gameplay); }
+void URROptionsWidget::HandleBackClicked() { Back(); }
+void URROptionsWidget::HandleResetClicked() { ResetCurrentTab(); }
+
+void URROptionsWidget::HandleKeep()
+{
+	if (URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this))
+	{
+		Subsystem->KeepDisplay();
+	}
+}
+
+void URROptionsWidget::HandleRevert()
+{
+	if (URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this))
+	{
+		Subsystem->RevertDisplay();
+	}
+}
+
+void URROptionsWidget::ResetCurrentTab()
+{
+	URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this);
+	if (CurrentTab == ERROptionsTab::Graphics && Subsystem)
+	{
+		Subsystem->ResetGraphicsToDefaults();
+	}
+	else if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
+	{
+		Settings->ResetTabToDefaults(CurrentTab);
+	}
+}
+
+// ---- Values ----
+
+void URROptionsWidget::RefreshFromSettings()
+{
+	const URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
 	if (!Settings)
 	{
 		return;
 	}
-	if (RROptionsWidget::IsVolumeRow(Row))
+	TGuardValue<bool> RefreshGuard(bRefreshing, true);
+	const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
+	const ERRVolumeGroup Groups[] = {ERRVolumeGroup::Master, ERRVolumeGroup::Music, ERRVolumeGroup::Effects};
+	for (int32 Index = 0; Index < 3; ++Index)
 	{
-		Settings->SetVolume(RROptionsWidget::ToVolumeGroup(Row), Value);
+		const float Volume = Settings->GetVolume(Groups[Index]);
+		SetSlider(RROptionsText::VolumeKeys[Index], Volume, RROptionsText::Percent(Volume * 100.f));
 	}
-	else if (Row == ERROptionRow::ResolutionScale)
+	const float Scale = Settings->GetResolutionScalePercent();
+	const float ScaleRange = FMath::Max(Options->MaxResolutionScalePercent - Options->MinResolutionScalePercent, 1.f);
+	SetSlider(TEXT("ResolutionScale"), (Scale - Options->MinResolutionScalePercent) / ScaleRange, RROptionsText::Percent(Scale));
+
+	SetSelectorText(TEXT("WindowMode"), RROptionsText::WindowModeName(Settings->GetFullscreenMode()));
+	const FIntPoint Resolution = Settings->GetScreenResolution();
+	SetSelectorText(TEXT("Resolution"), FText::FromString(FString::Printf(TEXT("%d x %d"), Resolution.X, Resolution.Y)));
+	SetSelectorText(TEXT("FrameLimit"), RROptionsText::FrameLimitName(FMath::RoundToInt(Settings->GetFrameRateLimit())));
+	SetSelectorText(TEXT("Preset"), RROptionsText::QualityName(static_cast<int32>(Settings->GetQualityPreset())));
+	for (int32 Index = 0; Index < UE_ARRAY_COUNT(RROptionsText::QualityKeys); ++Index)
 	{
-		Settings->SetResolutionScalePercent(Value);
+		SetSelectorText(RROptionsText::QualityKeys[Index], RROptionsText::QualityName(Settings->GetQualitySetting(static_cast<ERRQualitySetting>(Index))));
 	}
-	RefreshValues();
+	SetToggle(TEXT("VSync"), Settings->IsVSyncEnabled());
+	for (int32 Index = 0; Index < UE_ARRAY_COUNT(RROptionsText::ToggleKeys); ++Index)
+	{
+		SetToggle(RROptionsText::ToggleKeys[Index], Settings->GetGameplayToggle(static_cast<ERRGameplayToggle>(Index)));
+	}
 }
 
-void URROptionsWidget::RefreshValues()
+void URROptionsWidget::SetSlider(const FString& Key, float Normalized, const FText& ValueText)
 {
-	for (FRROptionsRowWidgets& Widgets : Rows)
+	const float Clamped = FMath::Clamp(Normalized, 0.f, 1.f);
+	if (USlider* Slider = Find<USlider>(Key + TEXT("Slider")))
 	{
-		RefreshRow(Widgets);
+		Slider->SetValue(Clamped);
+	}
+	if (UProgressBar* Fill = Find<UProgressBar>(Key + TEXT("Fill")))
+	{
+		Fill->SetPercent(Clamped);
+	}
+	if (UTextBlock* Text = Find<UTextBlock>(Key + TEXT("Value")))
+	{
+		Text->SetText(ValueText);
 	}
 }
 
-FString URROptionsWidget::GetRowValueString(ERROptionRow Row) const
+void URROptionsWidget::SetSelectorText(const FString& Key, const FText& ValueText)
 {
-	for (const FRROptionsRowWidgets& Widgets : Rows)
+	if (UTextBlock* Text = Find<UTextBlock>(Key + TEXT("Value")))
 	{
-		if (Widgets.Row == Row)
+		Text->SetText(ValueText);
+	}
+}
+
+void URROptionsWidget::SetToggle(const FString& Key, bool bOn)
+{
+	if (UCheckBox* CheckBox = Find<UCheckBox>(Key + TEXT("Toggle")))
+	{
+		CheckBox->SetIsChecked(bOn);
+	}
+	if (UTextBlock* State = Find<UTextBlock>(Key + TEXT("State")))
+	{
+		State->SetText(FText::FromString(bOn ? TEXT("ON") : TEXT("OFF")));
+		if (UOverlaySlot* StateSlot = Cast<UOverlaySlot>(State->Slot))
 		{
-			return Widgets.Toggle && Widgets.ToggleText ? Widgets.ToggleText->GetText().ToString()
-				: Widgets.Value ? Widgets.Value->GetText().ToString() : FString();
+			StateSlot->SetHorizontalAlignment(bOn ? HAlign_Left : HAlign_Right);
 		}
 	}
-	return FString();
+	if (UWidget* Knob = GetWidgetFromName(FName(*(Key + TEXT("Knob")))))
+	{
+		if (UOverlaySlot* KnobSlot = Cast<UOverlaySlot>(Knob->Slot))
+		{
+			KnobSlot->SetHorizontalAlignment(bOn ? HAlign_Right : HAlign_Left);
+		}
+		else if (UHorizontalBoxSlot* BoxSlot = Cast<UHorizontalBoxSlot>(Knob->Slot))
+		{
+			BoxSlot->SetHorizontalAlignment(bOn ? HAlign_Right : HAlign_Left);
+		}
+	}
 }
 
-void URROptionsWidget::RefreshRow(FRROptionsRowWidgets& Widgets)
+void URROptionsWidget::OnSliderChanged(const FString& Key, float Value)
 {
-	const URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
-	if (!Settings || !Widgets.Value)
+	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
+	if (!Settings || bRefreshing)
 	{
 		return;
 	}
-	FText Text;
-	ERRGraphicsDetail Detail;
-	switch (Widgets.Row)
+	if (Key == TEXT("ResolutionScale"))
 	{
-	case ERROptionRow::MasterVolume:
-	case ERROptionRow::MusicVolume:
-	case ERROptionRow::EffectsVolume:
-	{
-		const float Volume = Settings->GetVolume(RROptionsWidget::ToVolumeGroup(Widgets.Row));
-		Text = URRGameUserSettings::GetPercentText(Volume, false);
-		if (Widgets.Slider) { Widgets.Slider->SetValue(Volume); }
-		break;
+		const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
+		Settings->SetResolutionScalePercent(FMath::Lerp(Options->MinResolutionScalePercent, Options->MaxResolutionScalePercent, Value));
+		return;
 	}
-	case ERROptionRow::ResolutionScale:
+	for (int32 Index = 0; Index < 3; ++Index)
 	{
-		const float Percent = Settings->GetResolutionScalePercent();
-		Text = URRGameUserSettings::GetPercentText(Percent, true);
-		if (Widgets.Slider) { Widgets.Slider->SetValue(Percent); }
-		break;
-	}
-	case ERROptionRow::WindowMode: Text = URRGameUserSettings::GetWindowModeText(Settings->GetWindowMode()); break;
-	case ERROptionRow::Resolution:
-	{
-		Text = URRGameUserSettings::GetResolutionText(Settings->GetShownResolution());
-		const bool bSelectable = Settings->IsResolutionSelectable();
-		if (Widgets.LeftButton) { Widgets.LeftButton->SetIsEnabled(bSelectable); }
-		if (Widgets.RightButton) { Widgets.RightButton->SetIsEnabled(bSelectable); }
-		break;
-	}
-	case ERROptionRow::VSync:
-	case ERROptionRow::DamageNumbers:
-	case ERROptionRow::AimIndicator:
-	case ERROptionRow::ScreenShake:
-	case ERROptionRow::PauseOnFocusLoss:
-	{
-		ERRGameplayOption Option;
-		const bool bOn = RROptionsWidget::ToGameplayOption(Widgets.Row, Option) ? Settings->GetGameplayOption(Option) : Settings->IsVSyncEnabled();
-		Text = URRGameUserSettings::GetOnOffText(bOn);
-		if (Widgets.ToggleText)
+		if (Key == RROptionsText::VolumeKeys[Index])
 		{
-			Widgets.ToggleText->SetText(Text);
-			if (UOverlaySlot* TextSlot = Cast<UOverlaySlot>(Widgets.ToggleText->Slot))
-			{
-				// On: label left, thumb right; Off: thumb left, label right (options mockup).
-				TextSlot->SetHorizontalAlignment(bOn ? HAlign_Left : HAlign_Right);
-				const float Pad = AppliedRowHeight > 1.f ? AppliedRowHeight * 0.45f : 18.f;
-				TextSlot->SetPadding(bOn ? FMargin(Pad, 0.f, 0.f, 0.f) : FMargin(0.f, 0.f, Pad, 0.f));
-			}
+			Settings->SetVolume(static_cast<ERRVolumeGroup>(Index), Value);
 		}
-		if (Widgets.ThumbBox)
-		{
-			if (UOverlaySlot* ThumbSlot = Cast<UOverlaySlot>(Widgets.ThumbBox->Slot))
-			{
-				ThumbSlot->SetHorizontalAlignment(bOn ? HAlign_Right : HAlign_Left);
-				const float Pad = AppliedRowHeight > 1.f ? AppliedRowHeight * 0.1f : 4.f;
-				ThumbSlot->SetPadding(FMargin(Pad, 0.f, Pad, 0.f));
-			}
-		}
-		break;
 	}
-	case ERROptionRow::FrameRateLimit: Text = URRGameUserSettings::GetFrameRateLimitText(Settings->GetFrameRateLimitValue()); break;
-	case ERROptionRow::QualityPreset: Text = URRGameUserSettings::GetQualityLevelText(Settings->GetQualityPreset()); break;
-	default:
-		if (RROptionsWidget::ToDetail(Widgets.Row, Detail))
-		{
-			Text = URRGameUserSettings::GetQualityLevelText(Settings->GetGraphicsDetail(Detail));
-		}
-		break;
-	}
-	Widgets.Value->SetText(Text);
 }
 
-void URROptionsWidget::HandleSoundTabClicked()
+void URROptionsWidget::OnToggleChanged(const FString& Key, bool bOn)
 {
-	ShowTab(ERROptionsTab::Sound);
-}
-
-void URROptionsWidget::HandleGraphicsTabClicked()
-{
-	ShowTab(ERROptionsTab::Graphics);
-}
-
-void URROptionsWidget::HandleGameplayTabClicked()
-{
-	ShowTab(ERROptionsTab::Gameplay);
-}
-
-FString URROptionsWidget::GetTabName(ERROptionsTab Tab)
-{
-	return Tab == ERROptionsTab::Sound ? TEXT("Sound") : Tab == ERROptionsTab::Graphics ? TEXT("Graphics") : TEXT("Gameplay");
-}
-
-void URROptionsWidget::HandleResetClicked()
-{
-	ResetCurrentTab();
-}
-
-void URROptionsWidget::HandleBackClicked()
-{
-	Back();
-}
-
-void URROptionsWidget::HandleKeepClicked()
-{
-	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
+	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
+	if (!Settings || bRefreshing)
 	{
-		Settings->ConfirmDisplayChange();
+		return;
+	}
+	if (Key == TEXT("VSync"))
+	{
+		Settings->SetVSyncAndApply(bOn);
+	}
+	else if (const int32 Index = RROptionsText::ToggleIndex(Key); Index != INDEX_NONE)
+	{
+		Settings->SetGameplayToggle(static_cast<ERRGameplayToggle>(Index), bOn);
 	}
 }
 
-void URROptionsWidget::HandleRevertClicked()
+void URROptionsWidget::StepSelector(const FString& Key, int32 Direction)
 {
-	if (URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings())
+	URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
+	URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this);
+	if (!Settings)
 	{
-		Settings->RevertDisplayChange();
+		return;
+	}
+	const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
+	auto Wrap = [](int32 Index, int32 Count) { return Count > 0 ? (Index % Count + Count) % Count : 0; };
+
+	if (Key == TEXT("WindowMode") && Subsystem)
+	{
+		const int32 Mode = Wrap(static_cast<int32>(Settings->GetFullscreenMode()) + Direction, 3);
+		Subsystem->SetWindowMode(EWindowMode::ConvertIntToWindowMode(Mode));
+	}
+	else if (Key == TEXT("Resolution") && Subsystem)
+	{
+		const TArray<FIntPoint> Resolutions = Subsystem->GetResolutionOptions();
+		const int32 Current = Resolutions.IndexOfByKey(Settings->GetScreenResolution());
+		if (Resolutions.Num() > 1)
+		{
+			Subsystem->SetResolution(Resolutions[Wrap(Current + Direction, Resolutions.Num())]);
+		}
+	}
+	else if (Key == TEXT("FrameLimit"))
+	{
+		const TArray<int32>& Limits = Options->FrameRateLimits;
+		const int32 Current = Limits.IndexOfByKey(FMath::RoundToInt(Settings->GetFrameRateLimit()));
+		if (Limits.Num() > 0)
+		{
+			const int32 Next = Current == INDEX_NONE ? (Direction > 0 ? 0 : Limits.Num() - 1) : Wrap(Current + Direction, Limits.Num());
+			Settings->SetFrameRateLimitAndApply(static_cast<float>(Limits[Next]));
+		}
+	}
+	else if (Key == TEXT("Preset"))
+	{
+		const int32 Current = static_cast<int32>(Settings->GetQualityPreset());
+		const int32 Next = Current > 3 ? (Direction > 0 ? 0 : 3) : Wrap(Current + Direction, 4);
+		Settings->SetQualityPreset(static_cast<ERRQualityPreset>(Next));
+	}
+	else if (const int32 Index = RROptionsText::QualityIndex(Key); Index != INDEX_NONE)
+	{
+		const ERRQualitySetting Setting = static_cast<ERRQualitySetting>(Index);
+		Settings->SetQualitySetting(Setting, Wrap(Settings->GetQualitySetting(Setting) + Direction, 4));
 	}
 }
+
+// ---- Keep-or-revert dialog ----
 
 void URROptionsWidget::HandleDisplayConfirmChanged(bool bPending)
 {
-	if (ConfirmPanel)
+	if (UWidget* Dialog = GetWidgetFromName(TEXT("ConfirmDialog")))
 	{
-		ConfirmPanel->SetVisibility(bPending ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+		Dialog->SetVisibility(bPending ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	}
-	RefreshValues();
-	if (bPending && KeepButton)
+	UpdateCountdownText();
+	if (bPending)
 	{
-		KeepButton->SetKeyboardFocus();
+		if (UWidget* Keep = GetWidgetFromName(TEXT("KeepButton")))
+		{
+			Keep->SetKeyboardFocus();
+		}
 	}
-	else if (!bPending && GraphicsTabButton && IsInViewport())
+	else if (!bClosing)
 	{
-		GraphicsTabButton->SetKeyboardFocus();
+		SetKeyboardFocus();
+	}
+	RefreshFromSettings();
+}
+
+void URROptionsWidget::UpdateCountdownText()
+{
+	const URROptionsSubsystem* Subsystem = URROptionsSubsystem::Get(this);
+	if (!Subsystem || !Subsystem->IsDisplayConfirmPending())
+	{
+		return;
+	}
+	if (UTextBlock* Text = Find<UTextBlock>(TEXT("ConfirmCountdownText")))
+	{
+		Text->SetText(FText::FromString(FString::Printf(TEXT("Reverting in %d s"), FMath::CeilToInt(Subsystem->GetDisplayConfirmSecondsLeft()))));
 	}
 }

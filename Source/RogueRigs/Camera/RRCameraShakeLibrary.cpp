@@ -93,12 +93,11 @@ URRCameraShakeModifier* URRCameraShakeLibrary::GetOrAddShakeModifier(APlayerCame
 
 UCameraShakeBase* URRCameraShakeLibrary::StartShake(APlayerCameraManager* CameraManager, float Scale, TSubclassOf<UCameraShakeBase> ShakeClass)
 {
-	// Screen shake option of the Gameplay tab (options-menu): Off plays no shake at all.
-	if (!URRGameUserSettings::IsGameplayOptionOn(ERRGameplayOption::ScreenShake))
+	// Options screen Screen shake toggle off (task-500-03): no shake at all.
+	if (!URRGameUserSettings::IsGameplayToggleOn(ERRGameplayToggle::ScreenShake))
 	{
 		return nullptr;
 	}
-
 	URRCameraShakeModifier* ShakeModifier = GetOrAddShakeModifier(CameraManager);
 	if (!ShakeModifier)
 	{

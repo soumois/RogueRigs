@@ -1,23 +1,20 @@
 ---
 id: sys-pause-menu
-description: "Pause menu C++ as built: controller open/resume/exit, Options, focus-loss pause, URRPauseMenuWidget stats and text formats, pause keys, refusals, rr.Debug.PauseMenu."
+description: "Pause menu C++ as built: controller open/resume/exit, URRPauseMenuWidget stats struct and text formats, pause keys, refusal rules, rr.Debug.PauseMenu; open for pausing or stats."
 parent: systems-ui-index
 kind: doc
 ---
 # Pause menu
 
-- responsibility: pauses the run on a key, shows the miner stats screen (Resume, Options, Exit), resumes or returns to the main menu. Display only; no stat is changed.
+- responsibility: pauses the run on a key, shows the miner stats screen (Resume, Exit), resumes or returns to the main menu. Display only; no stat is changed.
 - main_classes: `ARRPlayerController` (`Player/RRPlayerController.h/.cpp`), `URRPauseMenuWidget` (Abstract `UUserWidget`, `UI/RRPauseMenuWidget.h/.cpp`), `UI/RRPauseMenuDebugCommands.cpp` (not shipping). Task-424-03.
 - entry_points:
   - Controller: `OpenPauseMenu`, `ClosePauseMenu`, `ExitPauseMenuToMainMenu`, `TogglePauseMenu(Source)`, `IsPauseMenuOpen`, `CanOpenPauseMenu(OutReason)`, `GetPauseMenuWidget`.
-  - Widget: `Resume()`, `Exit()`, `GetStats()` -> `FRRPauseMenuStats`, `RefreshStats()` (fires BlueprintImplementableEvent `OnStatsRefreshed(const FRRPauseMenuStats&)`), `FocusResume()`, `OpenOptions`, `CloseOptions`, `IsOptionsOpen` (options screen at Z 42, [[sys-options-screen]]), statics `BuildStats(const ARRMiner*)` and `DescribeStats`. `BindWidgetOptional` `ResumeButton`, `OptionsButton`, `ExitButton`, bound by the C++ base.
-  - Controller (task-506-01, c72ae69e): `PressPauseKey` (Back on the options screen when open, else `TogglePauseMenu`), `HandleWindowFocusLost` (opens the menu when the Gameplay option Pause on focus loss is On, [[sys-game-settings]]; bound at BeginPlay to Slate `OnApplicationActivationStateChanged`, removed at EndPlay).
-  - Console `rr.Debug.PauseMenu open|resume|exit|options|key|focuslost` (`ECVF_Cheat`, controller of player 0 via `RRCheats::FindCheatWorld`, same functions; [[sys-cheats]]).
+  - Widget: `Resume()`, `Exit()`, `GetStats()` -> `FRRPauseMenuStats`, `RefreshStats()` (fires BlueprintImplementableEvent `OnStatsRefreshed(const FRRPauseMenuStats&)`), `FocusResume()`, statics `BuildStats(const ARRMiner*)` and `DescribeStats`. `BindWidgetOptional` `ResumeButton`, `OptionsButton` (task-510-04: `OpenOptions()`, options screen over the menu, game stays paused, [[sys-options]]), `ExitButton`, bound by the C++ base. `TogglePauseMenu` sends the pause key to an open options screen (its Escape).
+  - Console `rr.Debug.PauseMenu open|resume|exit` (`ECVF_Cheat`, controller of player 0 via `RRCheats::FindCheatWorld`, same functions; [[sys-cheats]]).
 - data: `EditDefaultsOnly` on the controller: `PauseMenuWidgetClass` (`TSubclassOf<URRPauseMenuWidget>`, empty = pause without a screen, logged; set to [[wbp-pause-menu]] in [[bp-rr-player-controller]]), `PauseMenuWidgetZOrder` 40 (HUD 0, transitions 50), `PauseMenuAction` (optional IA, must have Trigger When Paused), `PauseMenuKeys` (default Escape, P, Gamepad_Special_Right). With `PauseMenuAction` unset, a transient Boolean `UInputAction` (`bTriggerWhenPaused`) is mapped to `PauseMenuKeys` in a transient context at `MappingContextPriority`+2, bound on Started to `HandlePauseMenu` -> `TogglePauseMenu("pause key")`. IMC_Miner is not edited. The main menu has its own controller: no action there.
 - flow:
   - Open: `SetPause(true)`, widget created at Z 40, `RefreshStats`, Game and UI input mode, Resume focused, cursor shown.
-  - Options: the options screen opens over the menu, game still paused; Back, Escape or the pause key closes it only, focus back on Options.
-  - Focus loss: the window losing focus opens the menu when the option is On (same refusals as Open), nothing when Off.
   - Resume: widget removed, `SetPause(false)`, `RestoreGameInputMode`.
   - Exit: only while open; calls `URRRunFlowSubsystem::ReturnToMainMenu` ([[sys-objectives-run-flow]]): `ResetRun` then `OpenLevel(MainMenuMapName)`, no loading screen or fade ([[sys-main-menu]]). If refused the menu stays open with a warning.
   - Open refused (reason logged): no local player, menu open, exit requested, game already paused by another screen (level-up cards, end screens), transition or loading running, run ended, game over, miner dead.
@@ -31,7 +28,6 @@ kind: doc
 - implements: [[pause-menu]].
 - gotchas:
   - Verified (task-424-05): -game captures at four resolutions with one weapon: menu opens, stats match the log, Resume and Exit through the console work (Exit reaches L_MainMenu). Not verified in game: real key presses, layouts with two to four weapons.
-  - Verified (task-506-01, 03, 04): options from the menu (paused 1), pause key with options open = Back only, real window deactivation opens the menu (`Saved/Captures/task506_01_run4`), Off logs no pause.
   - The HUD faintly shows through the backdrop (alpha 0.94, widget Z 40).
 
 ## Relations
@@ -45,6 +41,4 @@ kind: doc
 - [[sys-upgrades]] — the picked upgrades behind the global bonuses.
 - [[sys-objectives-run-flow]] — ReturnToMainMenu.
 - [[task-424-pause-menu-stats]] — the task that built it.
-- [[sys-options-screen]] — the screen opened by Options.
-- [[sys-game-settings]] — the focus-loss option.
-- [[task-506-options-gameplay-and-pause]] — added Options and the focus-loss pause.
+- [[sys-options]] — the options screen its Options button opens.

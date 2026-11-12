@@ -20,7 +20,7 @@ kind: note
 - [[run-shop]] — run-only purchases between levels, paid in ore; content open.
 - [[main-menu]] — screen at game start: background image, New Run, Options placeholder, Exit, start-up map.
 - [[pause-menu]] — in-run pause screen: miner stats global and per weapon, Resume, Exit to main menu.
-- [[options-menu]] — options screen from the main and pause menus: Sound, Graphics, Gameplay settings, persistence, look; values provisional.
+- [[options-screen]] — settings screen from the main and pause menus: Sound, Graphics, Gameplay, display countdown, saving, mockup look.
 - [[death-screen]] — run-lost screen on the miner's death: death sequence, appearance, look, recap, Retry and Main Menu.
 
 ## Relations

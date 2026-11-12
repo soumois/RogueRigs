@@ -17,10 +17,11 @@ Requested by the owner 2026-11-03 ([[task-424-pause-menu-stats]]). Values provis
 ## Content (provisional, task-424 Q3)
 - Global: the miner's own stats of [[player-stats]] at their current value (max health and luck in points; move speed, pickup radius, XP gain, mining speed as a bonus % over base), then the sum of global weapon bonuses taken (damage %, fire rate %, reload speed %, critical chance and critical damage in points).
 - Per weapon: one block per owned weapon with its current damage, fire rate, reload speed, critical chance, critical damage, magazine and pierce; locked slots not shown.
-- Labels in English, hardcoded in the widget like [[main-menu]]; title "PAUSED"; buttons "Resume", "Options" and "Exit" (Options added owner 2026-11-11, task-504: opens [[options-menu]], the game stays paused).
+- Labels in English, hardcoded in the widget like [[main-menu]]; title "PAUSED"; buttons "Resume" and "Exit".
 
 ## Buttons (provisional, task-424 Q1)
 - Resume: closes the menu and unpauses.
+- Options (task-510, provisional, owner 2026-11-12): third button between Resume and Exit, same style, opens the [[options-screen]]; the game stays paused; Back or Escape returns here. Buttons are "Resume", "Options", "Exit".
 - Exit: no confirmation; ends the run as the run-won "Main Menu" button does ([[main-menu]]): run reset, ore back to 0, L_MainMenu opened directly, no loading screen, no fade.
 
 ## Look (owner 2026-11-03, decided in the request)
@@ -34,4 +35,4 @@ Requested by the owner 2026-11-03 ([[task-424-pause-menu-stats]]). Values provis
 - [[main-menu]] — where Exit leads; run-won Main Menu behaviour reused.
 - [[art-prompts-level-end-screen-mockup]] — the style reference and reusable sprites.
 - [[task-424-pause-menu-stats]] — the task that builds it.
-- [[options-menu]] — the options screen its Options button opens.
+- [[options-screen]] — opened by the Options button.

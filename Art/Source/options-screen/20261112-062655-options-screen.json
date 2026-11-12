@@ -1,0 +1,28 @@
+{
+  "run_id": "20261112-062655-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/01-mockup.txt",
+  "prompt": "Same art style as Image 1 (the validated pause menu mockup) and Image 2 (the level-end screen mockup). Keep exactly their visual language: the dimmed almost black arena behind with violet ore crystals in the corners, the title with riveted side bars, the riveted teal and gunmetal frame with teal corner brackets, thin divider lines under headers, the cream rusty buttons with teal ends, the same fonts, the same rust and wear, flat-shaded low-poly game UI look, 16:9.\n\nMake a new screen: the OPTIONS screen. Do not copy the pause menu or level-end texts. All text is English, crisp and readable.\n\nLayout:\n- Top: title \"OPTIONS\" with the same riveted side bars as \"PAUSED\".\n- Under the title, a row of three tabs side by side, in gunmetal with teal trim: \"Sound\", \"Graphics\", \"Gameplay\". The \"Graphics\" tab is the active one: brighter, cream plate, connected to the frame below. \"Sound\" and \"Gameplay\" are dark and inactive.\n- Centre: one large riveted teal and gunmetal frame (same frame as Image 1) holding the Graphics settings in two columns separated by a thin vertical divider line, each column with a header under a thin line. Each row has its label on the left and its control on the right, all controls right-aligned in the column.\n  1. Column \"Display\", rows:\n     \"Window mode\" with an arrow selector \"<  Fullscreen  >\",\n     \"Resolution\" with an arrow selector \"<  1920 x 1080  >\",\n     \"VSync\" with an On/Off toggle switch set to On (teal),\n     \"Frame rate limit\" with an arrow selector \"<  60  >\",\n     \"Resolution scale\" with a horizontal slider (gunmetal track, teal filled part, riveted handle) at 100 %, value \"100%\" on its right.\n  2. Column \"Quality\", rows:\n     \"Quality preset\" with an arrow selector \"<  High  >\",\n     \"Shadows\" with an arrow selector \"<  High  >\",\n     \"Effects\" with an arrow selector \"<  High  >\",\n     \"Anti-aliasing\" with an arrow selector \"<  High  >\",\n     \"Post-processing\" with an arrow selector \"<  High  >\",\n     \"Textures\" with an arrow selector \"<  High  >\".\n  The arrow selectors are small dark gunmetal plates with two small teal arrow buttons at the ends and the value centred between them.\n- Bottom: two buttons side by side, both in the style of the cream rusty \"Resume\" button with teal ends: \"Reset to defaults\" and \"Back\".\n\nDo not add anything else: no ore counter, no subtitle, no icons, no Apply button. No yellow, green or blue elements. Keep the text sizes consistent and every row aligned.",
+  "refs": [
+    "Art/Source/pause-menu/20261102-223354-pause-menu-1.png",
+    "Art/Source/level-end-screen/reference/chatgpt-level-end-mockup-2026-10-30.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "9128e355910d1e045f56394a67d042b9",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000ae5881fdb6976c8e089b3c50.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261112-062655-options-screen-1.png"
+  ]
+}

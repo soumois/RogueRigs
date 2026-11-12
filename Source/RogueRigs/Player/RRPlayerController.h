@@ -81,9 +81,6 @@ public:
 	/** Pause key: ClosePauseMenu when open, else OpenPauseMenu. */
 	bool TogglePauseMenu(const TCHAR* Source);
 
-	/** Pause key press: Back on the options screen opened from the pause menu (the menu stays), else TogglePauseMenu. */
-	bool PressPauseKey();
-
 	/** True between OpenPauseMenu and ClosePauseMenu. */
 	bool IsPauseMenuOpen() const { return bPauseMenuOpen; }
 
@@ -99,13 +96,6 @@ public:
 
 	/** The run-lost screen on screen (task-484); null before the run is lost or without RunLostWidgetClass. */
 	URRRunLostWidget* GetRunLostWidget() const { return RunLostWidget; }
-
-	/**
-	 * Game window lost focus (options-menu, Gameplay "Pause when the window loses focus"): opens the pause menu when the option is
-	 * On and CanOpenPauseMenu allows it. False (logged) when the option is Off or the menu was refused. Called by the Slate
-	 * activation event bound at BeginPlay, and by rr.Debug.FocusLost.
-	 */
-	bool HandleWindowFocusLost();
 
 protected:
 	/**
@@ -298,12 +288,6 @@ protected:
 
 	/** True once ExitPauseMenuToMainMenu requested the main menu map (a second Exit is refused). */
 	bool bPauseMenuExitRequested = false;
-
-	/** Slate application activation callback: HandleWindowFocusLost when the application is deactivated. */
-	void HandleApplicationActivationChanged(const bool bIsActive);
-
-	/** FSlateApplication::OnApplicationActivationStateChanged binding (local player, valid between BeginPlay and EndPlay). */
-	FDelegateHandle ApplicationActivationHandle;
 
 	/** If true, the cursor is hidden while a stick aims and shown again when the mouse moves. */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")

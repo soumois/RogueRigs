@@ -66,8 +66,8 @@ Reference images are generated in ChatGPT image generation. The prompts are stor
 - [[art-prompts-level-end-screen-mockup]] — ChatGPT's answer: level-end mockup and asset sheet from the owner, elements taken, 3x3 method.
 - [[art-prompts-pause-menu-mockup]] — pause menu mockup, Kie.ai image-to-image from the level-end mockup: prompt, image, credits.
 - [[art-prompts-death-screen-mockup]] — death screen mockup, Kie.ai image-to-image from the level-end and pause mockups: prompt, image, credits, review.
-- [[art-prompts-options-screen-mockup]] — options screen mockup, Kie.ai image-to-image from the pause and level-end mockups: prompt, image, credits, review, owner words.
 - [[art-prompts-hud-unified-mockup]] — unified in-game HUD mockups, Kie.ai image-to-image from the HUD screenshot: prompts, runs, review; owner chose A, riveted plates.
+- [[art-prompts-options-screen-mockup]] — options screen mockup, Kie.ai image-to-image from the pause and level-end mockups: prompt, image, credits, go.
 - [[art-style-guide]] — the general style rules derived from these prompts.
 - [[visual-style]] — the style these prompts produce.
 - [[asset-pipeline]] — where the images go next (Meshy, Tripo).

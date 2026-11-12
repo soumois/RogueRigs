@@ -1,0 +1,28 @@
+{
+  "run_id": "20261112-063128-options-screen",
+  "asset": "options-screen",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/options-screen/prompts/02-tab.txt",
+  "prompt": "Image 1 is the validated options screen mockup (see the three tabs \"Sound\", \"Graphics\", \"Gameplay\" under the title), Image 2 is the finished cream button sprite of the same game, used as the ACTIVE tab: match its exact shape, size ratio, teal end caps, bolts, gunmetal and rust look. Both are only visual references. Draw, as a clean own version at high resolution, ONE INACTIVE tab plate for a 3-slice sprite: exactly the same outline and the same two teal bolted end caps as Image 2, but the long middle plate is dark gunmetal, almost black charcoal with a faint scratched wear, like the inactive \"Sound\" and \"Gameplay\" tabs of Image 1, instead of cream. Perfectly axis-aligned, flat front view, no perspective. ALL detail (bolts, rivets, rust chips) lives only inside the two end caps, identical on the left and on the right; between the end caps the plate is a plain uniform dark strip of identical height along its whole length, with a thin worn gunmetal rim along its top and bottom edges, NO rivet, NO bolt, NO notch, NO ornament in the middle. Flat-shaded low-poly game UI look, flat colour planes, strong directional light with lifted shadows. The tab fills about 90 percent of the image width, ratio about 4 to 1, centred, with a margin of flat magenta FF00FF all around; the background is flat magenta FF00FF, no shadow, no glow. No text, no letters, no numbers, no icons.",
+  "refs": [
+    "Art/Source/options-screen/20261112-062655-options-screen-1.png",
+    "Art/UI/Shop/T_Shop_ButtonContinue.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "22f46a5d89efe6a664ba53d9756cae44",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/a2/22f46a5d89efe6a664ba53d9756cae44_1794461796555.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/options-screen/20261112-063128-options-screen-1.png"
+  ]
+}

@@ -14,7 +14,7 @@ status: provisional
 - Every number pops (a brief scale punch, and for a critical a flash to white) over 0.25 s, up from 0.1 s; amplitudes, lifetime and fade unchanged (provisional, owner 2026-10-19, task-241).
 - In a crowd, a new number stacks vertically above an open number whose footprint it would overlap (confirmed by the owner after handover-2026-10-06).
 - One number per hit, never merged (since 2026-10-08, see the last line); the earlier merge rule below is history.
-- The player can turn them off.
+- The player can turn them off: Gameplay toggle "Damage numbers" of the [[options-screen]], which also hides heal and ore numbers (task-510, provisional, owner 2026-11-12).
 - Rendered with Niagara at horde scale (digit atlas), fed by the damage pipeline ([[sys-damage]]).
 - Merging window duration: 0.25 s (owner 2026-10-05; removed on 2026-10-08).
 - Milestone: M2, built now (owner 2026-10-05). M1 has a debug text version on the test target dummy (owner, 2026-10-01), extended to every enemy (owner, 2026-10-02); not pooled, so not for horde scale.
