@@ -50,45 +50,25 @@ function budgetOf(level) {
   return row ? { turns: +row[2], unitsM: +row[3] } : null;
 }
 
-// Executor figures the previous closing wrote on the global node (executor_usage), read before write() replaces them, so that
-// budgetAlert sees which threshold this closing crosses. { turns: 0, unitsM: 0 } when the line is absent or none.
-function previousUsage(id) {
-  const num = id.split('-')[1];
-  const f = fs.readdirSync(T).find(x => new RegExp('^task-' + num + '-.*\\.md$').test(x));
-  const m = f && fs.readFileSync(path.join(T, f), 'utf8').match(/^- executor_usage: runs \d+, turns (\d+),.*units (\d*\.?\d+) M\s*$/m);
-  return m ? { turns: +m[1], unitsM: +m[2] } : { turns: 0, unitsM: 0 };
-}
-
-// BUDGET lines (owner 2026-11-12, task-507, replacing the owner-wait of task-502): the executor runs of a global, as far as they
-// have gone, against the turns and units of its level's budget. Over the budget nothing waits for the owner: the closing that
-// crosses it prints a handover line (a fresh executor goes on when subtasks are left), later closings an information line; only
-// the closing that crosses alerts.budgetStopFactor times the budget (cost-rates.json, 5, owner "On pourrait limiter à 5 fois le
-// budget") prints BUDGET STOP, the owner-wait trigger. prev: previousUsage() of the same global. Every line asks for the overrun
-// and its cause in result. null under the budget, and for a global without a level or without an executor run. Never throws:
-// the closing itself still completes.
-function budgetAlert(data, id, prev = { turns: 0, unitsM: 0 }) {
+// ALERT line when the executor run of a global, as far as it has gone, has passed the turns or the units of its level's budget;
+// null otherwise, and for a global without a level or without an executor run. The budget is only recorded (owner 2026-11-12,
+// task-508): no handover, no owner wait. Never throws: the alert must not block a closing.
+function budgetAlert(data, id) {
   const num = id.split('-')[1], task = 'task-' + num;
   try {
     const t = data.tasks.find(x => x.task === task);
     const f = fs.readdirSync(T).find(x => new RegExp('^task-' + num + '-.*\\.md$').test(x));
     if (!t || !t.pilotAgents || !f) return null;
-    const s = fs.readFileSync(path.join(T, f), 'utf8');
-    const m = s.match(/^- verification_level: ([a-z]+)\s*$/m);
+    const m = fs.readFileSync(path.join(T, f), 'utf8').match(/^- verification_level: ([a-z]+)\s*$/m);
     if (!m || m[1] === 'open') return null;
     const b = budgetOf(m[1]);
     if (!b) return `ALERT ${task}: level ${m[1]} has no budget in verification-levels, executor run not compared`;
-    const stop = JSON.parse(fs.readFileSync(path.join(R, 'vault', 'scripts', 'cost-rates.json'), 'utf8')).alerts.budgetStopFactor;
-    const now = { turns: t.pilot.calls, unitsM: parseFloat(Mu(t.pilot.units)) }; // same rounded figure as the executor_usage line
-    const ratio = x => Math.max(x.turns / b.turns, x.unitsM / b.unitsM);
-    if (ratio(now) <= 1) return null;
-    const fig = `${now.turns} turns, ${Mu(t.pilot.units)} M units so far, ${ratio(now).toFixed(1)}x the budget of level ${m[1]} (${b.turns} turns, ${b.unitsM} M units)`;
-    const cause = 'write the overrun and its cause in result and in the final report';
-    if (ratio(now) > stop && ratio(prev) <= stop) return `BUDGET STOP ${task}: executor runs over ${stop}x the budget: ${fig}; with subtasks left write ## Handover, set the next subtask and the global wait-answers with done, remaining and an estimate, and go on only on the owner word (execution-protocol step 5.10); ${cause}`;
-    if (ratio(prev) <= 1) return `BUDGET ${task}: executor runs over the budget at this closing: ${fig}; with subtasks left write ## Handover and stop with HANDOVER, a fresh executor goes on, no owner wait (execution-protocol step 5.10); ${cause}`;
-    return `BUDGET ${task}: executor runs still over the budget: ${fig}; no handover, no owner wait ${ratio(now) > stop ? `(the ${stop}x stop was passed at an earlier closing)` : `below ${stop}x`}; ${cause}`;
+    const unitsM = parseFloat(Mu(t.pilot.units)); // same rounded figure as the executor_usage line
+    if (t.pilot.calls <= b.turns && unitsM <= b.unitsM) return null;
+    return `ALERT ${task}: executor run over the budget of level ${m[1]} (${b.turns} turns, ${b.unitsM} M units): ${t.pilot.calls} turns, ${Mu(t.pilot.units)} M units so far; write the cause in result and list it in the final report`;
   } catch (e) { return `ALERT ${task}: budget not compared (${e.message})`; }
 }
-module.exports = { write, budgetAlert, previousUsage };
+module.exports = { write, budgetAlert };
 
 if (require.main === module) {
   const args = process.argv.slice(2);

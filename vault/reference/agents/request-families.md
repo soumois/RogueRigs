@@ -17,7 +17,7 @@ The relay (main session) picks it from the owner sentence and states it in one l
 | réglage | A setting on an existing system: a value, a scale, a timing, a parameter; no new asset, no new system, no design choice | No planner. `node vault/scripts/task-reglage.js "<owner words>"` writes the global (level light, one subtask) before the run; one fresh executor runs it |
 | comportement | New or changed behaviour or system | Planner, then one executor per global |
 | visuel | A look or taste to find | Planner, then executor; preview first, then owner go before the build ([[orchestration-protocol]] step 3, [[execution-protocol]] step 5.7) |
-| gros morceau | Larger than one standard budget | Planner splits into several globals, one fresh executor each, in order ([[orchestration-protocol]] step 3) |
+| gros morceau | Larger than one standard budget | Planner, then one executor; planned as one global with its subtasks, not split into several globals (owner 2026-11-12, [[task-508-workflow-back-to-old]]) |
 
 Examples: réglage tasks 490, 491, 474; comportement 496, 497, 493; visuel 499, 461, 462; gros morceau 484, 424.
 
@@ -29,7 +29,7 @@ A réglage executor that meets a new asset or system, a value marked `open` or a
 
 ## Relations
 - [[agents-index]] — parent index.
-- [[orchestration-protocol]] — planner path, split of a gros morceau at step 3.
+- [[orchestration-protocol]] — planner path of comportement, visuel and gros morceau.
 - [[agent-planner]] — plans comportement, visuel and gros morceau.
 - [[agent-executor]] — runs every family; wrong-family stop.
 - [[execution-protocol]] — step 0 for a réglage global.
@@ -37,3 +37,4 @@ A réglage executor that meets a new asset or system, a value marked `open` or a
 - [[task-spec]] — `family` field of a plan.
 - [[task-500-request-families]] — owner decision behind this rule.
 - [[task-501-visual-preview-gate]] — preview of the visuel family.
+- [[task-508-workflow-back-to-old]] — owner decision: no split of a gros morceau.

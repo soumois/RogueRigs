@@ -7,8 +7,7 @@
 // line, lint `warn:` and `vault OK` lines, git line-ending warnings and Node stacks are dropped; ALERT lines,
 // refusals (e.g. `tokens is still open`), record-cost.js errors, lint problem lines and hook or commit failures
 // (child's own text, non-zero exit) are printed. On success: the `git log --oneline -1` line,
-// `left: <git status --porcelain line>` for each committed file still modified or untracked, `context: <n>k (<source>)` and,
-// over the threshold with subtasks left, a HANDOVER line (context-now.js, task-502), then last
+// `left: <git status --porcelain line>` for each committed file still modified or untracked, then last
 // `next: <absolute path of <next-global>/<next-subtask>.md>`, or `next: none` when no next subtask was given.
 const path = require('path');
 const { ROOT, node, git, gitData, leftovers, nextLine } = require('./task-quiet');
@@ -38,6 +37,4 @@ const committed = [...new Set(files)];
 git('commit', '-q', '-m', `${doneSub}: done; next ${nextSub || 'none'}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, '--', ...committed);
 process.stdout.write(gitData('log', '--oneline', '-1'));
 leftovers(committed);
-// task-502: executor context at this closing, and HANDOVER over the threshold when the global has subtasks left (never blocks).
-for (const l of require('./context-now').handoverLines(doneGlobal, nextGlobal === doneGlobal && !!nextSub)) console.log(l);
 nextLine(nextGlobal && nextSub ? path.join(ROOT, 'vault', 'reference', 'tasks', nextGlobal, nextSub + '.md') : null);

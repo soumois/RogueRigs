@@ -1,6 +1,6 @@
 ---
 id: verification-levels
-description: "Verification level of a task: criteria, check size, executor budget (handover, stop at 5x), light acceptance, limits. Open to plan or run a task."
+description: "Verification level of a global task: criteria, verification size, indicative executor budget, shortened light acceptance, known limits. Open to plan or run a task."
 parent: agents-index
 kind: rule
 applies_to: orchestrator
@@ -15,7 +15,7 @@ Each global task carries `verification_level`, so that verification follows the 
 | standard | standard | New behaviour or new asset | As before this rule | 90 turns, 1.5 M units |
 | exploratory | exploratoire | A look to find; several loops likely | Capture loop with a fixed number of rounds | 150 turns, 3 M units |
 
-The figures are starting values (provisional, owner 2026-11-06). The budget covers all Executor runs of the global. Crossing it at a subtask closing hands over to a fresh Executor when subtasks are left, without waiting for the owner; only crossing 5 times the budget stops for him (owner 2026-11-12, [[execution-protocol]] step 5.10). Exceeding it is not a failure; the overrun and its cause go in the task `result` ([[agent-executor]] `budget`).
+The figures are starting values (provisional, owner 2026-11-06). The budget is indicative for the Executor's whole run and is only recorded: it never blocks, never hands over and never waits for the owner (owner 2026-11-12, [[execution-protocol]] step 5.9). Exceeding it is not a failure; the overrun and its cause go in the task `result` ([[agent-executor]] `budget`).
 
 ## Limits of each level
 - Light without a before image: add one launch before the change, so 2 launches and 1 sheet. The comparison of [[orchestrator-lessons]] (owner 2026-10-16) stays; only its size changes.
@@ -39,8 +39,7 @@ Example, [[task-474-miner-scale-down]], one Blueprint value and one C++ line:
 - [[orchestration-protocol]] — step 3, where the Planner sets the level.
 - [[execution-protocol]] — where the Executor applies it.
 - [[agent-executor]] — budget rule.
-- [[task-502-executor-handover-budget]] — first budget rule, a stop at the budget, replaced by task-507.
-- [[task-507-budget-no-block]] — owner decision: handover over the budget, stop only at 5 times it.
+- [[task-508-workflow-back-to-old]] — owner decision: budget only recorded again (replaces task-502 and task-507).
 - [[orchestrator-lessons]] — owner rule of 2026-10-16 whose size varies here.
 - [[umg-layout]] — the four resolutions a layout keeps.
 - [[task-474-miner-scale-down]] — the shortening example.

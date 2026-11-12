@@ -33,7 +33,6 @@ Do not explore code, tests or assets, and do not diagnose a reported defect: the
 ## 3. Plan
 Global node: the owner's words, goal, acceptance, GDD check, questions. Add subtasks only when one request spans several systems or roles. A subtask is a checkpoint with its own commit: one role, one outcome, a testable `done_when`, its inputs. Never write file names, functions or steps the Executor can decide. Order subtasks so that every dependency comes first.
 
-- Gros morceau (owner 2026-11-11): when the plan of one request would exceed about one standard budget (1.5 M units, [[verification-levels]]) or 5 subtasks, split it into several globals, each ending in a usable state, ordered by dependency. All are shown and confirmed together, then run one after another, one fresh Executor each.
 - Large batch: keep one global and split it into bounded slices of the same role, with disjoint scope and checks (about 4–5 test families per C++ slice). No tightly coupled splits, no per-file microtasks.
 - Editor work: one main asset per bp subtask (owner 2026-10-14). Order: materials, then Niagara and widgets, then the Blueprint that wires them, then map placement.
 - Doc: a global with cpp or bp subtasks ends with one subtask `agent: doc` whose `inputs` are the `sys-*`, `bp-*` and tool nodes to create or update (owner 2026-10-27).
