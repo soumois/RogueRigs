@@ -57,18 +57,26 @@ namespace RRAudioDebug
 	/** rr.Debug.Click: a left press and release at the cursor, through Slate as a real mouse click. */
 	FAutoConsoleCommand ClickCommand(
 		TEXT("rr.Debug.Click"),
-		TEXT("rr.Debug.Click: presses and releases the left mouse button where the cursor is (pair with rr.Debug.CursorOn)."),
-		FConsoleCommandDelegate::CreateLambda([]()
+		TEXT("rr.Debug.Click [down|up]: presses and releases the left mouse button where the cursor is (pair with rr.Debug.CursorOn); down or up sends only that half."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 		{
 			if (!FSlateApplication::IsInitialized())
 			{
 				return;
 			}
 			FSlateApplication& App = FSlateApplication::Get();
+			const FString Half = Args.Num() > 0 ? Args[0].ToLower() : FString();
 			const TSharedPtr<FGenericWindow> NoWindow;
-			App.OnMouseDown(NoWindow, EMouseButtons::Left);
-			App.OnMouseUp(EMouseButtons::Left);
-			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Click: left click at screen (%.0f, %.0f)."), App.GetCursorPos().X, App.GetCursorPos().Y);
+			if (Half != TEXT("up"))
+			{
+				App.OnMouseDown(NoWindow, EMouseButtons::Left);
+			}
+			if (Half != TEXT("down"))
+			{
+				App.OnMouseUp(EMouseButtons::Left);
+			}
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Click %s: left button at screen (%.0f, %.0f)."), Half.IsEmpty() ? TEXT("click") : *Half,
+				App.GetCursorPos().X, App.GetCursorPos().Y);
 		}));
 }
 
