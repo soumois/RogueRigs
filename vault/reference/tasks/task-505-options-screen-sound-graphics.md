@@ -3,7 +3,7 @@ id: task-505-options-screen-sound-graphics
 description: "Global task: Options screen from the task-504 look: Sound and Graphics tabs, settings saved and applied at launch, opened from the main menu."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Options screen with Sound and Graphics, opened from the main menu
 
@@ -16,13 +16,13 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-11-11, "Owner 2026-11-11, verbatim: "ok pour tout, fait lui juste la remarque pour le Q2 pour la confirmation. Si la maquette est proche et que je n'ai pas fait de commentaire, tu pourras valider ( ou si mon commentaire est valable pour la maquette aussi". The Q2 remark he accepts, as shown to him verbatim: "Q2, pas de confirmation après un changement de résolution. C'est le défaut le plus risqué : une résolution ou un mode d'affichage que l'écran n'accepte pas peut laisser le joueur devant un écran noir, sans moyen de revenir. Le compte à rebours « garder ces réglages ? » existe pour ça. Je le demanderais au moins pour la résolution et le mode fenêtre." Decided: Q1 to Q9 defaults, except Q2: a change of resolution or window mode shows a keep-or-revert countdown that reverts if not confirmed; other changes apply at once, no Apply button. Countdown 15 s and its wording are provisional (Planner), in options-menu. His second sentence concerns only the later replay without him: there the main session may validate a mockup close to the one he validates now, or one his comments still fit. In this run his own go on the mockup stays required.")
 - milestone: M2
 - next_step: task-505-05-options-doc
-- started: 2026-11-12T04:15:45Z
-- waiting_for: budget: done 01, 02, 03 (main menu Options), 04 (capture, four resolutions, countdown run-out); remaining 05 doc (sys-* and bp-* nodes); estimate about 20 turns and 0.5 M units
+- started: 2026-11-12T04:38:11Z
+- waiting_for: none
 - executor_tokens: input 338, cache write 443830, cache read 16549671, output 169084
 - executor_usage: runs 3, turns 165, context start 16k peak 192k, resumes 5, 39 min, units 3.06 M
 - planning_tokens: input 18, cache write 29764, cache read 464930, output 9627
 - planning_usage: ade39ac3 "Plan options screen request" 1/3 (tasks 504, 505, 506), units 0.13 M
-- budget_grants: 1
+- budget_grants: 2
 - result: open
 
 ## Questions
