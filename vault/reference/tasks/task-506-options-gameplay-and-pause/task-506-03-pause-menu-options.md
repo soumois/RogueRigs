@@ -3,7 +3,7 @@ id: task-506-03-pause-menu-options
 description: "Bp: Options button in the pause menu."
 parent: task-506-options-gameplay-and-pause
 kind: task
-status: todo
+status: in-progress
 ---
 # Options screen: Gameplay tab and access from the pause menu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-12T05:03:15Z
 - waiting_for: none
 - result: open
 
