@@ -3,7 +3,7 @@ id: task-511-audio-system-base-sounds
 description: "Global task: Data-driven C++ audio system (event -> sound table) on the existing sound classes, with owner-picked CC0 sounds for 8 events."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Audio system and the first 8 sound effects
 
@@ -17,7 +17,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-511-01-audio-system
 - started: 2026-11-12T17:20:35Z
-- waiting_for: none
+- waiting_for: owner pause (needs Unreal, 2026-11-12); resume on his word
 - result: open
 
 ## Questions

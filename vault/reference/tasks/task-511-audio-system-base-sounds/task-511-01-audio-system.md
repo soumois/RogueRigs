@@ -3,7 +3,7 @@ id: task-511-01-audio-system
 description: "Cpp: Audio system with the event table, wired to the sound classes and to the 8 events, mix rules applied."
 parent: task-511-audio-system-base-sounds
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Audio system and the first 8 sound effects: cpp
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-12T17:20:35Z
-- waiting_for: none
+- waiting_for: owner pause (needs Unreal, 2026-11-12); resume: -game log check of the 6 in-run events and caps, then close
 - result: open
 
 ## Relations
