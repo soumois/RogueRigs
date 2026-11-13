@@ -3,6 +3,7 @@
 #include "Grid/RRLayoutGenerator.h"
 
 #include "HAL/PlatformTime.h"
+#include "Misc/ScopeExit.h"
 #include "RogueRigs.h"
 
 namespace
@@ -190,8 +191,16 @@ void FRRLayoutGenerator::ApplyCarve(const TArray<int32>& Cells)
 TArray<uint8> FRRLayoutGenerator::Reach(int32* OutCount) const
 {
 	TArray<uint8> Mask;
-	Mask.SetNumZeroed(N);
 	TArray<int32> Stack;
+	ReachInto(Mask, Stack, OutCount);
+	return Mask;
+}
+
+void FRRLayoutGenerator::ReachInto(TArray<uint8>& Mask, TArray<int32>& Stack, int32* OutCount) const
+{
+	Mask.SetNumUninitialized(N);
+	FMemory::Memzero(Mask.GetData(), N);
+	Stack.Reset();
 	const int32 Start = SY * W + SX;
 	Mask[Start] = 1;
 	Stack.Add(Start);
@@ -222,14 +231,19 @@ TArray<uint8> FRRLayoutGenerator::Reach(int32* OutCount) const
 	{
 		*OutCount = Count;
 	}
-	return Mask;
 }
 
 TArray<int32> FRRLayoutGenerator::Bfs(const TArray<uint8>& Source) const
 {
 	TArray<int32> Dist;
-	Dist.Init(FarDistance, N);
 	TArray<int32> Queue;
+	BfsInto(Source, Dist, Queue);
+	return Dist;
+}
+
+void FRRLayoutGenerator::BfsInto(const TArray<uint8>& Source, TArray<int32>& Dist, TArray<int32>& Queue) const
+{
+	Dist.Init(FarDistance, N);
 	Queue.SetNumUninitialized(N);
 	int32 Head = 0;
 	int32 Tail = 0;
@@ -262,7 +276,6 @@ TArray<int32> FRRLayoutGenerator::Bfs(const TArray<uint8>& Source) const
 			}
 		}
 	}
-	return Dist;
 }
 
 TArray<int32> FRRLayoutGenerator::BfsFromWalkable() const
@@ -332,18 +345,52 @@ TArray<FRRLayoutGenerator::FRegion> FRRLayoutGenerator::FindRegions(TArray<uint8
 
 int32 FRRLayoutGenerator::RunFiller()
 {
+	const double StartSeconds = FPlatformTime::Seconds();
+	ON_SCOPE_EXIT { FillerSeconds += FPlatformTime::Seconds() - StartSeconds; };
 	const FRRLayoutGenFillerParams& FL = P.Filler;
+	// Scratch buffers allocated once per call. The distance field, the far list and the reachable cells only change when a
+	// walk carves a cell (ApplyCarve only turns rock into floor and counts it), so they are rebuilt only then; the random
+	// draws stay the same in number and order.
+	TArray<uint8> Source;
+	TArray<int32> Dist;
+	TArray<int32> Queue;
+	TArray<uint8> ReachMask;
+	TArray<int32> Stack;
+	TArray<int32> Far;
+	TArray<int32> Reachable;
+	Source.SetNumUninitialized(N);
+	bool bDirty = true;
 	int32 Iteration = 0;
 	for (; Iteration < FL.MaxIter; ++Iteration)
 	{
-		const TArray<int32> Dist = BfsFromWalkable();
-		TArray<int32> Far;
-		for (int32 I = 0; I < N; ++I)
+		if (bDirty)
 		{
-			if (Grid[I] != ERRCellType::Void && Dist[I] > FL.MaxD)
+			for (int32 I = 0; I < N; ++I)
 			{
-				Far.Add(I);
+				Source[I] = IsWalkable(Grid[I]) ? 1 : 0;
 			}
+			BfsInto(Source, Dist, Queue);
+			Far.Reset();
+			for (int32 I = 0; I < N; ++I)
+			{
+				if (Grid[I] != ERRCellType::Void && Dist[I] > FL.MaxD)
+				{
+					Far.Add(I);
+				}
+			}
+			if (Far.Num() > 0)
+			{
+				ReachInto(ReachMask, Stack, nullptr);
+				Reachable.Reset();
+				for (int32 I = 0; I < N; ++I)
+				{
+					if (ReachMask[I])
+					{
+						Reachable.Add(I);
+					}
+				}
+			}
+			bDirty = false;
 		}
 		if (Far.Num() == 0)
 		{
@@ -352,27 +399,32 @@ int32 FRRLayoutGenerator::RunFiller()
 		const int32 Target = Far[FMath::FloorToInt32(Rnd() * Far.Num())];
 		const int32 TX = Target % W;
 		const int32 TY = Target / W;
-		const TArray<uint8> ReachMask = Reach();
+		// Nearest reachable cell, lowest index on a tie: squared integer distances keep the strict order of the distances
+		// (distinct integers up to 2 x 240^2 have distinct square roots), and one square root gives the same BestDist.
 		int32 Best = -1;
-		double BestDist = 1e9;
-		for (int32 I = 0; I < N; ++I)
+		int32 BestD2 = MAX_int32;
+		for (const int32 I : Reachable)
 		{
-			if (ReachMask[I])
+			const int32 DX = I % W - TX;
+			const int32 DY = I / W - TY;
+			const int32 D2 = DX * DX + DY * DY;
+			if (D2 < BestD2)
 			{
-				const double D = Hypot(I % W - TX, I / W - TY);
-				if (D < BestDist)
-				{
-					BestDist = D;
-					Best = I;
-				}
+				BestD2 = D2;
+				Best = I;
 			}
 		}
+		const double BestDist = Best >= 0 ? FMath::Sqrt(static_cast<double>(BestD2)) : 1e9;
 		const int32 BX = Best % W;
 		const int32 BY = Best / W;
 		const double Angle = FMath::Atan2(static_cast<double>(TY - BY), static_cast<double>(TX - BX)) + Gauss() * FL.AimNoise;
 		const int32 Len = FMath::CeilToInt32(BestDist) + FL.ExtraMin + FMath::FloorToInt32(Rnd() * FL.ExtraRand);
 		const double Rho0 = FL.Rho0Min + Rnd() * (FL.Rho0Max - FL.Rho0Min);
+		const int32 FloorBefore = FloorCount;
 		ApplyCarve(WanderWalk(BX, BY, Angle, Len, Rho0, P.Walk.Turn * FL.TurnScale));
+		bDirty = FloorCount != FloorBefore;
+		++FillerIterations;
+		FillerIdleIterations += bDirty ? 0 : 1;
 	}
 	return Iteration;
 }
@@ -569,6 +621,9 @@ void FRRLayoutGenerator::Carve(int32 Seed)
 	RepairCarves = 0;
 	RepairOutcrops = 0;
 	RepairLanes = 0;
+	FillerSeconds = 0.0;
+	FillerIterations = 0;
+	FillerIdleIterations = 0;
 
 	// 1. Outline: polar radius plus value-noise jitter, clamped EdgeMargin cells from the grid edge.
 	const FRRLayoutGenOutlineParams& O = P.Outline;

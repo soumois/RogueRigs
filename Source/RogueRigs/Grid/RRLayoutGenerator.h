@@ -125,6 +125,13 @@ public:
 	/** Longest straight lane of the grid (both axes), in cells. */
 	int32 MeasureLongestLane() const;
 
+	/** Time spent in the far-cell filler during the last Carve, in seconds. */
+	double GetFillerSeconds() const { return FillerSeconds; }
+
+	/** Filler iterations of the last Carve, and those whose walk carved no cell. */
+	int32 GetFillerIterations() const { return FillerIterations; }
+	int32 GetFillerIdleIterations() const { return FillerIdleIterations; }
+
 protected:
 	/** Uniform random value in [0, 1) from the stream. */
 	double Rnd();
@@ -178,8 +185,14 @@ protected:
 	/** Walkable cells 4-connected to the spawn; OutCount receives their number. */
 	TArray<uint8> Reach(int32* OutCount = nullptr) const;
 
+	/** Reach into caller buffers (reused without reallocation): Mask receives the reachable mask, Stack is scratch. */
+	void ReachInto(TArray<uint8>& Mask, TArray<int32>& Stack, int32* OutCount) const;
+
 	/** BFS distance (4-connected through non-void cells) from the cells where Source is non-zero. */
 	TArray<int32> Bfs(const TArray<uint8>& Source) const;
+
+	/** Bfs into caller buffers (reused without reallocation): Dist receives the distances, Queue is scratch. */
+	void BfsInto(const TArray<uint8>& Source, TArray<int32>& Dist, TArray<int32>& Queue) const;
 
 	/** BFS distance from walkable cells. */
 	TArray<int32> BfsFromWalkable() const;
@@ -333,4 +346,9 @@ protected:
 	int32 RepairCarves = 0;
 	int32 RepairOutcrops = 0;
 	int32 RepairLanes = 0;
+
+	/** Filler cost of the current layout (instrumentation only, never read by the generation). */
+	double FillerSeconds = 0.0;
+	int32 FillerIterations = 0;
+	int32 FillerIdleIterations = 0;
 };

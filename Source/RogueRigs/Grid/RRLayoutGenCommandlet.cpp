@@ -54,6 +54,9 @@ int32 URRLayoutGenCommandlet::Main(const FString& Params)
 			Seed, Seconds, FirstHash, bSame ? TEXT("yes") : TEXT("no"), Narrow,
 			Counts[static_cast<int32>(ERRCellType::Void)], Counts[static_cast<int32>(ERRCellType::Rock)],
 			Counts[static_cast<int32>(ERRCellType::Floor)] + Counts[static_cast<int32>(ERRCellType::Spawn)]);
+		UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen carve seed %d filler: %.3f s (%.0f %% of carve), %d iterations, %d carved nothing"),
+			Seed, Generator.GetFillerSeconds(), Seconds > 0.0 ? 100.0 * Generator.GetFillerSeconds() / Seconds : 0.0,
+			Generator.GetFillerIterations(), Generator.GetFillerIdleIterations());
 		return bSame && Narrow == 0 ? 0 : 1;
 	}
 
