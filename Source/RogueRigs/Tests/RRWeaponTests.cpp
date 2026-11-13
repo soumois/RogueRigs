@@ -1601,6 +1601,12 @@ bool FRRWeaponImpactSparksTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRWeaponImpactSparkAssetTest, "RogueRigs.Weapons.ImpactSparkAsset",
 	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
+/**
+ * task-432, updated by task-531: the shipped impact effect of the burst rifle, through the Niagara pool. Since task-465 the rifle
+ * shot Blueprint (bp-projectile) plays NS_ShotImpactBurstGreen; NS_ShotImpactSpark stays the C++ default of ARRProjectile (native
+ * classes and Blueprints without an override). Acquire prewarms the rifle's pool, a hit on a robot requests one effect without
+ * creating a component, and under -RenderOffScreen the effect plays once and comes back to the pool (one-shot).
+ */
 bool FRRWeaponImpactSparkAssetTest::RunTest(const FString& Parameters)
 {
 	FTestWorld TestWorld(TEXT("RRWeaponImpactSparkAssetWorld"));
@@ -1608,15 +1614,17 @@ bool FRRWeaponImpactSparkAssetTest::RunTest(const FString& Parameters)
 	ARRWeapon* Rifle = Grid ? SpawnRifle(*this, TestWorld, FVector::ZeroVector) : nullptr;
 	ARRChaser* StillChaser = Rifle ? SpawnStillChaser(*this, TestWorld, Grid->GetCellCenter(ChaserCell.X, ChaserCell.Y)) : nullptr;
 	URRNiagaraPoolSubsystem* FXPool = TestWorld.Get()->GetSubsystem<URRNiagaraPoolSubsystem>();
-	UNiagaraSystem* Shipped = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_ShotImpactSpark.NS_ShotImpactSpark"));
-	if (!StillChaser || !TestNotNull(TEXT("Niagara pool"), FXPool) || !TestNotNull(TEXT("NS_ShotImpactSpark exists"), Shipped))
+	UNiagaraSystem* CppDefault = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_ShotImpactSpark.NS_ShotImpactSpark"));
+	UNiagaraSystem* Shipped = LoadObject<UNiagaraSystem>(nullptr, TEXT("/Game/RogueRigs/FX/NS_ShotImpactBurstGreen.NS_ShotImpactBurstGreen"));
+	if (!StillChaser || !TestNotNull(TEXT("Niagara pool"), FXPool) || !TestNotNull(TEXT("NS_ShotImpactSpark exists"), CppDefault)
+		|| !TestNotNull(TEXT("NS_ShotImpactBurstGreen exists"), Shipped))
 	{
 		return false;
 	}
 	Rifle->GetAutoFireComponent()->StopFiring();
 	Rifle->GetAbilitySystemComponent()->SetNumericAttributeBase(URRWeaponAttributeSet::GetPierceAttribute(), 1.f);
-	TestEqual(TEXT("turret bullet plays it"), FProjectileAccess::ImpactSparkSystemOf(GetMutableDefault<ARRTurretBullet>()).Get(), Shipped);
-	TestEqual(TEXT("rifle shot plays it"), FProjectileAccess::ImpactSparkSystemOf(Rifle->GetProjectileClass()->GetDefaultObject<ARRProjectile>()).Get(), Shipped);
+	TestEqual(TEXT("C++ default (native turret bullet) is NS_ShotImpactSpark"), FProjectileAccess::ImpactSparkSystemOf(GetMutableDefault<ARRTurretBullet>()).Get(), CppDefault);
+	TestEqual(TEXT("rifle shot plays NS_ShotImpactBurstGreen (task-465)"), FProjectileAccess::ImpactSparkSystemOf(Rifle->GetProjectileClass()->GetDefaultObject<ARRProjectile>()).Get(), Shipped);
 	TestTrue(TEXT("Acquire prewarmed the pool"), FXPool->GetComponentCount(Shipped) > 0);
 	const int32 CreatedAfterPrewarm = FXPool->GetCreatedCount(Shipped);
 
