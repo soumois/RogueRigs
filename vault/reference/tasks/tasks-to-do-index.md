@@ -14,5 +14,5 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-512-audio-shot-quieter]] — Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear. Status wait-answers.
-- [[task-513-audio-wall-impact-distance]] — Split the wall impact from the enemy impact and make it quieter, fading with the distance from the player; values in the event table. Status wait-answers.
+- [[task-512-audio-shot-quieter]] — Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear. Status todo.
+- [[task-513-audio-wall-impact-distance]] — Split the wall impact from the enemy impact and make it quieter, fading with the distance from the player; values in the event table. Status todo.
