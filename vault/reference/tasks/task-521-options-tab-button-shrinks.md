@@ -3,7 +3,7 @@ id: task-521-options-tab-button-shrinks
 description: "Global task: Defect: the clicked or selected Options tab button is drawn smaller than the other tabs."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Options : l'onglet cliqué devient plus petit
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-521-01-tab-size-fix
-- started: open
+- started: 2026-11-13T13:26:17Z
 - waiting_for: none
 - result: open
 

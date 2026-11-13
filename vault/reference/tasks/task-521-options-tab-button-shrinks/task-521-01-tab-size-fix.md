@@ -3,7 +3,7 @@ id: task-521-01-tab-size-fix
 description: "Bp: tabs keep the same size when clicked or selected"
 parent: task-521-options-tab-button-shrinks
 kind: task
-status: todo
+status: in-progress
 ---
 # Options : l'onglet cliqué devient plus petit: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:26:17Z
 - waiting_for: none
 - result: open
 
