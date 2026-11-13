@@ -3,7 +3,7 @@ id: task-526-01-cleanup-fix
 description: "Cpp: chest effects removed with the level they belong to"
 parent: task-526-chest-light-leftover
 kind: task
-status: todo
+status: in-progress
 ---
 # Lumière du coffre restée du niveau précédent: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:10:41Z
 - waiting_for: none
 - result: open
 

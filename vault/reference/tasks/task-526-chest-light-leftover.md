@@ -3,7 +3,7 @@ id: task-526-chest-light-leftover
 description: "Global task: Defect: the bonus chest light effect stays in the next level where no chest is."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Lumière du coffre restée du niveau précédent
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-526-01-cleanup-fix
-- started: open
+- started: 2026-11-13T14:10:41Z
 - waiting_for: none
 - result: open
 
