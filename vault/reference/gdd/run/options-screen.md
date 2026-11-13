@@ -18,7 +18,7 @@ Requested by the owner 2026-11-12 ([[task-510-options-screen]]). Values provisio
 - Black backdrop as the pause menu, over the main menu image or the paused arena; [[umg-layout]].
 
 ## Sound
-- Sliders Master, Music, Effects, 0 to 100 % in steps of 5, 100 % at start, applied live. The game has no sound yet: they drive the volume groups later sounds use ([[audio-direction]]).
+- Sliders Master, Music, Effects, 0 to 100 % in steps of 5, 100 % at start, applied live. The game has no sound yet: they drive the volume groups later sounds use ([[audio-direction]]). Moving Effects plays a sample effect at the new level (owner 2026-11-13, provisional, task-520, see [[audio-direction]]).
 
 ## Graphics
 - No Apply button: every change applies at once.

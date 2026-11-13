@@ -14,12 +14,12 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-520-audio-effects-slider-preview]] — Moving the Effects volume slider plays a sample effect sound so the player hears what it sets. Status wait-answers.
-- [[task-521-options-tab-button-shrinks]] — Defect: the clicked or selected Options tab button is drawn smaller than the other tabs. Status wait-answers.
-- [[task-522-audio-distance-sound-rotors]] — One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child. Status wait-answers.
-- [[task-523-audio-impact-near-quieter]] — Robot impact sound a little quieter near the player, unchanged near the screen edge. Status wait-answers.
-- [[task-524-first-horde-after-console]] — The first horde front starts a little after the console lands instead of with it. Status wait-answers.
-- [[task-525-horde-marker-one-at-a-time]] — The alert bar shows only the next horde "!", removed when that horde ends, then the next one appears. Status wait-answers.
-- [[task-526-chest-light-leftover]] — Defect: the bonus chest light effect stays in the next level where no chest is. Status wait-answers.
-- [[task-527-audio-zone-objective-complete]] — One distance-faded sound when a zone objective (bonus chest, console hack) is validated. Status wait-answers.
-- [[task-528-extractor-takeoff-under-floor]] — Defect: followed after the drop-off, the extractor goes into the floor during its takeoff. Status wait-answers.
+- [[task-520-audio-effects-slider-preview]] — Moving the Effects volume slider plays a sample effect sound so the player hears what it sets. Status todo.
+- [[task-521-options-tab-button-shrinks]] — Defect: the clicked or selected Options tab button is drawn smaller than the other tabs. Status todo.
+- [[task-522-audio-distance-sound-rotors]] — One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child. Status todo.
+- [[task-523-audio-impact-near-quieter]] — Robot impact sound a little quieter near the player, unchanged near the screen edge. Status todo.
+- [[task-524-first-horde-after-console]] — The first horde front starts a little after the console lands instead of with it. Status todo.
+- [[task-525-horde-marker-one-at-a-time]] — The alert bar shows only the next horde "!", removed when that horde ends, then the next one appears. Status todo.
+- [[task-526-chest-light-leftover]] — Defect: the bonus chest light effect stays in the next level where no chest is. Status todo.
+- [[task-527-audio-zone-objective-complete]] — One distance-faded sound when a zone objective (bonus chest, console hack) is validated. Status todo.
+- [[task-528-extractor-takeoff-under-floor]] — Defect: followed after the drop-off, the extractor goes into the floor during its takeoff. Status todo.
