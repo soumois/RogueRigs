@@ -32,6 +32,7 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 - Done: windows and straight lanes repaired, pocket distance checked only (region refill already bounds it); all three are seed-acceptance checks, values in the params `review` section.
 - Level-design verdict ([[task-495-02-ld-review]]): on the 24 starts of task-492-03, 24 of 24 meet every rule (was 4), windows 0.073–0.929, lanes 14–29, farthest pocket 10, all validator OK; repaired areas read as corridors and rock islands, the least natural being rounded outcrops along a narrow plaza (seed 2505).
 - After the pocket guard release ([[task-537-layout-stale-pocket-guard]], generator acceptance and validator only, no visual review): 24 of 24 still pass, 7 accepted seeds change, windows 0.062–0.929, lanes 15–29, farthest pocket 10, all validator OK.
+- Level-design review of the 7 changed starts ([[task-539-01-ld-review]]): all meet the rules; 1500 and 2000 ok; 1700, 1900 and 7000 to watch; 2700 and 2800 defect: merged hidden pockets of 1609 and 1225 cells, which the window rule counts as open floor. Reported only.
 
 ## Relations
 - [[pipelines-index]] — parent index.
@@ -40,3 +41,4 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 - [[agent-level-design]] — the agent that applies them.
 - [[sys-layout-generator]] — the C++ generator that enforces them.
 - [[task-495-02-ld-review]] — level-design verdict after automation.
+- [[task-539-01-ld-review]] — level-design verdict after the pocket guard release.
