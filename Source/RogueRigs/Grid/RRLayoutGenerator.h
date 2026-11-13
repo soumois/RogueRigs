@@ -132,6 +132,18 @@ public:
 	int32 GetFillerIterations() const { return FillerIterations; }
 	int32 GetFillerIdleIterations() const { return FillerIdleIterations; }
 
+	/** Idle filler iterations of the last Carve whose walk lost at least one rock cell to a pocket guard. */
+	int32 GetFillerIdleGuardBlocked() const { return FillerIdleGuardBlocked; }
+
+	/** Hidden pockets of the last Carve: placed, wholly removed, partly removed (some cells back to rock). */
+	void CountPockets(int32& OutPlaced, int32& OutRemoved, int32& OutPartly) const;
+
+	/** Guard cells released during the last Carve because the pocket cells they guarded went back to rock. */
+	int32 GetGuardReleased() const { return GuardReleased; }
+
+	/** Guard cells not within Pockets.Guard of a hidden cell (stale), and cells within it but not guarded (missing). */
+	void CountGuardMismatch(int32& OutStale, int32& OutMissing) const;
+
 protected:
 	/** Uniform random value in [0, 1) from the stream. */
 	double Rnd();
@@ -181,6 +193,13 @@ protected:
 
 	/** Marks pocket cells hidden and their guard square. */
 	void MarkHidden(const TArray<int32>& Cells);
+
+	/** Guard square (Pockets.Guard, Chebyshev) of every cell still hidden, into Out. */
+	void BuildGuard(TArray<uint8>& Out) const;
+
+	/** Rebuilds HiddenGuard from the cells still hidden, after pocket cells went back to rock: the guard of a removed pocket
+	 *  (or of the removed part of one) no longer blocks carving; the guard of every cell still hidden stays. */
+	void ReleaseStaleGuard();
 
 	/** Walkable cells 4-connected to the spawn; OutCount receives their number. */
 	TArray<uint8> Reach(int32* OutCount = nullptr) const;
@@ -329,7 +348,7 @@ protected:
 	/** 1 where no void lies within the walk void margin. */
 	TArray<uint8> Safe;
 
-	/** 1 on hidden pocket cells, and within the pocket guard of one. */
+	/** 1 on hidden pocket cells, and within the pocket guard of one still hidden (released when its cells go back to rock). */
 	TArray<uint8> Hidden;
 	TArray<uint8> HiddenGuard;
 
@@ -351,4 +370,12 @@ protected:
 	double FillerSeconds = 0.0;
 	int32 FillerIterations = 0;
 	int32 FillerIdleIterations = 0;
+	int32 FillerIdleGuardBlocked = 0;
+
+	/** Rock cells the last WanderWalk dropped because of a pocket guard (instrumentation only). */
+	int32 LastWalkGuardDropped = 0;
+
+	/** Cells of each pocket placed, and guard cells released (instrumentation only, never read by the generation). */
+	TArray<TArray<int32>> PocketCells;
+	int32 GuardReleased = 0;
 };

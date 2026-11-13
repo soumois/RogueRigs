@@ -57,6 +57,15 @@ int32 URRLayoutGenCommandlet::Main(const FString& Params)
 		UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen carve seed %d filler: %.3f s (%.0f %% of carve), %d iterations, %d carved nothing"),
 			Seed, Generator.GetFillerSeconds(), Seconds > 0.0 ? 100.0 * Generator.GetFillerSeconds() / Seconds : 0.0,
 			Generator.GetFillerIterations(), Generator.GetFillerIdleIterations());
+		int32 Placed = 0;
+		int32 Removed = 0;
+		int32 Partly = 0;
+		Generator.CountPockets(Placed, Removed, Partly);
+		int32 Stale = 0;
+		int32 Missing = 0;
+		Generator.CountGuardMismatch(Stale, Missing);
+		UE_LOG(LogRogueRigs, Display, TEXT("RRLayoutGen carve seed %d pockets: %d placed, %d removed, %d partly removed; guard cells released %d, stale %d, missing %d; idle walks that lost rock to a guard %d"),
+			Seed, Placed, Removed, Partly, Generator.GetGuardReleased(), Stale, Missing, Generator.GetFillerIdleGuardBlocked());
 		return bSame && Narrow == 0 ? 0 : 1;
 	}
 

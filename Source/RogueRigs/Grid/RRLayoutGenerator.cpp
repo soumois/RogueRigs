@@ -172,8 +172,76 @@ TArray<int32> FRRLayoutGenerator::WanderWalk(double X, double Y, double Angle, i
 			break;
 		}
 	}
-	Cells.RemoveAll([this](int32 I) { return Safe[I] == 0 || HiddenGuard[I] != 0; });
+	LastWalkGuardDropped = 0;
+	Cells.RemoveAll([this](int32 I)
+	{
+		const bool bGuarded = Safe[I] != 0 && HiddenGuard[I] != 0;
+		LastWalkGuardDropped += bGuarded && Grid[I] == ERRCellType::Rock ? 1 : 0;
+		return Safe[I] == 0 || HiddenGuard[I] != 0;
+	});
 	return Cells;
+}
+
+void FRRLayoutGenerator::BuildGuard(TArray<uint8>& Out) const
+{
+	const int32 Guard = P.Pockets.Guard;
+	Out.Init(0, N);
+	for (int32 I = 0; I < N; ++I)
+	{
+		if (!Hidden[I])
+		{
+			continue;
+		}
+		const int32 X = I % W;
+		const int32 Y = I / W;
+		for (int32 J = FMath::Max(Y - Guard, 0); J <= FMath::Min(Y + Guard, H - 1); ++J)
+		{
+			FMemory::Memset(&Out[J * W + FMath::Max(X - Guard, 0)], 1, FMath::Min(X + Guard, W - 1) - FMath::Max(X - Guard, 0) + 1);
+		}
+	}
+}
+
+void FRRLayoutGenerator::ReleaseStaleGuard()
+{
+	// Hidden cells are only ever cleared, so the guard rebuilt from them is a subset of the current one: the cells that
+	// drop out are those guarded only by pocket cells now back to rock.
+	TArray<uint8> Live;
+	BuildGuard(Live);
+	for (int32 I = 0; I < N; ++I)
+	{
+		GuardReleased += HiddenGuard[I] && !Live[I] ? 1 : 0;
+	}
+	HiddenGuard = MoveTemp(Live);
+}
+
+void FRRLayoutGenerator::CountGuardMismatch(int32& OutStale, int32& OutMissing) const
+{
+	TArray<uint8> Live;
+	BuildGuard(Live);
+	OutStale = 0;
+	OutMissing = 0;
+	for (int32 I = 0; I < N; ++I)
+	{
+		OutStale += HiddenGuard[I] && !Live[I] ? 1 : 0;
+		OutMissing += !HiddenGuard[I] && Live[I] ? 1 : 0;
+	}
+}
+
+void FRRLayoutGenerator::CountPockets(int32& OutPlaced, int32& OutRemoved, int32& OutPartly) const
+{
+	OutPlaced = PocketCells.Num();
+	OutRemoved = 0;
+	OutPartly = 0;
+	for (const TArray<int32>& Cells : PocketCells)
+	{
+		int32 Left = 0;
+		for (const int32 I : Cells)
+		{
+			Left += Hidden[I] ? 1 : 0;
+		}
+		OutRemoved += Left == 0 ? 1 : 0;
+		OutPartly += Left > 0 && Left < Cells.Num() ? 1 : 0;
+	}
 }
 
 void FRRLayoutGenerator::ApplyCarve(const TArray<int32>& Cells)
@@ -425,6 +493,7 @@ int32 FRRLayoutGenerator::RunFiller()
 		bDirty = FloorCount != FloorBefore;
 		++FillerIterations;
 		FillerIdleIterations += bDirty ? 0 : 1;
+		FillerIdleGuardBlocked += !bDirty && LastWalkGuardDropped > 0 ? 1 : 0;
 	}
 	return Iteration;
 }
@@ -432,6 +501,7 @@ int32 FRRLayoutGenerator::RunFiller()
 void FRRLayoutGenerator::RefillRegions()
 {
 	const FRRLayoutGenCleanupParams& CL = P.Cleanup;
+	bool bUnhid = false;
 	for (const FRegion& Region : FindRegions())
 	{
 		if (Region.Cells.Num() < CL.MinRegion || Region.Gap > CL.MaxGap)
@@ -439,10 +509,15 @@ void FRRLayoutGenerator::RefillRegions()
 			for (const int32 I : Region.Cells)
 			{
 				Grid[I] = ERRCellType::Rock;
+				bUnhid |= Hidden[I] != 0;
 				Hidden[I] = 0;
 				--FloorCount;
 			}
 		}
+	}
+	if (bUnhid)
+	{
+		ReleaseStaleGuard();
 	}
 }
 
@@ -533,6 +608,7 @@ TArray<uint8> FRRLayoutGenerator::CoveredMap() const
 int32 FRRLayoutGenerator::PassageRepair()
 {
 	int32 Changed = 0;
+	bool bUnhid = false;
 	for (int32 Round = 0; Round < P.Cleanup.RepairRounds; ++Round)
 	{
 		const TArray<uint8> Covered = CoveredMap();
@@ -542,6 +618,7 @@ int32 FRRLayoutGenerator::PassageRepair()
 			if (Grid[I] == ERRCellType::Floor && !Covered[I])
 			{
 				Grid[I] = ERRCellType::Rock;
+				bUnhid |= Hidden[I] != 0;
 				Hidden[I] = 0;
 				--FloorCount;
 				++Count;
@@ -552,6 +629,10 @@ int32 FRRLayoutGenerator::PassageRepair()
 		{
 			break;
 		}
+	}
+	if (bUnhid)
+	{
+		ReleaseStaleGuard();
 	}
 	return Changed;
 }
@@ -624,6 +705,10 @@ void FRRLayoutGenerator::Carve(int32 Seed)
 	FillerSeconds = 0.0;
 	FillerIterations = 0;
 	FillerIdleIterations = 0;
+	FillerIdleGuardBlocked = 0;
+	LastWalkGuardDropped = 0;
+	PocketCells.Reset();
+	GuardReleased = 0;
 
 	// 1. Outline: polar radius plus value-noise jitter, clamped EdgeMargin cells from the grid edge.
 	const FRRLayoutGenOutlineParams& O = P.Outline;
@@ -832,6 +917,7 @@ void FRRLayoutGenerator::Carve(int32 Seed)
 		}
 		FloorCount += Cells.Num();
 		MarkHidden(Cells);
+		PocketCells.Add(Cells);
 		++PocketCount;
 	}
 
