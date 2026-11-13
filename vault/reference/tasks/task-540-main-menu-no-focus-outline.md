@@ -1,9 +1,9 @@
 ---
 id: task-540-main-menu-no-focus-outline
 description: "Global task: Remove the orange keyboard-focus outline drawn around the focused main menu button; focus and Enter unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Main menu: no orange focus outline around New Run
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-540-03-doc
+- next_step: none
 - started: 2026-11-13T22:55:53Z
 - waiting_for: none
-- executor_tokens: input 128, cache write 119599, cache read 4732147, output 31047
-- executor_usage: runs 1, turns 63, context start 16k peak 120k, resumes 1, 11 min, units 0.78 M, USD 2.17
+- executor_tokens: input 138, cache write 131256, cache read 5352128, output 35033
+- executor_usage: runs 1, turns 68, context start 16k peak 131k, resumes 1, 12 min, units 0.87 M, USD 2.43
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Done (ac5bf31a): wbp-main-menu (focus look none, RefreshColours and EventTick gone, task-540 verification), sys-main-menu (RenderFocusRule=Never config line, Enter now seen), sys-button-hover (no focus look) updated; stale comment in RRMainMenuWidget.cpp fixed (comment only, no build). Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -37,7 +37,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 3. task-540-03-doc (vault/reference/tasks/task-540-main-menu-no-focus-outline/task-540-03-doc.md) — doc: Update the menu widget doc for the removed focus outline
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-540-01-focus-outline-off]] — step 1, bp.
 - [[task-540-02-capture]] — step 2, capture.
 - [[task-540-03-doc]] — step 3, doc.
