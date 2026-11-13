@@ -1,9 +1,9 @@
 ---
 id: task-527-audio-zone-objective-complete
 description: "Global task: One distance-faded sound when a zone objective (bonus chest, console hack) is validated."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Son à la validation d'un coffre ou d'une console
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-527-04-doc
+- next_step: none
 - started: 2026-11-13T16:15:32Z
 - waiting_for: none
-- executor_tokens: input 98, cache write 144409, cache read 3259532, output 21461
-- executor_usage: runs 1, turns 47, context start 16k peak 113k, resumes 1, 100 min, units 0.61 M, USD 1.80
+- executor_tokens: input 108, cache write 151032, cache read 3842383, output 24899
+- executor_usage: runs 1, turns 52, context start 16k peak 120k, resumes 1, 100 min, units 0.70 M, USD 2.02
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. sys-audio: ObjectiveComplete call site, row and fade (200/1075 uu, no near reduction), -game check, relations to task-527 and sys-objectives-console-chest; sys-audio-distance-sounds: user ObjectiveComplete; sys-objectives-console-chest: CompleteSoundEvent in CompleteHack. Lint clean. Commit of the doc before this closing.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -37,7 +37,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 4. task-527-04-doc (vault/reference/tasks/task-527-audio-zone-objective-complete/task-527-04-doc.md) — doc: sys-audio: the objective complete event
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-527-01-sound-prompts]] — step 1, text.
 - [[task-527-02-sound-import]] — step 2, bp.
 - [[task-527-03-complete-event]] — step 3, cpp.
