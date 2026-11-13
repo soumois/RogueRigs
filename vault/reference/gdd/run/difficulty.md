@@ -23,7 +23,7 @@ Threat never pauses so that a paused alert bar cannot be used to farm XP.
 - A threat increase affects only robots spawned afterwards; robots already in the arena keep their stats.
 
 ## Overtime (owner 2026-10-06 third test, provisional)
-- A level must last 3–4 min. From 3:30 of level time the level enters overtime: a horde every 30 s, and the wave interval halves at each overtime minute, so staying in the level soon becomes untenable.
+- A level must last 3–4 min. From 3:30 of level time the level enters overtime: the horde gauge of [[level-flow]] fills 2 times faster (each kill counts 2), 3 times faster from 4:30; each horde triggered from 3:30 adds 20 % of base health to robots spawned after it, additive (+20 %, +40 %, ...) on top of threat; and the wave interval halves at each overtime minute, so staying in the level soon becomes untenable (owner 2026-11-13, UI batch, provisional, "en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30"; the 30 s horde timer is removed, hordes come only from the gauge: Planner reading).
 
 ## Open values
 - Alert and threat gain per second and per kill.

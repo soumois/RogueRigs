@@ -28,6 +28,7 @@ Requested by the owner 2026-11-03 ([[task-424-pause-menu-stats]]). Values provis
 - One mockup made with Kie.ai GPT Image 2 image-to-image (`Tools/art/kie_image.js`), reference attached: the validated level-end mockup ([[art-prompts-level-end-screen-mockup]]). One round, credits reported; further rounds only on the owner's change requests.
 - Nothing is extracted or built (C++ included) before the owner says "je valide". Then the elements are taken from the validated image, existing sprites reused where one matches; layout rule [[umg-layout]].
 - Mockup: one image per round, 16:9, 1K (task-424 Q4). Elements: existing sprites first; a new element is cut from the validated mockup when clean at 1K, otherwise regenerated through Kie.ai image-to-image from it, 1 variant each, 24 credits at most, frames 3x3 (task-424 Q5).
+- Grid and bolts (owner 2026-11-13, UI batch, provisional, owner target image 10): three columns; both vertical dividers run from the top frame bar to the bottom frame bar; one horizontal divider crosses the two weapon columns, from the first vertical divider to the right frame side; a bolt sits on every divider end and junction, centred on the bar it meets. Bolts are a separate image, never part of a stretched bar; bars keep unstretched ends (3-slice). Title side bars sized and placed as in image 10, current sprite kept (their tips in image 10 are only a size reference).
 
 ## Relations
 - [[run-index]] — parent index.

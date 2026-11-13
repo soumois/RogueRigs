@@ -19,7 +19,7 @@ All values provisional, owner 2026-10-28 ("ok" to Q1 to Q11 of [[task-337-main-m
 - Full-screen image with a dark gradient behind a left column: title "ROGUE RIGS" (drawn by the widget, never in the image; no game logo yet), then the buttons "New Run", "Options", "Exit".
 - Labels in English, exactly these words, hardcoded in the widget (not in screen_texts.json).
 - Title font and colours as [[wbp-loading]]: Roboto Bold, white with outline.
-- Buttons (provisional, owner 2026-11-06, [[task-487-main-menu-buttons-plate]]; were bare white text turning orange): the cream rusty plate of the run-lost and pause buttons, dark brown Roboto Bold label, all three the same size, stacked in the left column under the title; Options is active since task-510 ([[options-screen]], provisional, owner 2026-11-12). Mouse hover is the plate hover of [[ui-button-hover]]; keyboard focus alone shows a thin orange (1, 0.35, 0.1) outline around the plate. Title, background image and left gradient unchanged.
+- Buttons (provisional, owner 2026-11-06, [[task-487-main-menu-buttons-plate]]; were bare white text turning orange): the cream rusty plate of the run-lost and pause buttons, dark brown Roboto Bold label, all three the same size, stacked in the left column under the title; Options is active since task-510 ([[options-screen]], provisional, owner 2026-11-12). Mouse hover is the plate hover of [[ui-button-hover]]; keyboard focus shows no outline (owner 2026-11-13, UI batch, provisional; was a thin orange (1, 0.35, 0.1) outline around the plate): focus stays on New Run and Enter starts a run. Title, background image and left gradient unchanged.
 - No animation, no music.
 
 ## Behaviour

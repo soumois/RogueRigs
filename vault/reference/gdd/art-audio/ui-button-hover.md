@@ -24,7 +24,7 @@ Values provisional: the owner accepted the defaults of task-485 Q1 to Q7 (his wo
 - No grey engine-default button remains (task-486, provisional, owner 2026-11-07): the level-up Reroll and the run-won Main Menu use the cream rusty plate of the run-lost and pause buttons, dark brown label, so they take the plate hover above instead of the x1.25 grey tint.
 
 ## Focus and sound (Q5, Q6)
-- Keyboard or gamepad focus alone shows no hover look (the main menu shows focus by an orange plate outline, [[main-menu]]).
+- Keyboard or gamepad focus alone shows no hover look (the main menu orange focus outline was removed, owner 2026-11-13, UI batch, [[main-menu]]).
 - No sound ([[audio-direction]]: sound palette open, M3).
 
 ## Relations
