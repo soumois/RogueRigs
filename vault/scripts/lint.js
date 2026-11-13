@@ -3,6 +3,9 @@
 //
 //   node scripts/lint.js          check only (exit 1 on any problem)
 //   node scripts/lint.js --write  also regenerate _paths.md (the id -> path map)
+//   node scripts/lint.js --all    print every warning (default: only warnings of vault files that differ from HEAD:
+//                                 modified, staged or untracked; errors are always printed; the summary line counts
+//                                 all warnings and says how many are hidden) — task-532
 //
 // Invariants (blocking):
 //   - every [[wikilink]] in a body (code stripped) targets an existing id
@@ -26,6 +29,7 @@ const path = require('path');
 
 const VAULT = path.resolve(process.env.RR_VAULT || path.join(__dirname, '..'));
 const WRITE = process.argv.includes('--write');
+const ALL = process.argv.includes('--all');
 const PATHS_FILE = path.join(VAULT, '_paths.md');
 const SKIP_DIRS = new Set(['.git', '.obsidian', 'private', 'node_modules', 'scripts', 'templates', 'assets']);
 const KINDS = new Set(['note', 'rule', 'spec', 'doc', 'task']);
@@ -73,7 +77,8 @@ const first = (v) => (Array.isArray(v) ? v[0] : v);
 // ---------- load ----------
 const notes = {};       // id -> {fm, body, rel, dir, meta}
 const problems = [];
-const warnings = [];
+const warnings = [];   // {file: vault-relative path or null (machine-level), msg}
+const warn = (file, msg) => warnings.push({ file, msg });
 
 for (const abs of walk(VAULT)) {
   const rel = toPosix(path.relative(VAULT, abs));
@@ -94,7 +99,7 @@ for (const abs of walk(VAULT)) {
   if (notes[id]) problems.push(`${rel}: duplicate id "${id}" (also ${notes[id].rel})`);
   if (!fm.description || !fm.description.length) problems.push(`${rel}: missing description`);
   else if (String(fm.description).split(/\s+/).length > 25)
-    warnings.push(`${rel}: description is ${String(fm.description).split(/\s+/).length} words (> 25)`);
+    warn(rel, `${rel}: description is ${String(fm.description).split(/\s+/).length} words (> 25)`);
   if (id !== 'root') {
     if (!fm.kind) problems.push(`${rel}: missing kind`);
     if (!first(fm.parent)) problems.push(`${rel}: missing parent`);
@@ -174,7 +179,7 @@ for (const [id, n] of Object.entries(notes)) {
   for (const k of kids) if (!inCh.has(k)) problems.push(`${n.rel}: child [[${k}]] not listed under "## Children"`);
   if (re) for (const l of linksOf(re.text)) if (kids.includes(l)) problems.push(`${n.rel}: child [[${l}]] belongs under "## Children", not Relations`);
   const pre = n.body.slice(0, ch.start).replace(/^---[\s\S]*?---/, '').split(/\s+/).filter(Boolean).length;
-  if (pre > 120) warnings.push(`${n.rel}: ${pre} words of prose before ## Children (> 120): move it to a child node`);
+  if (pre > 120) warn(n.rel, `${n.rel}: ${pre} words of prose before ## Children (> 120): move it to a child node`);
 }
 
 // ---------- _paths.md (id -> path map) ----------
@@ -216,14 +221,29 @@ if (WRITE) {
 // ---------- hook installed on this machine? (core.hooksPath is local git config) ----------
 try {
   const hp = require('child_process').execSync('git config core.hooksPath', { cwd: VAULT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
-  if (hp !== 'vault/scripts/hooks') warnings.push('pre-commit hook not installed on this machine — run (repo root): git config core.hooksPath vault/scripts/hooks');
-} catch { warnings.push('pre-commit hook not installed on this machine — run (repo root): git config core.hooksPath vault/scripts/hooks'); }
+  if (hp !== 'vault/scripts/hooks') warn(null, 'pre-commit hook not installed on this machine — run (repo root): git config core.hooksPath vault/scripts/hooks');
+} catch { warn(null, 'pre-commit hook not installed on this machine — run (repo root): git config core.hooksPath vault/scripts/hooks'); }
+
+// ---------- changed vault files (default warning filter, task-532) ----------
+// Vault-relative paths that differ from HEAD: modified or staged (git diff HEAD) and untracked.
+// null (--all, or git unusable) prints every warning; a machine-level warning (file null) shows only with --all.
+function changedFiles() {
+  try {
+    const git = (args) => require('child_process').execFileSync('git', args, { cwd: VAULT, stdio: ['ignore', 'pipe', 'ignore'] }).toString();
+    const out = git(['diff', '--name-only', '--relative', 'HEAD', '--', '.']) + '\n' + git(['ls-files', '--others', '--exclude-standard', '--', '.']);
+    return new Set(out.split(/\r?\n/).map((l) => l.trim()).filter(Boolean));
+  } catch { return null; }
+}
+const changed = ALL ? null : changedFiles();
+const shown = changed ? warnings.filter((w) => w.file && changed.has(w.file)) : warnings;
+const hidden = warnings.length - shown.length;
+const warnCount = `${warnings.length} warning(s)${hidden ? ` (${hidden} hidden, --all shows them)` : ''}`;
 
 // ---------- report ----------
-for (const w of warnings) console.log('warn: ' + w);
+for (const w of shown) console.log('warn: ' + w.msg);
 if (problems.length) {
   console.log(problems.join('\n'));
-  console.log(`\n${problems.length} problem(s)`);
+  console.log(`\n${problems.length} problem(s), ${warnCount}`);
   process.exit(1);
 }
-console.log(`vault OK — ${mapLines.length} nodes, ${warnings.length} warning(s)${WRITE ? ', _paths.md written' : ''}`);
+console.log(`vault OK — ${mapLines.length} nodes, ${warnCount}${WRITE ? ', _paths.md written' : ''}`);
