@@ -3,7 +3,7 @@ id: task-530-01-reglage-build-echoue-compilation
 description: "Executor: Apply the setting change of the request and check it at light size."
 parent: task-530-reglage-build-echoue-compilation
 kind: task
-status: todo
+status: in-progress
 ---
 # Réglage: Réglage : le build échoue à la compilation (UE 5.8). RRWeaponTests.cpp:1687-1689 et RRLevelUpTests.cpp:412-414 appellent FMaterialResource::FinishCompilation() et ...: executor
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T17:45:02Z
 - waiting_for: none
 - result: open
 

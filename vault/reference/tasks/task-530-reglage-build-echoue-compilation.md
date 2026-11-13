@@ -3,7 +3,7 @@ id: task-530-reglage-build-echoue-compilation
 description: "Global task: Réglage (no planner): Réglage : le build échoue à la compilation (UE 5.8). RRWeaponTests.cpp:1687-1689 et RRLevelUpTests.cpp:412-414 appellent FMaterialResource::FinishCompilation() et ..."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Réglage: Réglage : le build échoue à la compilation (UE 5.8). RRWeaponTests.cpp:1687-1689 et RRLevelUpTests.cpp:412-414 appellent FMaterialResource::FinishCompilation() et ...
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, the request itself, réglage family)
 - milestone: M2
 - next_step: task-530-01-reglage-build-echoue-compilation
-- started: open
+- started: 2026-11-13T17:45:02Z
 - waiting_for: none
 - result: open
 
