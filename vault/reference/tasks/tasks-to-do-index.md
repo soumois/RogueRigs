@@ -14,5 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-518-audio-level-up-not-heard]] — The level up sound is heard in its file but not in game: make it audible in game. Status in-progress.
 - [[task-519-audio-music-three-tracks]] — Three looped music tracks for main menu, loading and in game, through the Music slider; in game quieter. Status todo.
