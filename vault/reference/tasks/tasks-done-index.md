@@ -525,3 +525,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-514-audio-enemy-death-distance]] — Enemy death sound fades with distance from the player, with the fade option built in task-513. Status done.
 - [[task-515-audio-ore-pickup]] — Ore pickup plays the XP pickup sound for now, through its own event line so it can be swapped later. Status done.
 - [[task-516-audio-explosion-edge-distance]] — Placed explosion sound event, level fading with the distance from the explosion edge; import of the owner file. Status done.
+- [[task-517-audio-dig-sound]] — Dig sound: one event at each dig hit of the miner on a block; import of the owner file. Status done.

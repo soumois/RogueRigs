@@ -1,9 +1,9 @@
 ---
 id: task-517-audio-dig-sound
 description: "Global task: Laser mining sound: one looping sound while the player digs, fade in and out; import of the owner file."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Son quand on creuse
 
@@ -25,14 +25,14 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - confirmed_by_owner: yes (2026-11-13, "Q8: 0.15 in et out
 Q9 : oui")
 - milestone: M2
-- next_step: task-517-02-dig-import
+- next_step: none
 - started: 2026-11-13T09:06:55Z
 - waiting_for: none
-- executor_tokens: input 116, cache write 136661, cache read 5471985, output 39969
-- executor_usage: runs 1, turns 58, context start 17k peak 149k, resumes 0, 11 min, units 0.92 M, USD 2.58
+- executor_tokens: input 140, cache write 151935, cache read 7354422, output 46828
+- executor_usage: runs 1, turns 70, context start 17k peak 165k, resumes 0, 13 min, units 1.16 M, USD 3.17
 - planning_tokens: input 10, cache write 20096, cache read 213155, output 4963
 - planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/8 (tasks 512, 513, 514, 515, 516, 517, 518, 519), units 0.07 M, USD 0.24
-- result: open
+- result: Done. Commit 794134aa. A3: owner file (Saved/Scratch input, ElevenLabs variant 4, 2.88 s stereo 48 kHz) moved to Art/Source/audio/originals/ as kept; prepared into Art/Source/audio/SW_Dig.wav (mono 48 kHz 16-bit, steady sound so no silence trim, last 100 ms crossfaded equal power into the first 100 ms: 2.780 s loop without a click at the seam, loudest 50 ms at -14 dBFS per the manifest rule, peak -4.3 dBFS); Tools/unreal/import_sounds.py gained --loop (sets Looping); imported editor closed as /Game/RogueRigs/Audio/SFX/SW_Dig (2.780 s, 1 channel, looping True); Dig line of DefaultGame.ini points to it. sound_manifest.json: Dig entry, prompt unknown, licence to confirm, status placeholder, à remplacer avant publication. sys-audio: Dig call site (ARRDrone::Tick, EndPlay), loop rows (bLoop, LoopFadeIn, LoopFadeOut, SetLoop, pause and world rules), import --loop, rr.Audio.TouchRock, relation to task-517; lint clean. -game check with slomo 0.2: one Play Dig, rr.Audio.Stats 3.17 s later still active 1 played 1 (loop held past its 2.78 s length), then Loop stop and ended at the block break. Not heard by the executor: loudness against the other sounds and the seam are for the owner's ear. Budget: over the light budget since 01 (see 01 result).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8: 0.15 in et out
@@ -45,6 +45,6 @@ Q9 : oui"): the defaults of Q8 are accepted; values provisional, owner 2026-11-1
 2. task-517-02-dig-import (vault/reference/tasks/task-517-audio-dig-sound/task-517-02-dig-import.md) — bp: owner dig file imported, manifest entry, set on the line; sys-audio line
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-517-01-dig-event]] — step 1, cpp.
 - [[task-517-02-dig-import]] — step 2, bp.
