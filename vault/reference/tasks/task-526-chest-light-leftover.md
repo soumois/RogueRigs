@@ -1,9 +1,9 @@
 ---
 id: task-526-chest-light-leftover
 description: "Global task: Defect: the bonus chest light effect stays in the next level where no chest is."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Lumière du coffre restée du niveau précédent
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-526-03-doc
+- next_step: none
 - started: 2026-11-13T14:19:09Z
 - waiting_for: none
-- executor_tokens: input 98, cache write 114788, cache read 4183083, output 25293
-- executor_usage: runs 1, turns 49, context start 16k peak 127k, resumes 0, 9 min, units 0.69 M, USD 1.92
+- executor_tokens: input 108, cache write 121037, cache read 4832132, output 27710
+- executor_usage: runs 1, turns 54, context start 16k peak 134k, resumes 0, 9 min, units 0.77 M, USD 2.13
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. sys-objectives-console-chest updated (commit 02790659): snapshot of every world FX component with its state, new components tracked even before activation, IsOpeningEffectAlive, Deactivate before DeactivateImmediate, task-526 capture note; relation to task-526 on both ends. Lint clean.
 
 ## Subtasks
 1. task-526-01-cleanup-fix (vault/reference/tasks/task-526-chest-light-leftover/task-526-01-cleanup-fix.md) — cpp: chest effects removed with the level they belong to
@@ -30,7 +30,7 @@ status: in-progress
 3. task-526-03-doc (vault/reference/tasks/task-526-chest-light-leftover/task-526-03-doc.md) — doc: sys-objectives-console-chest: effect lifetime, if the fix changes how it is built
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-526-01-cleanup-fix]] — step 1, cpp.
 - [[task-526-02-capture]] — step 2, capture.
 - [[task-526-03-doc]] — step 3, doc.
