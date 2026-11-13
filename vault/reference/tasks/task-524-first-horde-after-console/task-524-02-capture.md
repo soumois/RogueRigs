@@ -3,7 +3,7 @@ id: task-524-02-capture
 description: "Capture: alert bar around the console landing and first horde"
 parent: task-524-first-horde-after-console
 kind: task
-status: todo
+status: in-progress
 ---
 # Première horde un peu après l'arrivée de la console: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:58:01Z
 - waiting_for: none
 - result: open
 

@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-524-01-horde-timing
+- next_step: task-524-02-capture
 - started: 2026-11-13T13:41:04Z
 - waiting_for: none
+- executor_tokens: input 154, cache write 192207, cache read 10537404, output 43362
+- executor_usage: runs 1, turns 77, context start 16k peak 205k, resumes 0, 17 min, units 1.51 M, USD 3.94
+- planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
+- planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
 
 ## Questions
