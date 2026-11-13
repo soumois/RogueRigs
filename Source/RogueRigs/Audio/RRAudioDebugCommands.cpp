@@ -1,13 +1,18 @@
 // Rogue Rigs - audio debug console commands (task-511, compiled out of shipping): play an event, log the counters of the event
 // table, press the left mouse button where the cursor is (a real Slate click, for -game log checks of the button sounds), and put
-// the miner against a rock face so the drone mines (dig loop checks, task-517).
+// the miner against a rock face so the drone mines (dig loop checks, task-517), record the game's audio output (task-518).
 
 #include "CoreMinimal.h"
 
 #if !UE_BUILD_SHIPPING
 
 #include "Audio/RRAudioSubsystem.h"
+#include "AudioDevice.h"
+#include "AudioThread.h"
 #include "Components/CapsuleComponent.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "Serialization/MemoryWriter.h"
 #include "Engine/Engine.h"
 #include "Grid/RRArenaGrid.h"
 #include "Grid/RRCellType.h"
@@ -115,6 +120,70 @@ namespace RRAudioDebug
 					Subsystem->ResetStats();
 				}
 			}
+		}));
+
+	/**
+	 * rr.Audio.Record [stop]: records the main submix of the game's audio device (what the speakers get) and, on stop, writes it as a
+	 * 16-bit WAV to Saved/AudioRecord/ (task-518: hear or measure a sound inside the real game mix).
+	 */
+	FAutoConsoleCommand RecordCommand(
+		TEXT("rr.Audio.Record"),
+		TEXT("rr.Audio.Record [stop]: starts recording the game's audio output; stop writes it to Saved/AudioRecord/RRAudio_<time>.wav."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			UWorld* World = GEngine && GEngine->GameViewport ? GEngine->GameViewport->GetWorld() : nullptr;
+			FAudioDevice* Device = World ? World->GetAudioDeviceRaw() : nullptr;
+			if (Device == nullptr)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.Record: no audio device (needs a game with audio)."));
+				return;
+			}
+			if (Args.Num() == 0 || !Args[0].Equals(TEXT("stop"), ESearchCase::IgnoreCase))
+			{
+				Device->StartRecording(nullptr, 0.f);
+				UE_LOG(LogRogueRigs, Log, TEXT("rr.Audio.Record: recording the main submix."));
+				return;
+			}
+			// Let the audio thread finish its queued commands before the buffer is read.
+			FAudioCommandFence Fence;
+			Fence.BeginFence();
+			Fence.Wait();
+			float NumChannels = 0.f;
+			float SampleRate = 0.f;
+			const Audio::FAlignedFloatBuffer& Samples = Device->StopRecording(nullptr, NumChannels, SampleRate);
+			const int32 Channels = FMath::RoundToInt32(NumChannels);
+			if (Samples.IsEmpty() || Channels <= 0 || SampleRate <= 0.f)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.Record stop: nothing recorded."));
+				return;
+			}
+			const uint32 Rate = FMath::RoundToInt32(SampleRate);
+			const uint32 DataBytes = Samples.Num() * sizeof(int16);
+			TArray<uint8> Wav;
+			FMemoryWriter Writer(Wav);
+			auto Put32 = [&Writer](uint32 Value) { Writer << Value; };
+			auto Put16 = [&Writer](uint16 Value) { Writer << Value; };
+			Writer.Serialize(const_cast<ANSICHAR*>("RIFF"), 4);
+			Put32(36 + DataBytes);
+			Writer.Serialize(const_cast<ANSICHAR*>("WAVEfmt "), 8);
+			Put32(16);
+			Put16(1);
+			Put16(static_cast<uint16>(Channels));
+			Put32(Rate);
+			Put32(Rate * Channels * sizeof(int16));
+			Put16(static_cast<uint16>(Channels * sizeof(int16)));
+			Put16(16);
+			Writer.Serialize(const_cast<ANSICHAR*>("data"), 4);
+			Put32(DataBytes);
+			for (const float Sample : Samples)
+			{
+				int16 Value = static_cast<int16>(FMath::Clamp(Sample, -1.f, 1.f) * 32767.f);
+				Writer << Value;
+			}
+			const FString Path = FPaths::ProjectSavedDir() / TEXT("AudioRecord") / FString::Printf(TEXT("RRAudio_%s.wav"), *FDateTime::Now().ToString());
+			const bool bSaved = FFileHelper::SaveArrayToFile(Wav, *Path);
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Audio.Record stop: %.2f s, %d channels, %u Hz -> %s (%s)."), Samples.Num() / (SampleRate * Channels),
+				Channels, Rate, *FPaths::ConvertRelativePathToFull(Path), bSaved ? TEXT("saved") : TEXT("save failed"));
 		}));
 
 	/** Miner location before the last rr.Audio.TouchRock, for rr.Audio.TouchRock back. */

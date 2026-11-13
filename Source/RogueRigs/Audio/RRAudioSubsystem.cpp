@@ -167,6 +167,18 @@ void URRAudioSubsystem::TickLoops()
 			Component->Stop();
 		}
 	}
+	// Verbose only: real time from each watched one-shot play to its end (stopped, finished or destroyed), next to its sound length.
+	for (int32 Index = WatchedPlays.Num() - 1; Index >= 0; --Index)
+	{
+		const FWatchedPlay& Watched = WatchedPlays[Index];
+		const UAudioComponent* Component = Watched.Component.Get();
+		if (Component == nullptr || !Component->IsPlaying())
+		{
+			UE_LOG(LogRRAudio, Verbose, TEXT("End %s after %.2f s (sound %.2f s)."), *Watched.Event.ToString(),
+				FPlatformTime::Seconds() - Watched.StartSeconds, Watched.SoundDuration);
+			WatchedPlays.RemoveAtSwap(Index);
+		}
+	}
 }
 
 float URRAudioSubsystem::GetFadeDistance(const FVector& PlayerLocation, const FVector& Location, float EdgeRadius)
@@ -208,6 +220,7 @@ void URRAudioSubsystem::Deinitialize()
 	ActivePlays.Reset();
 	ActiveLoops.Reset();
 	FadingLoops.Reset();
+	WatchedPlays.Reset();
 	Super::Deinitialize();
 }
 
@@ -348,6 +361,10 @@ UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObje
 	}
 
 	Active.Add(Component);
+	if (!bLoopStart && UE_LOG_ACTIVE(LogRRAudio, Verbose))
+	{
+		WatchedPlays.Add({ Event, Component, FPlatformTime::Seconds(), Sound->GetDuration() });
+	}
 	++RowStats.Played;
 	RowStats.PeakActive = FMath::Max(RowStats.PeakActive, Active.Num());
 	const FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player (edge radius %.0f), fade %.2f"), PlayerDistance, EdgeRadius, Fade) : FString();

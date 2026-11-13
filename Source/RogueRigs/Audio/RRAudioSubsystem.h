@@ -99,7 +99,10 @@ private:
 	/** Plays Event; bLoopStart: a SetLoop start (loop rows are refused otherwise), faded in over the row's LoopFadeIn. */
 	UAudioComponent* PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius, bool bLoopStart);
 
-	/** Stops loops of a paused or removed world at once, and logs the end of faded-out loops (core ticker, runs while paused). */
+	/**
+	 * Stops loops of a paused or removed world at once, and logs the end of faded-out loops and of watched one-shot plays (core
+	 * ticker, runs while paused).
+	 */
 	void TickLoops();
 
 	/** Enabled Slate button under ScreenPosition, or null; bOutDisabledButton tells a disabled button was found there instead. */
@@ -123,6 +126,18 @@ private:
 
 	/** Loop plays released and fading out, with their event name, until they end (logged). */
 	TArray<TPair<FName, TWeakObjectPtr<UAudioComponent>>> FadingLoops;
+
+	/** One-shot play watched until it ends, for the Verbose "End" line (task-518: a play heard to its end or cut). */
+	struct FWatchedPlay
+	{
+		FName Event;
+		TWeakObjectPtr<UAudioComponent> Component;
+		double StartSeconds = 0.0;
+		float SoundDuration = 0.f;
+	};
+
+	/** One-shot plays started while LogRRAudio is Verbose, until their end is logged (TickLoops). */
+	TArray<FWatchedPlay> WatchedPlays;
 
 	TMap<FName, FRRSoundEventStats> Stats;
 	TSet<FName> ReportedSilent;
