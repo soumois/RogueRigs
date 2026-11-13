@@ -3,7 +3,7 @@ id: task-542-03-doc
 description: "Doc: Note the fix in the effect doc node"
 parent: task-542-ground-particle-edges
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground particles: no visible sprite edges: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:30:55Z
 - waiting_for: none
 - result: open
 
