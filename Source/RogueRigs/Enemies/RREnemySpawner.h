@@ -464,6 +464,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
 	float GetHordeTriggerTime(int32 Index) const { return DirectorConfig.Hordes.IsValidIndex(Index) ? DirectorConfig.Hordes[Index].TriggerTime : -1.f; }
 
+	/**
+	 * RunTime trigger: seconds after the console landing at which the front of listed horde Index starts when the run has a console
+	 * (FRRDirectorHorde::ConsoleLandedDelaySeconds, task-524); -1 when the horde keeps its TriggerTime, out of range or Alert trigger.
+	 */
+	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
+	float GetHordeConsoleDelay(int32 Index) const
+	{
+		return DirectorConfig.HordeTrigger == ERRHordeTrigger::RunTime && DirectorConfig.Hordes.IsValidIndex(Index) && DirectorConfig.Hordes[Index].ConsoleLandedDelaySeconds >= 0.f
+			? DirectorConfig.Hordes[Index].ConsoleLandedDelaySeconds : -1.f;
+	}
+
 	/** Alert trigger: alert (0..1) at which the lull of horde Index starts; -1 out of range. */
 	UFUNCTION(BlueprintPure, Category = "Spawner|Director")
 	float GetHordeTriggerAlert(int32 Index) const { return DirectorConfig.Hordes.IsValidIndex(Index) ? DirectorConfig.Hordes[Index].TriggerAlert : -1.f; }

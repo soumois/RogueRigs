@@ -1265,7 +1265,14 @@ void URRRunFlowSubsystem::ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFl
 			HordeIcon.Index = Index;
 			const ERRHordeState State = InSpawner->GetHordeState(Index);
 			HordeIcon.bDone = State == ERRHordeState::Spawning || State == ERRHordeState::Done;
-			if (bAlertTrigger)
+			const float ConsoleDelay = InSpawner->GetHordeConsoleDelay(Index);
+			if (ConsoleDelay >= 0.f && RunFlow && RunFlow->IsRunFlowEnabled())
+			{
+				// Timed from the console landing (task-524): its delay of base fill after the console mark, pending or done, so the
+				// mark never sits on the console letter (the bar is paused while the console is pending, so the fill never passes it first).
+				HordeIcon.Position = EstimateBarPosition(RunConfig.ConsoleAlertThreshold, ConsoleDelay, RunConfig.AlertFillSeconds);
+			}
+			else if (bAlertTrigger)
 			{
 				// Alert trigger: the lull starts at a fixed alert.
 				HordeIcon.Position = FMath::Clamp(InSpawner->GetHordeTriggerAlert(Index), 0.f, 1.f);

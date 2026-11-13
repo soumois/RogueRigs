@@ -185,6 +185,7 @@ bool FRRHUDPressureHordeTest::RunTest(const FString& Parameters)
 	Director.Phases.Reset();
 	Director.Hordes.SetNum(1);
 	Director.Hordes[0].TriggerTime = 2.f;
+	Director.Hordes[0].ConsoleLandedDelaySeconds = -1.f; // timed by TriggerTime here, not the console landing (task-524)
 	Director.Hordes[0].TriggerAlert = 0.3f;
 	Director.Hordes[0].LullSeconds = 1.f;
 	Director.Hordes[0].WarningSeconds = 0.5f;
@@ -313,6 +314,7 @@ bool FRRHUDPressureKillsWaitFirstHordeTest::RunTest(const FString& Parameters)
 	Director.HordeTrigger = ERRHordeTrigger::RunTime;
 	Director.Hordes.SetNum(2);
 	Director.Hordes[0].TriggerTime = 2.f;
+	Director.Hordes[0].ConsoleLandedDelaySeconds = -1.f; // timed by TriggerTime here, not the console landing (task-524)
 	Director.Hordes[0].LullSeconds = 1.f;
 	Director.Hordes[0].WarningSeconds = 0.5f;
 	Director.Hordes[0].SpreadSeconds = 1.f;

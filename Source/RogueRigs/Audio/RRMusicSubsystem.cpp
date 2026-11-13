@@ -18,8 +18,12 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRMusicSubsystem)
 
-// Same category name as the sound events (URRAudioSubsystem): "log LogRRAudio Verbose" shows both.
-DEFINE_LOG_CATEGORY_STATIC(LogRRAudio, Log, All);
+// Same runtime category name as the sound events (URRAudioSubsystem, RRDistanceSound): "log LogRRAudio Verbose" shows all of them.
+// Its own C++ name: two DEFINE_LOG_CATEGORY_STATIC(LogRRAudio) in one unity file do not compile (task-524 build).
+static struct FLogCategoryLogRRMusic : public ::FLogCategory<::ELogVerbosity::Log, ::ELogVerbosity::All>
+{
+	FLogCategoryLogRRMusic() : FLogCategory(TEXT("LogRRAudio")) {}
+} LogRRMusic;
 
 const FName URRMusicSubsystem::MainMenuTrack(TEXT("MainMenu"));
 const FName URRMusicSubsystem::LoadingTrack(TEXT("Loading"));
@@ -39,7 +43,7 @@ void URRMusicSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	MusicClass = GetDefault<URROptionsSettings>()->MusicSoundClass.LoadSynchronous();
 	if (MusicClass == nullptr)
 	{
-		UE_LOG(LogRRAudio, Warning, TEXT("URRMusicSubsystem: Music sound class not found (URROptionsSettings::MusicSoundClass); music plays in the default class."));
+		UE_LOG(LogRRMusic, Warning, TEXT("URRMusicSubsystem: Music sound class not found (URROptionsSettings::MusicSoundClass); music plays in the default class."));
 	}
 	// Load every track now, so a screen change never waits for a load.
 	for (const FRRMusicTrackRow& Row : GetDefault<URRAudioSettings>()->Music)
@@ -47,7 +51,7 @@ void URRMusicSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		USoundBase* Sound = Row.Sound.IsNull() ? nullptr : Row.Sound.LoadSynchronous();
 		if (!Row.Sound.IsNull() && Sound == nullptr)
 		{
-			UE_LOG(LogRRAudio, Warning, TEXT("Music track %s: sound %s not found; that screen stays silent."), *Row.Track.ToString(), *Row.Sound.ToString());
+			UE_LOG(LogRRMusic, Warning, TEXT("Music track %s: sound %s not found; that screen stays silent."), *Row.Track.ToString(), *Row.Sound.ToString());
 		}
 		LoadedSounds.Add(Row.Track, Sound);
 	}
@@ -83,7 +87,7 @@ void URRMusicSubsystem::HandleLevelReady(int32 LevelIndex, const FString& Layout
 {
 	// A new level: the in-game track starts again from its start (Q13), even in the same world (prepared next level).
 	++LevelSerial;
-	UE_LOG(LogRRAudio, Verbose, TEXT("Music: level %d ready (%s), in-game track restarts."), LevelIndex, *LayoutName);
+	UE_LOG(LogRRMusic, Verbose, TEXT("Music: level %d ready (%s), in-game track restarts."), LevelIndex, *LayoutName);
 }
 
 bool URRMusicSubsystem::GetWantedTrack(FName& OutTrack, UWorld*& OutWorld) const
@@ -134,13 +138,13 @@ bool URRMusicSubsystem::Tick(float DeltaTime)
 	}
 	else if (Wanted == InGameTrack && (StartedLevelSerial != LevelSerial || StartedWorld.Get() != World))
 	{
-		UE_LOG(LogRRAudio, Verbose, TEXT("Music %s: new level, restarts from its start."), *Wanted.ToString());
+		UE_LOG(LogRRMusic, Verbose, TEXT("Music %s: new level, restarts from its start."), *Wanted.ToString());
 		SwitchTo(Wanted, World);
 	}
 	else if (CurrentComponent && !CurrentComponent->IsPlaying())
 	{
 		// Stopped from outside (audio device flush): the screen still wants it.
-		UE_LOG(LogRRAudio, Verbose, TEXT("Music %s: play stopped from outside, started again."), *Wanted.ToString());
+		UE_LOG(LogRRMusic, Verbose, TEXT("Music %s: play stopped from outside, started again."), *Wanted.ToString());
 		SwitchTo(Wanted, World, 0.f, /*bFade*/ false);
 	}
 	return true;
@@ -180,16 +184,16 @@ void URRMusicSubsystem::SwitchTo(FName Track, UWorld* World, float StartSeconds,
 		if (!Track.IsNone() && !ReportedSilent.Contains(Track))
 		{
 			ReportedSilent.Add(Track);
-			UE_LOG(LogRRAudio, Verbose, TEXT("Music track %s has no sound; silent."), *Track.ToString());
+			UE_LOG(LogRRMusic, Verbose, TEXT("Music track %s has no sound; silent."), *Track.ToString());
 		}
-		UE_LOG(LogRRAudio, Log, TEXT("Music %s -> %s: silence, fade out %.2f s."), *OldTrack.ToString(), *Track.ToString(), FadeOut);
+		UE_LOG(LogRRMusic, Log, TEXT("Music %s -> %s: silence, fade out %.2f s."), *OldTrack.ToString(), *Track.ToString(), FadeOut);
 		return;
 	}
 	// Persists across map travels (loading on both sides of the travel) and plays as a UI sound, so a paused game keeps it (Q12).
 	UAudioComponent* Component = UGameplayStatics::CreateSound2D(World, Sound, Row->Volume, 1.f, 0.f, nullptr, /*bPersistAcrossLevelTransition*/ true, /*bAutoDestroy*/ false);
 	if (Component == nullptr)
 	{
-		UE_LOG(LogRRAudio, Verbose, TEXT("Music %s -> %s: no audio, not played."), *OldTrack.ToString(), *Track.ToString());
+		UE_LOG(LogRRMusic, Verbose, TEXT("Music %s -> %s: no audio, not played."), *OldTrack.ToString(), *Track.ToString());
 		return;
 	}
 	Component->SoundClassOverride = MusicClass;
@@ -211,7 +215,7 @@ void URRMusicSubsystem::SwitchTo(FName Track, UWorld* World, float StartSeconds,
 	const float Duration = Wave ? Wave->Duration : Sound->GetDuration();
 	LastPercent = Duration > 0.f ? StartSeconds / Duration : 0.f;
 	bPercentValid = false;
-	UE_LOG(LogRRAudio, Log, TEXT("Music %s -> %s: %s, class %s, volume %.2f, from %.1f s of %.1f s, fade in %.2f s, old track fade out %.2f s."),
+	UE_LOG(LogRRMusic, Log, TEXT("Music %s -> %s: %s, class %s, volume %.2f, from %.1f s of %.1f s, fade in %.2f s, old track fade out %.2f s."),
 		*OldTrack.ToString(), *Track.ToString(), *Sound->GetPathName(), *GetNameSafe(MusicClass), Row->Volume, StartSeconds, Duration, FadeIn, FadeOut);
 }
 
@@ -237,7 +241,7 @@ void URRMusicSubsystem::HandlePlaybackPercent(const UAudioComponent* Component, 
 	if (FMath::FloorToInt(Percent) > FMath::FloorToInt(LastPercent))
 	{
 		++Passes;
-		UE_LOG(LogRRAudio, Log, TEXT("Music %s looped: restarts from its start (pass %d, %.1f s after the play start)."), *CurrentTrack.ToString(),
+		UE_LOG(LogRRMusic, Log, TEXT("Music %s looped: restarts from its start (pass %d, %.1f s after the play start)."), *CurrentTrack.ToString(),
 			Passes + 1, FPlatformTime::Seconds() - PlayStartTime);
 	}
 	LastPercent = Percent;
@@ -247,7 +251,7 @@ void URRMusicSubsystem::LogState() const
 {
 	const URRAudioSettings* Settings = GetDefault<URRAudioSettings>();
 	const FRRMusicTrackRow* Row = CurrentTrack.IsNone() ? nullptr : Settings->FindMusic(CurrentTrack);
-	UE_LOG(LogRRAudio, Log, TEXT("Music: track %s, sound %s, volume %.2f, class %s, playing %s, %.1f s since the play start (from %.1f s), percent %.3f, loops %d, fading out %d; fades in %.2f s, out %.2f s."),
+	UE_LOG(LogRRMusic, Log, TEXT("Music: track %s, sound %s, volume %.2f, class %s, playing %s, %.1f s since the play start (from %.1f s), percent %.3f, loops %d, fading out %d; fades in %.2f s, out %.2f s."),
 		CurrentTrack.IsNone() ? TEXT("none") : *CurrentTrack.ToString(), Row ? *Row->Sound.ToString() : TEXT("none"), Row ? Row->Volume : 0.f,
 		*GetNameSafe(MusicClass), CurrentComponent && CurrentComponent->IsPlaying() ? TEXT("yes") : TEXT("no"),
 		CurrentComponent ? FPlatformTime::Seconds() - PlayStartTime : 0.0, PlayStartOffset, LastPercent, Passes, FadingComponents.Num(),
@@ -260,7 +264,7 @@ void URRMusicSubsystem::SeekCurrent(float StartSeconds)
 	UWorld* World = nullptr;
 	if (CurrentTrack.IsNone() || !GetWantedTrack(Wanted, World))
 	{
-		UE_LOG(LogRRAudio, Warning, TEXT("Music: no track to seek."));
+		UE_LOG(LogRRMusic, Warning, TEXT("Music: no track to seek."));
 		return;
 	}
 	SwitchTo(CurrentTrack, World, FMath::Max(StartSeconds, 0.f), /*bFade*/ false);

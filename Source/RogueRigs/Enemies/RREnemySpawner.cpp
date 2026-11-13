@@ -1016,6 +1016,17 @@ float ARREnemySpawner::GetDirectorAlert() const
 void ARREnemySpawner::TickDirector(float DeltaSeconds)
 {
 	DirectorActions.Reset();
+	// Console-timed hordes (task-524): timed from the console landing while the run flow runs, else from their TriggerTime.
+	const UWorld* World = GetWorld();
+	const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	Director.SetConsoleExpected(RunFlow && RunFlow->IsRunFlowEnabled());
+	if (RunFlow && Director.GetConsoleLandedTime() < 0.f && RunFlow->GetConsole())
+	{
+		Director.NotifyConsoleLanded();
+		const float FirstFront = Director.GetHordeFrontTime(DirectorConfig, 0);
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: console landed at %.1f s; horde 0 front at %.1f s%s."), *GetName(), RunTime, FirstFront,
+			Director.IsConsoleTimedHorde(DirectorConfig, 0) ? TEXT(" (timed from the landing)") : TEXT(" (its run time)"));
+	}
 	Director.Advance(DirectorConfig, DeltaSeconds, GetDirectorAlert(), RandomStream, DirectorActions);
 	for (const FRRDirectorAction& Action : DirectorActions)
 	{
@@ -1049,6 +1060,7 @@ void ARREnemySpawner::ExecuteDirectorAction(const FRRDirectorAction& Action)
 		OnHordeLull.Broadcast(Action.Index);
 		break;
 	case FRRDirectorAction::EType::HordeAnnounced:
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: horde %d banner at %.1f s, front in %.1f s."), *GetName(), Action.Index, RunTime, Action.Seconds);
 		OnHordeIncoming.Broadcast(Action.Index, Action.Seconds);
 		break;
 	case FRRDirectorAction::EType::HordeStarted:

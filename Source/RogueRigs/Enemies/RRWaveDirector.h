@@ -165,6 +165,15 @@ struct FRRDirectorHorde
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (ClampMin = 0, Units = "s"))
 	float TriggerTime = 95.f;
 
+	/**
+	 * RunTime trigger, listed hordes only (task-524, owner 2026-11-13, provisional: 20 s on the first horde): 0 or more = while the
+	 * director expects a console (FRRWaveDirector::SetConsoleExpected), the front starts this many seconds after the console landed
+	 * (FRRWaveDirector::NotifyConsoleLanded) instead of at TriggerTime, and the horde waits until that landing. Below 0, or without
+	 * an expected console = TriggerTime.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (Units = "s"))
+	float ConsoleLandedDelaySeconds = -1.f;
+
 	/** Alert trigger: alert (0..1) at which the lull starts. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Director", meta = (ClampMin = 0, ClampMax = 1))
 	float TriggerAlert = 0.4f;
@@ -302,7 +311,11 @@ struct FRRWaveDirectorConfig
 	/** Seconds of spawning at which the front of horde Index starts (RunTime trigger or overtime); -1 when none. */
 	float GetHordeFrontTime(int32 Index) const;
 
-	/** Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow (packs of 6-10 until 90 s, then 0-1 shooter riding behind), hordes at 95 s and 175 s. */
+	/**
+	 * Provisional defaults (owner 2026-10-06, enemies-index): a lone chaser from 1 s, first pack at 15 s, multi-side flow (packs of
+	 * 6-10 until 90 s, then 0-1 shooter riding behind), hordes at 95 s and 175 s; the first front 20 s after the console landed when
+	 * the run has a console (ConsoleLandedDelaySeconds, task-524).
+	 */
 	static FRRWaveDirectorConfig MakeDefault();
 
 	/**
@@ -369,6 +382,30 @@ struct ROGUERIGS_API FRRWaveDirector
 	/** Seconds of spawning since Reset. */
 	float GetRunTime() const { return RunTime; }
 
+	/**
+	 * True: listed hordes with ConsoleLandedDelaySeconds >= 0 are timed from the console landing (the spawner sets it each tick while
+	 * the run flow runs). False (default, world-free use): every listed horde keeps its TriggerTime.
+	 */
+	void SetConsoleExpected(bool bExpected) { bConsoleExpected = bExpected; }
+
+	/** See SetConsoleExpected. */
+	bool IsConsoleExpected() const { return bConsoleExpected; }
+
+	/** The console landed now: records the run time once (later calls are ignored until Reset). */
+	void NotifyConsoleLanded();
+
+	/** Run time at which the console landed; -1 before. */
+	float GetConsoleLandedTime() const { return ConsoleLandedTime; }
+
+	/** True when horde Index is timed from the console landing (expected console, RunTime trigger, listed, delay >= 0). */
+	bool IsConsoleTimedHorde(const FRRWaveDirectorConfig& Config, int32 Index) const;
+
+	/**
+	 * Run time at which the front of horde Index starts: console landing + ConsoleLandedDelaySeconds for a console-timed horde (-1
+	 * while the console has not landed), else FRRWaveDirectorConfig::GetHordeFrontTime.
+	 */
+	float GetHordeFrontTime(const FRRWaveDirectorConfig& Config, int32 Index) const;
+
 	/** Current phase index; INDEX_NONE before the first phase starts. */
 	int32 GetPhaseIndex() const { return PhaseIndex; }
 
@@ -429,4 +466,10 @@ protected:
 
 	/** True once OvertimeStarted was ordered. */
 	bool bOvertimeAnnounced = false;
+
+	/** See SetConsoleExpected. */
+	bool bConsoleExpected = false;
+
+	/** Run time of the console landing; -1 before. */
+	float ConsoleLandedTime = -1.f;
 };

@@ -148,6 +148,7 @@ namespace RRSpawnerDirectorTests
 		Config.Hordes.SetNum(1);
 		FRRDirectorHorde& Horde = Config.Hordes[0];
 		Horde.TriggerTime = 2.f;
+		Horde.ConsoleLandedDelaySeconds = -1.f; // timed by TriggerTime here, not the console landing (task-524)
 		Horde.LullSeconds = 1.f;
 		Horde.WarningSeconds = 0.5f;
 		Horde.SpreadSeconds = 1.f;
@@ -956,6 +957,72 @@ bool FRRSpawnerDirectorOvertimeTest::RunTest(const FString& Parameters)
 	const TArray<FTimedAction> OffActions = RunDirectorSchedule(Off, 300.f, [](float) { return 0.f; }, 20261006);
 	TestEqual(TEXT("overtime off: no OvertimeStarted"), DirectorTimesOf(OffActions, EType::OvertimeStarted).Num(), 0);
 	TestEqual(TEXT("overtime off: two fronts"), DirectorTimesOf(OffActions, EType::HordeStarted).Num(), 2);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerDirectorConsoleTimedHordeTest, "RogueRigs.Spawner.DirectorConsoleTimedHorde",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerDirectorConsoleTimedHordeTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerDirectorTests;
+	using EType = FRRDirectorAction::EType;
+
+	// task-524 (owner 2026-11-13, provisional): with a console expected, the first front starts 20 s after the console landed
+	// (banner 4 s before), the second keeps 175 s. Console landed at 96 s (40 % of a 240 s bar).
+	FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	Config.Overtime.bEnabled = false;
+	if (!TestEqual(TEXT("two default hordes"), Config.Hordes.Num(), 2))
+	{
+		return false;
+	}
+	TestEqual(TEXT("horde 0 delay 20 s"), Config.Hordes[0].ConsoleLandedDelaySeconds, 20.f);
+	TestTrue(TEXT("horde 1 not console timed"), Config.Hordes[1].ConsoleLandedDelaySeconds < 0.f);
+
+	const auto Run = [&Config](float LandingTime, bool bExpected)
+	{
+		FRRWaveDirector Director;
+		Director.Reset();
+		FRandomStream Stream(20261113);
+		TArray<FTimedAction> Result;
+		TArray<FRRDirectorAction> Frame;
+		for (int32 Index = 0; Index < 240 * 60; ++Index)
+		{
+			Director.SetConsoleExpected(bExpected);
+			if (LandingTime >= 0.f && Director.GetRunTime() >= LandingTime)
+			{
+				Director.NotifyConsoleLanded();
+			}
+			Frame.Reset();
+			Director.Advance(Config, 1.f / 60.f, 0.f, Stream, Frame);
+			for (const FRRDirectorAction& Action : Frame)
+			{
+				Result.Add({ Director.GetRunTime(), Action });
+			}
+		}
+		return Result;
+	};
+
+	const TArray<FTimedAction> Landed = Run(96.f, true);
+	const TArray<float> Banners0 = DirectorTimesOf(Landed, EType::HordeAnnounced, 0);
+	const TArray<float> Fronts0 = DirectorTimesOf(Landed, EType::HordeStarted, 0);
+	const TArray<float> Fronts1 = DirectorTimesOf(Landed, EType::HordeStarted, 1);
+	if (TestTrue(TEXT("each horde starts once"), Banners0.Num() == 1 && Fronts0.Num() == 1 && Fronts1.Num() == 1))
+	{
+		AddInfo(FString::Printf(TEXT("landing 96 s: banner 0 %.2f, front 0 %.2f, front 1 %.2f"), Banners0[0], Fronts0[0], Fronts1[0]));
+		TestTrue(TEXT("front 0 at 116 s"), FMath::Abs(Fronts0[0] - 116.f) <= TimeTolerance);
+		TestTrue(TEXT("banner 0 at 112 s"), FMath::Abs(Banners0[0] - 112.f) <= TimeTolerance);
+		TestTrue(TEXT("front 1 keeps 175 s"), FMath::Abs(Fronts1[0] - 175.f) <= TimeTolerance);
+	}
+
+	// No landing yet: the first horde waits (and the second, which comes after it).
+	const TArray<FTimedAction> NotLanded = Run(-1.f, true);
+	TestEqual(TEXT("no landing: no front"), DirectorTimesOf(NotLanded, EType::HordeStarted).Num(), 0);
+
+	// No console expected (world-free, run flow off): the run time 95 s, as before.
+	const TArray<FTimedAction> NoConsole = Run(96.f, false);
+	const TArray<float> NoConsoleFronts = DirectorTimesOf(NoConsole, EType::HordeStarted, 0);
+	TestTrue(TEXT("no console: front 0 at 95 s"), NoConsoleFronts.Num() == 1 && FMath::Abs(NoConsoleFronts[0] - 95.f) <= TimeTolerance);
 	return true;
 }
 

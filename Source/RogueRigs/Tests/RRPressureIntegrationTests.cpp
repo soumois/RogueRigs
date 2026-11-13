@@ -340,6 +340,8 @@ bool FRRIntegrationPressureDirectorPhasesTest::RunTest(const FString& Parameters
 		TestEqual(TEXT("horde 0 front at 95 s"), Config.Hordes[0].TriggerTime, 95.f);
 		TestEqual(TEXT("horde 1 front at 175 s"), Config.Hordes[1].TriggerTime, 175.f);
 		TestEqual(TEXT("banner 4 s before"), Config.Hordes[0].WarningSeconds, 4.f);
+		TestEqual(TEXT("horde 0 front 20 s after the console landing (task-524)"), Config.Hordes[0].ConsoleLandedDelaySeconds, 20.f);
+		TestTrue(TEXT("horde 1 keeps its run time"), Config.Hordes[1].ConsoleLandedDelaySeconds < 0.f);
 	}
 	AddInfo(FString::Printf(TEXT("placed phases:%s"), *PhaseLog));
 
@@ -459,6 +461,7 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 			{
 				Director.Hordes[1].TriggerTime = FrontTime + Director.Hordes[1].TriggerTime - Director.Hordes[0].TriggerTime;
 				Director.Hordes[0].TriggerTime = FrontTime;
+				Director.Hordes[0].ConsoleLandedDelaySeconds = -1.f; // timed by TriggerTime here, not the console landing (task-524)
 				Warning = Director.Hordes[0].WarningSeconds;
 			}
 		}))

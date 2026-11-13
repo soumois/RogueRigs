@@ -1320,6 +1320,7 @@ void URRStressSubsystem::ApplyGameStep()
 			FRRDirectorHorde& Horde = Config.Hordes[Index];
 			Config.HordeTrigger = ERRHordeTrigger::RunTime;
 			Horde.TriggerTime = Spawner->GetRunTime() + RunSettleSeconds + HordeAt;
+			Horde.ConsoleLandedDelaySeconds = -1.f; // forced time, not the console landing (task-524)
 			Horde.SizeMin = FMath::Max(1, RRStress::CVarGameHordeMin.GetValueOnGameThread());
 			Horde.SizeMax = FMath::Max(Horde.SizeMin, RRStress::CVarGameHordeMax.GetValueOnGameThread());
 			GameHordeIndex = Index;

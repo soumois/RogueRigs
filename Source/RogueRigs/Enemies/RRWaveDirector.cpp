@@ -156,6 +156,9 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	Config.Overtime.Horde = Config.Hordes[0];
 	Config.Overtime.Horde.TriggerTime = 0.f;
 	Config.Overtime.Horde.TriggerAlert = 1.f;
+	// First horde (task-524, owner 2026-11-13, provisional): its front 20 s after the console landed, so it no longer falls on the
+	// console drop (40 % of the bar, about 1:36); the second keeps its run time. 95 s stays its time in a run without a console.
+	Config.Hordes[0].ConsoleLandedDelaySeconds = 20.f;
 
 	// Shooter counter (owner 2026-10-06 fourth test, provisional): at most 4 alive; a pack drawn at the cap gets chasers in place
 	// of its shooters.
@@ -281,6 +284,31 @@ void FRRWaveDirector::Reset()
 	ActiveHorde = INDEX_NONE;
 	HordeClock = 0.f;
 	bOvertimeAnnounced = false;
+	bConsoleExpected = false;
+	ConsoleLandedTime = -1.f;
+}
+
+void FRRWaveDirector::NotifyConsoleLanded()
+{
+	if (ConsoleLandedTime < 0.f)
+	{
+		ConsoleLandedTime = RunTime;
+	}
+}
+
+bool FRRWaveDirector::IsConsoleTimedHorde(const FRRWaveDirectorConfig& Config, int32 Index) const
+{
+	return bConsoleExpected && Config.HordeTrigger == ERRHordeTrigger::RunTime && Config.Hordes.IsValidIndex(Index)
+		&& Config.Hordes[Index].ConsoleLandedDelaySeconds >= 0.f;
+}
+
+float FRRWaveDirector::GetHordeFrontTime(const FRRWaveDirectorConfig& Config, int32 Index) const
+{
+	if (IsConsoleTimedHorde(Config, Index))
+	{
+		return ConsoleLandedTime >= 0.f ? ConsoleLandedTime + Config.Hordes[Index].ConsoleLandedDelaySeconds : -1.f;
+	}
+	return Config.GetHordeFrontTime(Index);
 }
 
 bool FRRWaveDirector::IsInOvertime(const FRRWaveDirectorConfig& Config) const
@@ -466,8 +494,10 @@ void FRRWaveDirector::AdvanceHordes(const FRRWaveDirectorConfig& Config, float D
 		if (Config.Hordes.IsValidIndex(FirstPending))
 		{
 			const FRRDirectorHorde& Listed = Config.Hordes[FirstPending];
-			LullStart = Listed.TriggerTime - FMath::Max(Listed.LullSeconds, 0.f);
-			if (Config.HordeTrigger == ERRHordeTrigger::RunTime ? RunTime >= LullStart : Alert >= Listed.TriggerAlert)
+			// A console-timed horde has no front time (-1) until the console landed: it waits.
+			const float FrontTime = GetHordeFrontTime(Config, FirstPending);
+			LullStart = FrontTime - FMath::Max(Listed.LullSeconds, 0.f);
+			if (Config.HordeTrigger == ERRHordeTrigger::RunTime ? FrontTime >= 0.f && RunTime >= LullStart : Alert >= Listed.TriggerAlert)
 			{
 				Next = FirstPending;
 			}
