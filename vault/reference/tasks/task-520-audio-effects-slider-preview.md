@@ -1,9 +1,9 @@
 ---
 id: task-520-audio-effects-slider-preview
 description: "Global task: Moving the Effects volume slider plays a sample effect sound so the player hears what it sets."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Curseur Effects : jouer un son d'effet
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-520-02-doc
+- next_step: none
 - started: 2026-11-13T13:17:35Z
 - waiting_for: none
-- executor_tokens: input 68, cache write 103671, cache read 2307727, output 19785
-- executor_usage: runs 1, turns 34, context start 16k peak 104k, resumes 0, 7 min, units 0.46 M, USD 1.38
+- executor_tokens: input 92, cache write 120711, cache read 3632915, output 25267
+- executor_usage: runs 1, turns 46, context start 16k peak 121k, resumes 0, 8 min, units 0.64 M, USD 1.84
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. Commit 8b6ec60d. sys-options: Effects preview flow (UpdateEffectsPreview, step taken on open, throttle, deferred last step, Master and Music silent), defaults EffectsPreviewEvent / EffectsPreviewInterval, rr.Options.Slide, measured check (stale 'no sound asset' gotcha replaced). sys-audio: EffectsPreview call site and row. Back-links on the global. gdd lines of audio-direction and options-screen named in gdd_check not edited: outside the doc subtask inputs. Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -33,7 +33,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 2. task-520-02-doc (vault/reference/tasks/task-520-audio-effects-slider-preview/task-520-02-doc.md) — doc: sys-audio / sys-options: the Effects preview
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-520-01-preview-sound]] — step 1, cpp.
 - [[task-520-02-doc]] — step 2, doc.
 - [[sys-options]] — documents the Effects preview rules.
