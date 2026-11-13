@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 52, context start 16k peak 120k, resumes 1, 100 min, units 0.70 M, USD 2.02
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. sys-audio: ObjectiveComplete call site, row and fade (200/1075 uu, no near reduction), -game check, relations to task-527 and sys-objectives-console-chest; sys-audio-distance-sounds: user ObjectiveComplete; sys-objectives-console-chest: CompleteSoundEvent in CompleteHack. Lint clean. Commit of the doc before this closing.
+- result: Done. A1 owner ElevenLabs file (variant 2, most likely prompt P1) kept and imported as SW_ObjectiveComplete (placeholder). A2 -game: console hack complete 1 play at 400 uu fade 0.77, chest hack complete 1 play at 350 uu fade 0.83. A3 no play during either hack. A4 build green, RogueRigs.Console 6/6 (no Audio test family); sys-audio documents the event. ALERT at 01: resumed once (owner wait for the sound file, by design).
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.

@@ -22,7 +22,7 @@ status: done
 - milestone: M2
 - started: 2026-11-13T16:16:57Z
 - waiting_for: none
-- result: ARRConsole::CompleteHeck plays CompleteSoundEvent (EditDefaultsOnly, default ObjectiveComplete; None = silent) via FRRDistanceSound at the actor location, console and chest; row ObjectiveComplete (SW_ObjectiveComplete, Volume 1.0, bSpatial, FadeInner 200, FadeOuter 1075). Build green; RogueRigs.Console 6/6 pass (no RogueRigs.Audio tests exist). -game Verbose LogRRAudio (Saved/Captures/task527_objective_sound2/run.log): console complete 1 play at 400 uu fade 0.77, chest complete 1 play at 350 uu fade 0.83, no play during either hack. Owner GameUserSettings.ini restored after the runs.
+- result: ARRConsole::CompleteHack plays CompleteSoundEvent (EditDefaultsOnly, default ObjectiveComplete; None = silent) via FRRDistanceSound at the actor location, console and chest; row ObjectiveComplete (SW_ObjectiveComplete, Volume 1.0, bSpatial, FadeInner 200, FadeOuter 1075). Build green; RogueRigs.Console 6/6 pass (no RogueRigs.Audio tests exist). -game Verbose LogRRAudio (Saved/Captures/task527_objective_sound2/run.log): console complete 1 play at 400 uu fade 0.77, chest complete 1 play at 350 uu fade 0.83, no play during either hack. Owner GameUserSettings.ini restored after the runs.
 
 ## Relations
 - [[task-527-audio-zone-objective-complete]] — parent global task.
