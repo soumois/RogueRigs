@@ -3,7 +3,7 @@ id: task-533-01-auto-number-anchor
 description: "Cpp: Make task-create.js compute the next task number and the index anchor when the spec omits them."
 parent: task-533-task-create-auto-number
 kind: task
-status: todo
+status: in-progress
 ---
 # task-create.js : numéro et ancre automatiques: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:21:48Z
 - waiting_for: none
 - result: open
 

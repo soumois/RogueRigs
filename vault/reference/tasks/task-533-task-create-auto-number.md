@@ -3,7 +3,7 @@ id: task-533-task-create-auto-number
 description: "Global task: task-create.js computes the task number and index anchor itself, so the planner no longer lists vault/reference/tasks before creating."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # task-create.js : numéro et ancre automatiques
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-533-01-auto-number-anchor
-- started: open
+- started: 2026-11-13T18:21:48Z
 - waiting_for: none
 - result: open
 
