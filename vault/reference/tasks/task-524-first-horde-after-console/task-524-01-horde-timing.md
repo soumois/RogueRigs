@@ -3,7 +3,7 @@ id: task-524-01-horde-timing
 description: "Cpp: first horde front timed from the console landing per Q10"
 parent: task-524-first-horde-after-console
 kind: task
-status: todo
+status: in-progress
 ---
 # Première horde un peu après l'arrivée de la console: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:41:04Z
 - waiting_for: none
 - result: open
 

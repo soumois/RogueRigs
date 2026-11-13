@@ -3,7 +3,7 @@ id: task-524-first-horde-after-console
 description: "Global task: The first horde front starts a little after the console lands instead of with it."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Première horde un peu après l'arrivée de la console
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-524-01-horde-timing
-- started: open
+- started: 2026-11-13T13:41:04Z
 - waiting_for: none
 - result: open
 
