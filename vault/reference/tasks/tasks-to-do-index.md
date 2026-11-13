@@ -14,3 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
+- [[task-531-impact-spark-test-fails]] — Automation test RogueRigs.Weapons.ImpactSparkAsset fails (pool not prewarmed, 0 spark requested, 0 played) under -nullrhi and -RenderOffScreen; find whether the test or the impact spark pool / Niagara code is wrong and make it pass without changing the design. Status wait-answers.
