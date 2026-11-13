@@ -3,7 +3,7 @@ id: task-516-audio-explosion-edge-distance
 description: "Global task: Placed explosion sound event, level fading with the distance from the explosion edge; import of the owner file."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des explosions selon la distance au bord de l'explosion
 
@@ -24,7 +24,7 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
 - next_step: task-516-01-explosion-event
-- started: open
+- started: 2026-11-13T08:59:32Z
 - waiting_for: none
 - result: open
 

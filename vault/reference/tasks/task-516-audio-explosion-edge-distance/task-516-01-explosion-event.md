@@ -3,7 +3,7 @@ id: task-516-01-explosion-event
 description: "Cpp: explosion event at every explosion, fade measured from the edge, table line"
 parent: task-516-audio-explosion-edge-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des explosions selon la distance au bord de l'explosion: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:59:32Z
 - waiting_for: none
 - result: open
 
