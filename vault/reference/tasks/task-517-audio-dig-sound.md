@@ -3,11 +3,12 @@ id: task-517-audio-dig-sound
 description: "Global task: Laser mining sound: one looping sound while the player digs, fade in and out; import of the owner file."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Son quand on creuse
 
-- request: « ok pour les questions.
+- request: « ok pour les questions. Owner answer 2026-11-13 (relayed by the main session, verbatim): "Q8: 0.15 in et out
+Q9 : oui" = the plan and the defaults of Q8 accepted.
 
 il faut aussi ce même systéme pour la mort des ennemis.
 
@@ -21,15 +22,17 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - gdd_check: Read audio-direction, sys-audio. Not in the slice 1 event list: added by the owner. Q7 decided by the owner: only the player mines (laser mining), one looping sound with fade in and out. Q8 decided by the owner: fade 0.15 s in and out. The file came from the owner (« Le laser »): Saved/Scratch/audio-candidates/minage-laser/7_elevenlabs_Mining_laser_running_4-1794559181588.wav, his prompt unknown. No code or dig gdd node read.
 - verification_level: light
 - family: comportement
-- confirmed_by_owner: no (plan and questions handed back 2026-11-13)
+- confirmed_by_owner: yes (2026-11-13, "Q8: 0.15 in et out
+Q9 : oui")
 - milestone: M2
 - next_step: task-517-01-dig-event
 - started: open
-- waiting_for: owner answer to Q8, confirmation, and later his laser mining file
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-13, each with a default; open until the owner answers.
+Decided 2026-11-13 (owner "Q8: 0.15 in et out
+Q9 : oui"): the defaults of Q8 are accepted; values provisional, owner 2026-11-13.
 - Q7 Creusage : un son court à chaque coup de creusage du mineur (le joueur) sur un bloc, centré comme les sons du joueur, au plus 2 à la fois, ±5 % de hauteur ; pas de son continu, l'extracteur n'est pas concerné. Default: oui. Decided (owner 2026-11-13): default refused; laser mining, one looping sound with fade in/out, only the player mines.
 - Q8 Durées de fondu du son de minage : Default: 0.2 s en entrée, 0.3 s en sortie, sans variation de hauteur, réglables dans la table. Owner answer 2026-11-13: « Q8: 0.15 in et out » -> Default replaced: 0.15 s in, 0.15 s out, no pitch jitter, set in the table.
 
