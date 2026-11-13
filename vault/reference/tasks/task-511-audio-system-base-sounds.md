@@ -3,7 +3,7 @@ id: task-511-audio-system-base-sounds
 description: "Global task: Data-driven C++ audio system (event -> sound table) on the existing sound classes, with owner-picked CC0 sounds for 8 events."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: in-progress
 ---
 # Audio system and the first 8 sound effects
 
@@ -15,11 +15,11 @@ status: wait-answers
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "ok")
 - milestone: M2
-- next_step: task-511-02-sound-candidates
-- started: 2026-11-13T07:31:34Z
-- waiting_for: owner pick by ear on series 2 (4-6) for impact, mort-ennemi, montee-niveau (or keep 2), survol, clic: Saved/Scratch/audio-candidates/ecoute.html
-- executor_tokens: input 140, cache write 343151, cache read 7864266, output 63700
-- executor_usage: runs 1, turns 69, context start 16k peak 193k, resumes 1, 230 min, units 1.53 M, USD 4.56
+- next_step: task-511-03-sound-import
+- started: 2026-11-13T08:02:08Z
+- waiting_for: none
+- executor_tokens: input 210, cache write 892697, cache read 15031895, output 90021
+- executor_usage: runs 1, turns 104, context start 16k peak 260k, resumes 3, 882 min, units 3.07 M, USD 9.27
 - planning_tokens: input 26, cache write 54769, cache read 468394, output 14795
 - planning_usage: a23f106d "Plan audio tranche 1" 1/1 (tasks 511), units 0.19 M, USD 0.66
 - result: open

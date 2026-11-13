@@ -1260,6 +1260,7 @@ kind: note
 | [[task-509-02-options-capture]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-509-03-options-doc-push]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-511-01-audio-system]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-511-02-sound-candidates]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
@@ -1271,10 +1272,10 @@ Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list pr
 | model none | — | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | — | 210.31 | 0k | 47.03 M | 1049.76 M | 9314k |
 | model sonnet | — | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 316.48 | 122.53 | 14k | 25.66 M | 675.83 M | 4571k |
+| Executors and legacy orchestrators that ran a task (pilot) | 321.19 | 124.07 | 14k | 26.21 M | 683.00 M | 4598k |
 | Planning runs (planners and legacy planning passes) | 153.16 | 46.56 | 5k | 13.86 M | 165.37 M | 2538k |
 | Agents without a subtask id (other) | 42.36 | 17.07 | 2k | 3.05 M | 104.54 M | 559k |
-| Main sessions (all of them, also chat outside tasks) | 1014.24 | 303.86 | 83k | 62.92 M | 1856.25 M | 7900k |
+| Main sessions (all of them, also chat outside tasks) | 1016.80 | 304.32 | 83k | 63.00 M | 1858.87 M | 7918k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.

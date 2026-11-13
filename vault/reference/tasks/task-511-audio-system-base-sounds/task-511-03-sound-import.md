@@ -3,7 +3,7 @@ id: task-511-03-sound-import
 description: "Bp: Import the 8 picked sounds and fill the event table."
 parent: task-511-audio-system-base-sounds
 kind: task
-status: todo
+status: in-progress
 ---
 # Audio system and the first 8 sound effects: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:02:09Z
 - waiting_for: none
 - result: open
 

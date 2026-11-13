@@ -3,7 +3,7 @@ id: task-511-02-sound-candidates
 description: "Sound: Find three CC0 candidates per event against the palette and get the owner's pick."
 parent: task-511-audio-system-base-sounds
 kind: task
-status: wait-answers
+status: done
 ---
 # Audio system and the first 8 sound effects: sound
 
@@ -15,14 +15,14 @@ status: wait-answers
 - done_when: The owner named one candidate per event (wait-answers until then; a request for another series gives a new series for that event only).
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-511
+- usage: included in the executor run of task-511
+- runs: 1
 - milestone: M2
 - started: 2026-11-13T07:31:34Z
-- waiting_for: owner pick by ear on series 2 (4-6) for impact, mort-ennemi, montee-niveau (or keep 2), survol, clic: Saved/Scratch/audio-candidates/ecoute.html
-- result: Series 1 (Kenney, 24 files): owner 2026-11-13 kept tir 1 (laserSmall_001), degat-joueur 3 (error_004), ramassage-xp 2 (select_007); montee-niveau 2 (confirmation_002) kept for now but to review; impact, mort-ennemi, survol, clic refused, owner: "trouver une base de son plus orienté JV". This moves the palette of Q2 (industrial, dry, metallic) toward a video-game style; not decided by the executor, reported for audio-direction. Series 2 (numbers 4-6) for impact, mort-ennemi, montee-niveau, survol, clic from OpenGameArt CC0 packs (Juhani Junkala 512 retro SFX; rubberduck 50 retro synth SFX); listening page Saved/Scratch/audio-candidates/ecoute.html, list liste.md.
+- waiting_for: none
+- result: Owner picks 2026-11-13 (series 1 and 2 dropped; he generated sounds with ElevenLabs Sound Effects and found the level-up sound himself; files Saved/Scratch/audio-candidates/<event>/7_*): tir 7_elevenlabs_Arcade_video_game_la_3, impact 7_elevenlabs_Arcade_video_game_bu_2, mort-ennemi 7_elevenlabs_Arcade_video_game_ro_1, degat-joueur 7_elevenlabs_Video_game_player_hu_3, ramassage-xp 7_elevenlabs_Video_game_item_pick_4, montee-niveau 7_owner_Level_Up_Sound_Effect_Woofle_Tests_a_Game_Stinger.mp3 (cut to the first low sound, about 0.6 s), survol 7_elevenlabs_Video_game_menu_butt_2-1794555992785, clic 7_elevenlabs_Video_game_menu_butt_2-1794556032654. This departs from Q3 (CC0 only): ElevenLabs licence per the owner's subscription, level-up origin and licence unknown, both to confirm by the owner. Q2 palette not restated by him ("plus orienté JV", metallic impact "trop aigu", "ça part vite dans l'aigu"). ALERT budget standard: 104 turns, 3.07 M units at this closing; cause: two candidate series (Kenney, then OpenGameArt) with downloads and measurements, then the owner's own ElevenLabs series, plus the pause and resume.
 
 ## Relations
 - [[task-511-audio-system-base-sounds]] — parent global task.
