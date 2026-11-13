@@ -550,3 +550,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-539-ld-review-pocket-guard-maps]] — Level-design visual review of the 7 starts whose accepted seed changed after task-537 (pocket guard release), before against after; review only. Status done.
 - [[task-540-main-menu-no-focus-outline]] — Remove the orange keyboard-focus outline drawn around the focused main menu button; focus and Enter unchanged. Status done.
 - [[task-541-hud-turret-count-removed]] — The turret count text above the health bar goes; the launcher charges stay shown in its weapon slot. Status done.
+- [[task-542-ground-particle-edges]] — The white ground particle sprites of image 2 (boss scene) show their quad edges; the edges must not show, look otherwise kept. Status done.

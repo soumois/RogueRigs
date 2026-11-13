@@ -1,9 +1,9 @@
 ---
 id: task-542-ground-particle-edges
 description: "Global task: The white ground particle sprites of image 2 (boss scene) show their quad edges; the edges must not show, look otherwise kept."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Ground particles: no visible sprite edges
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-542-03-doc
+- next_step: none
 - started: 2026-11-13T23:15:05Z
 - waiting_for: none
-- executor_tokens: input 156, cache write 135318, cache read 7073065, output 42375
-- executor_usage: runs 1, turns 78, context start 16k peak 148k, resumes 0, 16 min, units 1.09 M, USD 2.94
+- executor_tokens: input 174, cache write 147582, cache read 8468613, output 46886
+- executor_usage: runs 1, turns 87, context start 16k peak 160k, resumes 0, 17 min, units 1.27 M, USD 3.37
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Done (5490c561). New node bp-extractor-ground-wind (asset paths, material, instances, textures, the task-542 edge fix and its cause; emitters and BP wiring left open, not read back); entries in blueprints-fx-index, relations from bp-extraction-shuttle and bp-extractor-rotor-wash (which notes NS_ExtractorRotorWash no longer references M_ExtractorBlastWind). Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 3. task-542-03-doc (vault/reference/tasks/task-542-ground-particle-edges/task-542-03-doc.md) — doc: Note the fix in the effect doc node
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-542-01-fix-edges]] — step 1, bp.
 - [[task-542-02-capture]] — step 2, capture.
 - [[task-542-03-doc]] — step 3, doc.
