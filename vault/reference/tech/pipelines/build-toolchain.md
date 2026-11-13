@@ -6,18 +6,19 @@ kind: doc
 ---
 # Build and toolchain
 
+- Project file: `C:\Workspace\RogueRigs\RogueRigs.uproject` (the old `Documents\Unreal Projects\RogueRigs` path no longer exists; corrected in task-528, where the build ran from here).
 - Engine: Unreal Engine 5.8. Project from the Top Down template (C++); Twin Stick variant as the base. The Strategy variant and the root top-down classes (`RogueRigsCharacter`, `RogueRigsGameMode`, `RogueRigsPlayerController`) are deleted ([[task-002-04-delete-template-cpp]]); `Source/RogueRigs` holds the module files and one folder per system: `AimIndicator/`, `Camera/`, `Damage/`, `Debug/`, `Drone/`, `Enemies/`, `Explosions/`, `FlowField/`, `GAS/`, `Grid/`, `Pickups/`, `Player/`, `Pool/`, `Progression/`, `Projectiles/`, `Settings/`, `Tests/`, `Text/`, `UI/`, `Upgrades/`, `Weapons/`, `World/`, plus `Variant_TwinStick/` (reference only). `Niagara` is a private module dependency again since task-025-01 (damage numbers, [[sys-damage-numbers]]).
 - Compiler: MSVC 14.50 (Visual Studio 2026, workload "Game development with C++"). MSVC 14.40–14.43 are rejected by UE 5.8.
 - After a toolchain change: right-click `RogueRigs.uproject` → Generate Visual Studio project files.
 - Command-line build, editor closed (used by agents; exit code 0 = success, compiler errors on stdout):
-  `"C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" RogueRigsEditor Win64 Development -Project="C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject" -WaitMutex`
+  `"C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" RogueRigsEditor Win64 Development -Project="C:\Workspace\RogueRigs\RogueRigs.uproject" -WaitMutex`
   From Git Bash, run it through PowerShell (verified in task-001-03 and task-002-04):
-  `powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat' RogueRigsEditor Win64 Development '-Project=C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' -WaitMutex"`
+  `powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat' RogueRigsEditor Win64 Development '-Project=C:\Workspace\RogueRigs\RogueRigs.uproject' -WaitMutex"`
   UBT currently picks MSVC 14.51 and warns it is not a preferred version; the build still succeeds. Expected engine-header warnings: C4996 from `Character.h` (`GetMovementBase`) and `HierarchicalInstancedStaticMeshComponent.h` (`BuildComponentInstanceData`).
 - Headless automation tests, editor closed, after a successful build (verified in task-006-05; exit code 0 = all passed; results in `Saved/Logs/RogueRigs.log`, lines `Test Completed. Result={Success|Fail}` and `TEST COMPLETE. EXIT CODE`):
-  `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject" -ExecCmds="Automation RunTests RogueRigs.Dig;Quit" -unattended -nullrhi -nosplash -nop4 -log`
+  `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "C:\Workspace\RogueRigs\RogueRigs.uproject" -ExecCmds="Automation RunTests RogueRigs.Dig;Quit" -unattended -nullrhi -nosplash -nop4 -log`
   From Git Bash, through PowerShell with a timeout:
-  `timeout 900 powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject' '-ExecCmds=Automation RunTests RogueRigs.Dig;Quit' -unattended -nullrhi -nosplash -nop4 -log; exit \$LASTEXITCODE"`
+  `timeout 900 powershell.exe -NoProfile -Command "& 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' 'C:\Workspace\RogueRigs\RogueRigs.uproject' '-ExecCmds=Automation RunTests RogueRigs.Dig;Quit' -unattended -nullrhi -nosplash -nop4 -log; exit \$LASTEXITCODE"`
   Replace `RogueRigs.Dig` by `RogueRigs.Weapons` for the weapon tests, or by `RogueRigs` to run every project test. Tests: [[sys-automation-tests]].
 - Test scope (owner 2026-11-03, task-423: 276 tests ran for a console command): no gameplay change (debug console command, Node tool, doc, config line) = build only, no test run. Gameplay change = only the family `RogueRigs.<Family>` of the system touched (family names under Relations of [[sys-automation-tests]]), or a narrower prefix when a test targets the change (`RogueRigs.Weapons.Pierce`). The full `RogueRigs` suite only on owner request, or when the shared harness (`RRTestHarness`) or a data loader changed.
 - Staged Development game (perf checks outside the editor, [[sys-stress]] `-Exe`; output `Saved/StagedBuilds/Windows/`, not committed; single command, exits 0 since [[task-019-01-asset-manager]], ≈ 6 min cold, a few minutes warm):
@@ -25,7 +26,7 @@ kind: doc
   `Config/DefaultGame.ini` `[/Script/UnrealEd.ProjectPackagingSettings]` carries `+MapsToCook=(FilePath="/Game/RogueRigs/Maps/L_MainMenu")` and `+MapsToCook=(FilePath="/Game/RogueRigs/Maps/L_ArenaM1")`. A map reached only by a string path (`OpenLevel(NewRunMapName)`) is not cooked on its own: the earlier package held only L_MainMenu. A new map opened by name must be added to this list and to `-map=`.
   `Config/DefaultGame.ini` declares a `GameFeatureData` entry in `[/Script/Engine.AssetManagerSettings]` `PrimaryAssetTypesToScan` (scans the empty `/Game/Unused`): the GameFeatures plugin, pulled in by an enabled plugin, logs an error without it and the cook fails with exit 25. Staged run, no map argument (starts on L_MainMenu): `Saved/StagedBuilds/Windows/RogueRigs.exe -windowed -log` (add `-ExecCmds=rr.Menu.NewRun` to test New Run, [[sys-main-menu]]); log in `Saved/StagedBuilds/Windows/RogueRigs/Saved/Logs/`.
 - Launch the editor on the project:
-  `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Users\soumo\Documents\Unreal Projects\RogueRigs\RogueRigs.uproject"`
+  `"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "C:\Workspace\RogueRigs\RogueRigs.uproject"`
 - Plugins: GameplayAbilities is enabled in `RogueRigs.uproject`; `GameplayAbilities`, `GameplayTags`, `GameplayTasks` are public module dependencies of `RogueRigs.Build.cs` ([[task-004-01-enable-gas]]). StateTree is already enabled by the template.
 - `Source/RogueRigsEditor` does not exist (only `RogueRigsEditor.Target.cs`); create it only if the Slate debug tool returns ([[wishlist]]).
 - Rendering settings: see [[perf-risks]].
