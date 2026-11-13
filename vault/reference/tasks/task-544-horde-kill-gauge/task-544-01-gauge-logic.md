@@ -12,7 +12,7 @@ status: todo
 - depends_on: none
 - inputs: level-flow (vault/reference/gdd/run/level-flow.md), enemies-spawn-rules (vault/reference/gdd/enemies/enemies-spawn-rules.md), difficulty (vault/reference/gdd/run/difficulty.md), sys-difficulty (vault/reference/tech/systems/core/sys-difficulty.md)
 - expected_output: see done_when
-- done_when: A1 to A6 and A8 hold in code and tests (gauge state exposed by events for the widget); kill counts in data.
+- done_when: A1 to A6 and A8 hold in code and tests (overtime: kill weight x2 from 3:30, x3 from 4:30, no 30 s horde timer, +20 % base health per overtime horde for robots spawned after it) (gauge state exposed by events for the widget); kill counts in data.
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: open

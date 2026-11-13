@@ -1,5 +1,5 @@
 ---
-id: task-544-04-doc
+id: task-544-05-doc
 description: "Doc: Document the horde gauge in the system and widget nodes"
 parent: task-544-horde-kill-gauge
 kind: task
@@ -9,10 +9,10 @@ status: todo
 
 - goal: Document the horde gauge in the system and widget nodes
 - agent: doc
-- depends_on: task-544-03-capture
+- depends_on: task-544-04-capture
 - inputs: sys-difficulty (vault/reference/tech/systems/core/sys-difficulty.md), level-flow (vault/reference/gdd/run/level-flow.md)
 - expected_output: see done_when
-- done_when: sys and bp nodes describe the gauge, its data values and events; lint clean.
+- done_when: sys and bp nodes describe the gauge, its overtime multipliers, the health step per overtime horde, its data values and events; the render and art files listed in a vault node; lint clean.
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: open

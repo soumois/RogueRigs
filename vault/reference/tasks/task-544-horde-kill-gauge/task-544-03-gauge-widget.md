@@ -1,5 +1,5 @@
 ---
-id: task-544-02-gauge-widget
+id: task-544-03-gauge-widget
 description: "Bp: Horde gauge widget under the alert bar and the moved "!""
 parent: task-544-horde-kill-gauge
 kind: task
@@ -9,10 +9,10 @@ status: todo
 
 - goal: Horde gauge widget under the alert bar and the moved "!"
 - agent: bp
-- depends_on: task-544-01-gauge-logic
-- inputs: level-flow (vault/reference/gdd/run/level-flow.md), umg-layout (vault/reference/tech/conventions/umg-layout.md), Saved/Scratch/owner-ui-batch-2026-11-13/4.webp
+- depends_on: task-544-02-gauge-render
+- inputs: level-flow (vault/reference/gdd/run/level-flow.md), the render and cut elements of task-544-02-gauge-render, umg-layout (vault/reference/tech/conventions/umg-layout.md), Saved/Scratch/owner-ui-batch-2026-11-13/4.webp
 - expected_output: see done_when
-- done_when: A1, A2 and A7 visible in play; HUD otherwise unchanged.
+- done_when: A1, A2 and A7 visible in play, the gauge built from the task-544-02 elements (or from the brief look if 02 recorded a gap); HUD otherwise unchanged.
 - editor_state: decided by the Executor
 - token_ceiling: open
 - model: open
