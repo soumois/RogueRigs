@@ -12,6 +12,7 @@
 #include "Engine/World.h"
 #include "Framework/Application/IInputProcessor.h"
 #include "Framework/Application/SlateApplication.h"
+#include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "Settings/RROptionsSettings.h"
 #include "Sound/SoundAttenuation.h"
@@ -179,6 +180,26 @@ UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FNam
 		return nullptr;
 	}
 
+	// Distance fade from the player (rows with FadeOuter > 0, plays with a location): checked before the cap, so a silent play
+	// never stops an audible one. No player pawn: no fade.
+	float Fade = 1.f;
+	float PlayerDistance = -1.f;
+	if (Row->FadeOuter > 0.f && Location != nullptr)
+	{
+		if (const APawn* Player = UGameplayStatics::GetPlayerPawn(World, 0))
+		{
+			PlayerDistance = FVector::Dist2D(Player->GetActorLocation(), *Location);
+			Fade = GetDistanceFade(*Row, PlayerDistance);
+			if (Fade <= 0.f)
+			{
+				UE_LOG(LogRRAudio, Verbose, TEXT("Skip %s (row %s): %.0f uu from the player, silent from %.0f uu."), *Event.ToString(),
+					*Row->Event.ToString(), PlayerDistance, Row->FadeOuter);
+				return nullptr;
+			}
+		}
+	}
+	const float Volume = Row->Volume * Fade;
+
 	TArray<TWeakObjectPtr<UAudioComponent>>& Active = ActivePlays.FindOrAdd(Row->Event);
 	PruneActive(Active);
 	FRRSoundEventStats& RowStats = Stats.FindOrAdd(Row->Event);
@@ -195,7 +216,7 @@ UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FNam
 
 	const float Jitter = FMath::Clamp(Row->PitchJitter, 0.f, 0.5f);
 	const float Pitch = Jitter > 0.f ? FMath::FRandRange(1.f - Jitter, 1.f + Jitter) : 1.f;
-	UAudioComponent* Component = UGameplayStatics::CreateSound2D(World, Sound, Row->Volume, Pitch, 0.f, nullptr, false, /*bAutoDestroy*/ true);
+	UAudioComponent* Component = UGameplayStatics::CreateSound2D(World, Sound, Volume, Pitch, 0.f, nullptr, false, /*bAutoDestroy*/ true);
 	if (Component == nullptr)
 	{
 		return nullptr;
@@ -219,10 +240,29 @@ UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FNam
 	Active.Add(Component);
 	++RowStats.Played;
 	RowStats.PeakActive = FMath::Max(RowStats.PeakActive, Active.Num());
-	UE_LOG(LogRRAudio, Verbose, TEXT("Play %s (row %s): %s, class %s, active %d/%d, pitch %.3f, %s%s."), *Event.ToString(), *Row->Event.ToString(),
-		*Sound->GetPathName(), *GetNameSafe(EffectsClass), Active.Num(), Row->MaxConcurrent, Pitch, bPlaced ? TEXT("placed") : TEXT("centred"),
-		Row->bUI ? TEXT(", plays paused") : TEXT(""));
+	const FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player, fade %.2f"), PlayerDistance, Fade) : FString();
+	UE_LOG(LogRRAudio, Verbose, TEXT("Play %s (row %s): %s, class %s, active %d/%d, pitch %.3f, volume %.3f%s, %s%s."), *Event.ToString(),
+		*Row->Event.ToString(), *Sound->GetPathName(), *GetNameSafe(EffectsClass), Active.Num(), Row->MaxConcurrent, Pitch, Volume, *FadeText,
+		bPlaced ? TEXT("placed") : TEXT("centred"), Row->bUI ? TEXT(", plays paused") : TEXT(""));
 	return Component;
+}
+
+float URRAudioSubsystem::GetDistanceFade(const FRRSoundEventRow& Row, float Distance)
+{
+	if (Row.FadeOuter <= 0.f)
+	{
+		return 1.f;
+	}
+	const float Inner = FMath::Clamp(Row.FadeInner, 0.f, Row.FadeOuter);
+	if (Distance <= Inner)
+	{
+		return 1.f;
+	}
+	if (Distance >= Row.FadeOuter)
+	{
+		return 0.f;
+	}
+	return 1.f - (Distance - Inner) / (Row.FadeOuter - Inner);
 }
 
 void URRAudioSubsystem::LogStats() const

@@ -170,7 +170,7 @@ void ARRProjectile::PrewarmImpactSparks(UWorld* World, TSubclassOf<ARRProjectile
 	}
 }
 
-void ARRProjectile::PlayImpactSpark(const FHitResult* Impact)
+FVector ARRProjectile::GetImpactLocation(const FHitResult* Impact) const
 {
 	// The shot's own height, where the player sees the shot: a tall Muzzle capsule (task-412) may touch far below the shot mesh.
 	FVector Location = GetActorLocation();
@@ -179,10 +179,21 @@ void ARRProjectile::PlayImpactSpark(const FHitResult* Impact)
 		Location.X = Impact->ImpactPoint.X;
 		Location.Y = Impact->ImpactPoint.Y;
 	}
+	return Location;
+}
+
+void ARRProjectile::PlayImpactSpark(const FHitResult* Impact)
+{
+	const FVector Location = GetImpactLocation(Impact);
 	if (!ImpactSoundEvent.IsNone())
 	{
 		URRAudioSubsystem::PlayEventAt(this, ImpactSoundEvent, Location);
 	}
+	SpawnImpactSpark(Location);
+}
+
+void ARRProjectile::SpawnImpactSpark(const FVector& Location)
+{
 	URRNiagaraPoolSubsystem* FXPool = ImpactSparkSystem && GetWorld() ? GetWorld()->GetSubsystem<URRNiagaraPoolSubsystem>() : nullptr;
 	if (FXPool == nullptr)
 	{
@@ -341,13 +352,20 @@ void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 {
 	if (!bSpent)
 	{
+		const FVector Location = GetImpactLocation(&ImpactResult);
+		// Wall impact sound (task-513): any blocking hit that is not a robot (blocks of every kind, map edge), as its own event
+		// ImpactSoundEvent.WallImpactSoundVariant, faded by the distance from the player in the table. Robot hits keep ImpactSoundEvent.
+		if (!ImpactSoundEvent.IsNone() && !Cast<ARREnemy>(ImpactResult.GetActor()))
+		{
+			URRAudioSubsystem::PlayEventAt(this, ImpactSoundEvent, Location, WallImpactSoundVariant);
+		}
 		if (ARRArenaGrid* Grid = Cast<ARRArenaGrid>(ImpactResult.GetActor()))
 		{
 			const FIntPoint Cell = Grid->GetCellFromHit(ImpactResult);
 			// Sparks on every block, the cells the drone can dig (task-437); robot shots have no system.
 			if (Grid->IsBlockCell(Cell))
 			{
-				PlayImpactSpark(&ImpactResult);
+				SpawnImpactSpark(Location);
 			}
 			// Barrels are grid cells without an ASC: the grid takes the carried damage as shot damage (other blocks ignore it).
 			if (bDamagesTerrain && Grid->GetCellType(Cell) == ERRCellType::Barrel)

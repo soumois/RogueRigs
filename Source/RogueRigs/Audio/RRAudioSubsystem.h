@@ -27,7 +27,7 @@ struct FRRSoundEventStats
  * Game instance subsystem of the sound events.
  * - PlayEvent / PlayEventAt: finds the row of the event (dotted names fall back to their parent), plays its sound through the Effects
  *   class of URROptionsSettings, pitch jittered, placed (world rows) or centred, pause-proof (UI rows); a row capped at N stops its
- *   oldest play before the N+1th. No row or no sound: silent, no error.
+ *   oldest play before the N+1th. A row with FadeOuter > 0 fades with the distance from the player pawn (silent from FadeOuter). No row or no sound: silent, no error.
  * - Buttons: a real-time ticker plays UIHover when the cursor enters an enabled Slate button of any screen (paused ones included), and
  *   a Slate input pre-processor plays UIClick on a left press on an enabled button. A button counts as disabled when it or a parent is.
  */
@@ -51,6 +51,12 @@ public:
 
 	/** Plays from this subsystem; Location null = centred. Returns the component played, or null (no row, no sound, no audio). */
 	UAudioComponent* Play(const UObject* WorldContextObject, FName Event, const FVector* Location);
+
+	/**
+	 * Volume factor of Row at Distance uu from the player (task-513): 1 up to FadeInner, linear to 0 at FadeOuter, 0 beyond;
+	 * 1 when the row has no fade (FadeOuter 0).
+	 */
+	static float GetDistanceFade(const FRRSoundEventRow& Row, float Distance);
 
 	/** Logs, per row, sound, plays, cap stops, peak of simultaneous plays and plays active now. */
 	void LogStats() const;

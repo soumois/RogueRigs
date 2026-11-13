@@ -170,6 +170,12 @@ protected:
 	 */
 	void PlayImpactSpark(const FHitResult* Impact);
 
+	/** Where an impact shows and sounds: the horizontal impact point of Impact at the shot's height, or this projectile (see PlayImpactSpark). */
+	FVector GetImpactLocation(const FHitResult* Impact) const;
+
+	/** Plays ImpactSparkSystem once at Location through the Niagara pool, without sound. */
+	void SpawnImpactSpark(const FVector& Location);
+
 	/**
 	 * Collision capsule on the Projectile channel; root component (the sphere CollisionSphere before task-412). Radius editable in
 	 * the Blueprint subclass; half height = radius by default, set per shot by SpawnProjectile (miner shots from the Muzzle).
@@ -203,6 +209,13 @@ protected:
 	/** Sound event played with the impact sparks, at the same place (task-511, URRAudioSubsystem). None = silent (robot and turret shots). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact")
 	FName ImpactSoundEvent = TEXT("Impact");
+
+	/**
+	 * Refinement of ImpactSoundEvent played when the shot stops on anything that is not a robot (blocks, map edge): Impact.Wall, its
+	 * own table row with a distance fade (task-513). None = the plain ImpactSoundEvent row.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Impact")
+	FName WallImpactSoundVariant = TEXT("Wall");
 
 	/** Damage spec made by the weapon's ASC at fire time; applied on impact (the target ASC works on its own copy). */
 	FGameplayEffectSpecHandle DamageSpec;

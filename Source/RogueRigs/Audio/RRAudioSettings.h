@@ -17,7 +17,7 @@ struct FRRSoundEventRow
 	GENERATED_BODY()
 
 	/**
-	 * Event name the code plays (Shot, Impact, EnemyDeath, PlayerHit, XPPickup, LevelUp, UIHover, UIClick). A dotted name refines an
+	 * Event name the code plays (Shot, Impact, Impact.Wall, EnemyDeath, PlayerHit, XPPickup, LevelUp, UIHover, UIClick). A dotted name refines an
 	 * event: a call for Shot.Shotgun uses row Shot.Shotgun when it exists, else row Shot.
 	 */
 	UPROPERTY(Config)
@@ -39,9 +39,21 @@ struct FRRSoundEventRow
 	UPROPERTY(Config)
 	int32 MaxConcurrent = 0;
 
-	/** World sound: placed at the event location, panned by its place on screen (no distance fade). False: centred. */
+	/** World sound: placed at the event location, panned by its place on screen (no engine attenuation). False: centred. */
 	UPROPERTY(Config)
 	bool bSpatial = false;
+
+	/**
+	 * Distance fade from the player (task-513), for a play with a location (PlayEventAt): Volume up to FadeInner uu (horizontal
+	 * distance player to event at the moment of the play), then linear down to silence at FadeOuter uu; at or beyond FadeOuter the
+	 * event does not play. FadeOuter 0 = no fade (default). Any row can use it.
+	 */
+	UPROPERTY(Config)
+	float FadeInner = 0.f;
+
+	/** Distance in uu at which the fade reaches silence; 0 = no distance fade. See FadeInner. */
+	UPROPERTY(Config)
+	float FadeOuter = 0.f;
 
 	/** Interface sound: also plays while the game is paused. */
 	UPROPERTY(Config)
