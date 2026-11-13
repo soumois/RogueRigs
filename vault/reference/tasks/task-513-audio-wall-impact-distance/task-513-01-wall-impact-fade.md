@@ -3,7 +3,7 @@ id: task-513-01-wall-impact-fade
 description: "Cpp: separate wall impact event with a distance fade from the player, values in the table"
 parent: task-513-audio-wall-impact-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Impact sur un mur : plus discret et selon la distance au joueur: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:36:41Z
 - waiting_for: none
 - result: open
 

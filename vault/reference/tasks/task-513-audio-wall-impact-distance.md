@@ -3,7 +3,7 @@ id: task-513-audio-wall-impact-distance
 description: "Global task: Separate wall impact sound, quieter and fading with distance from the player; values in the event table."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Impact sur un mur : plus discret et selon la distance au joueur
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok pour les questions.")
 - milestone: M2
 - next_step: task-513-01-wall-impact-fade
-- started: open
+- started: 2026-11-13T08:36:41Z
 - waiting_for: none
 - result: open
 
