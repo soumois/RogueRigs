@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-534-01-descend-script
+- next_step: task-534-02-doc
 - started: 2026-11-13T18:25:34Z
 - waiting_for: none
+- executor_tokens: input 20, cache write 31824, cache read 301743, output 4375
+- executor_usage: runs 1, turns 10, context start 17k peak 44k, resumes 0, 1 min, units 0.09 M, USD 0.31
+- planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
+- planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
 - result: open
 
 ## Questions

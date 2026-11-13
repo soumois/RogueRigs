@@ -3,7 +3,7 @@ id: task-534-02-doc
 description: "Doc: Authorise the script in _navigation and name it where the planner reads its tools."
 parent: task-534-descent-script
 kind: task
-status: todo
+status: in-progress
 ---
 # Script de descente : gloses d'un index et de ses sous-index en un appel: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:26:16Z
 - waiting_for: none
 - result: open
 
