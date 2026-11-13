@@ -3,7 +3,7 @@ id: task-531-01-fix-impact-spark-test
 description: "Cpp: find whether test ImpactSparkAsset or the impact effect pool code is wrong, fix it at its source, pass in -nullrhi and -RenderOffScreen."
 parent: task-531-impact-spark-test-fails
 kind: task
-status: todo
+status: in-progress
 ---
 # Test RogueRigs.Weapons.ImpactSparkAsset en échec: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:03:48Z
 - waiting_for: none
 - result: open
 

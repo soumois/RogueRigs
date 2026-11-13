@@ -3,7 +3,7 @@ id: task-531-impact-spark-test-fails
 description: "Global task: make test RogueRigs.Weapons.ImpactSparkAsset pass, fixing the defect at its source (test or impact effect pool code) without changing the design."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Test RogueRigs.Weapons.ImpactSparkAsset en échec
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-531-01-fix-impact-spark-test
-- started: open
+- started: 2026-11-13T18:03:48Z
 - waiting_for: none
 - result: open
 
