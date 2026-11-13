@@ -368,6 +368,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward")
 	bool bXPBurstOnComplete = true;
 
+	/**
+	 * Sound event played once when the zone is validated (CompleteHack, console and chest; task-527 Q12): an FRRDistanceSound
+	 * at the actor location (zone centre), faded by the player's distance per its table row. None = silent.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Audio")
+	FName CompleteSoundEvent = TEXT("ObjectiveComplete");
+
 	/** Raw XP of each burst chip, before the XPGain stat (owner 2026-10-23, provisional: a big chip = 8 basic nuts of 1 XP, 24 in all). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Console|Reward", meta = (ClampMin = 0))
 	float XPBurstChipXP = 8.f;

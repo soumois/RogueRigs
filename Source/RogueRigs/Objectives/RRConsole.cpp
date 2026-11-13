@@ -2,6 +2,7 @@
 
 #include "Objectives/RRConsole.h"
 
+#include "Audio/RRDistanceSound.h"
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Drone/RRDrone.h"
@@ -274,6 +275,10 @@ void ARRConsole::CompleteHack()
 		XPBurstChipsSpawned = SpawnXPBurst();
 	}
 	UE_LOG(LogRogueRigs, Log, TEXT("%s: hack complete, %d XP chip(s) of %.1f XP."), *GetName(), XPBurstChipsSpawned, XPBurstChipXP);
+	if (!CompleteSoundEvent.IsNone())
+	{
+		FRRDistanceSound(CompleteSoundEvent).PlayAt(this, GetActorLocation());
+	}
 	OnHackCompleteBurst(GetActorLocation(), XPBurstChipsSpawned);
 }
 
