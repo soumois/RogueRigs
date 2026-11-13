@@ -3,7 +3,7 @@ id: task-517-01-dig-event
 description: "Cpp: looping dig event with fade in/out and table line (silent until the file)"
 parent: task-517-audio-dig-sound
 kind: task
-status: todo
+status: in-progress
 ---
 # Son quand on creuse: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:06:55Z
 - waiting_for: none
 - result: open
 

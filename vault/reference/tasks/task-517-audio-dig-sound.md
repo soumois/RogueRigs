@@ -3,7 +3,7 @@ id: task-517-audio-dig-sound
 description: "Global task: Laser mining sound: one looping sound while the player digs, fade in and out; import of the owner file."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Son quand on creuse
 
@@ -26,7 +26,7 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 Q9 : oui")
 - milestone: M2
 - next_step: task-517-01-dig-event
-- started: open
+- started: 2026-11-13T09:06:55Z
 - waiting_for: none
 - result: open
 
