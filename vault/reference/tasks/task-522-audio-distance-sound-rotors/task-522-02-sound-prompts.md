@@ -3,7 +3,7 @@ id: task-522-02-sound-prompts
 description: "Text: 3 English ElevenLabs prompts for the extractor rotor loop (four rotors, one sound, loopable), owner generates and picks by ear"
 parent: task-522-audio-distance-sound-rotors
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Son des hélices de l'extracteur et code générique de son à distance: text
 
@@ -21,7 +21,7 @@ status: in-progress
 - runs: open
 - milestone: M2
 - started: 2026-11-13T13:39:59Z
-- waiting_for: none
+- waiting_for: owner generates the extractor rotor loop with ElevenLabs from the 3 prompts of the executor report (Loop on, about 5 s), picks one by ear and sends the kept file (then 03 imports it)
 - result: open
 
 ## Relations

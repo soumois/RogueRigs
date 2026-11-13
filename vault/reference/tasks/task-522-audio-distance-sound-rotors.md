@@ -3,7 +3,7 @@ id: task-522-audio-distance-sound-rotors
 description: "Global task: One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Son des hélices de l'extracteur et code générique de son à distance
 
@@ -17,7 +17,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-522-02-sound-prompts
 - started: 2026-11-13T13:39:59Z
-- waiting_for: none
+- waiting_for: owner sends the kept rotor loop file generated from the 3 prompts of task-522-02-sound-prompts
 - executor_tokens: input 62, cache write 89490, cache read 2245977, output 26408
 - executor_usage: runs 1, turns 31, context start 16k peak 102k, resumes 0, 5 min, units 0.47 M, USD 1.43
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
