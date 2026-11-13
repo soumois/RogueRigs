@@ -3,7 +3,7 @@ id: task-512-audio-shot-quieter
 description: "Global task: Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Tir du joueur plus discret
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok pour les questions.")
 - milestone: M2
 - next_step: task-512-01-shot-volume
-- started: open
+- started: 2026-11-13T08:33:42Z
 - waiting_for: none
 - result: open
 

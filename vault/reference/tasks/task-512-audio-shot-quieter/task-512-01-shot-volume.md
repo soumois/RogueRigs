@@ -3,7 +3,7 @@ id: task-512-01-shot-volume
 description: "Cpp: shot volume lowered in the event table"
 parent: task-512-audio-shot-quieter
 kind: task
-status: todo
+status: in-progress
 ---
 # Tir du joueur plus discret: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:33:42Z
 - waiting_for: none
 - result: open
 

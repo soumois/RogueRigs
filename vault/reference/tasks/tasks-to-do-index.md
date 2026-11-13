@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-512-audio-shot-quieter]] — Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear. Status todo.
+- [[task-512-audio-shot-quieter]] — Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear. Status in-progress.
 - [[task-513-audio-wall-impact-distance]] — Split the wall impact from the enemy impact and make it quieter, fading with the distance from the player; values in the event table. Status todo.
 - [[task-514-audio-enemy-death-distance]] — Enemy death sound fades with distance from the player, with the fade option built in task-513. Status wait-answers.
 - [[task-515-audio-ore-pickup]] — Ore pickup plays the XP pickup sound for now, through its own event line so it can be swapped later. Status todo.
