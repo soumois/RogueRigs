@@ -1,9 +1,9 @@
 ---
 id: task-550-layout-generator-back-pre-537
 description: "Global task: C++ layout generator back to its pre-537 maps (stale pocket guard kept), task-536 speed-up kept, old hashes back, docs updated."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Générateur de layout : retour aux cartes d'avant task-537 (garde des poches)
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-14, Q1 answered, "ok pour le reste")
 - milestone: M2
-- next_step: task-550-02-doc
+- next_step: none
 - started: 2026-11-13T23:48:25Z
 - waiting_for: none
-- executor_tokens: input 72, cache write 75389, cache read 2139574, output 16771
-- executor_usage: runs 1, turns 36, context start 17k peak 88k, resumes 0, 10 min, units 0.39 M, USD 1.14
+- executor_tokens: input 92, cache write 96903, cache read 3148271, output 24205
+- executor_usage: runs 1, turns 46, context start 17k peak 110k, resumes 0, 12 min, units 0.56 M, USD 1.60
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Done (doc 2854925e). sys-layout-generator: pocket_guard says the guard of pocket cells back to rock stays for the rest of the carve (as the Node script), task-537 (c324273f) undone 2026-11-14 on owner request by task-550 (cc8a7dc8), stale-guard counter = the guard 537 released; -carveonly line without 'released'; 24 starts same seeds as task-495-02, 16.2 s (10.9 s with the release); filler figures seed 17 1.30/1.19 s, 422704496 0.67/0.60 s next to task-536 and 537; reference 422704499 / 86c36f6d plus the five -carveonly hashes. layout-generator-recipe: pocket guard line rewritten, dated undo. layout-review-rules: task-539 line says its verdicts concern maps no longer produced, new dated line for the undo. Lint clean.
 
 ## Questions
 Decided 2026-11-14: Q1 answered by the owner (below); Q2, Q3, Q4 defaults accepted ("ok pour le reste"); values provisional, owner 2026-11-14.
@@ -36,6 +36,6 @@ Decided 2026-11-14: Q1 answered by the owner (below); Q2, Q3, Q4 defaults accept
 2. task-550-02-doc (vault/reference/tasks/task-550-layout-generator-back-pre-537/task-550-02-doc.md) — doc: Make the generator docs say the pre-537 guard behaviour, the reference hash and timings, and that task-537 was undone
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-550-01-generator-back]] — step 1, cpp.
 - [[task-550-02-doc]] — step 2, doc.
