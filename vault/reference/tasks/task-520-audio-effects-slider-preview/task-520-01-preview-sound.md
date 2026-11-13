@@ -3,7 +3,7 @@ id: task-520-01-preview-sound
 description: "Cpp: Effects slider plays the sample effect per Q1"
 parent: task-520-audio-effects-slider-preview
 kind: task
-status: todo
+status: in-progress
 ---
 # Curseur Effects : jouer un son d'effet: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:17:35Z
 - waiting_for: none
 - result: open
 

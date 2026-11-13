@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-520-audio-effects-slider-preview]] — Moving the Effects volume slider plays a sample effect sound so the player hears what it sets. Status todo.
+- [[task-520-audio-effects-slider-preview]] — Moving the Effects volume slider plays a sample effect sound so the player hears what it sets. Status in-progress.
 - [[task-521-options-tab-button-shrinks]] — Defect: the clicked or selected Options tab button is drawn smaller than the other tabs. Status todo.
 - [[task-522-audio-distance-sound-rotors]] — One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child. Status todo.
 - [[task-523-audio-impact-near-quieter]] — Robot impact sound a little quieter near the player, unchanged near the screen edge. Status todo.

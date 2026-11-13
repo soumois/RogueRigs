@@ -3,7 +3,7 @@ id: task-520-audio-effects-slider-preview
 description: "Global task: Moving the Effects volume slider plays a sample effect sound so the player hears what it sets."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Curseur Effects : jouer un son d'effet
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-520-01-preview-sound
-- started: open
+- started: 2026-11-13T13:17:35Z
 - waiting_for: none
 - result: open
 
