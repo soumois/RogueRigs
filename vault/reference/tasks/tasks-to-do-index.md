@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-539-ld-review-pocket-guard-maps]] — Level-design visual review of the 7 starts whose accepted seed changed after task-537 (pocket guard release), before against after; review only. Status todo.
+- [[task-539-ld-review-pocket-guard-maps]] — Level-design visual review of the 7 starts whose accepted seed changed after task-537 (pocket guard release), before against after; review only. Status in-progress.

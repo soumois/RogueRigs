@@ -3,7 +3,7 @@ id: task-539-01-ld-review
 description: "Level-design: Before/after visual and measured review of the 7 starts whose accepted seed changed after task-537."
 parent: task-539-ld-review-pocket-guard-maps
 kind: task
-status: todo
+status: in-progress
 ---
 # Revue visuelle Level-Design des cartes changées par la libération du garde de poche: level-design
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T20:18:51Z
 - waiting_for: none
 - result: open
 

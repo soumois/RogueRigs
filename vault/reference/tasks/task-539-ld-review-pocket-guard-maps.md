@@ -3,7 +3,7 @@ id: task-539-ld-review-pocket-guard-maps
 description: "Global task: Level-design visual review of the 7 starts whose accepted seed changed after task-537 (pocket guard release), before against after; review only."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Revue visuelle Level-Design des cartes changées par la libération du garde de poche
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-539-01-ld-review
-- started: open
+- started: 2026-11-13T20:18:51Z
 - waiting_for: none
 - result: open
 
