@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 42, context start 16k peak 127k, resumes 0, 11 min, units 0.67 M, USD 1.88
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. Commit b8b51ff0. A7: sys-layout-generator gotchas give the measured slow-seed times before and after (seed 17 4.9 s to 0.80 s, arena_l3 422704496 4.3 s to 0.41 s, filler share 99 % to about 90 %, idle walks), one line on what RunFiller reuses or skips with identical output, and the -carveonly filler line; reference determinism line unchanged; lint clean.
+- result: Done. Hypothesis confirmed: on slow seeds the filler is 99 % of the carve (default seed 17: carve 4.88 s, filler 4.81 s, 5431 iterations, 4971 carved nothing; arena_l3 seed 422704496: 4.25 s, 4818 iterations, 4597 idle). After (commit 46003871: buffers once per RunFiller call, rebuild of dist/far/reach only after a carving walk, squared-int nearest scan): seed 17 carve 0.80 s (filler 0.73 s, 91 %), 422704496 0.41 s (89 %); searches 5.55->1.45 s from 17, 7.10->2.94 s from 3, 5.76->1.77 s reference. Output identical: reference 422704499 / 86c36f6d; -carveonly hashes and JSON byte-identical on seeds 3, 17, 1800, 2900 and the reference search, every tried-seed line identical except times; LayoutLoader tests 3/3; no early exit, no HiddenGuard clearing. Doc b8b51ff0. Remaining slow-seed cost is the idle WanderWalk calls (kept: they draw the random values).
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
