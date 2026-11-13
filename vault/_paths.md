@@ -44,6 +44,7 @@ art-prompts-floor-texture  reference/gdd/art-audio/art-prompts-floor-texture.md
 art-prompts-floor-texture-maps  reference/gdd/art-audio/art-prompts-floor-texture-maps.md
 art-prompts-heal-pickup  reference/gdd/art-audio/art-prompts-heal-pickup.md
 art-prompts-hud-unified-mockup  reference/gdd/art-audio/art-prompts-hud-unified-mockup.md
+art-prompts-itch-trailer-endcard  reference/gdd/art-audio/art-prompts-itch-trailer-endcard.md
 art-prompts-level-end-screen  reference/gdd/art-audio/art-prompts-level-end-screen.md
 art-prompts-level-end-screen-mockup  reference/gdd/art-audio/art-prompts-level-end-screen-mockup.md
 art-prompts-loading-screen  reference/gdd/art-audio/art-prompts-loading-screen.md

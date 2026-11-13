@@ -1,0 +1,28 @@
+{
+  "run_id": "20261114-003551-itch-trailer-endcard",
+  "asset": "itch-trailer-endcard",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/itch-trailer-endcard/prompts/02-correction-1.txt",
+  "prompt": "Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same miner firing his rifle, same small floating drone, same wave of corporate robots with red eyes, same asteroid with lilac rock blocks with a thin orange-yellow rim and violet crystals, same nebula, starfield and cratered planet in the upper right. No text, no UI. Image 1 is the image to correct. Image 2 is the player side design (miner, drone, turret).\nOnly change these four things:\n1. The turret stands on exactly three short legs, low and wide, like a tripod; it fires bright green laser bolts with a pale white-green core instead of the white-gold muzzle flash.\n2. The explosions among the robots become cartoon explosions with a white-yellow core and jagged cel-shaded orange and red-orange bands.\n3. The floor is clean: no small rubble, chips or pebbles.\n4. The left 40 percent of the image is empty deep space: no floating asteroids there.\nChange nothing else.",
+  "refs": [
+    "Art/Source/itch-trailer-endcard/20261114-003304-itch-trailer-endcard-2.png",
+    "vault/assets/rigs-lineup.jpg"
+  ],
+  "tasks": [
+    {
+      "task_id": "f4323e7f3ae20bef41e2aae883ff3215",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000013481fd9f95f36136b2c63f.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/itch-trailer-endcard/20261114-003551-itch-trailer-endcard-1.png"
+  ]
+}

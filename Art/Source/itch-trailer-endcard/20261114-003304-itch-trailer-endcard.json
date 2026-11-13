@@ -1,0 +1,40 @@
+{
+  "run_id": "20261114-003304-itch-trailer-endcard",
+  "asset": "itch-trailer-endcard",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 2,
+  "prompt_file": "Art/Source/itch-trailer-endcard/prompts/01-scene.txt",
+  "prompt": "Same art style as all previous images. Image 1 is the main menu background (style, light, void, nebula, planet and rock reference). Image 2 is the key art scene (arena asteroid, rock blocks, crystals, robots attacking). Image 3 is the player side: the miner, his small floating drone and his turret (patched, mismatched white and teal, rust, repaired, bolted and improvised). Image 4 is the corporate robots: clean industrial, red eyes, small yellow logo plate, rigid mechanical parts only.\nMake a new trailer end-card illustration: flat-shaded low-poly 3D game art, 16:9, visible facets, no textures.\nSubject: a last stand on the arena asteroid. The miner from image 3 stands on the right half of the frame, three-quarter view from slightly above, firing his rifle toward the right edge with a bright muzzle flash; his small floating drone hovers above his shoulder; his turret beside him fires a burst. Coming at them from the right and the background: a wave of the corporate robots from image 4 (several small yellow chasers, a green shooter, one big blue heavy with yellow hazard stripes), red eyes glowing, a few orange explosions and sparks among them.\nThe asteroid: a floating rock island with a magenta-purple cartoon flagstone floor, smooth light lilac rock blocks with a thin glowing orange-yellow rim on the top edge, glowing violet Duskite crystals growing from the rock blocks, its edge a cliff falling into space.\nBackground: a vast void with an indigo, violet and magenta nebula, deep ultramarine blue in the depths, a dense white starfield, a few small floating grey-violet asteroids and a large distant cratered planet in the upper right.\nComposition: the left 40 percent of the image is calm and darker (deep space, nebula and the dark side of the asteroid, no characters, no bright details) to hold a big title text. All the action stays in the right 60 percent.\nStrong directional light with lifted shadows so everything stays readable. The player side uses white, teal and rust only. No UI, no text, no logo.",
+  "refs": [
+    "vault/assets/main-menu-background.png",
+    "vault/assets/keyart.jpg",
+    "vault/assets/rigs-lineup.jpg",
+    "vault/assets/enemies-lineup.jpg"
+  ],
+  "tasks": [
+    {
+      "task_id": "e7870e756ffef9c653f00905bfe900cf",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000d1f881fd8a9f7a159d01d9ac.png"
+      ]
+    },
+    {
+      "task_id": "0e8a747035e5e9eeeb528ded64ff327f",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000e87481fda2caaf85c304ce8b.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/itch-trailer-endcard/20261114-003304-itch-trailer-endcard-1.png",
+    "Art/Source/itch-trailer-endcard/20261114-003304-itch-trailer-endcard-2.png"
+  ]
+}

@@ -1,0 +1,7 @@
+Keep this exact image: same art style, same flat-shaded low-poly look, same camera angle, same 16:9 composition, same miner firing his rifle, same small floating drone, same wave of corporate robots with red eyes, same asteroid with lilac rock blocks with a thin orange-yellow rim and violet crystals, same nebula, starfield and cratered planet in the upper right. No text, no UI. Image 1 is the image to correct. Image 2 is the player side design (miner, drone, turret).
+Only change these four things:
+1. The turret stands on exactly three short legs, low and wide, like a tripod; it fires bright green laser bolts with a pale white-green core instead of the white-gold muzzle flash.
+2. The explosions among the robots become cartoon explosions with a white-yellow core and jagged cel-shaded orange and red-orange bands.
+3. The floor is clean: no small rubble, chips or pebbles.
+4. The left 40 percent of the image is empty deep space: no floating asteroids there.
+Change nothing else.
