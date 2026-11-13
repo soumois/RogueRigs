@@ -15,11 +15,11 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-540-02-capture
+- next_step: task-540-03-doc
 - started: 2026-11-13T22:55:53Z
 - waiting_for: none
-- executor_tokens: input 122, cache write 115382, cache read 4384152, output 29890
-- executor_usage: runs 1, turns 60, context start 16k peak 115k, resumes 1, 11 min, units 0.73 M, USD 2.05
+- executor_tokens: input 128, cache write 119599, cache read 4732147, output 31047
+- executor_usage: runs 1, turns 63, context start 16k peak 120k, resumes 1, 11 min, units 0.78 M, USD 2.17
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
 - result: open
