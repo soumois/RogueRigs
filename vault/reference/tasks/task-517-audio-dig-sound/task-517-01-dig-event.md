@@ -1,13 +1,13 @@
 ---
 id: task-517-01-dig-event
-description: "Cpp: dig event and table line (silent until the file)"
+description: "Cpp: looping dig event with fade in/out and table line (silent until the file)"
 parent: task-517-audio-dig-sound
 kind: task
 status: todo
 ---
 # Son quand on creuse: cpp
 
-- goal: dig event and table line (silent until the file)
+- goal: looping dig event with fade in/out while the player mines, and its table line (silent until the file)
 - agent: cpp
 - depends_on: none
 - inputs: sys-audio (vault/reference/tech/systems/core/sys-audio.md), audio-direction (vault/reference/gdd/art-audio/audio-direction.md), Config/DefaultGame.ini
