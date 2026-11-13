@@ -327,6 +327,7 @@ style-loop  reference/tech/pipelines/style-loop.md
 sys-actor-pool  reference/tech/systems/world/sys-actor-pool.md
 sys-aim-indicator  reference/tech/systems/combat/sys-aim-indicator.md
 sys-audio  reference/tech/systems/core/sys-audio.md
+sys-audio-distance-sounds  reference/tech/systems/core/sys-audio-distance-sounds.md
 sys-auto-fire  reference/tech/systems/combat/sys-auto-fire.md
 sys-automation-tests  reference/tech/systems/tools/sys-automation-tests.md
 sys-blob-shadow  reference/tech/systems/world/sys-blob-shadow.md
