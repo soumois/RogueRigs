@@ -1,9 +1,9 @@
 ---
 id: task-531-impact-spark-test-fails
 description: "Global task: make test RogueRigs.Weapons.ImpactSparkAsset pass, fixing the defect at its source (test or impact effect pool code) without changing the design."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Test RogueRigs.Weapons.ImpactSparkAsset en échec
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-531-02-doc
+- next_step: none
 - started: 2026-11-13T18:08:13Z
 - waiting_for: none
-- executor_tokens: input 50, cache write 78609, cache read 1313905, output 10697
-- executor_usage: runs 1, turns 25, context start 16k peak 79k, resumes 0, 4 min, units 0.28 M, USD 0.87
+- executor_tokens: input 68, cache write 87260, cache read 2052905, output 13330
+- executor_usage: runs 1, turns 34, context start 16k peak 87k, resumes 0, 5 min, units 0.38 M, USD 1.11
 - planning_tokens: input 26, cache write 38050, cache read 336221, output 6896
 - planning_usage: aabf7a43 "Planifier fix ImpactSparkAsset" 1/1 (tasks 531), units 0.12 M, USD 0.40
-- result: open
+- result: Done. Done. No doc node needed an update: only the test RogueRigs.Weapons.ImpactSparkAsset changed (716bdb8e), no runtime code, no contract change of ARRProjectile or URRNiagaraPoolSubsystem; sys-weapons does not cite the test or NS_ShotImpactSpark, and bp-shot-impact-burst already states the rifle plays NS_ShotImpactBurstGreen. Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,6 +34,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-531-02-doc (vault/reference/tasks/task-531-impact-spark-test-fails/task-531-02-doc.md) — doc: Update the system doc if the fix changed the impact effect code or its contract; otherwise record that no doc change was needed.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-531-01-fix-impact-spark-test]] — step 1, cpp.
 - [[task-531-02-doc]] — step 2, doc.

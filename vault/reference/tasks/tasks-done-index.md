@@ -539,3 +539,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-528-extractor-takeoff-under-floor]] — Defect: followed after the drop-off, the extractor goes into the floor during its takeoff. Status done.
 - [[task-529-gdd-audio-options-sync]] — Bring the audio-direction and options-screen gdd nodes in line with tasks 520 to 527 as built; documentation only. Status done.
 - [[task-530-reglage-build-echoue-compilation]] — Réglage (no planner): Réglage : le build échoue à la compilation (UE 5.8). RRWeaponTests.cpp:1687-1689 et RRLevelUpTests.cpp:412-414 appellent FMaterialResource::FinishCompilation() et ... Status done.
+- [[task-531-impact-spark-test-fails]] — Automation test RogueRigs.Weapons.ImpactSparkAsset fails (pool not prewarmed, 0 spark requested, 0 played) under -nullrhi and -RenderOffScreen; find whether the test or the impact spark pool / Niagara code is wrong and make it pass without changing the design. Status done.
