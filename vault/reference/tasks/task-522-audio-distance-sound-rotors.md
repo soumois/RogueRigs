@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-522-01-distance-sound-classes
-- started: 2026-11-13T13:34:31Z
+- next_step: task-522-02-sound-prompts
+- started: 2026-11-13T13:39:59Z
 - waiting_for: none
+- executor_tokens: input 62, cache write 89490, cache read 2245977, output 26408
+- executor_usage: runs 1, turns 31, context start 16k peak 102k, resumes 0, 5 min, units 0.47 M, USD 1.43
+- planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
+- planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
 
 ## Questions
