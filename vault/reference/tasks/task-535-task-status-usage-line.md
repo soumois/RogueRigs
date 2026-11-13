@@ -3,7 +3,7 @@ id: task-535-task-status-usage-line
 description: "Global task: task-spec gets one line with the exact task-status.js syntax, e.g. back to wait-answers with waiting_for."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # task-spec : ligne d'usage de task-status.js
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-535-01-usage-line
-- started: open
+- started: 2026-11-13T18:27:41Z
 - waiting_for: none
 - result: open
 

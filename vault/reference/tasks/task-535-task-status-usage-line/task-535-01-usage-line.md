@@ -3,7 +3,7 @@ id: task-535-01-usage-line
 description: "Doc: Add the exact task-status.js usage line to task-spec."
 parent: task-535-task-status-usage-line
 kind: task
-status: todo
+status: in-progress
 ---
 # task-spec : ligne d'usage de task-status.js: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:27:41Z
 - waiting_for: none
 - result: open
 
