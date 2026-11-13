@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-523-01-impact-curve
+- next_step: task-523-02-doc
 - started: 2026-11-13T14:38:34Z
 - waiting_for: none
+- executor_tokens: input 50, cache write 74268, cache read 1444761, output 11407
+- executor_usage: runs 1, turns 25, context start 16k peak 87k, resumes 0, 3 min, units 0.29 M, USD 0.89
+- planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
+- planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
 
 ## Questions

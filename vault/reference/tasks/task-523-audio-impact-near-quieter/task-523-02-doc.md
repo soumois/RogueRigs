@@ -3,7 +3,7 @@ id: task-523-02-doc
 description: "Doc: sys-audio: the near reduction of the robot impact"
 parent: task-523-audio-impact-near-quieter
 kind: task
-status: todo
+status: in-progress
 ---
 # Impact : un peu moins fort au corps à corps: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:41:54Z
 - waiting_for: none
 - result: open
 
