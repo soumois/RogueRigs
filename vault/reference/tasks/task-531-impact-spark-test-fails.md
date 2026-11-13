@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 34, context start 16k peak 87k, resumes 0, 5 min, units 0.38 M, USD 1.11
 - planning_tokens: input 26, cache write 38050, cache read 336221, output 6896
 - planning_usage: aabf7a43 "Planifier fix ImpactSparkAsset" 1/1 (tasks 531), units 0.12 M, USD 0.40
-- result: Done. Done. No doc node needed an update: only the test RogueRigs.Weapons.ImpactSparkAsset changed (716bdb8e), no runtime code, no contract change of ARRProjectile or URRNiagaraPoolSubsystem; sys-weapons does not cite the test or NS_ShotImpactSpark, and bp-shot-impact-burst already states the rifle plays NS_ShotImpactBurstGreen. Lint clean.
+- result: Done. A1 ImpactSparkAsset passes under -nullrhi and -RenderOffScreen (prewarm, one request, played, back in the pool after 14 frames). A2 defect in the test: since task-465 BP rifle shot plays NS_ShotImpactBurstGreen, the test still read the pool of NS_ShotImpactSpark (C++ default), so every count was 0; the log also failed 'rifle shot plays it'. A3 test reads the shipped burst, keeps a check of the C++ default, no assert removed, no skip (716bdb8e). A4 RogueRigs.Weapons 16/16 under -nullrhi. A5 editor and game builds succeed. A6 no runtime code changed, nothing the player sees. No doc change needed. Note: task-next.js tried to close the global at subtask 1 (quirk: pass the next global and subtask), fixed by hand with task-status.js.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
