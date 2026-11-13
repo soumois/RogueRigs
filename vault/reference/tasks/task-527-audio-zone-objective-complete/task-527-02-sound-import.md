@@ -3,7 +3,7 @@ id: task-527-02-sound-import
 description: "Bp: objective complete sound kept in Art/Source/audio with a manifest entry (placeholder), imported"
 parent: task-527-audio-zone-objective-complete
 kind: task
-status: todo
+status: in-progress
 ---
 # Son à la validation d'un coffre ou d'une console: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T16:15:45Z
 - waiting_for: none
 - result: open
 

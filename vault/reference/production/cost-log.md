@@ -1301,21 +1301,22 @@ kind: note
 | [[task-522-05-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-523-01-impact-curve]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-523-02-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-527-01-sound-prompts]] | opus | 1 | 0k | 14k | 19k | 2k | 0.03 | 3 | 1 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | USD | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|---|
-| All subtask rows above (workers) | 391.97 | 388.26 | 0k | 91.72 M | 1896.08 M | 16816k |
+| All subtask rows above (workers) | 392.10 | 388.29 | 0k | 91.74 M | 1896.09 M | 16818k |
 | model mixed | — | 9.51 | 0k | 3.29 M | 29.11 M | 497k |
 | model none | — | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
-| model opus | — | 210.33 | 0k | 47.04 M | 1049.77 M | 9315k |
+| model opus | — | 210.36 | 0k | 47.06 M | 1049.79 M | 9317k |
 | model sonnet | — | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 360.28 | 138.46 | 16k | 28.23 M | 775.31 M | 5124k |
+| Executors and legacy orchestrators that ran a task (pilot) | 361.07 | 138.69 | 16k | 28.32 M | 776.06 M | 5133k |
 | Planning runs (planners and legacy planning passes) | 156.94 | 47.67 | 5k | 14.19 M | 168.64 M | 2612k |
 | Agents without a subtask id (other) | 42.36 | 17.07 | 2k | 3.05 M | 104.54 M | 559k |
-| Main sessions (all of them, also chat outside tasks) | 1022.63 | 306.09 | 84k | 63.16 M | 1871.55 M | 7979k |
+| Main sessions (all of them, also chat outside tasks) | 1023.09 | 306.29 | 84k | 63.25 M | 1872.25 M | 7982k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.
