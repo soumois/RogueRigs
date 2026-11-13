@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 73, context start 17k peak 152k, resumes 0, 23 min, units 1.10 M, USD 3.00
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. Done (doc commit c9ade13f). sys-layout-generator: pocket_guard entry (guard only within pockets.guard of a cell still hidden, rebuilt after refill and passage repair), -carveonly pocket/guard line, reference line 422704489 -> 422704499 cells hash 34b074db (was 86c36f6d), 24-start revalidation (24/24, 17 same seed, 7 changed, 10.9 s vs 16.6 s), idle filler before/after with verdict yes, cache note. layout-generator-recipe: C++ releases the guard, Node script does not (Q1). layout-review-rules: 24-start result after the change. Lint clean.
+- result: Done. Code c324273f: the C++ generator rebuilds the pocket guard from the cells still hidden after region refill and passage repair (stale 0, missing 0 on all seeds checked). Verdict on idle filler: yes, the stale guard was the cause (seed 17: 4968 of 4971 idle walks lost rock only to a stale guard; after 55 iterations, 1 idle, carve 0.81 -> 0.19 s; 422704496: 4597 -> 2 idle, 0.72 -> 0.18 s; seeds 1-300: 48000 -> 8739 idle). 24 starts: 24/24 pass and validator OK, 17 same accepted seed, 7 changed, search 16.6 -> 10.9 s (table in task-537-01). Reference 422704489: seed 422704499 unchanged, cells hash 86c36f6d -> 34b074db, identical over two runs. No seed at default params has zero pocket cells removed (300 scanned); identical hash on 65 of 300 and on starts 1000 and 2600. LayoutLoader 3/3. Docs c9ade13f. Within the standard budget (73 turns of 90, 1.10 M of 1.5 M units).
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
