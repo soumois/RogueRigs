@@ -3,7 +3,7 @@ id: task-523-01-impact-curve
 description: "Cpp: robot impact quieter near the player per Q9"
 parent: task-523-audio-impact-near-quieter
 kind: task
-status: todo
+status: in-progress
 ---
 # Impact : un peu moins fort au corps à corps: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:38:34Z
 - waiting_for: none
 - result: open
 

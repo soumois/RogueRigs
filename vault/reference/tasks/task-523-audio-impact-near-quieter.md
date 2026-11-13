@@ -3,7 +3,7 @@ id: task-523-audio-impact-near-quieter
 description: "Global task: Robot impact sound a little quieter near the player, unchanged near the screen edge."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Impact : un peu moins fort au corps à corps
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-523-01-impact-curve
-- started: open
+- started: 2026-11-13T14:38:34Z
 - waiting_for: none
 - result: open
 
