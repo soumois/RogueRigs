@@ -15,11 +15,11 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-521-02-capture
+- next_step: task-521-03-doc
 - started: 2026-11-13T13:26:17Z
 - waiting_for: none
-- executor_tokens: input 86, cache write 77658, cache read 2392808, output 18702
-- executor_usage: runs 1, turns 43, context start 16k peak 90k, resumes 0, 7 min, units 0.43 M, USD 1.24
+- executor_tokens: input 100, cache write 84743, cache read 3042738, output 20601
+- executor_usage: runs 1, turns 50, context start 16k peak 97k, resumes 0, 7 min, units 0.51 M, USD 1.44
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open

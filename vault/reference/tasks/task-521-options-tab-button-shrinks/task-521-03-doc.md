@@ -3,7 +3,7 @@ id: task-521-03-doc
 description: "Doc: widget doc node: the tab size fix"
 parent: task-521-options-tab-button-shrinks
 kind: task
-status: todo
+status: in-progress
 ---
 # Options : l'onglet cliqué devient plus petit: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:33:20Z
 - waiting_for: none
 - result: open
 
