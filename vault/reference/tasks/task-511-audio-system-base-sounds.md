@@ -1,9 +1,9 @@
 ---
 id: task-511-audio-system-base-sounds
 description: "Global task: Data-driven C++ audio system (event -> sound table) on the existing sound classes, with owner-picked CC0 sounds for 8 events."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Audio system and the first 8 sound effects
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "ok")
 - milestone: M2
-- next_step: task-511-04-audio-doc
+- next_step: none
 - started: 2026-11-13T08:02:08Z
 - waiting_for: none
-- executor_tokens: input 260, cache write 940109, cache read 22031525, output 109763
-- executor_usage: runs 1, turns 129, context start 16k peak 308k, resumes 3, 888 min, units 3.93 M, USD 11.30
+- executor_tokens: input 282, cache write 954918, cache read 25491855, output 118085
+- executor_usage: runs 1, turns 140, context start 16k peak 322k, resumes 3, 890 min, units 4.33 M, USD 12.24
 - planning_tokens: input 26, cache write 54769, cache read 468394, output 14795
 - planning_usage: a23f106d "Plan audio tranche 1" 1/1 (tasks 511), units 0.19 M, USD 0.66
-- result: open
+- result: Done. Done (3d19a334). sys-audio created (event table, call sites, caps, button sounds, how to add a sound, debug), linked from systems-core-index, sys-options, sys-button-hover and audio-direction. audio-direction filled with what the owner said and did on 2026-11-13: Q2 palette refused, new palette open; sources 7 ElevenLabs + 1 level-up of unknown origin, licences to confirm; kept assets SW_*. Checked only by log (owner to listen in game): each sound's timing and loudness, on-screen panning of shot/impact/death, the 4/4/3 caps under fire, hover and click on every screen, silence of disabled buttons, the level-up cut at 0.69 s. Open for the owner: ElevenLabs licence, level-up author and licence, new palette, turret and robot shots silent. A4 departs from the plan by the owner's own choice: his picks are not the CC0 candidates.
 
 ## Questions
 Decided 2026-11-12 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-12.
@@ -40,7 +40,7 @@ Decided 2026-11-12 (owner "ok"): every default below is accepted; values provisi
 4. task-511-04-audio-doc (vault/reference/tasks/task-511-audio-system-base-sounds/task-511-04-audio-doc.md) — doc: Document the audio system, its event table and how to add a sound.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-511-01-audio-system]] — step 1, cpp.
 - [[task-511-02-sound-candidates]] — step 2, sound.
 - [[task-511-03-sound-import]] — step 3, bp.
