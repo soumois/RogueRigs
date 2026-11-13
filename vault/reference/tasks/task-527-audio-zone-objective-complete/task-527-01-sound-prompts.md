@@ -3,7 +3,7 @@ id: task-527-01-sound-prompts
 description: "Text: 3 English ElevenLabs prompts for the zone objective complete sound (chest opened, console hacked), owner generates and picks by ear"
 parent: task-527-audio-zone-objective-complete
 kind: task
-status: todo
+status: in-progress
 ---
 # Son à la validation d'un coffre ou d'une console: text
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:43:12Z
 - waiting_for: none
 - result: open
 
