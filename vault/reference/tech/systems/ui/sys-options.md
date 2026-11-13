@@ -45,3 +45,4 @@ kind: doc
 - [[sys-damage-numbers]] — reads the Damage numbers toggle.
 - [[sys-aim-indicator]] — reads the Aim indicator toggle.
 - [[sys-button-hover]] — hover of the screen buttons.
+- [[sys-audio]] — sound events played through the Effects class these sliders set.

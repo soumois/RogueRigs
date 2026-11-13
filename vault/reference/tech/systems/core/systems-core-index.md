@@ -11,6 +11,7 @@ Player, GAS, damage, progression, upgrades, cheats: the miner and its numbers.
 ## Children
 - [[sys-gas-core]] — which actors own an ASC, AttributeSets, plugin setup, debug tools. Read first for any GAS work.
 - [[sys-player]] — miner pawn (ASC, base stats, camera, move and aim), player controller input routing, game mode.
+- [[sys-audio]] — sound events: event table in DefaultGame.ini, call sites, caps, button sounds, how to add a sound.
 - [[sys-camera-shake]] — shared C++ camera shake and the PlayCameraShake call any actor uses; chest preset values.
 - [[sys-damage]] — damage chain from shot to death, i-frames, death guard.
 - [[sys-status-effects]] — stacking rules for bonuses and statuses, enemy stun.

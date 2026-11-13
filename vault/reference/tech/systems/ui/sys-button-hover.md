@@ -28,3 +28,4 @@ kind: doc
 - [[sys-run-transition]] — stats and shop screen widget bases.
 - [[tool-capture]] — capture tooling used with rr.Debug.CursorOn.
 - [[task-485-ui-button-hover]] — the task that built it.
+- [[sys-audio]] — hover and click sounds of the same buttons.
