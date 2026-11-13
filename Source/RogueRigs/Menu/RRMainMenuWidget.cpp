@@ -18,8 +18,8 @@ void URRMainMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	SetIsFocusable(true);
-	// Plate buttons since task-487: the plate brightens and grows (ui-button-hover); the orange focus outline is the widget's own
-	// (RefreshColours). Options active since task-500-04.
+	// Plate buttons since task-487: the plate brightens and grows (ui-button-hover); no focus look since task-540.
+	// Options active since task-500-04.
 	if (OptionsButton)
 	{
 		OptionsButton->SetIsEnabled(IsOptionsAvailable());

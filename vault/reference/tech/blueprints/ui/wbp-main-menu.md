@@ -18,19 +18,20 @@ kind: doc
 | MenuColumn (VerticalBox) | point (0,0.5), align (0,0.5), offset left 120, auto size | `TitleText` "ROGUE RIGS" (Roboto Bold 80, white, outline 3, bottom padding 40), then `ButtonColumn` |
 | ButtonColumn (VerticalBox) | MenuColumn slot HAlign Left | `NewRunButton`, `OptionsButton`, `ExitButton`, slots HAlign Fill, padding 8 top and bottom: all three take the width of the widest (New Run) |
 
-- plate buttons (task-487-01, 663c7c6a): style as [[wbp-pause-menu]] (T_Shop_ButtonContinue, Box, margin L/R 0.155, image 640x163; Pressed tint 0.7; Disabled tint 0.5 alpha 0.85 = greyed plate), Normal and Pressed padding 0, BackgroundColor white; size from content: each button holds `<Name>Content` (Overlay, fill) with `<Name>Text` (Roboto Bold 36, no outline, dark brown 0.05/0.04/0.03, centred, padding 125 left/right, 30 top/bottom; about 440 x 105 at 1080p). Options is enabled since task-510-08 (8ef36596): bIsEnabled true, bound by the C++ base, opens [[wbp-options]]; it has no focus outline (RefreshColours covers New Run and Exit only).
-- focus outline: `NewRunFocus` and `ExitFocus` (Image in the Content overlay, fill, padding 20/13 so it hugs the visible plate; RoundedBox, fill alpha 0, outline orange 1/0.35/0.1, width 3, radius 10, no brush transparency). Render opacity does not hide a RoundedBox outline, so the graph toggles Visibility.
+- plate buttons (task-487-01, 663c7c6a): style as [[wbp-pause-menu]] (T_Shop_ButtonContinue, Box, margin L/R 0.155, image 640x163; Pressed tint 0.7; Disabled tint 0.5 alpha 0.85 = greyed plate), Normal and Pressed padding 0, BackgroundColor white; size from content: each button holds `<Name>Content` (Overlay, fill) with `<Name>Text` (Roboto Bold 36, no outline, dark brown 0.05/0.04/0.03, centred, padding 125 left/right, 30 top/bottom; about 440 x 105 at 1080p). Options is enabled since task-510-08 (8ef36596): bIsEnabled true, bound by the C++ base, opens [[wbp-options]].
+- focus look: none (task-540-01, 2f08ef00, owner 2026-11-13). The orange outline images `NewRunFocus` and `ExitFocus` (task-487) and the `RefreshColours` function were removed; the engine navigation focus rectangle is off project-wide (`RenderFocusRule=Never`, [[sys-main-menu]] data). Keyboard focus still exists but is invisible.
 - exposed_defaults: desired focus widget `NewRunButton`; labels hardcoded in English ([[main-menu]]).
 - events:
   - `OnClicked` New Run → `StartNewRun`; Exit → `QuitGame`.
   - `OnHovered` of New Run and Exit → `SetKeyboardFocus` on that button.
-  - `EventConstruct` → `SetKeyboardFocus` NewRunButton, then `RefreshColours`.
-  - `EventTick` → `RefreshColours`.
-- logic_in_bp: function `RefreshColours` (name kept from the text buttons): `NewRunFocus` / `ExitFocus` HitTestInvisible when their button has keyboard focus, else Hidden. Labels keep their colour. Look only; run logic is C++.
+  - `EventConstruct` → `SetKeyboardFocus` NewRunButton.
+  - No `EventTick` since task-540-01.
+- logic_in_bp: none beyond the events above; run logic is C++.
 - assets: T_MainMenuBackground; Roboto Bold font.
 - owner_agent: agent-bp
-- button_hover (task-485-09, then task-487-01): NewRunButton and ExitButton take the plate hover (C++ AttachNamed with plate brightening since task-487: brighter plate, grow 1.05; the focus outline is inside the button, so it grows with it); OptionsButton attached since task-510-04. Hovering a button also gives it keyboard focus (OnHovered), so the outline follows the mouse. See [[sys-button-hover]]; values of [[ui-button-hover]].
+- button_hover (task-485-09, then task-487-01): NewRunButton and ExitButton take the plate hover (C++ AttachNamed with plate brightening since task-487: brighter plate, grow 1.05); OptionsButton attached since task-510-04. Hovering a button also gives it keyboard focus (OnHovered), so Enter acts on the hovered button. See [[sys-button-hover]]; values of [[ui-button-hover]].
 - verified (task-487-02): compiled with warnings as errors, saved; -game L_MainMenu at 1920 x 1080, 1280 x 720, 1920 x 1200, 2560 x 1080, at rest and New Run, Exit, Options hovered (Saved/Captures/task487_sheets/rest_sheet.png, hover_sheet.png). The column is taller than with text buttons, so the centred title sits about 60 px higher at 1080p. Not verified on screen: Enter and clicks (graph events unchanged).
+- verified (task-540-02): -game L_MainMenu 1920 x 1080 with real key presses: no rectangle at open, after Down then Up, or on hover; Down from New Run lands on Exit (Options skipped, not investigated); Up then Enter loads L_ArenaM1. Sheet `Saved/Captures/task540_final/before_after.png`.
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
