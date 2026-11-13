@@ -15,11 +15,11 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-12, "ok")
 - milestone: M2
-- next_step: task-511-03-sound-import
+- next_step: task-511-04-audio-doc
 - started: 2026-11-13T08:02:08Z
 - waiting_for: none
-- executor_tokens: input 210, cache write 892697, cache read 15031895, output 90021
-- executor_usage: runs 1, turns 104, context start 16k peak 260k, resumes 3, 882 min, units 3.07 M, USD 9.27
+- executor_tokens: input 260, cache write 940109, cache read 22031525, output 109763
+- executor_usage: runs 1, turns 129, context start 16k peak 308k, resumes 3, 888 min, units 3.93 M, USD 11.30
 - planning_tokens: input 26, cache write 54769, cache read 468394, output 14795
 - planning_usage: a23f106d "Plan audio tranche 1" 1/1 (tasks 511), units 0.19 M, USD 0.66
 - result: open

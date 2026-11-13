@@ -3,7 +3,7 @@ id: task-511-04-audio-doc
 description: "Doc: Document the audio system, its event table and how to add a sound."
 parent: task-511-audio-system-base-sounds
 kind: task
-status: todo
+status: in-progress
 ---
 # Audio system and the first 8 sound effects: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:08:47Z
 - waiting_for: none
 - result: open
 
