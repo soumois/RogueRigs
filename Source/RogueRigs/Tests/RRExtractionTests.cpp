@@ -351,10 +351,22 @@ bool FRRExtractionTakeoffTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("risen 400 uu"), FMath::IsNearlyEqual(Shuttle->GetActorLocation().Z - Start.Z, 400.f, 5.f));
 	TestNearlyEqual(TEXT("height 400 at the end of the rise, paused"), Shuttle->GetHeightAboveFloor(), 400.f, 5.f);
 	TestWorld.Get()->GetWorldSettings()->SetPauserPlayerState(nullptr);
-	TickFrames(TestWorld, 60);
+	// Forward flight (task-528): along the horizontal heading of the nose, climbing a little, never descending.
+	bool bNeverDescends = true;
+	float PreviousZ = Shuttle->GetActorLocation().Z;
+	for (int32 Frame = 0; Frame < 60; ++Frame)
+	{
+		TickFrames(TestWorld, 1);
+		const float Z = Shuttle->GetActorLocation().Z;
+		bNeverDescends &= Z >= PreviousZ - KINDA_SMALL_NUMBER;
+		PreviousZ = Z;
+	}
 	TestTrue(TEXT("nose down"), Shuttle->GetActorRotation().Pitch < -19.f);
 	TestTrue(TEXT("flying forward"), Shuttle->GetActorLocation().X - Start.X > 100.f);
-	TestNearlyEqual(TEXT("height holds during the flight"), Shuttle->GetHeightAboveFloor(), 400.f, 5.f);
+	TestTrue(TEXT("never descends during the flight"), bNeverDescends);
+	TestTrue(FString::Printf(TEXT("climbs a little above the rise (%.0f uu)"), Shuttle->GetActorLocation().Z - Start.Z),
+		Shuttle->GetActorLocation().Z - Start.Z > 405.f && Shuttle->GetActorLocation().Z - Start.Z < 600.f);
+	TestNearlyEqual(TEXT("height follows the climb"), Shuttle->GetHeightAboveFloor(), static_cast<float>(Shuttle->GetActorLocation().Z - Start.Z), 0.01f);
 
 	// No viewport in a test world: removed by the safety time.
 	TickFrames(TestWorld, 700);

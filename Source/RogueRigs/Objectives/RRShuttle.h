@@ -113,7 +113,8 @@ public:
 
 	/**
 	 * Starts the helicopter takeoff (task-370-01): SpinUpSeconds of waiting (the rotors ramp to FlightRevPerSecond, task-373-01), then a vertical rise of RiseHeight over RiseSeconds,
-	 * a tilt to PitchDegrees nose down over TiltSeconds, then an acceleration of ForwardAcceleration along the nose until the bounds leave the player camera view;
+	 * a tilt to PitchDegrees nose down over TiltSeconds, then an acceleration of ForwardAcceleration along the horizontal heading of the nose, climbing ClimbRatio
+	 * of that speed, never descending (task-528), until the bounds leave the player camera view;
 	 * the shuttle is then destroyed. Ticks while the game is paused. Fires OnTakeoffStarted. Does nothing when already taking off. Called by the run flow on a
 	 * successful extraction; callable from C++ for the arrival (task-371).
 	 */
@@ -295,9 +296,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0.01, Units = "s"))
 	float TiltSeconds = 0.4f;
 
-	/** Takeoff: acceleration along the nose once tilting (uu/s2). Provisional. */
+	/** Takeoff: acceleration along the horizontal heading of the nose once tilting (uu/s2). Provisional. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0))
 	float ForwardAcceleration = 1500.f;
+
+	/** Takeoff: climb speed during the forward flight, as a fraction of the horizontal speed (0.1 = 1 uu up per 10 uu forward); never negative, so it never descends (task-528, owner 2026-11-13, provisional). */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 0))
+	float ClimbRatio = 0.1f;
 
 	/** Takeoff: safety, the shuttle is removed after this many seconds even if still in view or with no viewport (headless). Provisional. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Takeoff", meta = (ClampMin = 1, Units = "s"))

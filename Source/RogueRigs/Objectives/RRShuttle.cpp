@@ -284,7 +284,8 @@ void ARRShuttle::TickTakeoff(float DeltaSeconds)
 	const float RiseAlpha = FMath::Clamp((TakeoffElapsed - SpinUpSeconds) / RiseSeconds, 0.f, 1.f);
 	const float TiltAlpha = FMath::Clamp((TakeoffElapsed - RiseEnd) / TiltSeconds, 0.f, 1.f);
 
-	// Rise first (smooth start and stop), then the nose tilts down and the shuttle accelerates along its nose.
+	// Rise first (smooth start and stop), then the nose tilts down and the shuttle accelerates along the horizontal heading of its nose,
+	// climbing a little: following the tilted nose would take it into the floor (task-528).
 	const FRotator Rotation(TakeoffStartRotation.Pitch - PitchDegrees * FMath::InterpEaseInOut(0.f, 1.f, TiltAlpha, 2.f), TakeoffStartRotation.Yaw, TakeoffStartRotation.Roll);
 	FVector Location = TakeoffStartLocation + FVector::UpVector * RiseHeight * FMath::InterpEaseInOut(0.f, 1.f, RiseAlpha, 2.f);
 	if (TakeoffElapsed > RiseEnd)
@@ -292,7 +293,8 @@ void ARRShuttle::TickTakeoff(float DeltaSeconds)
 		// Top of the rise on the first forward frame, then the position keeps integrating the speed along the current nose.
 		Location = (TakeoffElapsed - DeltaSeconds <= RiseEnd) ? TakeoffStartLocation + FVector::UpVector * RiseHeight : GetActorLocation();
 		ForwardSpeed += ForwardAcceleration * DeltaSeconds * TiltAlpha;
-		Location += Rotation.Vector() * ForwardSpeed * DeltaSeconds;
+		const FVector Heading = FRotator(0.f, Rotation.Yaw, 0.f).Vector();
+		Location += (Heading + FVector::UpVector * FMath::Max(ClimbRatio, 0.f)) * ForwardSpeed * DeltaSeconds;
 	}
 	SetActorLocationAndRotation(Location, Rotation);
 
