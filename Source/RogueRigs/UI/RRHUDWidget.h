@@ -106,8 +106,8 @@ public:
 	static UUserWidget* FindUserWidgetWithProperty(const UUserWidget* Root, FName PropertyName);
 
 	/**
-	 * Alert-bar icons of the bound run flow (URRRunFlowSubsystem::GetAlertBarEvents: console, bonus chest, hordes in index order,
-	 * shuttle); empty without a bound run flow. The run flow computes them; this HUD only forwards them to OnAlertEventsChanged.
+	 * Alert-bar icons of the bound run flow (URRRunFlowSubsystem::GetAlertBarEvents: console, bonus chest, the next horde not
+	 * over, shuttle); empty without a bound run flow. The run flow computes them; this HUD only forwards them to OnAlertEventsChanged.
 	 */
 	UFUNCTION(BlueprintPure, Category = "HUD|Run")
 	const TArray<FRRAlertBarEvent>& GetAlertBarEvents() const;
@@ -384,7 +384,7 @@ protected:
 	void OnHordeIncoming(float SecondsUntil);
 
 	/**
-	 * Display event: the alert-bar icons changed (also on binding): console, bonus chest (when its threshold is > 0), each horde in index order, shuttle; see
+	 * Display event: the alert-bar icons changed (also on binding): console, bonus chest (when its threshold is > 0), the next horde not over, shuttle; see
 	 * FRRAlertBarEvent. Forwarded from the bound run flow's OnAlertBarEventsChanged (same list as GetAlertBarEvents). WBP_HUD does not
 	 * implement it (WBP_AlertObjectives binds the run flow directly); kept for C++ subclasses and tests.
 	 */

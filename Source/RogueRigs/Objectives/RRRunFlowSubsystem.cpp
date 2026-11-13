@@ -1260,10 +1260,16 @@ void URRRunFlowSubsystem::ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFl
 		const int32 ActiveHorde = InSpawner->GetActiveHorde();
 		for (int32 Index = 0; Index < InSpawner->GetHordeCount(); ++Index)
 		{
+			// One horde mark at a time (task-525): the first horde whose front is not over (state Done, the same moment kills start
+			// adding alert); its mark goes when the front ends and the next horde's appears; none after the last.
+			const ERRHordeState State = InSpawner->GetHordeState(Index);
+			if (State == ERRHordeState::Done)
+			{
+				continue;
+			}
 			FRRAlertBarEvent& HordeIcon = OutEvents.AddDefaulted_GetRef();
 			HordeIcon.Type = ERRAlertBarEventType::Horde;
 			HordeIcon.Index = Index;
-			const ERRHordeState State = InSpawner->GetHordeState(Index);
 			HordeIcon.bDone = State == ERRHordeState::Spawning || State == ERRHordeState::Done;
 			const float ConsoleDelay = InSpawner->GetHordeConsoleDelay(Index);
 			if (ConsoleDelay >= 0.f && RunFlow && RunFlow->IsRunFlowEnabled())
@@ -1289,6 +1295,7 @@ void URRRunFlowSubsystem::ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFl
 					: InSpawner->GetHordeTriggerTime(Index) - InSpawner->GetDirector().GetRunTime();
 				HordeIcon.Position = EstimateBarPosition(Alert, SecondsUntil, RunConfig.AlertFillSeconds);
 			}
+			break;
 		}
 	}
 

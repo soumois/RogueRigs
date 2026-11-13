@@ -257,7 +257,10 @@ bool FRRHUDPressureHordeTest::RunTest(const FString& Parameters)
 	TestTrue(*FString::Printf(TEXT("done when the front starts (frame %d)"), DoneFrame), FMath::Abs(DoneFrame - 120) <= 1);
 	TestNearlyEqual(TEXT("done icon where the fill was at the front"), DonePosition, 0.1f, PressureBarTolerance);
 	TestTrue(TEXT("done icon frozen"), bFrozen);
-	TestEqual(TEXT("only the done flag called it again"), Setup.HUD->AlertEventCalls.Num(), CallsAfterBind + 1);
+	// One horde mark at a time (task-525): the mark goes when the front is over (state Done) and no horde follows.
+	TestEqual(TEXT("front over"), Spawner->GetHordeState(0), ERRHordeState::Done);
+	TestNull(TEXT("no horde icon after the last front"), FindPressureIcon(Setup.HUD->GetAlertBarEvents(), ERRAlertBarEventType::Horde));
+	TestEqual(TEXT("only the done flag and the end of the front called it again"), Setup.HUD->AlertEventCalls.Num(), CallsAfterBind + 2);
 
 	// Banner: once, 0.5 s before the front.
 	if (TestEqual(TEXT("one banner"), Setup.HUD->HordeIncomingCalls.Num(), 1))
@@ -335,14 +338,15 @@ bool FRRHUDPressureKillsWaitFirstHordeTest::RunTest(const FString& Parameters)
 		return Icon ? Icon->Position : -1.f;
 	};
 	const float Start0 = HordePosition(0);
-	const float Start1 = HordePosition(1);
 	TestNearlyEqual(TEXT("horde 0 mark at 2 s / 20 s"), Start0, 0.1f, PressureBarTolerance);
-	TestNearlyEqual(TEXT("horde 1 mark at 6 s / 20 s"), Start1, 0.3f, PressureBarTolerance);
+	// One horde mark at a time (task-525): horde 1 has no mark until the front of horde 0 is over.
+	TestEqual(TEXT("horde 1 not shown at the start"), HordePosition(1), -1.f);
 
-	// Until the first front is over: a kill every 10 frames leaves the bar on time alone and both marks in place.
+	// Until the first front is over: a kill every 10 frames leaves the bar on time alone and the horde 0 mark in place.
 	Spawner->SetSpawningEnabled(true);
 	bool bTimeAlone = true;
-	float Min0 = 1.f, Max0 = 0.f, Min1 = 1.f, Max1 = 0.f;
+	bool bHorde1Hidden = true;
+	float Min0 = 1.f, Max0 = 0.f;
 	int32 KillsBefore = 0;
 	int32 OverFrame = INDEX_NONE;
 	for (int32 Frame = 1; Frame <= 300 && OverFrame == INDEX_NONE; ++Frame)
@@ -366,17 +370,19 @@ bool FRRHUDPressureKillsWaitFirstHordeTest::RunTest(const FString& Parameters)
 			Min0 = FMath::Min(Min0, HordePosition(0));
 			Max0 = FMath::Max(Max0, HordePosition(0));
 		}
-		Min1 = FMath::Min(Min1, HordePosition(1));
-		Max1 = FMath::Max(Max1, HordePosition(1));
+		bHorde1Hidden &= HordePosition(1) < 0.f;
 	}
 	const float AlertAtOver = RunFlow->GetAlertSeconds();
-	AddInfo(FString::Printf(TEXT("before the end of front 0: %d kills, %d counted, alert %.3f s at frame %d; horde 0 mark %.4f-%.4f, horde 1 mark %.4f-%.4f"),
-		KillsBefore, RunFlow->GetKillCount(), AlertAtOver, OverFrame, Min0, Max0, Min1, Max1));
+	AddInfo(FString::Printf(TEXT("before the end of front 0: %d kills, %d counted, alert %.3f s at frame %d; horde 0 mark %.4f-%.4f; at the end horde 0 %.4f, horde 1 %.4f"),
+		KillsBefore, RunFlow->GetKillCount(), AlertAtOver, OverFrame, Min0, Max0, HordePosition(0), HordePosition(1)));
 	TestTrue(*FString::Printf(TEXT("first front over around 3 s (frame %d)"), OverFrame), OverFrame != INDEX_NONE && FMath::Abs(OverFrame - 180) <= 2);
 	TestTrue(TEXT("kills before the end of the first front: bar on time alone"), bTimeAlone);
 	TestEqual(TEXT("every kill still counted (threat)"), RunFlow->GetKillCount(), KillsBefore);
 	TestTrue(TEXT("horde 0 mark still while pending"), Max0 - Min0 <= PressureBarTolerance);
-	TestTrue(TEXT("horde 1 mark still until the first front is over"), Max1 - Min1 <= PressureBarTolerance);
+	TestTrue(TEXT("horde 1 hidden until the first front is over"), bHorde1Hidden);
+	// Front 0 over: its mark goes, the horde 1 mark appears at 6 s / 20 s (time alone so far).
+	TestEqual(TEXT("horde 0 mark gone once its front is over"), HordePosition(0), -1.f);
+	TestNearlyEqual(TEXT("horde 1 mark shown at 6 s / 20 s"), HordePosition(1), 0.3f, PressureBarTolerance);
 
 	// After: kills add alert again and move the second mark forward.
 	TestTrue(TEXT("first front over: kills add alert"), RunFlow->DoKillsAddAlert());

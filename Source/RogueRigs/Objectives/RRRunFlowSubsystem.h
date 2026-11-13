@@ -60,7 +60,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnShuttleCountdownSignature, flo
 /** Fired once when the run ends: bSuccess true = extracted, false = the shuttle left without the miner. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnRunEndedSignature, bool, bSuccess);
 
-/** Fired when the alert-bar icons changed (console, bonus chest, hordes in index order, shuttle). */
+/** Fired when the alert-bar icons changed (console, bonus chest, the next horde not over, shuttle). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnAlertBarEventsChangedSignature, const TArray<FRRAlertBarEvent>&, Events);
 
 /** Relay of the registered spawner's horde announcement: horde HordeIndex starts in SecondsUntil seconds. */
@@ -440,7 +440,8 @@ public:
 
 	/**
 	 * Alert-bar icons of RunFlow (may be null: defaults) and Spawner (may be null: no horde icons): console, bonus chest (threshold
-	 * > 0), hordes in index order, shuttle. InOutDoneHordePositions freezes a started horde at the alert of that moment.
+	 * > 0), one horde (the first one not Done, i.e. whose front has not finished spawning; none after the last, task-525), shuttle.
+	 * InOutDoneHordePositions freezes a started horde at the alert of that moment.
 	 */
 	static void ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFlow, const ARREnemySpawner* InSpawner, TMap<int32, float>& InOutDoneHordePositions, TArray<FRRAlertBarEvent>& OutEvents);
 

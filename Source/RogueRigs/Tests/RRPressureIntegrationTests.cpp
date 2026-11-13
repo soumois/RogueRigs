@@ -506,11 +506,13 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 		return HUD->GetAlertBarEvents().FindByPredicate([Type, Index](const FRRAlertBarEvent& Event) { return Event.Type == Type && (Index == INDEX_NONE || Event.Index == Index); });
 	};
 	TickPressureFrame(TestWorld, HUD);
-	TestEqual(TEXT("five alert events (console, bonus chest, 2 hordes, shuttle)"), HUD->GetAlertBarEvents().Num(), 5);
+	// One horde mark at a time (task-525): only horde 0 is listed and shown before its front is over.
+	TestEqual(TEXT("four alert events (console, bonus chest, next horde, shuttle)"), HUD->GetAlertBarEvents().Num(), 4);
 	CheckIcon(TEXT("console"), ConsoleIcon, FindEvent(ERRAlertBarEventType::Console, INDEX_NONE));
 	CheckIcon(TEXT("shuttle"), ShuttleIcon, FindEvent(ERRAlertBarEventType::Extraction, INDEX_NONE));
 	CheckIcon(TEXT("horde 0"), HordeIcons[0], FindEvent(ERRAlertBarEventType::Horde, 0));
-	CheckIcon(TEXT("horde 1"), HordeIcons[1], FindEvent(ERRAlertBarEventType::Horde, 1));
+	TestNull(TEXT("horde 1 not listed yet"), FindEvent(ERRAlertBarEventType::Horde, 1));
+	TestFalse(TEXT("horde icon 1 collapsed"), IsHUDWidgetShown(HordeIcons[1]));
 	TestFalse(TEXT("horde icon 2 collapsed"), IsHUDWidgetShown(HordeIcons[2]));
 	TestFalse(TEXT("horde icon 3 collapsed"), IsHUDWidgetShown(HordeIcons[3]));
 	TestFalse(TEXT("banner collapsed at start"), IsHUDWidgetShown(Banner));
@@ -550,13 +552,17 @@ bool FRRIntegrationPressureHordeBannerTest::RunTest(const FString& Parameters)
 		AliveBeforeFront = StartFrame == INDEX_NONE ? Loop.Spawner->GetAliveCount() : AliveBeforeFront;
 		if (Frame == FMath::RoundToInt(FrontTime * 60.f) + 2)
 		{
-			// Front started: the horde 0 icon is done (faded), horde 1 still pending.
+			// Front started: the horde 0 icon is done (faded) until the front is over; horde 1 still hidden.
 			CheckIcon(TEXT("horde 0 after the front"), HordeIcons[0], FindEvent(ERRAlertBarEventType::Horde, 0));
 			const FRRAlertBarEvent* Done = FindEvent(ERRAlertBarEventType::Horde, 0);
 			TestTrue(TEXT("horde 0 event done at the front"), Done && Done->bDone);
-			CheckIcon(TEXT("horde 1 after the front"), HordeIcons[1], FindEvent(ERRAlertBarEventType::Horde, 1));
+			TestFalse(TEXT("horde icon 1 collapsed while front 0 spawns"), IsHUDWidgetShown(HordeIcons[1]));
 		}
 	}
+	// Front 0 over (the loop runs 0.5 s past the spread): its icon collapsed, horde 1 shown pending.
+	TestNull(TEXT("horde 0 not listed once its front is over"), FindEvent(ERRAlertBarEventType::Horde, 0));
+	TestFalse(TEXT("horde icon 0 collapsed once its front is over"), IsHUDWidgetShown(HordeIcons[0]));
+	CheckIcon(TEXT("horde 1 after front 0"), HordeIcons[1], FindEvent(ERRAlertBarEventType::Horde, 1));
 	const TArray<FString>& Events = Loop.Recorder->GetDirectorEvents();
 	AddInfo(FString::Printf(TEXT("banner '%s' shown at %.2f s, hidden at %.2f s (%d shows); front %.2f s, over %.2f s; events %s"), *BannerText,
 		BannerOn / 60.f, BannerOff / 60.f, BannerShows, StartFrame / 60.f, FinishFrame / 60.f, *FString::Join(Events, TEXT(", "))));
