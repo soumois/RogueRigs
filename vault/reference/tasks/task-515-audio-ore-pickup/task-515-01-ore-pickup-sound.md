@@ -3,7 +3,7 @@ id: task-515-01-ore-pickup-sound
 description: "Cpp: ore pickup event, table line on the XP sound, call; sys-audio line"
 parent: task-515-audio-ore-pickup
 kind: task
-status: todo
+status: in-progress
 ---
 # Son du minerai ramassé (son d'XP pour l'instant): cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:54:25Z
 - waiting_for: none
 - result: open
 

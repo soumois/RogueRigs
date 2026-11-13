@@ -3,7 +3,7 @@ id: task-515-audio-ore-pickup
 description: "Global task: Ore pickup plays the XP pickup sound for now, through its own event line so it can be swapped later."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Son du minerai ramassé (son d'XP pour l'instant)
 
@@ -24,7 +24,7 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - confirmed_by_owner: yes (owner 2026-11-13: direct instruction "Applique le son d'xp au minerai ramassé pour l'instant", no choice left; the relay may stop it before launch)
 - milestone: M2
 - next_step: task-515-01-ore-pickup-sound
-- started: open
+- started: 2026-11-13T08:54:25Z
 - waiting_for: none
 - result: open
 
