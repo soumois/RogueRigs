@@ -520,3 +520,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-509-options-old-workflow-on-master]] — Replaces the new-workflow options screen on master with the old-workflow one from exp/old-workflow-options (code, Blueprints, assets, images, docs), renumbers its task to 510, then pushes master. Status done.
 - [[task-510-options-screen]] — options screen opened from the main and pause menus, sound, quality and gameplay settings saved, look from an owner-validated Kie.ai mockup (old workflow, imported by task-509). Status done.
 - [[task-511-audio-system-base-sounds]] — Data-driven C++ audio system (event -> sound table) wired to the existing sound classes, with CC0 sounds picked by the owner for 8 events. Status done.
+- [[task-512-audio-shot-quieter]] — Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear. Status done.
