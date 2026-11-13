@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-520-01-preview-sound
+- next_step: task-520-02-doc
 - started: 2026-11-13T13:17:35Z
 - waiting_for: none
+- executor_tokens: input 68, cache write 103671, cache read 2307727, output 19785
+- executor_usage: runs 1, turns 34, context start 16k peak 104k, resumes 0, 7 min, units 0.46 M, USD 1.38
+- planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
+- planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
 
 ## Questions

@@ -3,7 +3,7 @@ id: task-520-02-doc
 description: "Doc: sys-audio / sys-options: the Effects preview"
 parent: task-520-audio-effects-slider-preview
 kind: task
-status: todo
+status: in-progress
 ---
 # Curseur Effects : jouer un son d'effet: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:24:53Z
 - waiting_for: none
 - result: open
 
