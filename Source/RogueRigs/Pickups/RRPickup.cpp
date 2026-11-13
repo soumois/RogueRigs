@@ -795,6 +795,11 @@ void ARRPickup::Collect(ARRMiner* Miner)
 		{
 			URRAudioSubsystem::PlayEvent(this, TEXT("XPPickup"));
 		}
+		if (PickupType == ERRPickupType::Ore)
+		{
+			// task-515: own event, on the XP pickup sound for now (one table line to swap).
+			URRAudioSubsystem::PlayEvent(this, TEXT("OrePickup"));
+		}
 		if (PickupType == ERRPickupType::Heal)
 		{
 			ApplyHeal(Miner);

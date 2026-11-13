@@ -29,7 +29,7 @@ namespace RRAudioDebug
 	/** rr.Audio.Play <Event> [DX DY]: plays the event centred, or placed at the player pawn + (DX, DY) uu. */
 	FAutoConsoleCommand PlayCommand(
 		TEXT("rr.Audio.Play"),
-		TEXT("rr.Audio.Play <Event> [DX DY]: plays the sound of a table event (Shot, Impact, Impact.Wall, EnemyDeath, PlayerHit, XPPickup, LevelUp, UIHover, UIClick), centred, or at the player + (DX, DY) uu (placed rows, distance fade)."),
+		TEXT("rr.Audio.Play <Event> [DX DY]: plays the sound of a table event (Shot, Impact, Impact.Wall, EnemyDeath, PlayerHit, XPPickup, OrePickup, LevelUp, UIHover, UIClick), centred, or at the player + (DX, DY) uu (placed rows, distance fade)."),
 		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 		{
 			URRAudioSubsystem* Subsystem = FindSubsystem();
