@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-14, Q1 answered, "ok pour le reste")
 - milestone: M2
-- next_step: task-550-01-generator-back
+- next_step: task-550-02-doc
 - started: 2026-11-13T23:48:25Z
 - waiting_for: none
+- executor_tokens: input 72, cache write 75389, cache read 2139574, output 16771
+- executor_usage: runs 1, turns 36, context start 17k peak 88k, resumes 0, 10 min, units 0.39 M, USD 1.14
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: open
 
 ## Questions

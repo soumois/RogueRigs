@@ -3,7 +3,7 @@ id: task-550-02-doc
 description: "Doc: Make the generator docs say the pre-537 guard behaviour, the reference hash and timings, and that task-537 was undone"
 parent: task-550-layout-generator-back-pre-537
 kind: task
-status: todo
+status: in-progress
 ---
 # Générateur de layout : retour aux cartes d'avant task-537 (garde des poches): doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:58:18Z
 - waiting_for: none
 - result: open
 
