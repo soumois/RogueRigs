@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 31, context start 16k peak 96k, resumes 0, 4 min, units 0.37 M, USD 1.09
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. Commit f4c8d58c: sys-audio gets near_reduction (row fields, GetNearFactor, Impact values Q9, checked factors), the Near fields in data, the (near f) log in debug, relation to task-523. sys-audio-distance-sounds not listed in inputs: left unchanged (its GetFade entry stays true, the near rule is in sys-audio). Lint clean.
+- result: A1 pass: rr.Audio.Play Impact at 0/150/500/900/1075 uu logs factors 0.60/0.60/0.79/1.00/1.00 (Q9). A2 pass: Impact.Wall levels unchanged (1.00/1.00/0.66/0.20/skip at 1075). A3: build green; no RogueRigs audio test family exists, so build only; sys-audio near_reduction documented. Commits 1d206cbf (code, config), f4c8d58c (doc). Not done: gdd_check 'Edit: audio-direction' (gdd node, executor must_not; no subtask held it). Values provisional; levels not judged by ear.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
