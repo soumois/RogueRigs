@@ -39,3 +39,4 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 - [[task-521-01-tab-size-fix]] — step 1, bp.
 - [[task-521-02-capture]] — step 2, capture.
 - [[task-521-03-doc]] — step 3, doc.
+- [[sys-options]] — the system doc that records the tab size fix.
