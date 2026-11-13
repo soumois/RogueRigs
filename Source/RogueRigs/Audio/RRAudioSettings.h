@@ -56,6 +56,25 @@ struct FRRSoundEventRow
 	UPROPERTY(Config)
 	float FadeOuter = 0.f;
 
+	/**
+	 * Near reduction (task-523), for a play with a location: volume factor NearVolume up to NearInner uu from the player (horizontal
+	 * distance, as the fade), linear back up to 1 at NearOuter, 1 beyond. Multiplies the distance fade. NearOuter 0 or NearVolume 1 = none
+	 * (default).
+	 */
+	UPROPERTY(Config)
+	float NearVolume = 1.f;
+
+	/** Distance in uu up to which the near reduction holds NearVolume; see NearVolume. */
+	UPROPERTY(Config)
+	float NearInner = 0.f;
+
+	/** Distance in uu at which the near reduction is back to 1; 0 = no near reduction. See NearVolume. */
+	UPROPERTY(Config)
+	float NearOuter = 0.f;
+
+	/** True when the row has a distance fade or a near reduction (the play measures the player distance). */
+	bool HasDistanceRule() const { return FadeOuter > 0.f || (NearOuter > 0.f && NearVolume != 1.f); }
+
 	/** Interface sound: also plays while the game is paused. */
 	UPROPERTY(Config)
 	bool bUI = false;

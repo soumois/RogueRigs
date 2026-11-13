@@ -405,7 +405,12 @@ UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObje
 	}
 	++RowStats.Played;
 	RowStats.PeakActive = FMath::Max(RowStats.PeakActive, Active.Num());
-	const FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player (edge radius %.0f), fade %.2f"), PlayerDistance, EdgeRadius, Fade) : FString();
+	FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player (edge radius %.0f), fade %.2f"), PlayerDistance, EdgeRadius, Fade) : FString();
+	if (PlayerDistance >= 0.f && Row->NearOuter > 0.f)
+	{
+		// Near reduction (task-523): the part of the fade due to the player being close.
+		FadeText += FString::Printf(TEXT(" (near %.2f)"), FRRDistanceSound::GetNearFactor(*Row, PlayerDistance));
+	}
 	const FString LoopText = bLoopStart ? FString::Printf(TEXT(", loop start, fade in %.2f s"), FadeIn) : FString();
 	UE_LOG(LogRRAudio, Verbose, TEXT("Play %s (row %s): %s, class %s, active %d/%d, pitch %.3f, volume %.3f%s, %s%s%s."), *Event.ToString(),
 		*Row->Event.ToString(), *Sound->GetPathName(), *GetNameSafe(EffectsClass), Active.Num(), Row->MaxConcurrent, Pitch, Volume, *FadeText,

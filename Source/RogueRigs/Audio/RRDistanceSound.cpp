@@ -29,6 +29,11 @@ float FRRDistanceSound::GetDistance(const FVector& PlayerLocation, const FVector
 
 float FRRDistanceSound::GetFade(const FRRSoundEventRow& Row, float Distance)
 {
+	return GetFarFade(Row, Distance) * GetNearFactor(Row, Distance);
+}
+
+float FRRDistanceSound::GetFarFade(const FRRSoundEventRow& Row, float Distance)
+{
 	if (Row.FadeOuter <= 0.f)
 	{
 		return 1.f;
@@ -45,11 +50,30 @@ float FRRDistanceSound::GetFade(const FRRSoundEventRow& Row, float Distance)
 	return 1.f - (Distance - Inner) / (Row.FadeOuter - Inner);
 }
 
+float FRRDistanceSound::GetNearFactor(const FRRSoundEventRow& Row, float Distance)
+{
+	if (Row.NearOuter <= 0.f)
+	{
+		return 1.f;
+	}
+	const float NearVolume = FMath::Max(Row.NearVolume, 0.f);
+	const float Inner = FMath::Clamp(Row.NearInner, 0.f, Row.NearOuter);
+	if (Distance <= Inner)
+	{
+		return NearVolume;
+	}
+	if (Distance >= Row.NearOuter)
+	{
+		return 1.f;
+	}
+	return FMath::Lerp(NearVolume, 1.f, (Distance - Inner) / (Row.NearOuter - Inner));
+}
+
 bool FRRDistanceSound::Measure(const UObject* WorldContextObject, const FRRSoundEventRow& Row, const FVector& Location, float& OutDistance, float& OutFade) const
 {
 	OutDistance = -1.f;
 	OutFade = 1.f;
-	if (Row.FadeOuter <= 0.f)
+	if (!Row.HasDistanceRule())
 	{
 		return false;
 	}

@@ -60,12 +60,18 @@ public:
 
 	/**
 	 * Player distance (GetDistance) and volume factor of a play of Row at Location now. False when the row has no fade (FadeOuter 0)
-	 * or there is no player pawn: factor 1, distance -1.
+	 * and no near reduction (NearOuter 0), or there is no player pawn: factor 1, distance -1.
 	 */
 	bool Measure(const UObject* WorldContextObject, const FRRSoundEventRow& Row, const FVector& Location, float& OutDistance, float& OutFade) const;
 
-	/** Volume factor of Row at Distance uu: 1 up to FadeInner, linear to 0 at FadeOuter, 0 beyond; 1 when FadeOuter is 0. */
+	/** Volume factor of Row at Distance uu: GetFarFade times GetNearFactor. */
 	static float GetFade(const FRRSoundEventRow& Row, float Distance);
+
+	/** Distance fade: 1 up to FadeInner, linear to 0 at FadeOuter, 0 beyond; 1 when FadeOuter is 0. */
+	static float GetFarFade(const FRRSoundEventRow& Row, float Distance);
+
+	/** Near reduction (task-523): NearVolume up to NearInner, linear to 1 at NearOuter, 1 beyond; 1 when NearOuter is 0. */
+	static float GetNearFactor(const FRRSoundEventRow& Row, float Distance);
 
 protected:
 	FName Event;
