@@ -374,6 +374,7 @@ sys-layout-generator  reference/tech/systems/world/sys-grid/sys-layout-generator
 sys-layout-loader  reference/tech/systems/world/sys-grid/sys-layout-loader.md
 sys-level-up  reference/tech/systems/core/sys-level-up.md
 sys-main-menu  reference/tech/systems/ui/sys-main-menu.md
+sys-music  reference/tech/systems/core/sys-music.md
 sys-objectives  reference/tech/systems/world/sys-objectives.md
 sys-objectives-console-chest  reference/tech/systems/world/sys-objectives/sys-objectives-console-chest.md
 sys-objectives-events  reference/tech/systems/world/sys-objectives/sys-objectives-events.md

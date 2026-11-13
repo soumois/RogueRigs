@@ -46,3 +46,4 @@ kind: doc
 - [[sys-aim-indicator]] — reads the Aim indicator toggle.
 - [[sys-button-hover]] — hover of the screen buttons.
 - [[sys-audio]] — sound events played through the Effects class these sliders set.
+- [[sys-music]] — music tracks played through the Music class these sliders set.

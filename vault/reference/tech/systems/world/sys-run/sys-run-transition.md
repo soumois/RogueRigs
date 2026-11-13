@@ -53,3 +53,4 @@ kind: doc
 - [[sys-main-menu]] — the menu whose New Run calls StartNewRun and shows the loading screen.
 - [[task-379-new-run-loading-screen]] — the task that added the New Run entry point.
 - [[sys-run-transition-fade]] — child: fade path and loading path after Continue, progress API for WBP_Loading, fade settings.
+- [[sys-music]] — follows the loading phase and OnLevelReady to pick and restart the music track.
