@@ -3,7 +3,7 @@ id: task-522-05-doc
 description: "Doc: sys-audio: distance sound classes, rotor loop, how to add a distance sound"
 parent: task-522-audio-distance-sound-rotors
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des hélices de l'extracteur et code générique de son à distance: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:36:33Z
 - waiting_for: none
 - result: open
 

@@ -15,11 +15,11 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-522-04-rotor-loop
+- next_step: task-522-05-doc
 - started: 2026-11-13T14:27:39Z
 - waiting_for: none
-- executor_tokens: input 110, cache write 225733, cache read 4726793, output 39766
-- executor_usage: runs 1, turns 53, context start 16k peak 133k, resumes 1, 54 min, units 0.95 M, USD 2.87
+- executor_tokens: input 166, cache write 282178, cache read 9398929, output 61075
+- executor_usage: runs 1, turns 81, context start 16k peak 189k, resumes 1, 62 min, units 1.60 M, USD 4.51
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
