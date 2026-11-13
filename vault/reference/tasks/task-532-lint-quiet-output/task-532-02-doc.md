@@ -3,7 +3,7 @@ id: task-532-02-doc
 description: "Doc: Update the vault nodes that describe lint.js usage with the default output and --all."
 parent: task-532-lint-quiet-output
 kind: task
-status: todo
+status: in-progress
 ---
 # lint.js : sortie courte par défaut: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:20:47Z
 - waiting_for: none
 - result: open
 
