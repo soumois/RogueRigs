@@ -3,7 +3,7 @@ id: task-538-task-next-close-guard
 description: "Global task: task-next.js runs every refusal check before its first write; a rerun after a late failure finishes the close without a second cost row."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # task-next.js refuse avant d'écrire
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-538-01-guard
-- started: open
+- started: 2026-11-13T19:08:23Z
 - waiting_for: none
 - result: open
 

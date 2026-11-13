@@ -3,7 +3,7 @@ id: task-538-01-guard
 description: "Cpp: task-next.js runs every refusal check before its first write and resumes cleanly on rerun after a late failure"
 parent: task-538-task-next-close-guard
 kind: task
-status: todo
+status: in-progress
 ---
 # task-next.js refuse avant d'écrire: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T19:08:23Z
 - waiting_for: none
 - result: open
 

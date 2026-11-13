@@ -15,4 +15,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 - [[task-537-layout-stale-pocket-guard]] — C++ layout generator: the HiddenGuard zone of a hidden pocket that cleanup or passage repair put back to rock is released, while live pockets stay protected; revalidated on the 24 starts and measured on the idle filler. Status wait-answers.
-- [[task-538-task-next-close-guard]] — Crew tooling: task-next.js checks everything that can refuse or fail (missing next arguments, dead links in the result text) before its first write, and a rerun after a late failure finishes the close without a second cost row. Status todo.
+- [[task-538-task-next-close-guard]] — Crew tooling: task-next.js checks everything that can refuse or fail (missing next arguments, dead links in the result text) before its first write, and a rerun after a late failure finishes the close without a second cost row. Status in-progress.
