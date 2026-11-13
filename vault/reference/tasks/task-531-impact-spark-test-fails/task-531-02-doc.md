@@ -3,7 +3,7 @@ id: task-531-02-doc
 description: "Doc: Update the system doc if the fix changed the impact effect code or its contract; otherwise record that no doc change was needed."
 parent: task-531-impact-spark-test-fails
 kind: task
-status: todo
+status: in-progress
 ---
 # Test RogueRigs.Weapons.ImpactSparkAsset en échec: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:08:13Z
 - waiting_for: none
 - result: open
 

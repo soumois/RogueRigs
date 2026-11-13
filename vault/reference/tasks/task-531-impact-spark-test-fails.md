@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-531-01-fix-impact-spark-test
-- started: 2026-11-13T18:03:48Z
+- next_step: task-531-02-doc
+- started: 2026-11-13T18:08:13Z
 - waiting_for: none
+- executor_tokens: input 50, cache write 78609, cache read 1313905, output 10697
+- executor_usage: runs 1, turns 25, context start 16k peak 79k, resumes 0, 4 min, units 0.28 M, USD 0.87
+- planning_tokens: input 26, cache write 38050, cache read 336221, output 6896
+- planning_usage: aabf7a43 "Planifier fix ImpactSparkAsset" 1/1 (tasks 531), units 0.12 M, USD 0.40
 - result: open
 
 ## Questions
