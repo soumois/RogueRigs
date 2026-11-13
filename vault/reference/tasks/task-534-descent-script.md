@@ -1,9 +1,9 @@
 ---
 id: task-534-descent-script
 description: "Global task: a script prints in one call the Children glosses of an index and its sub-indexes with paths; _navigation authorises it as descent."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Script de descente : gloses d'un index et de ses sous-index en un appel
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-534-02-doc
+- next_step: none
 - started: 2026-11-13T18:25:34Z
 - waiting_for: none
-- executor_tokens: input 20, cache write 31824, cache read 301743, output 4375
-- executor_usage: runs 1, turns 10, context start 17k peak 44k, resumes 0, 1 min, units 0.09 M, USD 0.31
+- executor_tokens: input 38, cache write 42481, cache read 742337, output 7472
+- executor_usage: runs 1, turns 19, context start 17k peak 55k, resumes 0, 2 min, units 0.16 M, USD 0.51
 - planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
 - planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
-- result: open
+- result: Done. A5: one line under 'Descent is the only lookup method' in _navigation authorises descend.js as descent like path-of.js, exact index ids only, one level of child indexes, no text or topic parameter, no body or Relations; the 'Never search the vault' line is unchanged. A6: agent-planner reads names it for step 2 with gdd-index as example (task-spec left to task-535). Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,6 +34,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-534-02-doc (vault/reference/tasks/task-534-descent-script/task-534-02-doc.md) — doc: Authorise the script in _navigation and name it where the planner reads its tools.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-534-01-descend-script]] — step 1, cpp.
 - [[task-534-02-doc]] — step 2, doc.
