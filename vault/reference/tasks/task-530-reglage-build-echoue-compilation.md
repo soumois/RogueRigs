@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 21, context start 17k peak 56k, resumes 0, 8 min, units 0.19 M, USD 0.61
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. Done (commit e1445b2c). Cause: in UE 5.8 FMaterial::FinishCompilation and GetCompileErrors are WITH_EDITOR only, so the game target of BuildCookRun failed (C2039). RRWeaponTests.cpp (M_MuzzleFlash) and RRLevelUpTests.cpp (M_LevelUpWave): editor keeps FinishCompilation + 0 compile errors under #if WITH_EDITOR; game target checks HasValidGameThreadShaderMap. Editor build exit 0. Tests RogueRigs.Weapons + RogueRigs.LevelUp (-RenderOffScreen and -nullrhi): 24 of 25 pass incl. MuzzleFlashAsset and WaveAsset; Weapons.ImpactSparkAsset fails at RRWeaponTests.cpp l.1620-1636 (pool prewarm and spark request = 0), code not touched here, fails under -nullrhi too: existing defect, not fixed (outside the request). Staged BuildCookRun exit 0 (BUILD SUCCESSFUL); copied per owner to Saved/StagedBuilds/RogueRigsv0.4.0 (original Saved/StagedBuilds/Windows kept, git-ignored, not committed).
+- result: Staged build fixed: editor-only material compile checks guarded with WITH_EDITOR (UE 5.8), game target checks HasValidGameThreadShaderMap; editor build and BuildCookRun exit 0; build copied to Saved/StagedBuilds/RogueRigsv0.4.0 (not committed). Weapons+LevelUp 24/25: existing failure RogueRigs.Weapons.ImpactSparkAsset (pool prewarm/request), not touched, reported.
 
 ## Subtasks
 1. task-530-01-reglage-build-echoue-compilation (vault/reference/tasks/task-530-reglage-build-echoue-compilation/task-530-01-reglage-build-echoue-compilation.md) — executor: Apply the setting change of the request and check it at light size.
