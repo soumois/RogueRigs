@@ -1,8 +1,12 @@
 // node vault/scripts/task-create.js <spec.js> [<index-anchor-task-id>]
 // Writes the task nodes of one planning pass from a spec module: global nodes, every subtask node, their
 // `## Subtasks` and `## Relations` lines, and one line per global in tasks-to-do-index, inserted after the line of
-// <index-anchor-task-id> (or the spec's `anchor`); without an anchor, or when the anchor is not in tasks-to-do-index,
-// at the end of the list. Ids in inputs are resolved to paths through path-of.js (exact ids, task ids and the ids
+// <index-anchor-task-id> (or the spec's `anchor`); when that anchor is not in tasks-to-do-index, at the end of the list.
+// Without an anchor (task-533) the lines go where the task-number order puts them, as task-status.js keeps the index:
+// after the last task line with a lower number, before the first task line when none is lower, at the end of the file
+// when the index has no task line. A global without `num` (task-533) gets the next free number: highest task-NNN among
+// the nodes and folders of vault/reference/tasks (and the explicit nums of the spec) plus one, in the order of the
+// globals. An explicit num already used by a task node or folder is refused. Ids in inputs are resolved to paths through path-of.js (exact ids, task ids and the ids
 // created by the same spec included), so delegations hand agents direct paths. Refuses, before writing anything,
 // a spec whose node already exists, an unknown id, a missing field, a missing or unknown level, wait-answers without waiting_for.
 // Does not lint or commit: run `node vault/scripts/lint.js --write`, `git add` the printed files, commit by path.
@@ -10,7 +14,7 @@
 // last `files: <repo-relative paths>` (every file written, for git add / commit).
 //
 // Spec v2 (task-358, Q3): module.exports = { anchor?, edits?, globals: [ <global>, ... ] }
-//   global: { num, slug, title, description, level ("light" | "standard" | "exploratory", written `- verification_level:`),
+//   global: { num? (default the next free number), slug, title, description, level ("light" | "standard" | "exploratory", written `- verification_level:`),
 //     family? ("reglage" | "comportement" | "visuel" | "gros", request family of the relay, written `- family:`, default "open"),
 //     request, goal, acceptance, gdd_check,
 //     confirmed_by_owner? (default "no (plan and questions handed back <today>)"), milestone? ("M2"),
@@ -34,7 +38,7 @@
 //
 // Old form (still accepted): module.exports = [ [num, slug, desc, agent, title, request, [input ids], expected_output,
 //   done_when, editor_state, token_ceiling, confirmed_by_owner (null for the default "yes (<today>)"), level], ... ]
-//   one global with one subtask `task-NNN-01-<slug>` each, status todo; the anchor argument is required.
+//   one global with one subtask `task-NNN-01-<slug>` each, status todo; num required, anchor optional as above.
 // token_ceiling is written as-is: give it as "<x> M units" (weighted units of record-cost.js, e.g. "1.2 M units") or
 // "open"; record-cost.js ignores any other form for its ceiling alert.
 // The global's "## Subtasks" line gives the subtask's repo-relative path (task-327):
@@ -60,12 +64,19 @@ let defaults = null;
 
 const isOld = Array.isArray(spec) && spec.every(Array.isArray);
 const anchor = anchorArg || (!isOld && spec.anchor) || null;
-if (isOld && !anchor) fail('usage: task-create.js <spec.js> <index-anchor-task-id> (required with the array form)');
+// task numbers already used by a node or folder of vault/reference/tasks
+const used = new Set(fs.readdirSync(T).map(f => (f.match(/^task-(\d+)-/) || [])[1]).filter(Boolean).map(Number));
+const hasNum = g => g.num !== undefined && g.num !== null && g.num !== '';
+const checkNum = (num, who) => {
+  if (!/^\d+$/.test(String(num))) fail(`${who}: num must be digits, not ${num}. Nothing written.`);
+  if (used.has(Number(num))) fail(`${who}: task number ${num} is already taken in vault/reference/tasks; omit num to get the next free one. Nothing written.`);
+};
 
 if (isOld) {
   const res = ids => ids.map(i => { if (!P[i]) fail('no path for ' + i); return `${i} (${P[i]})`; }).join(', ');
   for (const [num, slug, desc, agent, title, req, inputs, out, done, ed, ceil, confirmed, level] of spec) {
     const gid = `task-${num}-${slug}`, sid = `task-${num}-01-${slug}`;
+    checkNum(num, gid);
     checkLevel(level, gid);
     const conf = confirmed || `yes (${today})`;
     writes.push([path.join(T, gid + '.md'), ['---', `id: ${gid}`, `description: "Global task: ${desc}"`, 'parent: tasks-to-do-index',
@@ -82,6 +93,10 @@ if (isOld) {
 } else {
   const globals = Array.isArray(spec) ? spec : spec.globals;
   if (!Array.isArray(globals) || !globals.length) fail('spec v2 needs globals: [ ... ]');
+  // explicit nums are checked against the task folder; missing ones get the next free numbers, in the order of the globals
+  for (const g of globals) if (hasNum(g)) checkNum(g.num, `task-${g.num}-${g.slug}`);
+  let next = Math.max(0, ...used, ...globals.filter(hasNum).map(g => Number(g.num))) + 1;
+  for (const g of globals) if (!hasNum(g)) g.num = String(next++).padStart(3, '0');
   const ids = g => ({ gid: `task-${g.num}-${g.slug}`, sids: (g.subtasks || []).map((s, i) => `task-${g.num}-${String(i + 1).padStart(2, '0')}-${s.slug}`) });
   // ids created by this spec resolve like existing ones (a doc subtask may take its cpp sibling as input)
   for (const g of globals) {
@@ -165,6 +180,16 @@ let idx = fs.readFileSync(IDX, 'utf8');
 const add = idxLines.map(([, l]) => '\n' + l).join('');
 const re = anchor && new RegExp(`(- \\[\\[${anchor}\\]\\][^\\n]*)`);
 if (re && re.test(idx)) idx = idx.replace(re, m => m + add);
+else if (!anchor) {
+  // no anchor: keep the task lines in task-number order, as task-status.js does
+  const lines = idx.split('\n'), tnum = l => (l.match(/^- \[\[task-(\d+)-/) || [])[1];
+  const own = +idxLines[0][0].match(/^task-(\d+)-/)[1];
+  let after = -1, firstTask = -1;
+  lines.forEach((l, i) => { const n = tnum(l); if (n === undefined) return; if (firstTask < 0) firstTask = i; if (+n < own) after = i; });
+  const at = after >= 0 ? after + 1 : firstTask;
+  if (at >= 0) { lines.splice(at, 0, ...idxLines.map(([, l]) => l)); idx = lines.join('\n'); }
+  else idx = idx.replace(/\n*$/, '') + add + '\n';
+}
 else idx = idx.replace(/\n*$/, '') + add + '\n';
 fs.writeFileSync(IDX, idx);
 for (const [gid, , n] of idxLines) console.log(`created ${gid} (${n} subtask${n > 1 ? 's' : ''})`);
