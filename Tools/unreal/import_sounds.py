@@ -3,11 +3,12 @@
 Unreal Editor Python, run headless with the PythonScript commandlet, editor closed (task-511):
 
     UnrealEditor-Cmd.exe <RogueRigs.uproject> -run=pythonscript
-        -script="<abs path>/Tools/unreal/import_sounds.py <dest folder> <wav> [<wav> ...]"
+        -script="<abs path>/Tools/unreal/import_sounds.py <dest folder> [--loop] <wav> [<wav> ...]"
         -unattended -nopause -nosplash -stdout -FullStdOutLogOutput
 
 Each <wav> becomes <dest folder>/<file name without extension> (replaced if it exists), saved, and
-prints one line starting with "SOUNDIMPORT" with the asset path, duration and channels.
+prints one line starting with "SOUNDIMPORT" with the asset path, duration, channels and looping.
+--loop: the wavs after it are imported as looping sounds (Looping set on the SoundWave, task-517: loop rows).
 Any failure raises at the end, so the commandlet logs "Python script executed with errors".
 """
 
@@ -19,7 +20,7 @@ import unreal
 LINE_TAG = "SOUNDIMPORT"
 
 
-def _import(dest, wav):
+def _import(dest, wav, loop):
     name = os.path.splitext(os.path.basename(wav))[0]
     task = unreal.AssetImportTask()
     task.set_editor_property("filename", wav)
@@ -33,10 +34,11 @@ def _import(dest, wav):
     asset = unreal.EditorAssetLibrary.load_asset(path)
     if not isinstance(asset, unreal.SoundWave):
         return False, path, "no SoundWave after import"
+    asset.set_editor_property("looping", loop)
     if not unreal.EditorAssetLibrary.save_loaded_asset(asset, only_if_is_dirty=False):
         return False, path, "save failed"
-    return True, path, "duration=%.3f channels=%d" % (
-        asset.get_editor_property("duration"), asset.get_editor_property("num_channels"))
+    return True, path, "duration=%.3f channels=%d looping=%s" % (
+        asset.get_editor_property("duration"), asset.get_editor_property("num_channels"), asset.get_editor_property("looping"))
 
 
 def main(argv):
@@ -44,8 +46,12 @@ def main(argv):
         raise RuntimeError("usage: import_sounds.py <dest folder> <wav> [<wav> ...]")
     dest, files = argv[0], argv[1:]
     failures = 0
+    loop = False
     for wav in files:
-        ok, path, info = _import(dest, os.path.abspath(wav))
+        if wav == "--loop":
+            loop = True
+            continue
+        ok, path, info = _import(dest, os.path.abspath(wav), loop)
         unreal.log("%s %s %s %s" % (LINE_TAG, path, "ok" if ok else "FAIL", info))
         failures += 0 if ok else 1
     if failures:
