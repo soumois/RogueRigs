@@ -1,9 +1,9 @@
 ---
 id: task-528-extractor-takeoff-under-floor
 description: "Global task: Defect: followed after the drop-off, the extractor goes into the floor during its takeoff."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # L'extracteur rentre dans le sol en partant
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-528-03-doc
+- next_step: none
 - started: 2026-11-13T14:25:45Z
 - waiting_for: none
-- executor_tokens: input 70, cache write 72494, cache read 1829887, output 12963
-- executor_usage: runs 1, turns 34, context start 16k peak 85k, resumes 1, 5 min, units 0.34 M, USD 0.99
+- executor_tokens: input 88, cache write 87100, cache read 2656508, output 17610
+- executor_usage: runs 1, turns 43, context start 16k peak 100k, resumes 1, 6 min, units 0.46 M, USD 1.32
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. d0895e13: sys-objectives-shuttle (forward flight along the horizontal heading, ClimbRatio 0.1, height signal, test) and bp-extraction-shuttle (takeoff_path, verified, relations) updated; Blueprint unchanged. build-toolchain project path corrected to C:\Workspace\RogueRigs\RogueRigs.uproject (old path missing). Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 3. task-528-03-doc (vault/reference/tasks/task-528-extractor-takeoff-under-floor/task-528-03-doc.md) — doc: bp-extraction-shuttle: takeoff path
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-528-01-takeoff-path]] — step 1, cpp.
 - [[task-528-02-capture]] — step 2, capture.
 - [[task-528-03-doc]] — step 3, doc.
