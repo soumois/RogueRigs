@@ -38,3 +38,4 @@ Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; 
 ## Relations
 - [[tasks-to-do-index]] — parent index.
 - [[task-514-01-death-fade]] — step 1, cpp.
+- [[sys-audio]] — documents the faded EnemyDeath row.
