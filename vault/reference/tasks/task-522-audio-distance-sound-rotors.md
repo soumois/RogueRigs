@@ -3,7 +3,7 @@ id: task-522-audio-distance-sound-rotors
 description: "Global task: One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des hélices de l'extracteur et code générique de son à distance
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-522-01-distance-sound-classes
-- started: open
+- started: 2026-11-13T13:34:31Z
 - waiting_for: none
 - result: open
 

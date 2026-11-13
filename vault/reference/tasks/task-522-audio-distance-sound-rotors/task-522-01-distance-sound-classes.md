@@ -3,7 +3,7 @@ id: task-522-01-distance-sound-classes
 description: "Cpp: generic distance sound base class and explosion child; existing faded rows moved onto them"
 parent: task-522-audio-distance-sound-rotors
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des hélices de l'extracteur et code générique de son à distance: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:34:31Z
 - waiting_for: none
 - result: open
 
