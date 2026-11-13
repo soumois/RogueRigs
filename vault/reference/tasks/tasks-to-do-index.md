@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-537-layout-stale-pocket-guard]] — C++ layout generator: the HiddenGuard zone of a hidden pocket that cleanup or passage repair put back to rock is released, while live pockets stay protected; revalidated on the 24 starts and measured on the idle filler. Status todo.
+- [[task-537-layout-stale-pocket-guard]] — C++ layout generator: the HiddenGuard zone of a hidden pocket that cleanup or passage repair put back to rock is released, while live pockets stay protected; revalidated on the 24 starts and measured on the idle filler. Status in-progress.

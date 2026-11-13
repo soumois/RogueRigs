@@ -3,7 +3,7 @@ id: task-537-layout-stale-pocket-guard
 description: "Global task: C++ layout generator releases the guard of a removed hidden pocket, live pockets stay guarded; revalidated on 24 starts, idle filler measured."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator: the guard of a removed hidden pocket no longer blocks carving
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-537-01-guard-release
-- started: open
+- started: 2026-11-13T19:32:29Z
 - waiting_for: none
 - result: open
 
