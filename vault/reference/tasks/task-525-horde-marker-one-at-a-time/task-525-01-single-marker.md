@@ -3,7 +3,7 @@ id: task-525-01-single-marker
 description: "Cpp: one horde "!" at a time per Q11"
 parent: task-525-horde-marker-one-at-a-time
 kind: task
-status: todo
+status: in-progress
 ---
 # Un seul point d'exclamation de horde à la fois: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:59:18Z
 - waiting_for: none
 - result: open
 

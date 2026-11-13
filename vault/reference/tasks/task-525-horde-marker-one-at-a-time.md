@@ -3,7 +3,7 @@ id: task-525-horde-marker-one-at-a-time
 description: "Global task: The alert bar shows only the next horde "!", removed when that horde ends, then the next one appears."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Un seul point d'exclamation de horde à la fois
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-525-01-single-marker
-- started: open
+- started: 2026-11-13T13:59:18Z
 - waiting_for: none
 - result: open
 
