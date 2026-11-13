@@ -3,7 +3,7 @@ id: task-521-02-capture
 description: "Capture: Options tabs after clicks, per Q3"
 parent: task-521-options-tab-button-shrinks
 kind: task
-status: todo
+status: in-progress
 ---
 # Options : l'onglet cliqué devient plus petit: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T13:33:05Z
 - waiting_for: none
 - result: open
 
