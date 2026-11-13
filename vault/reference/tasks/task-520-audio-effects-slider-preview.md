@@ -36,3 +36,5 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 - [[tasks-to-do-index]] — parent index.
 - [[task-520-01-preview-sound]] — step 1, cpp.
 - [[task-520-02-doc]] — step 2, doc.
+- [[sys-options]] — documents the Effects preview rules.
+- [[sys-audio]] — documents the EffectsPreview row.
