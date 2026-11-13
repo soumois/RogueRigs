@@ -3,7 +3,7 @@ id: task-540-main-menu-no-focus-outline
 description: "Global task: Remove the orange keyboard-focus outline drawn around the focused main menu button; focus and Enter unchanged."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: no orange focus outline around New Run
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
 - next_step: task-540-01-focus-outline-off
-- started: open
+- started: 2026-11-13T22:55:53Z
 - waiting_for: none
 - result: open
 

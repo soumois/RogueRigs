@@ -3,7 +3,7 @@ id: task-540-01-focus-outline-off
 description: "Bp: Remove the orange focus outline of the main menu buttons, focus and Enter kept"
 parent: task-540-main-menu-no-focus-outline
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: no orange focus outline around New Run: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T22:55:53Z
 - waiting_for: none
 - result: open
 

@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-540-main-menu-no-focus-outline]] — Remove the orange keyboard-focus outline drawn around the focused main menu button; focus and Enter unchanged. Status todo.
+- [[task-540-main-menu-no-focus-outline]] — Remove the orange keyboard-focus outline drawn around the focused main menu button; focus and Enter unchanged. Status in-progress.
 - [[task-541-hud-turret-count-removed]] — The turret count text above the health bar goes; the launcher charges stay shown in its weapon slot. Status todo.
 - [[task-542-ground-particle-edges]] — The white ground particle sprites of image 2 (boss scene) show their quad edges; the edges must not show, look otherwise kept. Status todo.
 - [[task-543-wall-debris-less-white]] — Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow. Status todo.
