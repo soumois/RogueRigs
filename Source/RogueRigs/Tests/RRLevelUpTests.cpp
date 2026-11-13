@@ -409,12 +409,17 @@ bool FRRLevelUpWaveAssetTest::RunTest(const FString& Parameters)
 	}
 	if (FMaterialResource* Resource = Material->GetMaterialResource(TestWorld.Get()->Scene->GetShaderPlatform()))
 	{
+		// UE 5.8: FinishCompilation and GetCompileErrors are editor-only; a cooked game only has the cooked shader map.
+#if WITH_EDITOR
 		Resource->FinishCompilation();
 		TestEqual(TEXT("M_LevelUpWave compile errors"), Resource->GetCompileErrors().Num(), 0);
 		for (const FString& Error : Resource->GetCompileErrors())
 		{
 			AddError(Error);
 		}
+#else
+		TestTrue(TEXT("M_LevelUpWave has a valid shader map"), Resource->HasValidGameThreadShaderMap());
+#endif
 	}
 
 	const FVector Center(0.f, 0.f, 100.f);

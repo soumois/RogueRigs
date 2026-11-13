@@ -1684,12 +1684,17 @@ bool FRRWeaponMuzzleFlashAssetTest::RunTest(const FString& Parameters)
 	FTestWorld TestWorld(TEXT("RRMuzzleFlashAsset"));
 	if (FMaterialResource* Resource = Material->GetMaterialResource(TestWorld.Get()->Scene->GetShaderPlatform()))
 	{
+		// UE 5.8: FinishCompilation and GetCompileErrors are editor-only; a cooked game only has the cooked shader map.
+#if WITH_EDITOR
 		Resource->FinishCompilation();
 		TestEqual(TEXT("M_MuzzleFlash compile errors"), Resource->GetCompileErrors().Num(), 0);
 		for (const FString& Error : Resource->GetCompileErrors())
 		{
 			AddError(Error);
 		}
+#else
+		TestTrue(TEXT("M_MuzzleFlash has a valid shader map"), Resource->HasValidGameThreadShaderMap());
+#endif
 	}
 
 	double ShapeSize[2] = {0.0, 0.0};
