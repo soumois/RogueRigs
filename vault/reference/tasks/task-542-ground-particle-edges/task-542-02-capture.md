@@ -3,7 +3,7 @@ id: task-542-02-capture
 description: "Capture: Before/after capture of the effect on the floor"
 parent: task-542-ground-particle-edges
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground particles: no visible sprite edges: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:29:03Z
 - waiting_for: none
 - result: open
 
