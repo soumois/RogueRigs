@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 68, context start 16k peak 131k, resumes 1, 12 min, units 0.87 M, USD 2.43
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. Done (ac5bf31a): wbp-main-menu (focus look none, RefreshColours and EventTick gone, task-540 verification), sys-main-menu (RenderFocusRule=Never config line, Enter now seen), sys-button-hover (no focus look) updated; stale comment in RRMainMenuWidget.cpp fixed (comment only, no build). Lint clean.
+- result: Done. A1 no orange (or engine) focus rectangle at open, after Down/Up and on hover (WBP_MainMenu outline images + RefreshColours + Tick removed, 2f08ef00; Config RenderFocusRule=Never, project-wide, removes the thin blue Slate navigation rectangle that showed once the orange one was gone). A2 focus on New Run at open; real Up then Enter loads L_ArenaM1. A3 hover plate brighten and grow unchanged. A4 before/after sheet Saved/Captures/task540_final/before_after.png. Noted: Down from New Run skips Options (pre-existing navigation order, not changed). Budget: light 40 turns/0.6 M, run at about 68 turns/0.87 M (under 4x): key-injection script needed to verify keyboard focus and Enter (2 failed launches), plus the engine rectangle correction.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
