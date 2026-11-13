@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 50, context start 16k peak 102k, resumes 0, 6 min, units 0.53 M, USD 1.48
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. wbp-weapons updated (commit d79aa4c0): description, purpose, components, variables, ShowSlot and ProgressSlot no longer list the turret line; task-452-03 and task-461 entries marked removed; new task-541-01 entry. Lint clean. Run over the light budget (ALERT since subtask 1, about 48 turns, under 0.6 M units): cause in task-541-01/02 results.
+- result: A1 to A4 passed. The Turrets: n / max text and its grey marker (TurretBox, TurretText, TurretBar in WBP_Weapons) are removed with their graph nodes and the TurretSlotPlusOne variable (3d9bde6c). The launcher charges stay in its slot (blocks, red recharge block). -game 1920x1080 before/after/recharge: Saved/Captures/t541_before/t541b_00.png, Saved/Captures/t541_after/t541a_00.png, Saved/Captures/t541_after/slot_crops.png. Doc wbp-weapons updated (d79aa4c0). Budget: executor run 50 turns, 0.53 M units, over the 40 turns of light (1.25x, under the 4x batch limit). Cause: graph surgery through a hand-written JSON-RPC client and a third launch to check the edited recharge path.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
