@@ -3,7 +3,7 @@ id: task-516-03-explosion-doc
 description: "Doc: sys-audio: explosion event, edge distance, placeholder status"
 parent: task-516-audio-explosion-edge-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des explosions selon la distance au bord de l'explosion: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:05:44Z
 - waiting_for: none
 - result: open
 
