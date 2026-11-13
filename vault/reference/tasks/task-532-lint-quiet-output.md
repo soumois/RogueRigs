@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 19, context start 16k peak 62k, resumes 0, 2 min, units 0.19 M, USD 0.59
 - planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
 - planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
-- result: Done. orchestrator-runbook (Git section) documents lint.js [--write] [--all]: errors always, default warnings only for vault files differing from HEAD, summary with hidden count, --all for every warning, exit code and --write unchanged; orchestrator-script-quirks notes that committed nodes' warnings are hidden and --all shows them. _authoring (kind rule, not in inputs) left unchanged: its lint line stays true. Lint clean.
+- result: Done. lint.js prints by default every error, the warnings of vault files differing from HEAD (modified, staged, untracked) and the summary line 'N warning(s) (K hidden, --all shows them)'; --all prints all 74 warnings as before; exit codes and --write unchanged; task-start/task-next/task-confirm still filter its lines. A1-A6 shown by real runs (subtask 01), A7 in orchestrator-runbook and orchestrator-script-quirks (subtask 02). No ALERT.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
