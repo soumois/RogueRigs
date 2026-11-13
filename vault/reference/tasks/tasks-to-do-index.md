@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-519-audio-music-three-tracks]] — Three looped music tracks for main menu, loading and in game, through the Music slider; in game quieter. Status todo.
+- [[task-519-audio-music-three-tracks]] — Three looped music tracks for main menu, loading and in game, through the Music slider; in game quieter. Status in-progress.

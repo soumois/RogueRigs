@@ -3,7 +3,7 @@ id: task-519-audio-music-three-tracks
 description: "Global task: Three looped music tracks for main menu, loading and in game, through the Music slider; in game quieter."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Musiques : menu principal, chargement, en jeu
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q10 à Q13")
 - milestone: M2
 - next_step: task-519-01-music-import
-- started: open
+- started: 2026-11-13T09:36:52Z
 - waiting_for: none
 - result: open
 

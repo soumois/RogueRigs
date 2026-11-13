@@ -3,7 +3,7 @@ id: task-519-01-music-import
 description: "Bp: three tracks kept as provided in Art/Source/audio with manifest entries, imported"
 parent: task-519-audio-music-three-tracks
 kind: task
-status: todo
+status: in-progress
 ---
 # Musiques : menu principal, chargement, en jeu: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:36:52Z
 - waiting_for: none
 - result: open
 
