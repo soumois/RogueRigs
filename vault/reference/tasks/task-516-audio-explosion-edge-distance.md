@@ -1,9 +1,9 @@
 ---
 id: task-516-audio-explosion-edge-distance
 description: "Global task: Placed explosion sound event, level fading with the distance from the explosion edge; import of the owner file."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Son des explosions selon la distance au bord de l'explosion
 
@@ -23,14 +23,14 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
-- next_step: task-516-03-explosion-doc
+- next_step: none
 - started: 2026-11-13T09:04:05Z
 - waiting_for: none
-- executor_tokens: input 84, cache write 95726, cache read 3069406, output 20555
-- executor_usage: runs 1, turns 42, context start 17k peak 108k, resumes 0, 6 min, units 0.53 M, USD 1.50
+- executor_tokens: input 92, cache write 101105, cache read 3511741, output 22825
+- executor_usage: runs 1, turns 46, context start 17k peak 114k, resumes 0, 7 min, units 0.59 M, USD 1.66
 - planning_tokens: input 10, cache write 20096, cache read 213155, output 4963
 - planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/8 (tasks 512, 513, 514, 515, 516, 517, 518, 519), units 0.07 M, USD 0.24
-- result: open
+- result: Done. Commit 62548c23. sys-audio: Explosion call site in URRExplosionSubsystem::Explode, PlayEventAt EdgeRadius and GetFadeDistance (distance minus radius, 0 inside), Explosion row values (Volume 1.0, FadeInner 0, FadeOuter 1075, Q6), rr.Audio.Play EdgeRadius argument, every kept sound placeholder 'à remplacer avant publication', relation to task-516; lint clean. ALERT at the 516-02 closing: executor run over the light budget (42 turns for 40, 0.53 M units of 0.6 M): cause, a C++ change plus a sound preparation and import plus two -game checks within one light task, and one task-next call that needed a manual restart of subtask 02 (next-subtask arguments given without the global).
 
 ## Questions
 Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -42,7 +42,7 @@ Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; 
 3. task-516-03-explosion-doc (vault/reference/tasks/task-516-audio-explosion-edge-distance/task-516-03-explosion-doc.md) — doc: sys-audio: explosion event, edge distance, placeholder status
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-516-01-explosion-event]] — step 1, cpp.
 - [[task-516-02-explosion-import]] — step 2, bp.
 - [[task-516-03-explosion-doc]] — step 3, doc.
