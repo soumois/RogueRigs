@@ -3,7 +3,7 @@ id: task-533-02-doc
 description: "Doc: Update task-spec and the runbook: num and anchor optional, no listing of vault/reference/tasks."
 parent: task-533-task-create-auto-number
 kind: task
-status: todo
+status: in-progress
 ---
 # task-create.js : numéro et ancre automatiques: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:24:21Z
 - waiting_for: none
 - result: open
 

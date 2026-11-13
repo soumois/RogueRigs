@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-533-01-auto-number-anchor
+- next_step: task-533-02-doc
 - started: 2026-11-13T18:21:48Z
 - waiting_for: none
+- executor_tokens: input 46, cache write 48197, cache read 1034317, output 13410
+- executor_usage: runs 1, turns 23, context start 16k peak 61k, resumes 0, 2 min, units 0.23 M, USD 0.72
+- planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
+- planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
 - result: open
 
 ## Questions
