@@ -3,7 +3,7 @@ id: task-536-layout-filler-cheaper
 description: "Global task: layout generator far-cell filler made cheaper per iteration with byte-identical output per seed; slow seed timed before and after."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator: cheaper far-cell filler, identical output
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-536-01-filler-optimise
-- started: open
+- started: 2026-11-13T18:19:35Z
 - waiting_for: none
 - result: open
 

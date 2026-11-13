@@ -3,7 +3,7 @@ id: task-536-01-filler-optimise
 description: "Cpp: Time a slow seed, make RunFiller cheaper without changing its output, prove identical output on the seed set and time it again."
 parent: task-536-layout-filler-cheaper
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator: cheaper far-cell filler, identical output: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:19:35Z
 - waiting_for: none
 - result: open
 
