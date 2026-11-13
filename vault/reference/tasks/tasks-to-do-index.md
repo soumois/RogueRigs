@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-543-wall-debris-less-white]] — Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow. Status todo.
+- [[task-543-wall-debris-less-white]] — Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow. Status in-progress.
 - [[task-544-horde-kill-gauge]] — The horde "!" moves to half the C position and no longer triggers a horde; it starts a kill gauge under the alert bar; full gauge = horde, full until the horde is over, then empties and refills. Status todo.
 - [[task-545-pause-screen-bolts]] — Pause screen rebuilt to owner image 10: dividers from bar to bar, horizontal divider, bolts on every end and junction as a separate unstretched image. Status todo.
 - [[task-546-level-cleared-look]] — Stats screen adjusted to owner image 6: vertical divider from a bolt junction on the horizontal divider to the bottom bar, shared unstretched bolts. Status todo.

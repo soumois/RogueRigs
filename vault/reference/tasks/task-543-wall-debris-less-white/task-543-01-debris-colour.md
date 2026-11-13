@@ -3,7 +3,7 @@ id: task-543-01-debris-colour
 description: "Bp: Retint the rock destruction debris to the rock colours, no glow"
 parent: task-543-wall-debris-less-white
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall destruction particles: rock colours instead of near white: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:32:36Z
 - waiting_for: none
 - result: open
 

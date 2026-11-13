@@ -3,7 +3,7 @@ id: task-543-wall-debris-less-white
 description: "Global task: Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall destruction particles: rock colours instead of near white
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
 - next_step: task-543-01-debris-colour
-- started: open
+- started: 2026-11-13T23:32:36Z
 - waiting_for: none
 - result: open
 
