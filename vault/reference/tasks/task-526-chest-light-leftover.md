@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 54, context start 16k peak 134k, resumes 0, 9 min, units 0.77 M, USD 2.13
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. sys-objectives-console-chest updated (commit 02790659): snapshot of every world FX component with its state, new components tracked even before activation, IsOpeningEffectAlive, Deactivate before DeactivateImmediate, task-526 capture note; relation to task-526 on both ends. Lint clean.
+- result: Done. Cause found in the owner PIE log (2026-11-13 10:32): the first NS_BonusChestOpen of the session was still compiling at the spawn, Niagara deferred its activation, the active-only snapshot tracked 0 effects, so the level change cleared nothing and the never-ending rays stayed into level 2. Fix d62834de (RRBonusChest): every new FX component is tracked even before activation, a waiting activation is cancelled at the clear. A1 seen on capture (level 2, no chest light), A2 seen (open chest glows in its level), A3 build green, RogueRigs.Console 6/6, doc 02790659. Unverified: the deferred-compile case did not reproduce in -game; owner to recheck in PIE.
 
 ## Subtasks
 1. task-526-01-cleanup-fix (vault/reference/tasks/task-526-chest-light-leftover/task-526-01-cleanup-fix.md) — cpp: chest effects removed with the level they belong to
