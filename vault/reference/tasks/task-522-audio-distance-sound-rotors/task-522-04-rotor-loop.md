@@ -3,7 +3,7 @@ id: task-522-04-rotor-loop
 description: "Cpp: extractor plays one rotor loop with distance per Q4, Q5"
 parent: task-522-audio-distance-sound-rotors
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des hélices de l'extracteur et code générique de son à distance: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:28:44Z
 - waiting_for: none
 - result: open
 
