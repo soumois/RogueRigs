@@ -3,7 +3,7 @@ id: task-516-02-explosion-import
 description: "Bp: owner explosion file imported, manifest updated (placeholder marks)"
 parent: task-516-audio-explosion-edge-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Son des explosions selon la distance au bord de l'explosion: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:04:04Z
 - waiting_for: none
 - result: open
 

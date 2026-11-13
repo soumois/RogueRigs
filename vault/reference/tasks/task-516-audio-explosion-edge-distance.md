@@ -23,9 +23,13 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
-- next_step: task-516-01-explosion-event
-- started: 2026-11-13T08:59:32Z
+- next_step: task-516-02-explosion-import
+- started: 2026-11-13T09:04:05Z
 - waiting_for: none
+- executor_tokens: input 54, cache write 73648, cache read 1613533, output 13805
+- executor_usage: runs 1, turns 27, context start 17k peak 86k, resumes 0, 4 min, units 0.32 M, USD 0.97
+- planning_tokens: input 10, cache write 20096, cache read 213155, output 4963
+- planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/8 (tasks 512, 513, 514, 515, 516, 517, 518, 519), units 0.07 M, USD 0.24
 - result: open
 
 ## Questions
