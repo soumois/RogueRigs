@@ -1,9 +1,9 @@
 ---
 id: task-519-audio-music-three-tracks
 description: "Global task: Three looped music tracks for main menu, loading and in game, through the Music slider; in game quieter."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Musiques : menu principal, chargement, en jeu
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q10 à Q13")
 - milestone: M2
-- next_step: task-519-03-music-doc
+- next_step: none
 - started: 2026-11-13T09:36:52Z
 - waiting_for: none
-- executor_tokens: input 106, cache write 162055, cache read 5303139, output 46986
-- executor_usage: runs 1, turns 53, context start 17k peak 175k, resumes 0, 14 min, units 0.97 M, USD 2.81
+- executor_tokens: input 126, cache write 171353, cache read 7102401, output 51428
+- executor_usage: runs 1, turns 63, context start 17k peak 184k, resumes 0, 15 min, units 1.18 M, USD 3.31
 - planning_tokens: input 10, cache write 20096, cache read 213155, output 4963
 - planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/8 (tasks 512, 513, 514, 515, 516, 517, 518, 519), units 0.07 M, USD 0.24
-- result: open
+- result: Done. New node sys-music (vault/reference/tech/systems/core/sys-music.md, own node: sys-audio already over 1000 words): URRMusicSubsystem, track rules, Q12/Q13 behaviour, +Music lines and fades, how to swap a track (import_sounds.py --loop, manifest music entry, +Music line), rr.Audio.Music, measured levels and the warm New Run limit. sys-audio gets a music field and relation; systems-core-index, sys-options, sys-run-transition back-links. Lint clean (no warning on these nodes).
 
 ## Questions
 Decided 2026-11-13 (owner "ok pour Q10 à Q13"): the defaults of Q10, Q11, Q12, Q13 are accepted; values provisional, owner 2026-11-13.
@@ -38,7 +38,7 @@ Decided 2026-11-13 (owner "ok pour Q10 à Q13"): the defaults of Q10, Q11, Q12, 
 3. task-519-03-music-doc (vault/reference/tasks/task-519-audio-music-three-tracks/task-519-03-music-doc.md) — doc: sys-audio: music part, how to swap a track
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-519-01-music-import]] — step 1, bp.
 - [[task-519-02-music-playback]] — step 2, cpp.
 - [[task-519-03-music-doc]] — step 3, doc.
