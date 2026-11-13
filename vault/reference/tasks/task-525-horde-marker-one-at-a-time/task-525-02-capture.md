@@ -3,7 +3,7 @@ id: task-525-02-capture
 description: "Capture: alert bar before, between and after the hordes"
 parent: task-525-horde-marker-one-at-a-time
 kind: task
-status: todo
+status: in-progress
 ---
 # Un seul point d'exclamation de horde à la fois: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:03:33Z
 - waiting_for: none
 - result: open
 
