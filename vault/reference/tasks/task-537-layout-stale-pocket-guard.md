@@ -1,9 +1,9 @@
 ---
 id: task-537-layout-stale-pocket-guard
 description: "Global task: C++ layout generator releases the guard of a removed hidden pocket, live pockets stay guarded; revalidated on 24 starts, idle filler measured."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Layout generator: the guard of a removed hidden pocket no longer blocks carving
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-537-02-doc
+- next_step: none
 - started: 2026-11-13T19:32:29Z
 - waiting_for: none
-- executor_tokens: input 136, cache write 139834, cache read 6353184, output 37132
-- executor_usage: runs 1, turns 68, context start 17k peak 140k, resumes 0, 22 min, units 1.00 M, USD 2.71
+- executor_tokens: input 146, cache write 151727, cache read 7075900, output 41521
+- executor_usage: runs 1, turns 73, context start 17k peak 152k, resumes 0, 23 min, units 1.10 M, USD 3.00
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Done (doc commit c9ade13f). sys-layout-generator: pocket_guard entry (guard only within pockets.guard of a cell still hidden, rebuilt after refill and passage repair), -carveonly pocket/guard line, reference line 422704489 -> 422704499 cells hash 34b074db (was 86c36f6d), 24-start revalidation (24/24, 17 same seed, 7 changed, 10.9 s vs 16.6 s), idle filler before/after with verdict yes, cache note. layout-generator-recipe: C++ releases the guard, Node script does not (Q1). layout-review-rules: 24-start result after the change. Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -35,6 +35,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-537-02-doc (vault/reference/tasks/task-537-layout-stale-pocket-guard/task-537-02-doc.md) — doc: Record the guard release, the new reference line and the measures in the generator docs
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-537-01-guard-release]] — step 1, cpp.
 - [[task-537-02-doc]] — step 2, doc.
