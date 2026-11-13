@@ -31,6 +31,7 @@ Refined by the Level-Design agent while writing the run levels ([[task-205-level
 - Owner 2026-11-07 (provisional, [[task-495-generator-window-repair]]): the C++ generator enforces every rule of this node, so no agent is needed at runtime: window rule (every void-free 24 × 24 window, stride 2, open fraction 0.05 to 0.95) by a repair pass; straight lane becomes a hard rule (no corridor 3 to 10 cells wide straight over 30 cells, ±1 tolerance), repaired where feasible; a hidden pocket farther than 15 cells (max_far) from the network fails. Each is also a seed-acceptance check. The Node generator is unchanged and the committed maps are not regenerated; the level-design review stays a dev-time check.
 - Done: windows and straight lanes repaired, pocket distance checked only (region refill already bounds it); all three are seed-acceptance checks, values in the params `review` section.
 - Level-design verdict ([[task-495-02-ld-review]]): on the 24 starts of task-492-03, 24 of 24 meet every rule (was 4), windows 0.073–0.929, lanes 14–29, farthest pocket 10, all validator OK; repaired areas read as corridors and rock islands, the least natural being rounded outcrops along a narrow plaza (seed 2505).
+- After the pocket guard release ([[task-537-layout-stale-pocket-guard]], generator acceptance and validator only, no visual review): 24 of 24 still pass, 7 accepted seeds change, windows 0.062–0.929, lanes 15–29, farthest pocket 10, all validator OK.
 
 ## Relations
 - [[pipelines-index]] — parent index.

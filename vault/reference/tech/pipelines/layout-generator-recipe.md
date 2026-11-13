@@ -40,6 +40,7 @@ Result: 8 floor components as before, reachable floor 85.5 %, minimum passage 3.
 - Done in [[sys-layout-generator]] ([[task-492-cpp-layout-generator]]): same steps and params file, `RRLayoutGen` commandlet.
 - Level-Design verdict on 24 passing C++ seeds ([[task-492-03-ld-validation]]): all pass the validator with passage 3; 4 keep every 24 × 24 window in 0.05–0.95, the rest show a dead or too-open window; comparable to the Node generator (the difference is only the random stream).
 - Since [[task-495-generator-window-repair]] the C++ generator also repairs and checks the [[layout-review-rules]] (windows, straight lanes, pocket distance); the Node script does not. Level-Design verdict ([[task-495-02-ld-review]]): 24 of 24 of the same starts meet every review rule and the validator, repaired areas look like the rest of the terrain.
+- Pocket guard: since [[task-537-layout-stale-pocket-guard]] the C++ generator releases the guard of pocket cells put back to rock (region refill, passage repair), so only pockets still present block carving; the Node script keeps the guard of removed pockets (owner Q1 2026-11-13: not ported back, fallback maps not regenerated), so C++ and Node outputs now differ on seeds where a released cell is carved.
 
 ## Relations
 - [[sys-layout-generator]] — the C++ port of this recipe.
