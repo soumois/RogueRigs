@@ -3,7 +3,7 @@ id: task-517-02-dig-import
 description: "Bp: owner dig file imported, manifest entry, set on the line; sys-audio line"
 parent: task-517-audio-dig-sound
 kind: task
-status: todo
+status: in-progress
 ---
 # Son quand on creuse: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:18:20Z
 - waiting_for: none
 - result: open
 
