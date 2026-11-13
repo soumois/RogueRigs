@@ -14,5 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-535-task-status-usage-line]] — task-spec gets one line with the exact syntax of task-status.js for the planner, e.g. putting an existing task back to wait-answers with waiting_for, so it no longer spends cycles guessing or reading the script. Status in-progress.
 - [[task-536-layout-filler-cheaper]] — FRRLayoutGenerator::RunFiller costs less per iteration (reused buffers, squared distances, no recompute when a walk carved nothing) with byte-identical cells for the same params and seed; slow seed timed before and after. Status in-progress.

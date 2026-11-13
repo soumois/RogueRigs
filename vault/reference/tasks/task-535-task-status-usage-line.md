@@ -1,9 +1,9 @@
 ---
 id: task-535-task-status-usage-line
 description: "Global task: task-spec gets one line with the exact task-status.js syntax, e.g. back to wait-answers with waiting_for."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # task-spec : ligne d'usage de task-status.js
 
@@ -15,10 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-535-01-usage-line
+- next_step: none
 - started: 2026-11-13T18:27:41Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 16, cache write 25836, cache read 224350, output 3726
+- executor_usage: runs 1, turns 8, context start 16k peak 38k, resumes 0, 1 min, units 0.07 M, USD 0.25
+- planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
+- planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
+- result: Done. task-spec Status section has one line with the exact task-status.js syntax and the wait-answers plus waiting_for example (commit 8f7787f2). Checked on a scratch copy of the script: global and subtask wait-answers write waiting_for and the index status; missing waiting_for, waiting_for without status=wait-answers, a vault/... path and an unknown field are refused; status=in-progress resets waiting_for to none. The rule Do not repeat those transitions stays. Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -28,5 +32,5 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 1. task-535-01-usage-line (vault/reference/tasks/task-535-task-status-usage-line/task-535-01-usage-line.md) — doc: Add the exact task-status.js usage line to task-spec.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-535-01-usage-line]] — step 1, doc.
