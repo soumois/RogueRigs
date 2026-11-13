@@ -3,7 +3,7 @@ id: task-536-02-doc
 description: "Doc: Update sys-layout-generator with the measured filler cost and what the filler now reuses or skips."
 parent: task-536-layout-filler-cheaper
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator: cheaper far-cell filler, identical output: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T18:29:27Z
 - waiting_for: none
 - result: open
 

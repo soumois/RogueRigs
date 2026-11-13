@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-536-01-filler-optimise
+- next_step: task-536-02-doc
 - started: 2026-11-13T18:19:35Z
 - waiting_for: none
+- executor_tokens: input 62, cache write 115836, cache read 2602780, output 19143
+- executor_usage: runs 1, turns 31, context start 16k peak 116k, resumes 0, 10 min, units 0.50 M, USD 1.48
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: open
 
 ## Questions
