@@ -3,7 +3,7 @@ id: task-537-02-doc
 description: "Doc: Record the guard release, the new reference line and the measures in the generator docs"
 parent: task-537-layout-stale-pocket-guard
 kind: task
-status: todo
+status: in-progress
 ---
 # Layout generator: the guard of a removed hidden pocket no longer blocks carving: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T19:54:45Z
 - waiting_for: none
 - result: open
 
