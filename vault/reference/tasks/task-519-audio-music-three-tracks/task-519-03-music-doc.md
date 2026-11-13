@@ -3,7 +3,7 @@ id: task-519-03-music-doc
 description: "Doc: sys-audio: music part, how to swap a track"
 parent: task-519-audio-music-three-tracks
 kind: task
-status: todo
+status: in-progress
 ---
 # Musiques : menu principal, chargement, en jeu: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:50:29Z
 - waiting_for: none
 - result: open
 
