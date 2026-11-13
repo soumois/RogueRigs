@@ -1,9 +1,9 @@
 ---
 id: task-530-reglage-build-echoue-compilation
 description: "Global task: Réglage (no planner): Réglage : le build échoue à la compilation (UE 5.8). RRWeaponTests.cpp:1687-1689 et RRLevelUpTests.cpp:412-414 appellent FMaterialResource::FinishCompilation() et ..."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Réglage: Réglage : le build échoue à la compilation (UE 5.8). RRWeaponTests.cpp:1687-1689 et RRLevelUpTests.cpp:412-414 appellent FMaterialResource::FinishCompilation() et ...
 
@@ -15,15 +15,19 @@ status: in-progress
 - family: reglage
 - confirmed_by_owner: yes (2026-11-13, the request itself, réglage family)
 - milestone: M2
-- next_step: task-530-01-reglage-build-echoue-compilation
+- next_step: none
 - started: 2026-11-13T17:45:02Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 46, cache write 55512, cache read 834651, output 8234
+- executor_usage: runs 1, turns 21, context start 17k peak 56k, resumes 0, 8 min, units 0.19 M, USD 0.61
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
+- result: Done. Done (commit e1445b2c). Cause: in UE 5.8 FMaterial::FinishCompilation and GetCompileErrors are WITH_EDITOR only, so the game target of BuildCookRun failed (C2039). RRWeaponTests.cpp (M_MuzzleFlash) and RRLevelUpTests.cpp (M_LevelUpWave): editor keeps FinishCompilation + 0 compile errors under #if WITH_EDITOR; game target checks HasValidGameThreadShaderMap. Editor build exit 0. Tests RogueRigs.Weapons + RogueRigs.LevelUp (-RenderOffScreen and -nullrhi): 24 of 25 pass incl. MuzzleFlashAsset and WaveAsset; Weapons.ImpactSparkAsset fails at RRWeaponTests.cpp l.1620-1636 (pool prewarm and spark request = 0), code not touched here, fails under -nullrhi too: existing defect, not fixed (outside the request). Staged BuildCookRun exit 0 (BUILD SUCCESSFUL); copied per owner to Saved/StagedBuilds/RogueRigsv0.4.0 (original Saved/StagedBuilds/Windows kept, git-ignored, not committed).
 
 ## Subtasks
 1. task-530-01-reglage-build-echoue-compilation (vault/reference/tasks/task-530-reglage-build-echoue-compilation/task-530-01-reglage-build-echoue-compilation.md) — executor: Apply the setting change of the request and check it at light size.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-530-01-reglage-build-echoue-compilation]] — step 1, executor.
 - [[request-families]] — the family path this task follows.
