@@ -9,6 +9,7 @@
 #include "RRAudioSubsystem.generated.h"
 
 class FRRAudioClickProcessor;
+class FRRDistanceSound;
 class SWidget;
 class UAudioComponent;
 class USoundBase;
@@ -27,7 +28,8 @@ struct FRRSoundEventStats
  * Game instance subsystem of the sound events.
  * - PlayEvent / PlayEventAt: finds the row of the event (dotted names fall back to their parent), plays its sound through the Effects
  *   class of URROptionsSettings, pitch jittered, placed (world rows) or centred, pause-proof (UI rows); a row capped at N stops its
- *   oldest play before the N+1th. A row with FadeOuter > 0 fades with the distance from the player pawn (silent from FadeOuter). No row or no sound: silent, no error.
+ *   oldest play before the N+1th. A row with FadeOuter > 0 fades with the distance from the player pawn (silent from FadeOuter), measured
+ *   by a distance sound (FRRDistanceSound, FRRExplosionSound; task-522). No row or no sound: silent, no error.
  * - SetLoop: loop rows (Dig), one play held while the caller says so, faded in and out (task-517).
  * - Buttons: a real-time ticker plays UIHover when the cursor enters an enabled Slate button of any screen (paused ones included), and
  *   a Slate input pre-processor plays UIClick on a left press on an enabled button. A button counts as disabled when it or a parent is.
@@ -45,10 +47,10 @@ public:
 	static void PlayEvent(const UObject* WorldContextObject, FName Event, FName Variant = NAME_None);
 
 	/**
-	 * Plays Event at Location (used by world rows; other rows play centred). EdgeRadius > 0 (an explosion radius, task-516): the
-	 * distance fade is measured from the edge of that circle, distance to Location minus EdgeRadius, 0 inside.
+	 * Plays Event at Location (used by world rows; other rows play centred), as a point distance sound: FRRDistanceSound(Event,
+	 * Variant).PlayAt (task-522). Explosions use FRRExplosionSound, faded from the edge of their radius.
 	 */
-	static void PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant = NAME_None, float EdgeRadius = 0.f);
+	static void PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant = NAME_None);
 
 	/**
 	 * Loop rows (bLoop, task-517): call every tick with bOn = the looping state (true while the player mines, for Dig). Off -> on starts
@@ -67,19 +69,19 @@ public:
 	virtual void Deinitialize() override;
 
 	/**
-	 * Plays from this subsystem; Location null = centred. EdgeRadius: see PlayEventAt. Returns the component played, or null (no row,
-	 * no sound, no audio, beyond the fade).
+	 * Plays from this subsystem; Location null = centred. Distance: the distance sound measuring the fade of a play with a location
+	 * (null = a point, FRRDistanceSound). Returns the component played, or null (no row, no sound, no audio, beyond the fade).
 	 */
-	UAudioComponent* Play(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius = 0.f);
-
-	/** Fade distance of a play: horizontal distance player to Location minus EdgeRadius, never below 0 (task-516). */
-	static float GetFadeDistance(const FVector& PlayerLocation, const FVector& Location, float EdgeRadius);
+	UAudioComponent* Play(const UObject* WorldContextObject, FName Event, const FVector* Location, const FRRDistanceSound* Distance = nullptr);
 
 	/**
-	 * Volume factor of Row at Distance uu from the player (task-513): 1 up to FadeInner, linear to 0 at FadeOuter, 0 beyond;
-	 * 1 when the row has no fade (FadeOuter 0).
+	 * Start of a distance loop (FRRDistanceSound::UpdateLoop, task-522): one play of Sound's loop row at Location, faded in over its
+	 * LoopFadeIn, at the level of the distance now; stopped at once while the game is paused. Null when nothing plays.
 	 */
-	static float GetDistanceFade(const FRRSoundEventRow& Row, float Distance);
+	UAudioComponent* StartDistanceLoop(const UObject* WorldContextObject, const FRRDistanceSound& Sound, const FVector& Location);
+
+	/** End of a distance loop play: fades it out over its row's LoopFadeOut (stops it at once when 0) and logs its end. */
+	void ReleaseDistanceLoop(FName Event, UAudioComponent* Component, const TCHAR* Reason);
 
 	/** Logs, per row, sound, plays, cap stops, peak of simultaneous plays and plays active now. */
 	void LogStats() const;
@@ -97,7 +99,10 @@ private:
 	bool TickHover(float DeltaTime);
 
 	/** Plays Event; bLoopStart: a SetLoop start (loop rows are refused otherwise), faded in over the row's LoopFadeIn. */
-	UAudioComponent* PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius, bool bLoopStart);
+	UAudioComponent* PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, const FRRDistanceSound* Distance, bool bLoopStart);
+
+	/** Distance loop plays started by StartDistanceLoop, watched for pauses and removed worlds (TickLoops). */
+	TArray<TPair<FName, TWeakObjectPtr<UAudioComponent>>> DistanceLoops;
 
 	/**
 	 * Stops loops of a paused or removed world at once, and logs the end of faded-out loops and of watched one-shot plays (core

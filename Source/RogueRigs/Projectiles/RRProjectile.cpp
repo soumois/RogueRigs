@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Audio/RRAudioSubsystem.h"
+#include "Audio/RRDistanceSound.h"
 #include "Components/CapsuleComponent.h"
 #include "Enemies/RREnemy.h"
 #include "Engine/World.h"
@@ -357,7 +358,7 @@ void ARRProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 		// ImpactSoundEvent.WallImpactSoundVariant, faded by the distance from the player in the table. Robot hits keep ImpactSoundEvent.
 		if (!ImpactSoundEvent.IsNone() && !Cast<ARREnemy>(ImpactResult.GetActor()))
 		{
-			URRAudioSubsystem::PlayEventAt(this, ImpactSoundEvent, Location, WallImpactSoundVariant);
+			FRRDistanceSound(ImpactSoundEvent, WallImpactSoundVariant).PlayAt(this, Location);
 		}
 		if (ARRArenaGrid* Grid = Cast<ARRArenaGrid>(ImpactResult.GetActor()))
 		{

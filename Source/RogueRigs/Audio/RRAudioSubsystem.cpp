@@ -3,6 +3,7 @@
 #include "Audio/RRAudioSubsystem.h"
 
 #include "Audio/RRAudioSettings.h"
+#include "Audio/RRDistanceSound.h"
 #include "AudioDevice.h"
 #include "AudioThread.h"
 #include "Components/AudioComponent.h"
@@ -77,12 +78,9 @@ void URRAudioSubsystem::PlayEvent(const UObject* WorldContextObject, FName Event
 	}
 }
 
-void URRAudioSubsystem::PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant, float EdgeRadius)
+void URRAudioSubsystem::PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant)
 {
-	if (URRAudioSubsystem* Subsystem = Get(WorldContextObject))
-	{
-		Subsystem->Play(WorldContextObject, RRAudio::Refine(Event, Variant), &Location, EdgeRadius);
-	}
+	FRRDistanceSound(Event, Variant).PlayAt(WorldContextObject, Location);
 }
 
 void URRAudioSubsystem::SetLoop(const UObject* WorldContextObject, FName Event, bool bOn)
@@ -109,7 +107,7 @@ void URRAudioSubsystem::UpdateLoop(const UObject* WorldContextObject, FName Even
 		}
 		// Held on and not playing (first call, after a pause, or a sound that does not loop and ended): one start.
 		ActiveLoops.Remove(Event);
-		if (UAudioComponent* Component = PlayInternal(WorldContextObject, Event, nullptr, 0.f, /*bLoopStart*/ true))
+		if (UAudioComponent* Component = PlayInternal(WorldContextObject, Event, nullptr, nullptr, /*bLoopStart*/ true))
 		{
 			ActiveLoops.Add(Event, Component);
 		}
@@ -167,6 +165,22 @@ void URRAudioSubsystem::TickLoops()
 			Component->Stop();
 		}
 	}
+	// Distance loops (task-522): their holder restarts them on its next update; here only pauses and removed worlds.
+	for (int32 Index = DistanceLoops.Num() - 1; Index >= 0; --Index)
+	{
+		UAudioComponent* Component = DistanceLoops[Index].Value.Get();
+		const UWorld* World = Component ? Component->GetWorld() : nullptr;
+		if (Component == nullptr || World == nullptr || World->bIsTearingDown || !Component->IsPlaying())
+		{
+			DistanceLoops.RemoveAtSwap(Index);
+		}
+		else if (World->IsPaused())
+		{
+			Component->Stop();
+			UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s: game paused, stopped at once."), *DistanceLoops[Index].Key.ToString());
+			DistanceLoops.RemoveAtSwap(Index);
+		}
+	}
 	// Verbose only: real time from each watched one-shot play to its end (stopped, finished or destroyed), next to its sound length.
 	for (int32 Index = WatchedPlays.Num() - 1; Index >= 0; --Index)
 	{
@@ -179,11 +193,6 @@ void URRAudioSubsystem::TickLoops()
 			WatchedPlays.RemoveAtSwap(Index);
 		}
 	}
-}
-
-float URRAudioSubsystem::GetFadeDistance(const FVector& PlayerLocation, const FVector& Location, float EdgeRadius)
-{
-	return FMath::Max(FVector::Dist2D(PlayerLocation, Location) - FMath::Max(EdgeRadius, 0.f), 0.f);
 }
 
 void URRAudioSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -220,6 +229,7 @@ void URRAudioSubsystem::Deinitialize()
 	ActivePlays.Reset();
 	ActiveLoops.Reset();
 	FadingLoops.Reset();
+	DistanceLoops.Reset();
 	WatchedPlays.Reset();
 	Super::Deinitialize();
 }
@@ -260,12 +270,43 @@ int32 URRAudioSubsystem::GetActiveCount(FName Event)
 	return Active->Num();
 }
 
-UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius)
+UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FName Event, const FVector* Location, const FRRDistanceSound* Distance)
 {
-	return PlayInternal(WorldContextObject, Event, Location, EdgeRadius, /*bLoopStart*/ false);
+	return PlayInternal(WorldContextObject, Event, Location, Distance, /*bLoopStart*/ false);
 }
 
-UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius, bool bLoopStart)
+UAudioComponent* URRAudioSubsystem::StartDistanceLoop(const UObject* WorldContextObject, const FRRDistanceSound& Sound, const FVector& Location)
+{
+	UAudioComponent* Component = PlayInternal(WorldContextObject, Sound.GetEvent(), &Location, &Sound, /*bLoopStart*/ true);
+	if (Component != nullptr)
+	{
+		DistanceLoops.Emplace(Sound.GetEvent(), Component);
+	}
+	return Component;
+}
+
+void URRAudioSubsystem::ReleaseDistanceLoop(FName Event, UAudioComponent* Component, const TCHAR* Reason)
+{
+	if (Component == nullptr || !Component->IsPlaying())
+	{
+		return;
+	}
+	DistanceLoops.RemoveAll([Component](const TPair<FName, TWeakObjectPtr<UAudioComponent>>& Loop) { return Loop.Value.Get() == Component; });
+	const FRRSoundEventRow* Row = GetDefault<URRAudioSettings>()->FindRow(Event);
+	const float FadeOut = Row ? FMath::Max(Row->LoopFadeOut, 0.f) : 0.f;
+	if (FadeOut > 0.f)
+	{
+		Component->FadeOut(FadeOut, 0.f);
+		FadingLoops.Emplace(Event, Component);
+	}
+	else
+	{
+		Component->Stop();
+	}
+	UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s (%s): fade out %.2f s."), *Event.ToString(), Reason, FadeOut);
+}
+
+UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, const FRRDistanceSound* Distance, bool bLoopStart)
 {
 	const FRRSoundEventRow* Row = GetDefault<URRAudioSettings>()->FindRow(Event);
 	if (Row && Row->bLoop && !bLoopStart)
@@ -295,23 +336,18 @@ UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObje
 		return nullptr;
 	}
 
-	// Distance fade from the player (rows with FadeOuter > 0, plays with a location): checked before the cap, so a silent play
-	// never stops an audible one. No player pawn: no fade. EdgeRadius > 0: measured from the edge of that circle (explosions).
+	// Distance fade from the player (rows with FadeOuter > 0, plays with a location), measured by the distance sound (a point when
+	// none is given; an explosion from its edge): checked before the cap, so a silent play never stops an audible one. No player pawn: no fade.
 	float Fade = 1.f;
 	float PlayerDistance = -1.f;
-	if (Row->FadeOuter > 0.f && Location != nullptr)
+	const FRRDistanceSound PointSound(Event);
+	const FRRDistanceSound& DistanceSound = Distance ? *Distance : PointSound;
+	const float EdgeRadius = DistanceSound.GetEdgeRadius();
+	if (Location != nullptr && DistanceSound.Measure(World, *Row, *Location, PlayerDistance, Fade) && Fade <= 0.f)
 	{
-		if (const APawn* Player = UGameplayStatics::GetPlayerPawn(World, 0))
-		{
-			PlayerDistance = GetFadeDistance(Player->GetActorLocation(), *Location, EdgeRadius);
-			Fade = GetDistanceFade(*Row, PlayerDistance);
-			if (Fade <= 0.f)
-			{
-				UE_LOG(LogRRAudio, Verbose, TEXT("Skip %s (row %s): %.0f uu from the player (edge radius %.0f), silent from %.0f uu."), *Event.ToString(),
-					*Row->Event.ToString(), PlayerDistance, EdgeRadius, Row->FadeOuter);
-				return nullptr;
-			}
-		}
+		UE_LOG(LogRRAudio, Verbose, TEXT("Skip %s (row %s): %.0f uu from the player (edge radius %.0f), silent from %.0f uu."), *Event.ToString(),
+			*Row->Event.ToString(), PlayerDistance, EdgeRadius, Row->FadeOuter);
+		return nullptr;
 	}
 	const float Volume = Row->Volume * Fade;
 
@@ -373,24 +409,6 @@ UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObje
 		*Row->Event.ToString(), *Sound->GetPathName(), *GetNameSafe(EffectsClass), Active.Num(), Row->MaxConcurrent, Pitch, Volume, *FadeText,
 		bPlaced ? TEXT("placed") : TEXT("centred"), Row->bUI ? TEXT(", plays paused") : TEXT(""), *LoopText);
 	return Component;
-}
-
-float URRAudioSubsystem::GetDistanceFade(const FRRSoundEventRow& Row, float Distance)
-{
-	if (Row.FadeOuter <= 0.f)
-	{
-		return 1.f;
-	}
-	const float Inner = FMath::Clamp(Row.FadeInner, 0.f, Row.FadeOuter);
-	if (Distance <= Inner)
-	{
-		return 1.f;
-	}
-	if (Distance >= Row.FadeOuter)
-	{
-		return 0.f;
-	}
-	return 1.f - (Distance - Inner) / (Row.FadeOuter - Inner);
 }
 
 void URRAudioSubsystem::LogStats() const

@@ -1,7 +1,7 @@
 // Rogue Rigs - robot base: own ASC with health, movement and enemy sets, CSV stats, flow-field movement, single death with shrink and XP drop, damage numbers sent to the damage number subsystem.
 
 #include "Enemies/RREnemy.h"
-#include "Audio/RRAudioSubsystem.h"
+#include "Audio/RRDistanceSound.h"
 
 #include "AbilitySystemComponent.h"
 #include "AI/Navigation/AvoidanceManager.h"
@@ -444,7 +444,7 @@ void ARREnemy::HandleDeath(AActor* DeathInstigator)
 	// Death sound (task-511 Q1): one event for every robot type; a kamikaze's own fuse is an explosion, not part of it.
 	if (DeathInstigator != this)
 	{
-		URRAudioSubsystem::PlayEventAt(this, TEXT("EnemyDeath"), GetActorLocation());
+		FRRDistanceSound(TEXT("EnemyDeath")).PlayAt(this, GetActorLocation());
 	}
 
 	// Kills feed the alert bar (a kamikaze's own fuse does not count: the run flow ignores self-instigated deaths).

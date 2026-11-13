@@ -7,6 +7,7 @@
 #if !UE_BUILD_SHIPPING
 
 #include "Audio/RRAudioSubsystem.h"
+#include "Audio/RRDistanceSound.h"
 #include "Audio/RRMusicSubsystem.h"
 #include "AudioDevice.h"
 #include "AudioThread.h"
@@ -60,7 +61,15 @@ namespace RRAudioDebug
 					return;
 				}
 				const FVector Location = Player->GetActorLocation() + FVector(FCString::Atof(*Args[1]), FCString::Atof(*Args[2]), 0.f);
-				Subsystem->Play(World, FName(*Args[0]), &Location, Args.Num() >= 4 ? FCString::Atof(*Args[3]) : 0.f);
+				// Through the distance sound classes, as the game plays them: a point, or an explosion edge (task-522).
+				if (Args.Num() >= 4)
+				{
+					FRRExplosionSound(FName(*Args[0]), FCString::Atof(*Args[3])).PlayAt(World, Location);
+				}
+				else
+				{
+					FRRDistanceSound(FName(*Args[0])).PlayAt(World, Location);
+				}
 				return;
 			}
 			Subsystem->Play(World, FName(*Args[0]), nullptr);
