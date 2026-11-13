@@ -1,0 +1,43 @@
+---
+id: task-522-audio-distance-sound-rotors
+description: "Global task: One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child."
+parent: tasks-to-do-index
+kind: task
+status: wait-answers
+---
+# Son des hélices de l'extracteur et code générique de son à distance
+
+- request: Owner 2026-11-13, play-test batch in PIE (12 points, family gros morceau split one point per global), with two screenshots (image 1 gameplay: HUD, alert bar C / B / ! / S, a chest light glow with no chest; image 2 Options, Sound tab, the "Sound" tab button drawn smaller than the other tabs). This point, verbatim: « il faudrait un son pour le bruit des hélices ( mais un seul pour les 4 et que ça soit par rapport à la distance aussi)- Géneralise bien cet idée de code, ça va être assez courant. ( et pour l'explosion qui est un peu différente, tu fais un enfant qui hérite ) »
+- goal: One generic distance sound in C++ (Q7) carries every distance-faded sound, the explosion as an inheriting child; the extractor plays one rotor loop with distance per Q4 to Q6. task-523 and task-527 build on its first subtask.
+- acceptance: A1 one base class for distance sounds (point, full level then linear fade, one-shot or loop) and one explosion child class measuring from the radius edge; Impact.Wall, EnemyDeath and Explosion go through them with the same level at the same distances as before (rr.Audio.Play with Verbose LogRRAudio at 0, 200, 600, 1075 uu, explosion at its edge); A2 rotor sound file chosen by the owner (Q6), kept and imported; A3 one rotor loop per extractor, never four, per Q4 and Q5, logged with its distance factor on arrival and extraction; A4 build green, existing audio tests pass; sys-audio documents the classes and how to add a distance sound. The agent hears nothing: the owner judges by ear.
+- gdd_check: Read audio-direction, sys-audio, extraction, barrel. No conflict. Code read: RRAudioSubsystem GetFadeDistance and the Explosion call in RRExplosionSubsystem, to answer the owner's barrel question (distance = 2D player to centre minus Radius, floor 0: already from the edge). Open, asked: rotor play window and level (Q4), distances (Q5), sound source (Q6), shape of the generalization (Q7). Edit: audio-direction.
+- verification_level: standard
+- family: comportement
+- confirmed_by_owner: no (plan and questions handed back 2026-11-13)
+- milestone: M2
+- next_step: task-522-01-distance-sound-classes
+- started: open
+- waiting_for: owner answers Q1 to Q15 and confirmation
+- result: open
+
+## Questions
+Asked 2026-11-13, each with a default; open until the owner answers.
+- Q4 Un seul son en boucle pour les 4 hélices, au centre de l'extracteur, joué tant que ses rotors tournent dans le niveau (à l'arrivée jusqu'à sa sortie de vue ; à l'extraction de l'atterrissage à la fin du décollage derrière l'écran de succès), volume constant (pas de variation avec la vitesse des rotors). Default: oui.
+- Q5 Distance : plein volume jusqu'à 800 uu du centre de l'extracteur (environ le bord de sa zone d'embarquement), puis baisse linéaire jusqu'au silence à 2150 uu (deux fois la distance bord d'écran) ; niveau réglé à l'oreille. Default: oui.
+- Q6 Le son : tu le génères avec ElevenLabs à partir de 3 prompts anglais écrits par l'exécuteur, tu choisis à l'oreille ; placeholder. Default: oui.
+- Q7 Généralisation : une classe C++ de base « son à distance » (un point, plein volume puis fondu linéaire, en un coup ou en boucle) utilisée par tous les sons à distance (impact mur, mort robot, hélices, et ceux des tâches suivantes), et l'explosion en classe enfant qui mesure depuis le bord de son rayon ; les volumes actuels aux mêmes distances ne changent pas. Default: oui.
+
+## Subtasks
+1. task-522-01-distance-sound-classes (vault/reference/tasks/task-522-audio-distance-sound-rotors/task-522-01-distance-sound-classes.md) — cpp: generic distance sound base class and explosion child; existing faded rows moved onto them
+2. task-522-02-sound-prompts (vault/reference/tasks/task-522-audio-distance-sound-rotors/task-522-02-sound-prompts.md) — text: 3 English ElevenLabs prompts for the extractor rotor loop (four rotors, one sound, loopable), owner generates and picks by ear
+3. task-522-03-sound-import (vault/reference/tasks/task-522-audio-distance-sound-rotors/task-522-03-sound-import.md) — bp: rotor loop sound (imported looping) kept in Art/Source/audio with a manifest entry (placeholder), imported
+4. task-522-04-rotor-loop (vault/reference/tasks/task-522-audio-distance-sound-rotors/task-522-04-rotor-loop.md) — cpp: extractor plays one rotor loop with distance per Q4, Q5
+5. task-522-05-doc (vault/reference/tasks/task-522-audio-distance-sound-rotors/task-522-05-doc.md) — doc: sys-audio: distance sound classes, rotor loop, how to add a distance sound
+
+## Relations
+- [[tasks-to-do-index]] — parent index.
+- [[task-522-01-distance-sound-classes]] — step 1, cpp.
+- [[task-522-02-sound-prompts]] — step 2, text.
+- [[task-522-03-sound-import]] — step 3, bp.
+- [[task-522-04-rotor-loop]] — step 4, cpp.
+- [[task-522-05-doc]] — step 5, doc.
