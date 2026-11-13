@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "UObject/SoftObjectPtr.h"
+#include "Layout/Margin.h"
 #include "RROptionsSettings.generated.h"
 
 class USoundClass;
@@ -82,6 +83,11 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, Category = "Screen")
 	float ActiveTabMargin = 0.155f;
+
+	/** Transparent border of the active tab texture, in texture pixels: cropped through the brush UV region so the cream plate
+	 *  fills the same tab rectangle as the inactive plates (the shop Continue texture has a 26 px transparent border). */
+	UPROPERTY(Config, EditAnywhere, Category = "Screen")
+	FMargin ActiveTabTransparentBorder = FMargin(26.f);
 
 	/** Plate of the inactive tabs (dark plate) and its horizontal 3-slice margin (fraction). */
 	UPROPERTY(Config, EditAnywhere, Category = "Screen")

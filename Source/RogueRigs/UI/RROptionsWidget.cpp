@@ -341,19 +341,41 @@ void URROptionsWidget::StyleTabButton(UButton* Button, UTextBlock* Label, bool b
 	if (Button)
 	{
 		UTexture2D* Texture = (bActive ? Options->ActiveTabTexture : Options->InactiveTabTexture).LoadSynchronous();
-		const float Margin = bActive ? Options->ActiveTabMargin : Options->InactiveTabMargin;
+		UTexture2D* SizeTexture = Options->InactiveTabTexture.LoadSynchronous();
 		if (Texture)
 		{
 			FButtonStyle Style = Button->GetStyle();
-			// Keep the plate height of the layout (the Box margins are drawn at ImageSize), width from the texture aspect.
+			// Every tab, active or not, gets the same size: the plate height of the layout (the Box margins are drawn at ImageSize)
+			// and the width of the inactive plate aspect, so a click never resizes a tab (task-521).
 			const float Height = Style.Normal.ImageSize.Y > 1.f ? Style.Normal.ImageSize.Y : 77.f;
-			const FVector2D Size(Height * Texture->GetSizeX() / FMath::Max(Texture->GetSizeY(), 1), Height);
+			const UTexture2D* AspectTexture = SizeTexture ? SizeTexture : Texture;
+			const FVector2D Size(Height * AspectTexture->GetSizeX() / FMath::Max(AspectTexture->GetSizeY(), 1), Height);
+
+			// The active texture has a transparent border: crop it through the UV region so its plate fills the whole tab, and
+			// convert the 3-slice margin (fraction of the full texture) to a fraction of the cropped region.
+			const float TextureWidth = static_cast<float>(FMath::Max(Texture->GetSizeX(), 1));
+			const float TextureHeight = static_cast<float>(FMath::Max(Texture->GetSizeY(), 1));
+			const FMargin Border = bActive ? Options->ActiveTabTransparentBorder : FMargin(0.f);
+			const float CroppedWidth = FMath::Max(TextureWidth - Border.Left - Border.Right, 1.f);
+			const float MarginFraction = bActive ? Options->ActiveTabMargin : Options->InactiveTabMargin;
+			const float Margin = FMath::Clamp((MarginFraction * TextureWidth - Border.Left) / CroppedWidth, 0.f, 0.49f);
+			const FBox2f UVRegion(FVector2f(Border.Left / TextureWidth, Border.Top / TextureHeight),
+				FVector2f(1.f - Border.Right / TextureWidth, 1.f - Border.Bottom / TextureHeight));
+
 			for (FSlateBrush* Brush : {&Style.Normal, &Style.Hovered, &Style.Pressed})
 			{
 				Brush->SetResourceObject(Texture);
 				Brush->DrawAs = ESlateBrushDrawType::Box;
 				Brush->Margin = FMargin(Margin, 0.f);
 				Brush->ImageSize = Size;
+				if (Border.GetTotalSpaceAlong<Orient_Horizontal>() > 0.f || Border.GetTotalSpaceAlong<Orient_Vertical>() > 0.f)
+				{
+					Brush->SetUVRegion(UVRegion);
+				}
+				else
+				{
+					Brush->SetUVRegion(FBox2f(ForceInit));
+				}
 			}
 			Style.Normal.TintColor = FSlateColor(FLinearColor::White);
 			Style.Hovered.TintColor = FSlateColor(FLinearColor(1.15f, 1.15f, 1.15f, 1.f));
