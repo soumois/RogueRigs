@@ -1,9 +1,9 @@
 ---
 id: task-522-audio-distance-sound-rotors
 description: "Global task: One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Son des hélices de l'extracteur et code générique de son à distance
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-522-05-doc
+- next_step: none
 - started: 2026-11-13T14:27:39Z
 - waiting_for: none
-- executor_tokens: input 166, cache write 282178, cache read 9398929, output 61075
-- executor_usage: runs 1, turns 81, context start 16k peak 189k, resumes 1, 62 min, units 1.60 M, USD 4.51
+- executor_tokens: input 184, cache write 300094, cache read 11169064, output 68273
+- executor_usage: runs 1, turns 90, context start 16k peak 207k, resumes 1, 63 min, units 1.83 M, USD 5.10
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. Done (02021de6). New node sys-audio-distance-sounds (classes, fade and loop rules, users, rotor loop row and checks, how to add a distance sound, debug lines, LogRRAudio header); sys-audio points to it (entry points, call sites, loops, distance_fade, assets); sys-objectives-shuttle rotor sound bullet; bp-extraction-shuttle exposed default RotorSoundEvent (Blueprint not edited); systems-core-index child. Lint clean. Budget ALERT at the 04 closing (81 turns, 1.60 M units for 90 turns, 1.5 M): two resumes of the run, the build collision fix asked by the coordinator, a pre-existing Cast warning traced through a stash build, two -game checks.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -39,7 +39,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 5. task-522-05-doc (vault/reference/tasks/task-522-audio-distance-sound-rotors/task-522-05-doc.md) — doc: sys-audio: distance sound classes, rotor loop, how to add a distance sound
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-522-01-distance-sound-classes]] — step 1, cpp.
 - [[task-522-02-sound-prompts]] — step 2, text.
 - [[task-522-03-sound-import]] — step 3, bp.
