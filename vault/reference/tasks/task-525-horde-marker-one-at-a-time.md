@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 61, context start 16k peak 119k, resumes 0, 11 min, units 0.71 M, USD 1.92
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. commit 3131460f: sys-hud-pressure gains the horde list rule (one horde, the first not Done; gone once Done, next listed; none after the last; no WBP change, ShowAlertIcons places hordes by Index) and links wbp-alert-objectives and level-flow. level-flow M1 already holds the owner rule (written at planning, unchanged). Lint clean.
+- result: Done. A1-A4 seen in game (Saved/Captures/task525-marker/bar_sheet.png): one horde '!' at the start (after C, 0.483); front 0 over: it goes and the horde 1 '!' appears; after the last front no '!'; C, B, S whole. A5: build green, RogueRigs.HUD + RogueRigs.Integration.Pressure 18/18 (3 tests updated for the single mark); sys-hud-pressure updated, level-flow already holding the rule. Code commit 2d56f345 (URRRunFlowSubsystem::ComputeAlertBarEvents), no Blueprint change. Not in scope, unchanged: with the console pending the horde 1 '!' slides back toward the paused fill (from B to C).
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
