@@ -3,7 +3,7 @@ id: task-513-02-audio-doc
 description: "Doc: sys-audio updated: wall impact event, distance fade fields"
 parent: task-513-audio-wall-impact-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Impact sur un mur : plus discret et selon la distance au joueur: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:47:36Z
 - waiting_for: none
 - result: open
 

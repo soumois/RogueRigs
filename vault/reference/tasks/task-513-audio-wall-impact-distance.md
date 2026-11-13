@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour les questions.")
 - milestone: M2
-- next_step: task-513-01-wall-impact-fade
+- next_step: task-513-02-audio-doc
 - started: 2026-11-13T08:36:41Z
 - waiting_for: none
+- executor_tokens: input 84, cache write 94466, cache read 2882570, output 26573
+- executor_usage: runs 1, turns 42, context start 16k peak 107k, resumes 0, 11 min, units 0.54 M, USD 1.58
+- planning_tokens: input 8, cache write 10424, cache read 160328, output 4327
+- planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/7 (tasks 512, 513, 514, 515, 516, 517, 518), units 0.05 M, USD 0.17
 - result: open
 
 ## Questions
