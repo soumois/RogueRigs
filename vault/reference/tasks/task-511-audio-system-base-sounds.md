@@ -16,8 +16,8 @@ status: wait-answers
 - confirmed_by_owner: yes (2026-11-12, "ok")
 - milestone: M2
 - next_step: task-511-02-sound-candidates
-- started: 2026-11-12T21:01:39Z
-- waiting_for: owner pick by ear: one candidate per event in Saved/Scratch/audio-candidates/<event>/ (list liste.md), e.g. tir 1, impact 2 ... or <event>: autre série
+- started: 2026-11-13T07:31:34Z
+- waiting_for: owner pick by ear on series 2 (4-6) for impact, mort-ennemi, montee-niveau (or keep 2), survol, clic: Saved/Scratch/audio-candidates/ecoute.html
 - executor_tokens: input 140, cache write 343151, cache read 7864266, output 63700
 - executor_usage: runs 1, turns 69, context start 16k peak 193k, resumes 1, 230 min, units 1.53 M, USD 4.56
 - planning_tokens: input 26, cache write 54769, cache read 468394, output 14795
