@@ -3,7 +3,7 @@ id: task-528-01-takeoff-path
 description: "Cpp: takeoff path never below the floor per Q15"
 parent: task-528-extractor-takeoff-under-floor
 kind: task
-status: todo
+status: in-progress
 ---
 # L'extracteur rentre dans le sol en partant: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:20:28Z
 - waiting_for: none
 - result: open
 

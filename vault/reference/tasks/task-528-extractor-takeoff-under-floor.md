@@ -3,7 +3,7 @@ id: task-528-extractor-takeoff-under-floor
 description: "Global task: Defect: followed after the drop-off, the extractor goes into the floor during its takeoff."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # L'extracteur rentre dans le sol en partant
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
 - next_step: task-528-01-takeoff-path
-- started: open
+- started: 2026-11-13T14:20:28Z
 - waiting_for: none
 - result: open
 
