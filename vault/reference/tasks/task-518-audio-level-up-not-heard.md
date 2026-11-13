@@ -3,7 +3,7 @@ id: task-518-audio-level-up-not-heard
 description: "Global task: The level up sound is heard in its file but not in game: make it audible in game."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Son du level up inaudible en jeu
 
@@ -18,7 +18,7 @@ Q9 : oui" = the plan and the defaults of Q9 accepted.
 Q9 : oui")
 - milestone: M2
 - next_step: task-518-01-level-up-audible
-- started: open
+- started: 2026-11-13T09:20:31Z
 - waiting_for: none
 - result: open
 
