@@ -1,9 +1,9 @@
 ---
 id: task-514-audio-enemy-death-distance
 description: "Global task: Enemy death sound fades with distance from the player, with the fade option built in task-513."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Mort des ennemis selon la distance au joueur
 
@@ -23,10 +23,14 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
-- next_step: task-514-01-death-fade
+- next_step: none
 - started: 2026-11-13T08:48:56Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 50, cache write 40324, cache read 893095, output 7868
+- executor_usage: runs 1, turns 25, context start 17k peak 53k, resumes 0, 5 min, units 0.18 M, USD 0.54
+- planning_tokens: input 8, cache write 10424, cache read 160328, output 4327
+- planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/7 (tasks 512, 513, 514, 515, 516, 517, 518), units 0.05 M, USD 0.17
+- result: Done. Commit 0a7f44e9. A1: DefaultGame.ini EnemyDeath row adds FadeInner=200, FadeOuter=1075, Volume 1.0 unchanged (Q5 defaults). A2: -game run on L_ArenaM1 with Verbose LogRRAudio: rr.Audio.Play EnemyDeath at 100/650/1050/2000 uu -> volume 1.000/0.486/0.029/Skip; a real robot death at 1560 uu logged Skip. A3: config line only, no code change: build green (no test run per build-toolchain Test scope; no audio test family exists). A4: sys-audio distance_fade lists Impact.Wall and EnemyDeath as faded rows. Owner retouch points: EnemyDeath line in Config/DefaultGame.ini, Volume (1.0), FadeInner (200), FadeOuter (1075).
 
 ## Questions
 Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -36,6 +40,6 @@ Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; 
 1. task-514-01-death-fade (vault/reference/tasks/task-514-audio-enemy-death-distance/task-514-01-death-fade.md) — cpp: enemy death line uses the distance fade; sys-audio line updated
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-514-01-death-fade]] — step 1, cpp.
 - [[sys-audio]] — documents the faded EnemyDeath row.
