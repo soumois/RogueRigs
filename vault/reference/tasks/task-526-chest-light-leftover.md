@@ -34,3 +34,4 @@ status: in-progress
 - [[task-526-01-cleanup-fix]] — step 1, cpp.
 - [[task-526-02-capture]] — step 2, capture.
 - [[task-526-03-doc]] — step 3, doc.
+- [[sys-objectives-console-chest]] — documents the opening effects tracking fixed here.
