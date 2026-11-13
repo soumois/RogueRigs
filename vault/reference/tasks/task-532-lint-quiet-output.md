@@ -1,9 +1,9 @@
 ---
 id: task-532-lint-quiet-output
 description: "Global task: lint.js prints by default only errors, warnings of modified files and the summary line; --all prints every warning as today."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # lint.js : sortie courte par défaut
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-532-02-doc
+- next_step: none
 - started: 2026-11-13T18:19:38Z
 - waiting_for: none
-- executor_tokens: input 24, cache write 35572, cache read 407038, output 6465
-- executor_usage: runs 1, turns 12, context start 16k peak 48k, resumes 0, 1 min, units 0.12 M, USD 0.39
+- executor_tokens: input 38, cache write 48918, cache read 780764, output 9475
+- executor_usage: runs 1, turns 19, context start 16k peak 62k, resumes 0, 2 min, units 0.19 M, USD 0.59
 - planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
 - planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
-- result: open
+- result: Done. orchestrator-runbook (Git section) documents lint.js [--write] [--all]: errors always, default warnings only for vault files differing from HEAD, summary with hidden count, --all for every warning, exit code and --write unchanged; orchestrator-script-quirks notes that committed nodes' warnings are hidden and --all shows them. _authoring (kind rule, not in inputs) left unchanged: its lint line stays true. Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,6 +34,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-532-02-doc (vault/reference/tasks/task-532-lint-quiet-output/task-532-02-doc.md) — doc: Update the vault nodes that describe lint.js usage with the default output and --all.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-532-01-lint-default-output]] — step 1, cpp.
 - [[task-532-02-doc]] — step 2, doc.

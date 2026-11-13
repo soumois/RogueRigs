@@ -14,7 +14,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-532-lint-quiet-output]] — vault/scripts/lint.js prints by default only errors, the warnings of the files modified in the working tree and the summary line; a --all flag prints every warning as today. Cuts the 7.3k characters of standing warnings every planner and executor pays per lint run. Status in-progress.
 - [[task-533-task-create-auto-number]] — task-create.js assigns the global task number itself (highest existing + 1) and takes the index anchor itself, so the planner no longer lists vault/reference/tasks (1062 entries, 31k characters) before creating; task-spec loses that rule. Status todo.
 - [[task-534-descent-script]] — A vault script prints in one call the ## Children glosses of an index and of its child indexes, with their paths, so reaching a gdd node takes one round trip instead of 2 to 3; _navigation authorises it as a descent by glosses, like path-of.js. Status todo.
 - [[task-535-task-status-usage-line]] — task-spec gets one line with the exact syntax of task-status.js for the planner, e.g. putting an existing task back to wait-answers with waiting_for, so it no longer spends cycles guessing or reading the script. Status todo.
