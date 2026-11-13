@@ -150,11 +150,18 @@ protected:
 	/** Clears the opening effects (ClearOpeningEffects) whatever ends the chest, then ARRConsole::EndPlay. */
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	/** Fills Out with the effect components (Niagara or Cascade) of this world that are active now. */
-	void CollectActiveWorldEffects(TSet<const UFXSystemComponent*>& Out) const;
+	/** True when Effect is active, or is a Niagara component whose activation still waits for its system (task-526-01). */
+	static bool IsOpeningEffectAlive(const UFXSystemComponent* Effect);
 
-	/** Tracks and tags the effect components of this world active now and not in Before (spawned by EventName). Returns how many. */
-	int32 TrackEffectsSpawnedSince(const TSet<const UFXSystemComponent*>& Before, const TCHAR* EventName);
+	/** Fills Out with every effect component (Niagara or Cascade) of this world, active or not, mapped to whether it is active now. */
+	void CollectWorldEffects(TMap<const UFXSystemComponent*, bool>& Out) const;
+
+	/**
+	 * Tracks and tags the effect components spawned by EventName: those absent from Before (new, active or not: a Niagara system
+	 * still compiling or waiting for its PSOs activates a few frames later, task-526-01), and those inactive in Before and active
+	 * now (a pooled component reused). Returns how many.
+	 */
+	int32 TrackEffectsSpawnedSince(const TMap<const UFXSystemComponent*, bool>& Before, const TCHAR* EventName);
 
 	/** Completes the hack (ARRConsole), then starts the opening sequence (the reward comes at the lid opening). */
 	virtual void CompleteHack() override;

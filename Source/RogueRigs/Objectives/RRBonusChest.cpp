@@ -177,8 +177,8 @@ void ARRBonusChest::UpdateOpening(float DeltaSeconds)
 	{
 		bLidSlamFired = true;
 		UE_LOG(LogRogueRigs, Verbose, TEXT("%s: lid slam at %.2f s."), *GetName(), OpeningElapsed);
-		TSet<const UFXSystemComponent*> EffectsBefore;
-		CollectActiveWorldEffects(EffectsBefore);
+		TMap<const UFXSystemComponent*, bool> EffectsBefore;
+		CollectWorldEffects(EffectsBefore);
 		OnLidSlam(GetActorLocation());
 		TrackEffectsSpawnedSince(EffectsBefore, TEXT("OnLidSlam"));
 	}
@@ -235,8 +235,8 @@ void ARRBonusChest::OpenLid()
 		InnerLight->SetVisibility(true);
 	}
 	ApplyInteriorGlow();
-	TSet<const UFXSystemComponent*> EffectsBefore;
-	CollectActiveWorldEffects(EffectsBefore);
+	TMap<const UFXSystemComponent*, bool> EffectsBefore;
+	CollectWorldEffects(EffectsBefore);
 	OnLidOpened(GetActorLocation());
 	TrackEffectsSpawnedSince(EffectsBefore, TEXT("OnLidOpened"));
 	if (URRSubtitleSubsystem* Subtitles = URRSubtitleSubsystem::Get(this))
@@ -246,7 +246,7 @@ void ARRBonusChest::OpenLid()
 	GrantReward();
 }
 
-void ARRBonusChest::CollectActiveWorldEffects(TSet<const UFXSystemComponent*>& Out) const
+void ARRBonusChest::CollectWorldEffects(TMap<const UFXSystemComponent*, bool>& Out) const
 {
 	const UWorld* World = GetWorld();
 	if (!World)
@@ -256,21 +256,25 @@ void ARRBonusChest::CollectActiveWorldEffects(TSet<const UFXSystemComponent*>& O
 	ForEachObjectOfClass(UFXSystemComponent::StaticClass(), [World, &Out](UObject* Object)
 	{
 		const UFXSystemComponent* Effect = static_cast<const UFXSystemComponent*>(Object);
-		if (IsValid(Effect) && !Effect->IsTemplate() && Effect->GetWorld() == World && Effect->IsActive())
+		if (IsValid(Effect) && !Effect->IsTemplate() && Effect->GetWorld() == World)
 		{
-			Out.Add(Effect);
+			Out.Add(Effect, Effect->IsActive());
 		}
 	});
 }
 
-int32 ARRBonusChest::TrackEffectsSpawnedSince(const TSet<const UFXSystemComponent*>& Before, const TCHAR* EventName)
+int32 ARRBonusChest::TrackEffectsSpawnedSince(const TMap<const UFXSystemComponent*, bool>& Before, const TCHAR* EventName)
 {
-	TSet<const UFXSystemComponent*> After;
-	CollectActiveWorldEffects(After);
+	TMap<const UFXSystemComponent*, bool> After;
+	CollectWorldEffects(After);
 	TArray<FString> Names;
-	for (const UFXSystemComponent* Effect : After)
+	for (const TPair<const UFXSystemComponent*, bool>& Pair : After)
 	{
-		if (Before.Contains(Effect))
+		const UFXSystemComponent* Effect = Pair.Key;
+		const bool* bWasActive = Before.Find(Effect);
+		// task-526-01: a component created by the event counts even when not active yet. The first NS_BonusChestOpen of a
+		// session was still compiling at the spawn (Niagara defers the activation), so it was missed and never cleared.
+		if (bWasActive && (*bWasActive || !Pair.Value))
 		{
 			continue;
 		}
@@ -285,6 +289,21 @@ int32 ARRBonusChest::TrackEffectsSpawnedSince(const TSet<const UFXSystemComponen
 	return Names.Num();
 }
 
+bool ARRBonusChest::IsOpeningEffectAlive(const UFXSystemComponent* Effect)
+{
+	if (!IsValid(Effect))
+	{
+		return false;
+	}
+	if (Effect->IsActive())
+	{
+		return true;
+	}
+	// A Niagara component whose activation waits for its system (compile, PSOs) is not active yet but ticks until it starts.
+	const UNiagaraComponent* Niagara = Cast<UNiagaraComponent>(Effect);
+	return Niagara && Niagara->IsComponentTickEnabled() && !Niagara->IsComplete();
+}
+
 int32 ARRBonusChest::ClearOpeningEffects()
 {
 	int32 Cleared = 0;
@@ -296,12 +315,14 @@ int32 ARRBonusChest::ClearOpeningEffects()
 		{
 			continue;
 		}
-		if (Effect->IsActive())
+		if (IsOpeningEffectAlive(Effect))
 		{
 			++Cleared;
 			Names.Add(GetNameSafe(Effect->GetFXSystemAsset()));
 		}
 		Effect->ComponentTags.Remove(OpeningEffectTag);
+		// Deactivate first: on Niagara it also cancels an activation still waiting for the system (DeactivateImmediate does not).
+		Effect->Deactivate();
 		Effect->DeactivateImmediate();
 		// Pooled Niagara components go back to their pool (auto release on completion, manual release here); the others are destroyed.
 		const UNiagaraComponent* Niagara = Cast<UNiagaraComponent>(Effect);
@@ -340,7 +361,7 @@ int32 ARRBonusChest::CountLiveOpeningEffects(const UWorld* World)
 	ForEachObjectOfClass(UFXSystemComponent::StaticClass(), [World, &Count](UObject* Object)
 	{
 		const UFXSystemComponent* Effect = static_cast<const UFXSystemComponent*>(Object);
-		if (IsValid(Effect) && !Effect->IsTemplate() && Effect->GetWorld() == World && Effect->IsActive() && Effect->ComponentHasTag(OpeningEffectTag))
+		if (IsValid(Effect) && !Effect->IsTemplate() && Effect->GetWorld() == World && Effect->ComponentHasTag(OpeningEffectTag) && IsOpeningEffectAlive(Effect))
 		{
 			++Count;
 		}
