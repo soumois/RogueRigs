@@ -10,6 +10,7 @@ Complements [[execution-protocol]] (the rules) with the commands that worked fro
 
 ## Git
 - The repo path is in the global `safe.directory`: plain `git` works. The pre-commit hook is installed (`core.hooksPath = vault/scripts/hooks`) and runs the vault lint; never skip it.
+- `node vault/scripts/lint.js [--write] [--all]` (task-532): every error is printed, always; by default only the warnings of vault files that differ from HEAD (modified, staged or untracked), plus the summary line, which counts all warnings and says how many are hidden (`N warning(s) (K hidden, --all shows them)`). `--all` prints every warning, the pre-commit hook warning included. Exit code (1 on any problem) and `--write` are unchanged.
 - Commit only the files you edited, by name (`git commit -m "..." -- <file> <file>`): the agent also edits vault docs, and `-- vault` sweeps its unfinished work into your commit.
 
 ## Editor

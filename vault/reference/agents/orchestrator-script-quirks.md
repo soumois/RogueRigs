@@ -19,6 +19,7 @@ Commands themselves: [[orchestrator-runbook]]. Observed 2026-10-11 to 2026-10-14
 
 ## Git
 - The pre-commit hook (`core.hooksPath = vault/scripts/hooks`) runs the vault lint and blocks on another session's broken nodes: wait or ask, never skip it.
+- `lint.js` hides by default the warnings of files equal to HEAD, so a warning of a node you already committed no longer shows: run `lint.js --all` to see every warning ([[orchestrator-runbook]]).
 - Commit by explicit path (`git commit -m "..." -- <paths>`), never `git add vault`: agents and other sessions stage files. A new file is `git add`ed by name first; adding an ignored path (`Reference/`) fails the whole command.
 
 ## Editor
