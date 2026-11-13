@@ -3,7 +3,7 @@ id: task-527-audio-zone-objective-complete
 description: "Global task: One distance-faded sound when a zone objective (bonus chest, console hack) is validated."
 parent: tasks-to-do-index
 kind: task
-status: in-progress
+status: wait-answers
 ---
 # Son à la validation d'un coffre ou d'une console
 
@@ -17,7 +17,7 @@ status: in-progress
 - milestone: M2
 - next_step: task-527-01-sound-prompts
 - started: 2026-11-13T14:43:12Z
-- waiting_for: none
+- waiting_for: owner sound file for task-527-01 (prompts P1..P3)
 - result: open
 
 ## Questions
