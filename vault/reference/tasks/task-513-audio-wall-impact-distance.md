@@ -1,9 +1,9 @@
 ---
 id: task-513-audio-wall-impact-distance
 description: "Global task: Separate wall impact sound, quieter and fading with distance from the player; values in the event table."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Impact sur un mur : plus discret et selon la distance au joueur
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour les questions.")
 - milestone: M2
-- next_step: task-513-02-audio-doc
+- next_step: none
 - started: 2026-11-13T08:36:41Z
 - waiting_for: none
-- executor_tokens: input 84, cache write 94466, cache read 2882570, output 26573
-- executor_usage: runs 1, turns 42, context start 16k peak 107k, resumes 0, 11 min, units 0.54 M, USD 1.58
+- executor_tokens: input 106, cache write 105849, cache read 4105501, output 31868
+- executor_usage: runs 1, turns 53, context start 16k peak 118k, resumes 0, 12 min, units 0.70 M, USD 1.99
 - planning_tokens: input 8, cache write 10424, cache read 160328, output 4327
 - planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/7 (tasks 512, 513, 514, 515, 516, 517, 518), units 0.05 M, USD 0.17
-- result: open
+- result: Done. Commit of sys-audio (Impact.Wall call site, distance_fade field with the measured values, rr.Audio.Play offset and rr.Audio.ScreenEdge, gotchas); lint clean. Owner retouch points in DefaultGame.ini line Impact.Wall: Volume (level near the player, 0.5), FadeInner (200), FadeOuter (1075 = side screen edge; top corners reach 2090). Executor run over the light budget (see subtask 01 result).
 
 ## Questions
 Decided 2026-11-13 (owner "ok pour les questions."): every default below is accepted; values provisional, owner 2026-11-13.
@@ -35,6 +35,6 @@ Decided 2026-11-13 (owner "ok pour les questions."): every default below is acce
 2. task-513-02-audio-doc (vault/reference/tasks/task-513-audio-wall-impact-distance/task-513-02-audio-doc.md) — doc: sys-audio updated: wall impact event, distance fade fields
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-513-01-wall-impact-fade]] — step 1, cpp.
 - [[task-513-02-audio-doc]] — step 2, doc.

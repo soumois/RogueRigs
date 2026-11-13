@@ -14,7 +14,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-513-audio-wall-impact-distance]] — Split the wall impact from the enemy impact and make it quieter, fading with the distance from the player; values in the event table. Status in-progress.
 - [[task-514-audio-enemy-death-distance]] — Enemy death sound fades with distance from the player, with the fade option built in task-513. Status todo.
 - [[task-515-audio-ore-pickup]] — Ore pickup plays the XP pickup sound for now, through its own event line so it can be swapped later. Status todo.
 - [[task-516-audio-explosion-edge-distance]] — Placed explosion sound event, level fading with the distance from the explosion edge; import of the owner file. Status todo.

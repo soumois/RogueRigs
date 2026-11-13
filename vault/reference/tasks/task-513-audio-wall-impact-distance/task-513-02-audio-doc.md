@@ -3,7 +3,7 @@ id: task-513-02-audio-doc
 description: "Doc: sys-audio updated: wall impact event, distance fade fields"
 parent: task-513-audio-wall-impact-distance
 kind: task
-status: in-progress
+status: done
 ---
 # Impact sur un mur : plus discret et selon la distance au joueur: doc
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: A4 of the global holds; lint clean; commit.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-513
+- usage: included in the executor run of task-513
+- runs: 1
 - milestone: M2
 - started: 2026-11-13T08:47:36Z
 - waiting_for: none
-- result: open
+- result: Commit of sys-audio (Impact.Wall call site, distance_fade field with the measured values, rr.Audio.Play offset and rr.Audio.ScreenEdge, gotchas); lint clean. Owner retouch points in DefaultGame.ini line Impact.Wall: Volume (level near the player, 0.5), FadeInner (200), FadeOuter (1075 = side screen edge; top corners reach 2090). Executor run over the light budget (see subtask 01 result).
 
 ## Relations
 - [[task-513-audio-wall-impact-distance]] — parent global task.

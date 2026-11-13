@@ -521,3 +521,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-510-options-screen]] — options screen opened from the main and pause menus, sound, quality and gameplay settings saved, look from an owner-validated Kie.ai mockup (old workflow, imported by task-509). Status done.
 - [[task-511-audio-system-base-sounds]] — Data-driven C++ audio system (event -> sound table) wired to the existing sound classes, with CC0 sounds picked by the owner for 8 events. Status done.
 - [[task-512-audio-shot-quieter]] — Lower the volume of the player shot sound, every weapon, as a table value the owner retouches by ear. Status done.
+- [[task-513-audio-wall-impact-distance]] — Split the wall impact from the enemy impact and make it quieter, fading with the distance from the player; values in the event table. Status done.
