@@ -3,7 +3,7 @@ id: task-526-03-doc
 description: "Doc: sys-objectives-console-chest: effect lifetime, if the fix changes how it is built"
 parent: task-526-chest-light-leftover
 kind: task
-status: todo
+status: in-progress
 ---
 # Lumière du coffre restée du niveau précédent: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T14:19:19Z
 - waiting_for: none
 - result: open
 
