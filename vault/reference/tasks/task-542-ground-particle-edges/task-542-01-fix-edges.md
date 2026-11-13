@@ -3,7 +3,7 @@ id: task-542-01-fix-edges
 description: "Bp: Find the ground particle effect of image 2 and remove its visible sprite edges"
 parent: task-542-ground-particle-edges
 kind: task
-status: todo
+status: in-progress
 ---
 # Ground particles: no visible sprite edges: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:15:05Z
 - waiting_for: none
 - result: open
 
