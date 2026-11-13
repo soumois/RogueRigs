@@ -37,6 +37,7 @@ kind: doc
 - [[task-443-extractor-ground-blast]] — the task that made the ground blast.
 - [[task-447-swirls-alpha-fix]] — the task that made the swirls alpha reach the simulation.
 - [[task-462-extractor-blast-cartoon]] — the task that made the ground blast cartoon.
+- [[bp-extractor-ground-wind]] — the textured ground wind now seen on the floor; in task-542 the asset registry showed NS_ExtractorRotorWash referencing only M_ExtractorRotorSwirl, not M_ExtractorBlastWind (since c39d5f87, task-466).
 - [[extractor-blast-references]] — the references the ground blast follows.
 - [[unreal-mcp-quirks]] — the Niagara compile trap met here.
 - [[sys-objectives-shuttle]] — the height signal and the solo tick.

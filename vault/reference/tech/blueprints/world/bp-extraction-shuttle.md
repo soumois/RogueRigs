@@ -26,6 +26,7 @@ kind: doc
 - [[unreal-mcp-quirks]] — the import scale trap met by task-369-01.
 - [[task-369-extractor-level-exit]] — the task that changed it.
 - [[bp-extractor-rotor-wash]] — the rotor-wash Niagara system its four components play.
+- [[bp-extractor-ground-wind]] — NS_ExtractorGroundWind, the ground wind sprites it also plays (task-466 partial state).
 - [[task-374-extractor-rotor-wash]] — the task that added the wash.
 - [[task-375-extractor-scale-x4]] — the task that scaled the Mesh x4 and moved the chevron threshold.
 - [[task-377-extractor-board-box]] — the task that added the BoardZone box and removed the board radius.

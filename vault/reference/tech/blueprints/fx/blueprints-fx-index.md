@@ -36,6 +36,7 @@ Pickups, explosion and heal visuals, damage numbers: effects and collectibles.
 - [[bp-console-hack-complete]] — NS_ConsoleHackComplete, the one-shot green ring and white-gold sparks at the console hack complete.
 - [[bp-bonus-chest-open]] — NS_BonusChestOpen, the one-shot yellow turning rays and floating sparks at the bonus chest lid opening.
 - [[bp-extractor-rotor-wash]] — NS_ExtractorRotorWash, the rotor-wash swirls and cartoon ground blast under the four extractor rotors, driven by User.Intensity and User.HeightAboveFloor.
+- [[bp-extractor-ground-wind]] — NS_ExtractorGroundWind and M_ExtractorGroundWind, the textured beige ground wind puffs, streaks and dots under the extractor.
 - [[extractor-blast-references]] — the five cartoon ground wind references of the extractor ground blast and the one it follows.
 - [[bp-muzzle-flash]] — NS_MuzzleFlash (green, rifle and turrets), NS_MuzzleFlashShotgun (white-gold) and their materials, the stylised flash per shot.
 - [[bp-level-up-burst]] — NS_LevelUpText and NS_LevelUpWave, the gold level-up text and floor wave.
