@@ -138,10 +138,8 @@ public:
 	/** Hidden pockets of the last Carve: placed, wholly removed, partly removed (some cells back to rock). */
 	void CountPockets(int32& OutPlaced, int32& OutRemoved, int32& OutPartly) const;
 
-	/** Guard cells released during the last Carve because the pocket cells they guarded went back to rock. */
-	int32 GetGuardReleased() const { return GuardReleased; }
-
-	/** Guard cells not within Pockets.Guard of a hidden cell (stale), and cells within it but not guarded (missing). */
+	/** Guard cells not within Pockets.Guard of a hidden cell (stale: the guard of pocket cells back to rock is kept),
+	 *  and cells within it but not guarded (missing). Measure only. */
 	void CountGuardMismatch(int32& OutStale, int32& OutMissing) const;
 
 protected:
@@ -194,12 +192,8 @@ protected:
 	/** Marks pocket cells hidden and their guard square. */
 	void MarkHidden(const TArray<int32>& Cells);
 
-	/** Guard square (Pockets.Guard, Chebyshev) of every cell still hidden, into Out. */
+	/** Guard square (Pockets.Guard, Chebyshev) of every cell still hidden, into Out (measure only). */
 	void BuildGuard(TArray<uint8>& Out) const;
-
-	/** Rebuilds HiddenGuard from the cells still hidden, after pocket cells went back to rock: the guard of a removed pocket
-	 *  (or of the removed part of one) no longer blocks carving; the guard of every cell still hidden stays. */
-	void ReleaseStaleGuard();
 
 	/** Walkable cells 4-connected to the spawn; OutCount receives their number. */
 	TArray<uint8> Reach(int32* OutCount = nullptr) const;
@@ -348,7 +342,7 @@ protected:
 	/** 1 where no void lies within the walk void margin. */
 	TArray<uint8> Safe;
 
-	/** 1 on hidden pocket cells, and within the pocket guard of one still hidden (released when its cells go back to rock). */
+	/** 1 on hidden pocket cells, and within the pocket guard of one (the guard stays when pocket cells go back to rock). */
 	TArray<uint8> Hidden;
 	TArray<uint8> HiddenGuard;
 
@@ -375,7 +369,6 @@ protected:
 	/** Rock cells the last WanderWalk dropped because of a pocket guard (instrumentation only). */
 	int32 LastWalkGuardDropped = 0;
 
-	/** Cells of each pocket placed, and guard cells released (instrumentation only, never read by the generation). */
+	/** Cells of each pocket placed (instrumentation only, never read by the generation). */
 	TArray<TArray<int32>> PocketCells;
-	int32 GuardReleased = 0;
 };
