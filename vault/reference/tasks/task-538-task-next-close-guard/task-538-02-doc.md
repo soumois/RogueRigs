@@ -3,7 +3,7 @@ id: task-538-02-doc
 description: "Doc: crew nodes describe the new closing behaviour of task-next.js"
 parent: task-538-task-next-close-guard
 kind: task
-status: todo
+status: in-progress
 ---
 # task-next.js refuse avant d'écrire: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T19:11:40Z
 - waiting_for: none
 - result: open
 

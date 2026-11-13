@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-538-01-guard
+- next_step: task-538-02-doc
 - started: 2026-11-13T19:08:23Z
 - waiting_for: none
+- executor_tokens: input 46, cache write 72020, cache read 1188569, output 18879
+- executor_usage: runs 1, turns 23, context start 16k peak 72k, resumes 0, 3 min, units 0.30 M, USD 0.98
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: open
 
 ## Questions
