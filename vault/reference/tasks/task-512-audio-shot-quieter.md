@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 12, context start 16k peak 41k, resumes 0, 2 min, units 0.11 M, USD 0.36
 - planning_tokens: input 6, cache write 9122, cache read 112404, output 3540
 - planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/7 (tasks 512, 513, 514, 515, 516, 517, 518), units 0.04 M, USD 0.14
-- result: Done. Config/DefaultGame.ini [/Script/RogueRigs.RRAudioSettings]: the one player shot row Shot (every weapon falls back to it as Shot.<weapon>; no Shot.<weapon> row exists) Volume 1.0 -> 0.5, nothing else changed (commit 020a2331). Build RogueRigsEditor exit 0. -game run on L_ArenaM1 (-RenderOffScreen): rr.Audio.Play Shot and Shot.BurstRifle plays logged on row Shot, 0 LogRRAudio warnings or errors. No RogueRigs audio automation test exists, so none to run. sys-audio quotes no volume, unchanged; audio-direction already holds 0.5. Owner retouch: the Volume= of the Shot line in Config/DefaultGame.ini, by ear.
+- result: Player shot quieter: Shot row Volume 0.5 (was 1.0) in Config/DefaultGame.ini [/Script/RogueRigs.RRAudioSettings], every player weapon through the Shot fallback. A1 one Shot row, only its Volume changed; A2 -game run rr.Audio.Play Shot, 0 LogRRAudio warnings; A3 build exit 0, no audio automation tests exist; A4 value and place reported to the owner. Commit 020a2331.
 
 ## Questions
 Decided 2026-11-13 (owner "ok pour les questions."): every default below is accepted; values provisional, owner 2026-11-13.
