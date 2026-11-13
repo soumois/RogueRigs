@@ -3,7 +3,7 @@ id: task-540-02-capture
 description: "Capture: Before/after capture of the main menu at 1920 x 1080"
 parent: task-540-main-menu-no-focus-outline
 kind: task
-status: todo
+status: in-progress
 ---
 # Main menu: no orange focus outline around New Run: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:06:24Z
 - waiting_for: none
 - result: open
 
