@@ -1,9 +1,9 @@
 ---
 id: task-538-task-next-close-guard
 description: "Global task: task-next.js runs every refusal check before its first write; a rerun after a late failure finishes the close without a second cost row."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # task-next.js refuse avant d'écrire
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-538-02-doc
+- next_step: none
 - started: 2026-11-13T19:08:23Z
 - waiting_for: none
-- executor_tokens: input 46, cache write 72020, cache read 1188569, output 18879
-- executor_usage: runs 1, turns 23, context start 16k peak 72k, resumes 0, 3 min, units 0.30 M, USD 0.98
+- executor_tokens: input 56, cache write 81439, cache read 1567635, output 21842
+- executor_usage: runs 1, turns 28, context start 16k peak 81k, resumes 0, 4 min, units 0.37 M, USD 1.16
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Commit 7a21ee73: orchestrator-script-quirks rewrites the two closing trap entries (missing next arguments, run it once) into the new behaviour: refusals before any write with Nothing changed, the dead-link refusal, and rerun after a late failure; orchestrator-runbook (task-next.js command) and execution-protocol step 5.5 state that a refused call changes nothing and that a rerun finishes a late failure. Lint clean. Global acceptance A1 to A6 checked in 01 on a throwaway task in a deleted clone, A7 here.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -35,6 +35,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-538-02-doc (vault/reference/tasks/task-538-task-next-close-guard/task-538-02-doc.md) — doc: crew nodes describe the new closing behaviour of task-next.js
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-538-01-guard]] — step 1, cpp.
 - [[task-538-02-doc]] — step 2, doc.
