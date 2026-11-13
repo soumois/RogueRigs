@@ -531,6 +531,7 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-520-audio-effects-slider-preview]] — Moving the Effects volume slider plays a sample effect sound so the player hears what it sets. Status done.
 - [[task-521-options-tab-button-shrinks]] — Defect: the clicked or selected Options tab button is drawn smaller than the other tabs. Status done.
 - [[task-522-audio-distance-sound-rotors]] — One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child. Status done.
+- [[task-523-audio-impact-near-quieter]] — Robot impact sound a little quieter near the player, unchanged near the screen edge. Status done.
 - [[task-524-first-horde-after-console]] — The first horde front starts a little after the console lands instead of with it. Status done.
 - [[task-525-horde-marker-one-at-a-time]] — The alert bar shows only the next horde "!", removed when that horde ends, then the next one appears. Status done.
 - [[task-526-chest-light-leftover]] — Defect: the bonus chest light effect stays in the next level where no chest is. Status done.

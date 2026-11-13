@@ -14,5 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-523-audio-impact-near-quieter]] — Robot impact sound a little quieter near the player, unchanged near the screen edge. Status in-progress.
 - [[task-527-audio-zone-objective-complete]] — One distance-faded sound when a zone objective (bonus chest, console hack) is validated. Status todo.
