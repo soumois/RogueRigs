@@ -14,4 +14,3 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-536-layout-filler-cheaper]] — FRRLayoutGenerator::RunFiller costs less per iteration (reused buffers, squared distances, no recompute when a walk carved nothing) with byte-identical cells for the same params and seed; slow seed timed before and after. Status in-progress.

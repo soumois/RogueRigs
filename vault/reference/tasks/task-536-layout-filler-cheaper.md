@@ -1,9 +1,9 @@
 ---
 id: task-536-layout-filler-cheaper
 description: "Global task: layout generator far-cell filler made cheaper per iteration with byte-identical output per seed; slow seed timed before and after."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Layout generator: cheaper far-cell filler, identical output
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-536-02-doc
+- next_step: none
 - started: 2026-11-13T18:19:35Z
 - waiting_for: none
-- executor_tokens: input 62, cache write 115836, cache read 2602780, output 19143
-- executor_usage: runs 1, turns 31, context start 16k peak 116k, resumes 0, 10 min, units 0.50 M, USD 1.48
+- executor_tokens: input 84, cache write 126991, cache read 3929784, output 23080
+- executor_usage: runs 1, turns 42, context start 16k peak 127k, resumes 0, 11 min, units 0.67 M, USD 1.88
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Commit b8b51ff0. A7: sys-layout-generator gotchas give the measured slow-seed times before and after (seed 17 4.9 s to 0.80 s, arena_l3 422704496 4.3 s to 0.41 s, filler share 99 % to about 90 %, idle walks), one line on what RunFiller reuses or skips with identical output, and the -carveonly filler line; reference determinism line unchanged; lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,6 +34,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-536-02-doc (vault/reference/tasks/task-536-layout-filler-cheaper/task-536-02-doc.md) — doc: Update sys-layout-generator with the measured filler cost and what the filler now reuses or skips.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-536-01-filler-optimise]] — step 1, cpp.
 - [[task-536-02-doc]] — step 2, doc.
