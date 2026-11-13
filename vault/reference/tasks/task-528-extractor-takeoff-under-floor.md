@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 43, context start 16k peak 100k, resumes 1, 6 min, units 0.46 M, USD 1.32
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. d0895e13: sys-objectives-shuttle (forward flight along the horizontal heading, ClimbRatio 0.1, height signal, test) and bp-extraction-shuttle (takeoff_path, verified, relations) updated; Blueprint unchanged. build-toolchain project path corrected to C:\Workspace\RogueRigs\RogueRigs.uproject (old path missing). Lint clean.
+- result: Done. A1/A2: ARRShuttle takeoff forward flight along the horizontal heading of the nose, climbing ClimbRatio 0.1 (4e144e6b), same code for arrival and extraction; A1 seen in the arrival capture (Z 31 to 686 uu never decreasing, hull above the floor), A2 by the shared code path and the Takeoff test, not captured. A3 rise, 20 deg tilt, rotors, wash, blast unchanged (Extraction 7/7). A4 build green, doc d0895e13 (build-toolchain path corrected). Within budget (43 turns, 0.46 M).
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
