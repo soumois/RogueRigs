@@ -1,9 +1,9 @@
 ---
 id: task-524-first-horde-after-console
 description: "Global task: The first horde front starts a little after the console lands instead of with it."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Première horde un peu après l'arrivée de la console
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-524-03-doc
+- next_step: none
 - started: 2026-11-13T13:41:04Z
 - waiting_for: none
-- executor_tokens: input 170, cache write 200148, cache read 12200992, output 46069
-- executor_usage: runs 1, turns 85, context start 16k peak 213k, resumes 0, 17 min, units 1.70 M, USD 4.36
+- executor_tokens: input 176, cache write 203190, cache read 12841840, output 47400
+- executor_usage: runs 1, turns 88, context start 16k peak 216k, resumes 0, 18 min, units 1.78 M, USD 4.53
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. Done (0819ae59). Updated sys-spawner-director (console_timed_horde entry: ConsoleLandedDelaySeconds, SetConsoleExpected / NotifyConsoleLanded / GetHordeFrontTime, GetHordeConsoleDelay, landing and banner log lines, test DirectorConsoleTimedHorde, gotcha for test worlds), sys-spawner-director-defaults (first front 20 s after the console landing) and sys-hud-pressure (console-timed '!' fixed at 0.4 + 20/240). enemies-spawn-rules was already edited at confirmation. Lint clean (warnings only, none on these nodes). ALERT: executor run over the standard budget, cause in task-524-01.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 3. task-524-03-doc (vault/reference/tasks/task-524-first-horde-after-console/task-524-03-doc.md) — doc: wave director doc: first horde timing
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-524-01-horde-timing]] — step 1, cpp.
 - [[task-524-02-capture]] — step 2, capture.
 - [[task-524-03-doc]] — step 3, doc.

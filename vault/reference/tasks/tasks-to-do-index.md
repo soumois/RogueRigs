@@ -16,7 +16,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 - [[task-522-audio-distance-sound-rotors]] — One looped rotor sound for the extractor fading with distance, built on a generic distance sound class with the explosion as a child. Status wait-answers.
 - [[task-523-audio-impact-near-quieter]] — Robot impact sound a little quieter near the player, unchanged near the screen edge. Status todo.
-- [[task-524-first-horde-after-console]] — The first horde front starts a little after the console lands instead of with it. Status in-progress.
 - [[task-525-horde-marker-one-at-a-time]] — The alert bar shows only the next horde "!", removed when that horde ends, then the next one appears. Status todo.
 - [[task-526-chest-light-leftover]] — Defect: the bonus chest light effect stays in the next level where no chest is. Status todo.
 - [[task-527-audio-zone-objective-complete]] — One distance-faded sound when a zone objective (bonus chest, console hack) is validated. Status todo.
