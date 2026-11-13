@@ -29,6 +29,7 @@ module.exports = { edits: [{ file, old, new }], globals: [{
 - Questions left: set `wait-answers`. The script also writes `Saved/Planner/<first-global-id>.defaults.json`, not committed.
 - Pure "ok" or "tout par défaut": the main session runs `node vault/scripts/task-confirm.js <file> "<owner words verbatim>"`, without resuming the Planner. It marks the questions decided, appends the words to `request`, sets `confirmed_by_owner` and `todo`, applies the edits, lints and commits. Any other answer, or a refusal, resumes the Planner. On a level word (leger, standard, exploratoire) the Planner edits `verification_level` on the global, resizes `acceptance` and the capture checklist to it, lints and commits; the script keeps the level at confirmation.
 - Do not repeat those transitions with `task-status.js`.
+- `task-status.js` syntax, e.g. back to `wait-answers`: `node vault/scripts/task-status.js <global-id>.md status=wait-answers "waiting_for=<question>"`. The path is relative to `vault/reference/tasks/` (a subtask: `<global-id>/<subtask-id>.md`; a `vault/...` path fails); one quoted `key=value` argument per field, an existing bullet field only; `waiting_for` without `status=wait-answers` is refused.
 
 ## Relations
 - [[agents-index]] — parent index.
