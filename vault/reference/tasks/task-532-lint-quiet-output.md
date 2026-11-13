@@ -3,7 +3,7 @@ id: task-532-lint-quiet-output
 description: "Global task: lint.js prints by default only errors, warnings of modified files and the summary line; --all prints every warning as today."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # lint.js : sortie courte par défaut
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-532-01-lint-default-output
-- started: open
+- started: 2026-11-13T18:19:38Z
 - waiting_for: none
 - result: open
 
