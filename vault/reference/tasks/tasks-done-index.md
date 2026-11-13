@@ -529,3 +529,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-518-audio-level-up-not-heard]] — The level up sound is heard in its file but not in game: make it audible in game. Status done.
 - [[task-519-audio-music-three-tracks]] — Three looped music tracks for main menu, loading and in game, through the Music slider; in game quieter. Status done.
 - [[task-520-audio-effects-slider-preview]] — Moving the Effects volume slider plays a sample effect sound so the player hears what it sets. Status done.
+- [[task-521-options-tab-button-shrinks]] — Defect: the clicked or selected Options tab button is drawn smaller than the other tabs. Status done.

@@ -1,9 +1,9 @@
 ---
 id: task-521-options-tab-button-shrinks
 description: "Global task: Defect: the clicked or selected Options tab button is drawn smaller than the other tabs."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Options : l'onglet cliqué devient plus petit
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-521-03-doc
+- next_step: none
 - started: 2026-11-13T13:26:17Z
 - waiting_for: none
-- executor_tokens: input 100, cache write 84743, cache read 3042738, output 20601
-- executor_usage: runs 1, turns 50, context start 16k peak 97k, resumes 0, 7 min, units 0.51 M, USD 1.44
+- executor_tokens: input 110, cache write 93894, cache read 3546088, output 22744
+- executor_usage: runs 1, turns 55, context start 16k peak 107k, resumes 0, 8 min, units 0.59 M, USD 1.63
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. sys-options updated (commit 23950212): data line gives ActiveTabTransparentBorder 26 px and the margin basis; new gotcha on the tab size fix (commit 3548c421, same size for every tab, UV crop of the active plate); relation to task-521. sys-button-hover unchanged: the tabs are not attached to the hover subsystem. Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -35,7 +35,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 3. task-521-03-doc (vault/reference/tasks/task-521-options-tab-button-shrinks/task-521-03-doc.md) — doc: widget doc node: the tab size fix
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-521-01-tab-size-fix]] — step 1, bp.
 - [[task-521-02-capture]] — step 2, capture.
 - [[task-521-03-doc]] — step 3, doc.
