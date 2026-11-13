@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-526-01-cleanup-fix
-- started: 2026-11-13T14:10:41Z
+- next_step: task-526-02-capture
+- started: 2026-11-13T14:19:09Z
 - waiting_for: none
+- executor_tokens: input 82, cache write 105765, cache read 3208709, output 22894
+- executor_usage: runs 1, turns 41, context start 16k peak 118k, resumes 0, 8 min, units 0.57 M, USD 1.63
+- planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
+- planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
 
 ## Subtasks
