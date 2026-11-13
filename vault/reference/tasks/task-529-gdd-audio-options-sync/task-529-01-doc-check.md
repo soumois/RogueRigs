@@ -3,7 +3,7 @@ id: task-529-01-doc-check
 description: "Doc: audio-direction and options-screen checked against the sys nodes after the confirmation edits"
 parent: task-529-gdd-audio-options-sync
 kind: task
-status: todo
+status: in-progress
 ---
 # GDD audio-direction et options-screen alignés sur ce qui est construit: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T17:35:15Z
 - waiting_for: none
 - result: open
 

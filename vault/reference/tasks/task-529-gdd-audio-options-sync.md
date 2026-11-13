@@ -3,7 +3,7 @@ id: task-529-gdd-audio-options-sync
 description: "Global task: Bring the audio-direction and options-screen gdd nodes in line with tasks 520 to 527 as built; documentation only."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # GDD audio-direction et options-screen alignés sur ce qui est construit
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-529-01-doc-check
-- started: open
+- started: 2026-11-13T17:35:14Z
 - waiting_for: none
 - result: open
 
