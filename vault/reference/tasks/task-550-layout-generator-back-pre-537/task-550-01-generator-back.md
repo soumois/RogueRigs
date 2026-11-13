@@ -3,7 +3,7 @@ id: task-550-01-generator-back
 description: "Cpp: Bring the C++ generator back to its pre-537 maps (task-536 kept), check the old hashes and the 24 starts, report timings"
 parent: task-550-layout-generator-back-pre-537
 kind: task
-status: todo
+status: in-progress
 ---
 # Générateur de layout : retour aux cartes d'avant task-537 (garde des poches): cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:48:25Z
 - waiting_for: none
 - result: open
 

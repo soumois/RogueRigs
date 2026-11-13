@@ -21,4 +21,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 - [[task-547-level-cleared-entrance]] — The death screen entrance becomes one shared effect; the level cleared screen (and its level 4 variant) uses it; the death screen looks the same. Status todo.
 - [[task-548-shop-frame-layout]] — The shop card panel gets a frame image made for its ratio (no stretched button frame) and the layout of owner image 8. Status todo.
 - [[task-549-ui-shared-patterns]] — Audit of the UI widgets and UI build scripts after this batch; repeated patterns factored into shared pieces with no visible change, documented. Status todo.
-- [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status todo.
+- [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status in-progress.

@@ -3,7 +3,7 @@ id: task-550-layout-generator-back-pre-537
 description: "Global task: C++ layout generator back to its pre-537 maps (stale pocket guard kept), task-536 speed-up kept, old hashes back, docs updated."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Générateur de layout : retour aux cartes d'avant task-537 (garde des poches)
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-14, Q1 answered, "ok pour le reste")
 - milestone: M2
 - next_step: task-550-01-generator-back
-- started: open
+- started: 2026-11-13T23:48:25Z
 - waiting_for: none
 - result: open
 
