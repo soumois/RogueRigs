@@ -1,9 +1,9 @@
 ---
 id: task-541-hud-turret-count-removed
 description: "Global task: The turret count text above the health bar goes; the launcher charges stay shown in its weapon slot."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # HUD: remove the "Turrets: 2 / 2" text above the health bar
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-541-03-doc
+- next_step: none
 - started: 2026-11-13T23:08:22Z
 - waiting_for: none
-- executor_tokens: input 92, cache write 84289, cache read 2838287, output 17305
-- executor_usage: runs 1, turns 46, context start 16k peak 97k, resumes 0, 6 min, units 0.48 M, USD 1.34
+- executor_tokens: input 100, cache write 89633, cache read 3234858, output 19364
+- executor_usage: runs 1, turns 50, context start 16k peak 102k, resumes 0, 6 min, units 0.53 M, USD 1.48
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. wbp-weapons updated (commit d79aa4c0): description, purpose, components, variables, ShowSlot and ProgressSlot no longer list the turret line; task-452-03 and task-461 entries marked removed; new task-541-01 entry. Lint clean. Run over the light budget (ALERT since subtask 1, about 48 turns, under 0.6 M units): cause in task-541-01/02 results.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 3. task-541-03-doc (vault/reference/tasks/task-541-hud-turret-count-removed/task-541-03-doc.md) — doc: Update the HUD doc node for the removed text
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-541-01-remove-text]] — step 1, bp.
 - [[task-541-02-capture]] — step 2, capture.
 - [[task-541-03-doc]] — step 3, doc.
