@@ -3,7 +3,7 @@ id: task-534-descent-script
 description: "Global task: a script prints in one call the Children glosses of an index and its sub-indexes with paths; _navigation authorises it as descent."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Script de descente : gloses d'un index et de ses sous-index en un appel
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
 - next_step: task-534-01-descend-script
-- started: open
+- started: 2026-11-13T18:25:34Z
 - waiting_for: none
 - result: open
 
