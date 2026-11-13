@@ -1,9 +1,9 @@
 ---
 id: task-525-horde-marker-one-at-a-time
 description: "Global task: The alert bar shows only the next horde "!", removed when that horde ends, then the next one appears."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Un seul point d'exclamation de horde à la fois
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-525-03-doc
+- next_step: none
 - started: 2026-11-13T14:03:33Z
 - waiting_for: none
-- executor_tokens: input 110, cache write 99486, cache read 3861022, output 21642
-- executor_usage: runs 1, turns 55, context start 16k peak 112k, resumes 0, 10 min, units 0.62 M, USD 1.70
+- executor_tokens: input 122, cache write 106748, cache read 4555238, output 23953
+- executor_usage: runs 1, turns 61, context start 16k peak 119k, resumes 0, 11 min, units 0.71 M, USD 1.92
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: open
+- result: Done. commit 3131460f: sys-hud-pressure gains the horde list rule (one horde, the first not Done; gone once Done, next listed; none after the last; no WBP change, ShowAlertIcons places hordes by Index) and links wbp-alert-objectives and level-flow. level-flow M1 already holds the owner rule (written at planning, unchanged). Lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; 
 3. task-525-03-doc (vault/reference/tasks/task-525-horde-marker-one-at-a-time/task-525-03-doc.md) — doc: alert bar doc: single horde marker
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-525-01-single-marker]] — step 1, cpp.
 - [[task-525-02-capture]] — step 2, capture.
 - [[task-525-03-doc]] — step 3, doc.
