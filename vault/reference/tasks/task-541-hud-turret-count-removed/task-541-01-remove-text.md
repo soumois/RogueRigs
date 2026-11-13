@@ -3,7 +3,7 @@ id: task-541-01-remove-text
 description: "Bp: Remove the turret count text (and its marker per Q4) from the HUD"
 parent: task-541-hud-turret-count-removed
 kind: task
-status: todo
+status: in-progress
 ---
 # HUD: remove the "Turrets: 2 / 2" text above the health bar: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:08:22Z
 - waiting_for: none
 - result: open
 
