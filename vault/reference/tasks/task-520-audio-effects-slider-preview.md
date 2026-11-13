@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 46, context start 16k peak 121k, resumes 0, 8 min, units 0.64 M, USD 1.84
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. Commit 8b6ec60d. sys-options: Effects preview flow (UpdateEffectsPreview, step taken on open, throttle, deferred last step, Master and Music silent), defaults EffectsPreviewEvent / EffectsPreviewInterval, rr.Options.Slide, measured check (stale 'no sound asset' gotcha replaced). sys-audio: EffectsPreview call site and row. Back-links on the global. gdd lines of audio-direction and options-screen named in gdd_check not edited: outside the doc subtask inputs. Lint clean.
+- result: Done. Code 9ba8f051: the Effects slider plays row EffectsPreview (SW_Shot, centred, plays paused) per new 5 % step, at most one per 0.15 s, last step of a drag played after it. A1 passed in -game runs (paused arena, main menu) with rr.Options.Slide: 100 to 50 % in 1 s = 7 plays 0.15 s apart through SC_Effects, 50 to 52 % none. A2 passed: Master and Music slides play nothing. A3: build green; no audio automation test exists, none run; documented in sys-options and sys-audio (8b6ec60d). Not heard by ear (logs only). gdd lines of audio-direction and options-screen named in gdd_check not edited (no subtask planned for them). No ALERT.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
