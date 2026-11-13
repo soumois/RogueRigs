@@ -7,6 +7,7 @@
 #if !UE_BUILD_SHIPPING
 
 #include "Audio/RRAudioSubsystem.h"
+#include "Audio/RRMusicSubsystem.h"
 #include "AudioDevice.h"
 #include "AudioThread.h"
 #include "Components/CapsuleComponent.h"
@@ -285,6 +286,26 @@ namespace RRAudioDebug
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.Click %s: left button at screen (%.0f, %.0f)."), Half.IsEmpty() ? TEXT("click") : *Half,
 				App.GetCursorPos().X, App.GetCursorPos().Y);
+		}));
+
+	/** rr.Audio.Music [seek <s>]: logs the music state; seek restarts the current track at <s> seconds without fade (task-519, loop checks). */
+	FAutoConsoleCommand MusicCommand(
+		TEXT("rr.Audio.Music"),
+		TEXT("rr.Audio.Music [seek <s>]: logs the music track, level, position and loops; seek <s> restarts the current track at <s> seconds (no fade), e.g. near its end to hear the loop."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			const UWorld* World = GEngine && GEngine->GameViewport ? GEngine->GameViewport->GetWorld() : nullptr;
+			URRMusicSubsystem* Music = URRMusicSubsystem::Get(World);
+			if (Music == nullptr)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.Music: needs a game."));
+				return;
+			}
+			if (Args.Num() >= 2 && Args[0].Equals(TEXT("seek"), ESearchCase::IgnoreCase))
+			{
+				Music->SeekCurrent(FCString::Atof(*Args[1]));
+			}
+			Music->LogState();
 		}));
 }
 

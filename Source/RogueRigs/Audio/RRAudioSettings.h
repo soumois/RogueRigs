@@ -77,6 +77,25 @@ struct FRRSoundEventRow
 	float LoopFadeOut = 0.f;
 };
 
+/** One music track (task-519): the looping sound a screen plays and its level. */
+USTRUCT()
+struct FRRMusicTrackRow
+{
+	GENERATED_BODY()
+
+	/** Track name the music subsystem asks for: MainMenu, Loading, InGame. */
+	UPROPERTY(Config)
+	FName Track;
+
+	/** Sound played (a looping wave: import_sounds.py --loop). Empty: the screen has no music, without error. */
+	UPROPERTY(Config)
+	TSoftObjectPtr<USoundBase> Sound;
+
+	/** Volume multiplier (1), under the Music and Master sliders. */
+	UPROPERTY(Config)
+	float Volume = 1.f;
+};
+
 /**
  * Data of the audio system, read with GetDefault<URRAudioSettings>(). C++ defaults, overridable without code in
  * Config/DefaultGame.ini, section [/Script/RogueRigs.RRAudioSettings] (plain config object, same choice as URROptionsSettings).
@@ -94,4 +113,19 @@ public:
 
 	/** Row of Event, or of its parent name (Shot.Shotgun -> Shot); null when none. */
 	const FRRSoundEventRow* FindRow(FName Event) const;
+
+	/** Music tracks per screen (task-519, URRMusicSubsystem), through the Music sound class of URROptionsSettings. */
+	UPROPERTY(Config)
+	TArray<FRRMusicTrackRow> Music;
+
+	/** Fade in of the new track when the music changes, in seconds (0 = full level at once). */
+	UPROPERTY(Config)
+	float MusicFadeIn = 1.f;
+
+	/** Fade out of the old track when the music changes, in seconds (0 = stops at once). */
+	UPROPERTY(Config)
+	float MusicFadeOut = 1.f;
+
+	/** Track row named Track, or null. */
+	const FRRMusicTrackRow* FindMusic(FName Track) const;
 };

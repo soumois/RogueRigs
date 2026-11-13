@@ -25,3 +25,8 @@ const FRRSoundEventRow* URRAudioSettings::FindRow(FName Event) const
 	}
 	return nullptr;
 }
+
+const FRRMusicTrackRow* URRAudioSettings::FindMusic(FName Track) const
+{
+	return Music.FindByPredicate([Track](const FRRMusicTrackRow& Candidate) { return Candidate.Track == Track; });
+}
