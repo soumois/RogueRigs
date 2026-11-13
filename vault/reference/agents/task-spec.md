@@ -6,11 +6,11 @@ kind: note
 ---
 # Writing a plan
 
-Write the whole plan once: one spec module for the planning pass, one `node vault/scripts/task-create.js <spec.js> [<index-anchor-task-id>]`, then `node vault/scripts/lint.js --write`, `git add` the printed `files:` and commit by path. Do not read the script. Put the spec in `Saved/Planner/`.
+Write the whole plan once: one spec module for the planning pass, one `node vault/scripts/task-create.js <spec.js>`, then `node vault/scripts/lint.js --write`, `git add` the printed `files:` and commit by path. Do not read the script. Put the spec in `Saved/Planner/`.
 
 ```js
-module.exports = { anchor: 'task-NNN-slug', edits: [{ file, old, new }], globals: [{
-  num, slug, title, description, level, family, request, goal, acceptance, gdd_check,
+module.exports = { edits: [{ file, old, new }], globals: [{
+  slug, title, description, level, family, request, goal, acceptance, gdd_check,
   status: 'wait-answers', waiting_for: '...', questions: ['Q1 ... Default: ...'], // omit the three when nothing is asked
   subtasks: [{ slug, agent, line, inputs: ['node-id', 'path/file.ext'], done_when }],
 }] };
@@ -21,7 +21,8 @@ module.exports = { anchor: 'task-NNN-slug', edits: [{ file, old, new }], globals
 - `request`: the owner's words verbatim. `acceptance`: one string, never a list (A1 ...; A2 ...). `gdd_check`: nodes read, conflicts, `open` values and decisions, no copied prose. `edits`: the gdd edits the defaults imply, exact text.
 - Subtask optional fields, only when they say something the Executor cannot decide: `goal` (default `line`), `expected_output`, `editor_state`, `token_ceiling`, `depends_on` (default the previous subtask), `milestone`.
 - `inputs`: a bare id becomes `id (path)`; an unknown id is refused; literal paths are kept. Point at sources, never copy them.
-- The script refuses, before writing anything, an existing node, an unknown id or a missing field. Numbers: list `vault/reference/tasks` right before creating.
+- Numbers and index place: do not list `vault/reference/tasks`. Without `num`, the globals get the next free numbers in their order; without `anchor`, their index lines go in task-number order. Use the ids of the printed `created <global-id>` lines. Optional overrides: `num` on a global (refused if the number is taken), `anchor` in the spec or as a second argument (the task id whose index line they follow).
+- The script refuses, before writing anything, an existing node, a taken num, an unknown id or a missing field.
 - Id paths: `node vault/scripts/path-of.js <id> [<id>...]`, exact ids only; an unknown id exits 1.
 
 ## Status

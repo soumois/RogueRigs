@@ -13,9 +13,9 @@ Commands themselves: [[orchestrator-runbook]]. Observed 2026-10-11 to 2026-10-14
 - Run it ONCE: a second run overwrites the `result` field.
 - It hard-codes its Co-Authored-By line: if it differs from the session's, amend ONLY your own just-made commit (check `git log -1`).
 - `record-cost.js` matches usage by the subtask id at the start of the agent's description; a subtask with no such agent counts as included in the executor run of its global, and it refuses only if that global has no executor run either. The executor is tied to its global by the first task number of its prompt, and its description must not start with a subtask id. A resumed agent keeps its first description: close that subtask with `task-status.js status=done "result=..." runs=1` and note the cost is counted elsewhere.
-- `task-create.js` refuses to overwrite an existing node and writes nothing: pick a free number or remove the stale draft first. It does not lint or commit.
+- `task-create.js` refuses to overwrite an existing node and writes nothing: omit `num` to get the next free number, or remove the stale draft first. It does not lint or commit.
 - `task-confirm.js` hard-codes its Co-Authored-By line (Opus 5.5), like `task-next.js`.
-- Two sessions create task numbers in parallel: `ls vault/reference/tasks` right before creating.
+- Two sessions create tasks in parallel: omit `num`; `task-create.js` reads `vault/reference/tasks` when it runs, so a number the other session took meanwhile is skipped (task-533).
 
 ## Git
 - The pre-commit hook (`core.hooksPath = vault/scripts/hooks`) runs the vault lint and blocks on another session's broken nodes: wait or ask, never skip it.
