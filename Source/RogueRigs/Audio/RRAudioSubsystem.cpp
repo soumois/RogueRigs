@@ -77,12 +77,17 @@ void URRAudioSubsystem::PlayEvent(const UObject* WorldContextObject, FName Event
 	}
 }
 
-void URRAudioSubsystem::PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant)
+void URRAudioSubsystem::PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant, float EdgeRadius)
 {
 	if (URRAudioSubsystem* Subsystem = Get(WorldContextObject))
 	{
-		Subsystem->Play(WorldContextObject, RRAudio::Refine(Event, Variant), &Location);
+		Subsystem->Play(WorldContextObject, RRAudio::Refine(Event, Variant), &Location, EdgeRadius);
 	}
+}
+
+float URRAudioSubsystem::GetFadeDistance(const FVector& PlayerLocation, const FVector& Location, float EdgeRadius)
+{
+	return FMath::Max(FVector::Dist2D(PlayerLocation, Location) - FMath::Max(EdgeRadius, 0.f), 0.f);
 }
 
 void URRAudioSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -156,7 +161,7 @@ int32 URRAudioSubsystem::GetActiveCount(FName Event)
 	return Active->Num();
 }
 
-UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FName Event, const FVector* Location)
+UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius)
 {
 	const FRRSoundEventRow* Row = GetDefault<URRAudioSettings>()->FindRow(Event);
 	USoundBase* Sound = Row ? ResolveSound(*Row) : nullptr;
@@ -181,19 +186,19 @@ UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FNam
 	}
 
 	// Distance fade from the player (rows with FadeOuter > 0, plays with a location): checked before the cap, so a silent play
-	// never stops an audible one. No player pawn: no fade.
+	// never stops an audible one. No player pawn: no fade. EdgeRadius > 0: measured from the edge of that circle (explosions).
 	float Fade = 1.f;
 	float PlayerDistance = -1.f;
 	if (Row->FadeOuter > 0.f && Location != nullptr)
 	{
 		if (const APawn* Player = UGameplayStatics::GetPlayerPawn(World, 0))
 		{
-			PlayerDistance = FVector::Dist2D(Player->GetActorLocation(), *Location);
+			PlayerDistance = GetFadeDistance(Player->GetActorLocation(), *Location, EdgeRadius);
 			Fade = GetDistanceFade(*Row, PlayerDistance);
 			if (Fade <= 0.f)
 			{
-				UE_LOG(LogRRAudio, Verbose, TEXT("Skip %s (row %s): %.0f uu from the player, silent from %.0f uu."), *Event.ToString(),
-					*Row->Event.ToString(), PlayerDistance, Row->FadeOuter);
+				UE_LOG(LogRRAudio, Verbose, TEXT("Skip %s (row %s): %.0f uu from the player (edge radius %.0f), silent from %.0f uu."), *Event.ToString(),
+					*Row->Event.ToString(), PlayerDistance, EdgeRadius, Row->FadeOuter);
 				return nullptr;
 			}
 		}
@@ -240,7 +245,7 @@ UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FNam
 	Active.Add(Component);
 	++RowStats.Played;
 	RowStats.PeakActive = FMath::Max(RowStats.PeakActive, Active.Num());
-	const FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player, fade %.2f"), PlayerDistance, Fade) : FString();
+	const FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player (edge radius %.0f), fade %.2f"), PlayerDistance, EdgeRadius, Fade) : FString();
 	UE_LOG(LogRRAudio, Verbose, TEXT("Play %s (row %s): %s, class %s, active %d/%d, pitch %.3f, volume %.3f%s, %s%s."), *Event.ToString(),
 		*Row->Event.ToString(), *Sound->GetPathName(), *GetNameSafe(EffectsClass), Active.Num(), Row->MaxConcurrent, Pitch, Volume, *FadeText,
 		bPlaced ? TEXT("placed") : TEXT("centred"), Row->bUI ? TEXT(", plays paused") : TEXT(""));

@@ -26,16 +26,16 @@ namespace RRAudioDebug
 		return GameInstance ? GameInstance->GetSubsystem<URRAudioSubsystem>() : nullptr;
 	}
 
-	/** rr.Audio.Play <Event> [DX DY]: plays the event centred, or placed at the player pawn + (DX, DY) uu. */
+	/** rr.Audio.Play <Event> [DX DY [EdgeRadius]]: plays the event centred, or placed at the player pawn + (DX, DY) uu, fade measured from EdgeRadius. */
 	FAutoConsoleCommand PlayCommand(
 		TEXT("rr.Audio.Play"),
-		TEXT("rr.Audio.Play <Event> [DX DY]: plays the sound of a table event (Shot, Impact, Impact.Wall, EnemyDeath, PlayerHit, XPPickup, OrePickup, LevelUp, UIHover, UIClick), centred, or at the player + (DX, DY) uu (placed rows, distance fade)."),
+		TEXT("rr.Audio.Play <Event> [DX DY [EdgeRadius]]: plays the sound of a table event (Shot, Impact, Impact.Wall, EnemyDeath, Explosion, PlayerHit, XPPickup, OrePickup, LevelUp, UIHover, UIClick), centred, or at the player + (DX, DY) uu (placed rows, distance fade; EdgeRadius: fade from the edge of that circle, as an explosion)."),
 		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 		{
 			URRAudioSubsystem* Subsystem = FindSubsystem();
 			if (Args.Num() < 1 || Subsystem == nullptr)
 			{
-				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.Play: usage rr.Audio.Play <Event> [DX DY] (needs a game)."));
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.Play: usage rr.Audio.Play <Event> [DX DY [EdgeRadius]] (needs a game)."));
 				return;
 			}
 			UWorld* World = GEngine->GameViewport->GetWorld();
@@ -48,7 +48,7 @@ namespace RRAudioDebug
 					return;
 				}
 				const FVector Location = Player->GetActorLocation() + FVector(FCString::Atof(*Args[1]), FCString::Atof(*Args[2]), 0.f);
-				Subsystem->Play(World, FName(*Args[0]), &Location);
+				Subsystem->Play(World, FName(*Args[0]), &Location, Args.Num() >= 4 ? FCString::Atof(*Args[3]) : 0.f);
 				return;
 			}
 			Subsystem->Play(World, FName(*Args[0]), nullptr);

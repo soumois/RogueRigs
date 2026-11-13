@@ -158,6 +158,8 @@ public:
 	static const FName WallDebrisPositionsParameter;
 	static const FName WallDebrisColorsParameter;
 	static const FName WallDebrisCountParameter;
+	/** Sound event of every resolved explosion, faded from its edge (task-516, sys-audio). */
+	static const FName ExplosionSoundEvent;
 
 	/** Uses Grid as the terrain (instead of the first ARRArenaGrid of the world). */
 	UFUNCTION(BlueprintCallable, Category = "Explosions")

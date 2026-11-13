@@ -43,14 +43,23 @@ public:
 	/** Plays Event centred (or at nothing for a world row: centred too). Variant refines the event: Event.Variant row first. */
 	static void PlayEvent(const UObject* WorldContextObject, FName Event, FName Variant = NAME_None);
 
-	/** Plays Event at Location (used by world rows; other rows play centred). */
-	static void PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant = NAME_None);
+	/**
+	 * Plays Event at Location (used by world rows; other rows play centred). EdgeRadius > 0 (an explosion radius, task-516): the
+	 * distance fade is measured from the edge of that circle, distance to Location minus EdgeRadius, 0 inside.
+	 */
+	static void PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant = NAME_None, float EdgeRadius = 0.f);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
-	/** Plays from this subsystem; Location null = centred. Returns the component played, or null (no row, no sound, no audio). */
-	UAudioComponent* Play(const UObject* WorldContextObject, FName Event, const FVector* Location);
+	/**
+	 * Plays from this subsystem; Location null = centred. EdgeRadius: see PlayEventAt. Returns the component played, or null (no row,
+	 * no sound, no audio, beyond the fade).
+	 */
+	UAudioComponent* Play(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius = 0.f);
+
+	/** Fade distance of a play: horizontal distance player to Location minus EdgeRadius, never below 0 (task-516). */
+	static float GetFadeDistance(const FVector& PlayerLocation, const FVector& Location, float EdgeRadius);
 
 	/**
 	 * Volume factor of Row at Distance uu from the player (task-513): 1 up to FadeInner, linear to 0 at FadeOuter, 0 beyond;

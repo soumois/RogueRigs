@@ -4,6 +4,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Audio/RRAudioSubsystem.h"
 #include "Camera/CameraShakeBase.h"
 #include "Camera/RRCameraShakeLibrary.h"
 #include "Camera/RRExplosionCameraShake.h"
@@ -38,6 +39,7 @@ const FName URRExplosionSubsystem::WallDebrisCenterParameter(TEXT("User.Explosio
 const FName URRExplosionSubsystem::WallDebrisPositionsParameter(TEXT("User.DebrisPositions"));
 const FName URRExplosionSubsystem::WallDebrisColorsParameter(TEXT("User.DebrisColors"));
 const FName URRExplosionSubsystem::WallDebrisCountParameter(TEXT("User.DebrisCount"));
+const FName URRExplosionSubsystem::ExplosionSoundEvent(TEXT("Explosion"));
 
 URRExplosionSubsystem::URRExplosionSubsystem()
 {
@@ -184,6 +186,8 @@ void URRExplosionSubsystem::Explode(const FPendingExplosion& Explosion)
 		PlayWallDebris(Explosion, *CurrentGrid, BrokenBlocks);
 	}
 	PlayShake(Explosion);
+	// Every explosion (barrel, kamikaze, chain links): one placed sound faded from the explosion edge (task-516, sys-audio).
+	URRAudioSubsystem::PlayEventAt(this, ExplosionSoundEvent, Explosion.Center, NAME_None, Explosion.Stats.Radius);
 	UE_LOG(LogRogueRigs, Verbose, TEXT("Explosion '%s' at %s (radius %.0f, damage %.0f, miner damage %.0f)"), *Explosion.RowName.ToString(), *Explosion.Center.ToString(), Explosion.Stats.Radius, Explosion.Stats.Damage, Explosion.Stats.MinerDamage);
 	OnExplosion.Broadcast(Explosion.Center, Explosion.RowName);
 }
