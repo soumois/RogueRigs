@@ -39,6 +39,13 @@ public:
 	/** True while the loop play is active. */
 	bool IsLoopPlaying() const;
 
+	/**
+	 * Loop rows: true = the play goes on while the game is paused (played as a UI sound, never stopped by the pause); the holder
+	 * releases it itself. Changing it while the loop plays restarts the play (task-522: the extractor takeoff behind the end screen).
+	 */
+	void SetPlaysWhilePaused(bool bInPlaysWhilePaused) { bPlaysWhilePaused = bInPlaysWhilePaused; }
+	bool PlaysWhilePaused() const { return bPlaysWhilePaused; }
+
 	/** Distance factor of the loop at its last update (0 to 1), -1 before the first one or without a player. */
 	float GetLoopFade() const { return LoopFade; }
 
@@ -67,6 +74,7 @@ private:
 	void ReleaseLoop(const UObject* WorldContextObject, const TCHAR* Reason);
 
 	TWeakObjectPtr<UAudioComponent> LoopComponent;
+	bool bPlaysWhilePaused = false;
 	float LoopFade = -1.f;
 	/** Tenth of the factor last logged (Verbose line each time the loop level crosses a 0.1 step). */
 	int32 LoggedStep = -1;

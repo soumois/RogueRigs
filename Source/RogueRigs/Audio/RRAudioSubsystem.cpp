@@ -2,6 +2,7 @@
 
 #include "Audio/RRAudioSubsystem.h"
 
+#include "Audio/RRAudioLog.h"
 #include "Audio/RRAudioSettings.h"
 #include "Audio/RRDistanceSound.h"
 #include "AudioDevice.h"
@@ -23,7 +24,7 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(RRAudioSubsystem)
 
-DEFINE_LOG_CATEGORY_STATIC(LogRRAudio, Log, All);
+DEFINE_LOG_CATEGORY(LogRRAudio);
 
 namespace RRAudio
 {
@@ -168,16 +169,16 @@ void URRAudioSubsystem::TickLoops()
 	// Distance loops (task-522): their holder restarts them on its next update; here only pauses and removed worlds.
 	for (int32 Index = DistanceLoops.Num() - 1; Index >= 0; --Index)
 	{
-		UAudioComponent* Component = DistanceLoops[Index].Value.Get();
+		UAudioComponent* Component = DistanceLoops[Index].Component.Get();
 		const UWorld* World = Component ? Component->GetWorld() : nullptr;
 		if (Component == nullptr || World == nullptr || World->bIsTearingDown || !Component->IsPlaying())
 		{
 			DistanceLoops.RemoveAtSwap(Index);
 		}
-		else if (World->IsPaused())
+		else if (World->IsPaused() && !DistanceLoops[Index].bPlaysWhilePaused)
 		{
 			Component->Stop();
-			UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s: game paused, stopped at once."), *DistanceLoops[Index].Key.ToString());
+			UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s: game paused, stopped at once."), *DistanceLoops[Index].Event.ToString());
 			DistanceLoops.RemoveAtSwap(Index);
 		}
 	}
@@ -280,7 +281,7 @@ UAudioComponent* URRAudioSubsystem::StartDistanceLoop(const UObject* WorldContex
 	UAudioComponent* Component = PlayInternal(WorldContextObject, Sound.GetEvent(), &Location, &Sound, /*bLoopStart*/ true);
 	if (Component != nullptr)
 	{
-		DistanceLoops.Emplace(Sound.GetEvent(), Component);
+		DistanceLoops.Add({ Sound.GetEvent(), Component, Sound.PlaysWhilePaused() });
 	}
 	return Component;
 }
@@ -291,7 +292,7 @@ void URRAudioSubsystem::ReleaseDistanceLoop(FName Event, UAudioComponent* Compon
 	{
 		return;
 	}
-	DistanceLoops.RemoveAll([Component](const TPair<FName, TWeakObjectPtr<UAudioComponent>>& Loop) { return Loop.Value.Get() == Component; });
+	DistanceLoops.RemoveAll([Component](const FDistanceLoop& Loop) { return Loop.Component.Get() == Component; });
 	const FRRSoundEventRow* Row = GetDefault<URRAudioSettings>()->FindRow(Event);
 	const float FadeOut = Row ? FMath::Max(Row->LoopFadeOut, 0.f) : 0.f;
 	if (FadeOut > 0.f)
@@ -373,7 +374,8 @@ UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObje
 		return nullptr;
 	}
 	Component->SoundClassOverride = EffectsClass;
-	Component->bIsUISound = Row->bUI;
+	// A distance loop that plays while paused (extractor takeoff behind the end screen) is a pause-proof play like a UI row.
+	Component->bIsUISound = Row->bUI || (bLoopStart && Distance != nullptr && Distance->PlaysWhilePaused());
 	const bool bPlaced = Row->bSpatial && Location != nullptr;
 	if (bPlaced)
 	{

@@ -101,8 +101,14 @@ private:
 	/** Plays Event; bLoopStart: a SetLoop start (loop rows are refused otherwise), faded in over the row's LoopFadeIn. */
 	UAudioComponent* PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, const FRRDistanceSound* Distance, bool bLoopStart);
 
-	/** Distance loop plays started by StartDistanceLoop, watched for pauses and removed worlds (TickLoops). */
-	TArray<TPair<FName, TWeakObjectPtr<UAudioComponent>>> DistanceLoops;
+	/** A distance loop play started by StartDistanceLoop, watched for pauses (unless it plays while paused) and removed worlds (TickLoops). */
+	struct FDistanceLoop
+	{
+		FName Event;
+		TWeakObjectPtr<UAudioComponent> Component;
+		bool bPlaysWhilePaused = false;
+	};
+	TArray<FDistanceLoop> DistanceLoops;
 
 	/**
 	 * Stops loops of a paused or removed world at once, and logs the end of faded-out loops and of watched one-shot plays (core

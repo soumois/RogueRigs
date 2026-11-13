@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Audio/RRDistanceSound.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "RRShuttle.generated.h"
@@ -184,6 +185,12 @@ protected:
 	/** Sets the starting rotor speed (GroundRevPerSecond), fires the first OnRotorSpeedChanged and the first OnHeightAboveFloorChanged. */
 	virtual void BeginPlay() override;
 
+	/** Releases the rotor sound (fade out over its row's LoopFadeOut). */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/** Rotor sound step, after TickRotors: one loop at the actor location while the rotors spin, level by the player distance (task-522). */
+	void TickRotorSound();
+
 	/** Rotor step, every tick (also while paused once taking off): ramps the speed toward the ground or flight target, then turns each rotor about its local Z. */
 	void TickRotors(float DeltaSeconds);
 
@@ -335,6 +342,17 @@ protected:
 	/** Rotors: rear-right turns clockwise seen from above when true. Q6: clockwise. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors")
 	bool bRotorRRClockwise = true;
+
+	/**
+	 * Rotor sound (task-522, audio-direction): event of the sound table played as one distance loop for the four rotors, at the actor
+	 * location, while the rotors spin in the level (arrival until out of view; extraction from landing to the end of the takeoff, behind
+	 * the end screen). Level and distances in its table row (ExtractorRotors). None = silent.
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shuttle|Rotors")
+	FName RotorSoundEvent = TEXT("ExtractorRotors");
+
+	/** The rotor loop (FRRDistanceSound), built at BeginPlay from RotorSoundEvent. */
+	FRRDistanceSound RotorSound{ NAME_None };
 
 	/** Current rotor speed (rev/s). */
 	float RotorRevPerSecond = 0.f;

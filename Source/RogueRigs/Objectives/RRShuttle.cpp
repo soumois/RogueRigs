@@ -147,6 +147,25 @@ void ARRShuttle::BeginPlay()
 	RotorRevPerSecond = bTakingOff ? FlightRevPerSecond : GroundRevPerSecond;
 	OnRotorSpeedChanged(GetRotorSpeedAlpha());
 	OnHeightAboveFloorChanged(HeightAboveFloor);
+	RotorSound = FRRDistanceSound(RotorSoundEvent);
+}
+
+void ARRShuttle::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	RotorSound.StopLoop(this);
+	Super::EndPlay(EndPlayReason);
+}
+
+void ARRShuttle::TickRotorSound()
+{
+	if (RotorSoundEvent.IsNone())
+	{
+		return;
+	}
+	// Once taking off the rotors turn while the game is paused (end screen): so does their sound. Landed, a pause stops it (the
+	// actor does not tick) and the next tick starts it again, faded in.
+	RotorSound.SetPlaysWhilePaused(bTakingOff);
+	RotorSound.UpdateLoop(this, RotorRevPerSecond > 0.f, GetActorLocation());
 }
 
 float ARRShuttle::GetRotorSpeedAlpha() const
@@ -193,6 +212,7 @@ void ARRShuttle::Tick(float DeltaSeconds)
 
 	// Always first: the rotors turn on the ground, during the takeoff and, once taking off, while the game is paused.
 	TickRotors(DeltaSeconds);
+	TickRotorSound();
 
 	if (bTakingOff)
 	{

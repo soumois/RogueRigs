@@ -2,6 +2,7 @@
 
 #include "Audio/RRDistanceSound.h"
 
+#include "Audio/RRAudioLog.h"
 #include "Audio/RRAudioSettings.h"
 #include "Audio/RRAudioSubsystem.h"
 #include "Components/AudioComponent.h"
@@ -9,8 +10,6 @@
 #include "Engine/World.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
-
-DEFINE_LOG_CATEGORY_STATIC(LogRRAudio, Log, All);
 
 FRRDistanceSound::FRRDistanceSound(FName InEvent, FName InVariant)
 	: Event(InVariant.IsNone() ? InEvent : FName(*FString::Printf(TEXT("%s.%s"), *InEvent.ToString(), *InVariant.ToString())))
@@ -97,6 +96,13 @@ void FRRDistanceSound::UpdateLoop(const UObject* WorldContextObject, bool bOn, c
 	}
 
 	UAudioComponent* Component = LoopComponent.Get();
+	if (Component != nullptr && Component->IsPlaying() && Component->bIsUISound != (Row->bUI || bPlaysWhilePaused))
+	{
+		// Pause rule changed (takeoff): a play's pause behaviour is set at its start, so it starts again.
+		Component->Stop();
+		UE_LOG(LogRRAudio, Verbose, TEXT("Loop %s: plays while paused %s, restarted."), *Event.ToString(), bPlaysWhilePaused ? TEXT("on") : TEXT("off"));
+		Component = nullptr;
+	}
 	if (Component == nullptr || !Component->IsPlaying())
 	{
 		// First call, back in range, after a pause, or a sound that does not loop and ended: one start.
