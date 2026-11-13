@@ -3,11 +3,11 @@ id: task-514-audio-enemy-death-distance
 description: "Global task: Enemy death sound fades with distance from the player, with the fade option built in task-513."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Mort des ennemis selon la distance au joueur
 
-- request: « ok pour les questions.
+- request: « ok pour les questions. Owner answer 2026-11-13 (relayed by the main session, verbatim): "ok pour Q5 et Q6" = the plan and the defaults of Q5 accepted.
 
 il faut aussi ce même systéme pour la mort des ennemis.
 
@@ -21,15 +21,15 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - gdd_check: Read audio-direction, sys-audio. Needs the per-line fade of task-513 (done first). Conflict: none (death is a placed world sound). Open: values (Q5). No code read.
 - verification_level: light
 - family: comportement
-- confirmed_by_owner: no (plan and questions handed back 2026-11-13)
+- confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
 - next_step: task-514-01-death-fade
 - started: open
-- waiting_for: owner answer to Q5 and confirmation
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-13, each with a default; open until the owner answers.
+Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; values provisional, owner 2026-11-13.
 - Q5 Mort des ennemis : mêmes distances que le mur (plein jusqu'à 200 uu, silence au bord de l'écran), niveau au plus proche inchangé (1.0, il n'a demandé que la distance). Default: oui.
 
 ## Subtasks

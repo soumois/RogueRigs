@@ -3,11 +3,11 @@ id: task-516-audio-explosion-edge-distance
 description: "Global task: Placed explosion sound event, level fading with the distance from the explosion edge; import of the owner file."
 parent: tasks-to-do-index
 kind: task
-status: wait-answers
+status: todo
 ---
 # Son des explosions selon la distance au bord de l'explosion
 
-- request: « ok pour les questions.
+- request: « ok pour les questions. Owner answer 2026-11-13 (relayed by the main session, verbatim): "ok pour Q5 et Q6" = the plan and the defaults of Q6 accepted.
 
 il faut aussi ce même systéme pour la mort des ennemis.
 
@@ -21,15 +21,15 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - gdd_check: Read audio-direction, sys-audio. task-511 Q1 left explosions out (slice 2): the owner adds them now. Needs the fade of task-513. Open: which explosions and the fade values (Q6). The sound file comes from the owner. No code read.
 - verification_level: light
 - family: comportement
-- confirmed_by_owner: no (plan and questions handed back 2026-11-13)
+- confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
 - next_step: task-516-01-explosion-event
 - started: open
-- waiting_for: owner answer to Q6, confirmation, and later his explosion file
+- waiting_for: none
 - result: open
 
 ## Questions
-Asked 2026-11-13, each with a default; open until the owner answers.
+Decided 2026-11-13 (owner "ok pour Q5 et Q6"): every default below is accepted; values provisional, owner 2026-11-13.
 - Q6 Explosions : toutes celles du jeu (kamikaze, baril, autres) sur un seul événement ; niveau plein tant que le joueur est dans le rayon ou au bord, puis baisse linéaire jusqu'au silence à la distance du bord de l'écran au-delà du bord ; tant que ton fichier n'est pas là, la ligne est muette. Default: oui.
 
 ## Subtasks
