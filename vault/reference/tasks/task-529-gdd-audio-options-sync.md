@@ -1,9 +1,9 @@
 ---
 id: task-529-gdd-audio-options-sync
 description: "Global task: Bring the audio-direction and options-screen gdd nodes in line with tasks 520 to 527 as built; documentation only."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # GDD audio-direction et options-screen alignés sur ce qui est construit
 
@@ -15,10 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-529-01-doc-check
+- next_step: none
 - started: 2026-11-13T17:35:14Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 14, cache write 45132, cache read 189544, output 2671
+- executor_usage: runs 1, turns 7, context start 16k peak 45k, resumes 0, 1 min, units 0.09 M, USD 0.32
+- planning_tokens: input 24, cache write 67361, cache read 487884, output 11763
+- planning_usage: a3f5d305 "Plan GDD audio-direction/options-screen edits" 1/1 (tasks 529), units 0.19 M, USD 0.67
+- result: Done. A1-A4 hold. Values equal to sys nodes: task-520 (SW_Shot row EffectsPreview, centred, VolumeStep 0.05, interval 0.15 s, bUI, Master/Music silent = sys-options, sys-audio), task-522 (FRRDistanceSound base, FRRExplosionSound from radius edge, ExtractorRotors loop FadeInner 800 FadeOuter 2150 = sys-audio-distance-sounds), task-523 (Impact NearVolume 0.6 to 150 uu, 1.0 at 900 uu, Impact.Wall unchanged = sys-audio near_reduction), task-527 (ObjectiveComplete one-shot at zone centre, console and chest, 200/1075 uu = sys-audio, sys-audio-distance-sounds). A2: description no longer per alert level, Sources and Placeholders updated. A3: options-screen no 'no sound' line, Effects preview refers to audio-direction, tab size rule present. No mismatch with a sys node. Residual stale text reported, not fixed (gdd): audio-direction line Music still opens 'tracks per alert level' before the task-519 qualifier; line Sound effects still says 'found and scored by the sound agent' while kept sounds are owner ElevenLabs files; Relations level-flow 'the alert bar that drives music' while one in-game track. No game run, no capture; lint clean (no warning on these nodes).
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -29,5 +33,5 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 1. task-529-01-doc-check (vault/reference/tasks/task-529-gdd-audio-options-sync/task-529-01-doc-check.md) — doc: audio-direction and options-screen checked against the sys nodes after the confirmation edits
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-529-01-doc-check]] — step 1, doc.

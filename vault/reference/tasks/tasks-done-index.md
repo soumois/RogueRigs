@@ -537,3 +537,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-526-chest-light-leftover]] — Defect: the bonus chest light effect stays in the next level where no chest is. Status done.
 - [[task-527-audio-zone-objective-complete]] — One distance-faded sound when a zone objective (bonus chest, console hack) is validated. Status done.
 - [[task-528-extractor-takeoff-under-floor]] — Defect: followed after the drop-off, the extractor goes into the floor during its takeoff. Status done.
+- [[task-529-gdd-audio-options-sync]] — Bring the audio-direction and options-screen gdd nodes in line with tasks 520 to 527 as built; documentation only. Status done.
