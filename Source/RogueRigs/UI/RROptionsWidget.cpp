@@ -3,6 +3,7 @@
 
 #include "UI/RROptionsWidget.h"
 
+#include "Audio/RRAudioSubsystem.h"
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
 #include "Components/HorizontalBoxSlot.h"
@@ -21,6 +22,17 @@
 #include "UI/RRButtonHover.h"
 
 TWeakObjectPtr<URROptionsWidget> URROptionsWidget::OpenScreen;
+
+namespace RROptionsPreview
+{
+	/** Step of the Effects volume now (VolumeStep steps), or INDEX_NONE without settings. */
+	static int32 CurrentEffectsStep()
+	{
+		const URRGameUserSettings* Settings = URRGameUserSettings::GetRRGameUserSettings();
+		const float Step = FMath::Max(GetDefault<URROptionsSettings>()->VolumeStep, KINDA_SMALL_NUMBER);
+		return Settings ? FMath::RoundToInt(Settings->GetVolume(ERRVolumeGroup::Effects) / Step) : INDEX_NONE;
+	}
+}
 
 namespace RROptionsText
 {
@@ -220,6 +232,8 @@ void URROptionsWidget::NativeConstruct()
 	}
 	ShowTab(CurrentTab);
 	RefreshFromSettings();
+	EffectsPreviewStep = RROptionsPreview::CurrentEffectsStep();
+	bEffectsPreviewPending = false;
 	HandleDisplayConfirmChanged(Subsystem && Subsystem->IsDisplayConfirmPending());
 }
 
@@ -240,6 +254,7 @@ void URROptionsWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	UpdateCountdownText();
+	UpdateEffectsPreview(/*bFromTick*/ true);
 }
 
 void URROptionsWidget::BindControls()
@@ -494,8 +509,38 @@ void URROptionsWidget::OnSliderChanged(const FString& Key, float Value)
 		if (Key == RROptionsText::VolumeKeys[Index])
 		{
 			Settings->SetVolume(static_cast<ERRVolumeGroup>(Index), Value);
+			if (static_cast<ERRVolumeGroup>(Index) == ERRVolumeGroup::Effects)
+			{
+				UpdateEffectsPreview(/*bFromTick*/ false);
+			}
 		}
 	}
+}
+
+void URROptionsWidget::UpdateEffectsPreview(bool bFromTick)
+{
+	if (bFromTick && !bEffectsPreviewPending)
+	{
+		return;
+	}
+	const URROptionsSettings* Options = GetDefault<URROptionsSettings>();
+	const int32 Step = RROptionsPreview::CurrentEffectsStep();
+	if (Options->EffectsPreviewEvent.IsNone() || Step == INDEX_NONE || Step == EffectsPreviewStep)
+	{
+		bEffectsPreviewPending = false;
+		return;
+	}
+	const double Now = FPlatformTime::Seconds();
+	if (Now - EffectsPreviewSeconds < Options->EffectsPreviewInterval)
+	{
+		bEffectsPreviewPending = true;
+		return;
+	}
+	// Played after SetVolume pushed the new class volume: the sample is heard at the level just set (Effects class, plays paused).
+	bEffectsPreviewPending = false;
+	EffectsPreviewStep = Step;
+	EffectsPreviewSeconds = Now;
+	URRAudioSubsystem::PlayEvent(this, Options->EffectsPreviewEvent);
 }
 
 void URROptionsWidget::OnToggleChanged(const FString& Key, bool bOn)

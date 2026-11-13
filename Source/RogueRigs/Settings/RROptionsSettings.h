@@ -39,6 +39,17 @@ public:
 	UPROPERTY(Config, EditAnywhere, Category = "Sound")
 	float VolumeStep = 0.05f;
 
+	/**
+	 * Sound event (URRAudioSettings table) played when the Effects slider reaches a new VolumeStep step, so the player hears the
+	 * level it sets (task-520, Q1: the player shot, centred, plays paused). None = no preview.
+	 */
+	UPROPERTY(Config, EditAnywhere, Category = "Sound")
+	FName EffectsPreviewEvent = TEXT("EffectsPreview");
+
+	/** Minimum real time between two Effects previews, seconds (0.15); the last step reached plays once the interval ends. */
+	UPROPERTY(Config, EditAnywhere, Category = "Sound")
+	float EffectsPreviewInterval = 0.15f;
+
 	/** Frame rate limit choices in order, 0 = Unlimited (30, 60, 120, 144, Unlimited). */
 	UPROPERTY(Config, EditAnywhere, Category = "Graphics")
 	TArray<int32> FrameRateLimits;

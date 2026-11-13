@@ -1,6 +1,6 @@
 // Rogue Rigs - options debug console commands (task-500-03, compiled out of shipping): rr.Options.Set <name> <value> sets one
 // options value through the same functions as the options screen (applied and saved); rr.Options.Dump logs every value;
-// rr.Options.Keep / rr.Options.Revert answer the keep-or-revert dialog.
+// rr.Options.Keep / rr.Options.Revert answer the keep-or-revert dialog; rr.Options.Slide moves a volume slider as a drag (task-520).
 
 #include "CoreMinimal.h"
 
@@ -13,6 +13,8 @@
 #include "Settings/RRGameUserSettings.h"
 #include "Settings/RROptionsSubsystem.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Components/Slider.h"
+#include "Containers/Ticker.h"
 #include "Kismet/GameplayStatics.h"
 #include "Menu/RRMainMenuWidget.h"
 #include "Player/RRPlayerController.h"
@@ -124,6 +126,55 @@ namespace RROptionsDebug
 				if (URROptionsSubsystem* Options = FindSubsystem()) { Options->StartDisplayConfirmOnCurrent(); }
 			}
 			UE_LOG(LogRogueRigs, Log, TEXT("rr.Options.Open %s: %s."), *TabArg, Screen ? TEXT("open") : TEXT("refused (no main or pause menu, or no options class)"));
+		}),
+		ECVF_Cheat);
+
+	/** Slide state of rr.Options.Slide (one at a time). */
+	static FTSTicker::FDelegateHandle SlideHandle;
+
+	FAutoConsoleCommand SlideCommand(
+		TEXT("rr.Options.Slide"),
+		TEXT("rr.Options.Slide <master|music|effects> <from 0-100> <to 0-100> <seconds>: moves that slider of the open options screen from one value to the other over real time, one value per frame, through the slider's change event as a mouse drag does (task-520 checks)."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			UWorld* World = RRCheats::FindCheatWorld();
+			URROptionsWidget* Screen = World ? URROptionsWidget::FindOpen(World) : nullptr;
+			if (Args.Num() < 4 || Screen == nullptr)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Options.Slide: usage rr.Options.Slide <master|music|effects> <from> <to> <seconds>, options screen open (%s)."), Screen ? TEXT("open") : TEXT("not open"));
+				return;
+			}
+			const FString Key = Args[0].Left(1).ToUpper() + Args[0].Mid(1).ToLower();
+			const float From = FMath::Clamp(FCString::Atof(*Args[1]) / 100.f, 0.f, 1.f);
+			const float To = FMath::Clamp(FCString::Atof(*Args[2]) / 100.f, 0.f, 1.f);
+			const double Seconds = FMath::Max(FCString::Atod(*Args[3]), 0.01);
+			TWeakObjectPtr<USlider> Slider = Cast<USlider>(Screen->GetWidgetFromName(FName(*(Key + TEXT("Slider")))));
+			if (!Slider.IsValid())
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Options.Slide: no %sSlider on the options screen."), *Key);
+				return;
+			}
+			FTSTicker::RemoveTicker(SlideHandle);
+			const double Start = FPlatformTime::Seconds();
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Options.Slide %s: %.0f %% to %.0f %% over %.2f s."), *Key, From * 100.f, To * 100.f, Seconds);
+			SlideHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([Slider, Key, From, To, Seconds, Start](float)
+			{
+				USlider* Target = Slider.Get();
+				if (Target == nullptr)
+				{
+					return false;
+				}
+				const double Alpha = FMath::Clamp((FPlatformTime::Seconds() - Start) / Seconds, 0.0, 1.0);
+				const float Value = FMath::Lerp(From, To, static_cast<float>(Alpha));
+				Target->SetValue(Value);
+				Target->OnValueChanged.Broadcast(Value);
+				if (Alpha >= 1.0)
+				{
+					UE_LOG(LogRogueRigs, Log, TEXT("rr.Options.Slide %s: done at %.0f %%."), *Key, Value * 100.f);
+					return false;
+				}
+				return true;
+			}));
 		}),
 		ECVF_Cheat);
 

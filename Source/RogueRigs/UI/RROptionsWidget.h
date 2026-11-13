@@ -126,6 +126,13 @@ private:
 	void OnSliderChanged(const FString& Key, float Value);
 	void OnToggleChanged(const FString& Key, bool bOn);
 
+	/**
+	 * Effects slider preview (task-520): plays URROptionsSettings::EffectsPreviewEvent when the Effects volume reaches a step other
+	 * than the last one played, at most once per EffectsPreviewInterval (real time); a step reached inside the interval plays from
+	 * NativeTick once it ends. bFromTick: the deferred play.
+	 */
+	void UpdateEffectsPreview(bool bFromTick);
+
 	UFUNCTION() void HandleSoundTab();
 	UFUNCTION() void HandleGraphicsTab();
 	UFUNCTION() void HandleGameplayTab();
@@ -143,6 +150,12 @@ private:
 
 	/** True while RefreshFromSettings writes the controls: their change events are ignored (no write back). */
 	bool bRefreshing = false;
+
+	/** Effects preview state: step last played (set on open, so a move inside it plays nothing), its real time, a play waiting. */
+	int32 EffectsPreviewStep = INDEX_NONE;
+	double EffectsPreviewSeconds = -1.0e9;
+	bool bEffectsPreviewPending = false;
+
 	FDelegateHandle SettingsChangedHandle;
 
 	/** One proxy per bound control: carries the control key to the shared handlers (UMG delegates have no payload). */
