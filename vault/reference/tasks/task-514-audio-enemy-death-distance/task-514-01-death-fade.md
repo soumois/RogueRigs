@@ -3,7 +3,7 @@ id: task-514-01-death-fade
 description: "Cpp: enemy death line uses the distance fade; sys-audio line updated"
 parent: task-514-audio-enemy-death-distance
 kind: task
-status: todo
+status: in-progress
 ---
 # Mort des ennemis selon la distance au joueur: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T08:48:56Z
 - waiting_for: none
 - result: open
 

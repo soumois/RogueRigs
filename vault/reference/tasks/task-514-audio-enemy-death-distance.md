@@ -3,7 +3,7 @@ id: task-514-audio-enemy-death-distance
 description: "Global task: Enemy death sound fades with distance from the player, with the fade option built in task-513."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Mort des ennemis selon la distance au joueur
 
@@ -24,7 +24,7 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q5 et Q6")
 - milestone: M2
 - next_step: task-514-01-death-fade
-- started: open
+- started: 2026-11-13T08:48:56Z
 - waiting_for: none
 - result: open
 
