@@ -3,7 +3,7 @@ id: task-539-01-ld-review
 description: "Level-design: Before/after visual and measured review of the 7 starts whose accepted seed changed after task-537."
 parent: task-539-ld-review-pocket-guard-maps
 kind: task
-status: in-progress
+status: done
 ---
 # Revue visuelle Level-Design des cartes changées par la libération du garde de poche: level-design
 
@@ -15,14 +15,14 @@ status: in-progress
 - done_when: A1 to A4 of the global hold; the sheet path and the per-start verdict are in result; committed.
 - editor_state: decided by the Executor
 - token_ceiling: open
-- model: open
-- tokens: open
-- usage: open
-- runs: open
+- model: opus
+- tokens: included in the executor run of task-539
+- usage: included in the executor run of task-539
+- runs: 1
 - milestone: M2
 - started: 2026-11-13T20:18:51Z
 - waiting_for: none
-- result: open
+- result: A1: the 7 starts regenerated at HEAD give 1500, 1702, 1900, 2006, 2700, 2803, 7000 with the task-537/after cell hashes, and all 14 maps pass validate_layout.js. A2: independent scan (scan539.js) matches the generator: after windows 0.063-0.929, lanes 19-28, farthest pocket 6-10, all within the rules. A3 verdicts: 1500 ok; 2000 ok (west lane of 28 at 62-70,122-149); 1700 a surveiller (six pockets packed in the east third at 150-225,60-200, straight carved bar at 117-140,72-80); 1900 a surveiller (7 carved repairs read as straight bars); 7000 a surveiller (open mass south of the spawn at 70-140,120-200 kept under 0.95 by outcrops); 2700 defaut (merged hidden region of 1609 cells at 166-228,76-153, hidden floor 0.146 to 0.239); 2800 defaut (merged hidden region of 1225 cells at 28-86,125-209). The window rule counts hidden pocket floor as open, so it misses these areas; windows with network floor under 0.05: 2700 536 to 1099, 2800 526 to 791, 1700 526 to 940. Reported only, nothing changed. Repairs are marked on the after maps only (the before code cannot be rebuilt). Sheet (temporary): Saved/GeneratedLevels/task-539/task-539_before_after_sheet.png; table Saved/GeneratedLevels/task-539/review_task539.md.
 
 ## Verdict
 Table: Saved/GeneratedLevels/task-539/review_task539.md; sheet: Saved/GeneratedLevels/task-539/task-539_before_after_sheet.png; pairs in png/ (all temporary). Scan scan539.js and extra539.js, independent of the generator code; validate_layout.js OK on all 14 maps. Places in cells (x, y), origin top-left. Repairs are marked on the after maps only: the before code cannot be rebuilt.
