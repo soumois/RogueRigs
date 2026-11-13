@@ -14,4 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-529-gdd-audio-options-sync]] — Bring the audio-direction and options-screen gdd nodes in line with tasks 520 to 527 as built; documentation only. Status wait-answers.
+- [[task-529-gdd-audio-options-sync]] — Bring the audio-direction and options-screen gdd nodes in line with tasks 520 to 527 as built; documentation only. Status todo.

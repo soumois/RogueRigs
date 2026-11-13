@@ -14,11 +14,11 @@ Requested by the owner 2026-11-12 ([[task-510-options-screen]]). Values provisio
 - Back or Escape returns to the menu it came from.
 
 ## Layout
-- Title "OPTIONS"; tabs "Sound", "Graphics", "Gameplay"; buttons "Reset to defaults" (current tab) and "Back". English labels hardcoded in the widget, like [[main-menu]]. Buttons take [[ui-button-hover]].
+- Title "OPTIONS"; tabs "Sound", "Graphics", "Gameplay"; buttons "Reset to defaults" (current tab) and "Back". English labels hardcoded in the widget, like [[main-menu]]. Buttons take [[ui-button-hover]]. The three tabs keep the same size, selected or not (owner 2026-11-13, task-521).
 - Black backdrop as the pause menu, over the main menu image or the paused arena; [[umg-layout]].
 
 ## Sound
-- Sliders Master, Music, Effects, 0 to 100 % in steps of 5, 100 % at start, applied live. The game has no sound yet: they drive the volume groups later sounds use ([[audio-direction]]). Moving Effects plays a sample effect at the new level (owner 2026-11-13, provisional, task-520, see [[audio-direction]]).
+- Sliders Master, Music, Effects, 0 to 100 % in steps of 5, 100 % at start, applied live. They drive the Master, Music and Effects volume groups of every sound and music track ([[audio-direction]]). Moving Effects plays a sample effect at the new level (owner 2026-11-13, provisional, task-520, see [[audio-direction]]).
 
 ## Graphics
 - No Apply button: every change applies at once.
