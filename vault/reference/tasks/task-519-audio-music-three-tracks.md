@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok pour Q10 à Q13")
 - milestone: M2
-- next_step: task-519-01-music-import
+- next_step: task-519-02-music-playback
 - started: 2026-11-13T09:36:52Z
 - waiting_for: none
+- executor_tokens: input 28, cache write 40439, cache read 545608, output 6868
+- executor_usage: runs 1, turns 14, context start 17k peak 53k, resumes 0, 2 min, units 0.14 M, USD 0.45
+- planning_tokens: input 10, cache write 20096, cache read 213155, output 4963
+- planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/8 (tasks 512, 513, 514, 515, 516, 517, 518, 519), units 0.07 M, USD 0.24
 - result: open
 
 ## Questions

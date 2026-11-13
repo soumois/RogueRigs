@@ -3,7 +3,7 @@ id: task-519-02-music-playback
 description: "Cpp: music per screen, looped, levels and fades in config, through the Music class"
 parent: task-519-audio-music-three-tracks
 kind: task
-status: todo
+status: in-progress
 ---
 # Musiques : menu principal, chargement, en jeu: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T09:38:20Z
 - waiting_for: none
 - result: open
 
