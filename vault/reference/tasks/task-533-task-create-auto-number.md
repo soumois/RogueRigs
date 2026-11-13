@@ -1,9 +1,9 @@
 ---
 id: task-533-task-create-auto-number
 description: "Global task: task-create.js computes the task number and index anchor itself, so the planner no longer lists vault/reference/tasks before creating."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # task-create.js : numéro et ancre automatiques
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "ok")
 - milestone: M2
-- next_step: task-533-02-doc
+- next_step: none
 - started: 2026-11-13T18:21:48Z
 - waiting_for: none
-- executor_tokens: input 46, cache write 48197, cache read 1034317, output 13410
-- executor_usage: runs 1, turns 23, context start 16k peak 61k, resumes 0, 2 min, units 0.23 M, USD 0.72
+- executor_tokens: input 68, cache write 62684, cache read 1776272, output 17839
+- executor_usage: runs 1, turns 34, context start 16k peak 75k, resumes 0, 3 min, units 0.35 M, USD 1.03
 - planning_tokens: input 7, cache write 10621, cache read 103262, output 3169
 - planning_usage: a3bd4ed0 "Planifier optimisations lecture planner" 1/4 (tasks 532, 533, 534, 535), units 0.04 M, USD 0.14
-- result: open
+- result: Done. c2d3ef45: task-spec shows num and anchor optional (overrides only, num refused if taken), drops the 'list vault/reference/tasks' rule and points the planner at the printed created <global-id> lines; orchestrator-script-quirks: taken-number and parallel-session lines now say omit num instead of ls. Runbook unchanged (it defers plan writing to task-spec). No node under agents or _navigation still asks to list vault/reference/tasks; lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,6 +34,6 @@ Decided 2026-11-13 (owner "ok"): every default below is accepted; values provisi
 2. task-533-02-doc (vault/reference/tasks/task-533-task-create-auto-number/task-533-02-doc.md) — doc: Update task-spec and the runbook: num and anchor optional, no listing of vault/reference/tasks.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-533-01-auto-number-anchor]] — step 1, cpp.
 - [[task-533-02-doc]] — step 2, doc.
