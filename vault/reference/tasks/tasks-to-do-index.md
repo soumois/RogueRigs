@@ -14,7 +14,6 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-515-audio-ore-pickup]] — Ore pickup plays the XP pickup sound for now, through its own event line so it can be swapped later. Status in-progress.
 - [[task-516-audio-explosion-edge-distance]] — Placed explosion sound event, level fading with the distance from the explosion edge; import of the owner file. Status todo.
 - [[task-517-audio-dig-sound]] — Dig sound: one event at each dig hit of the miner on a block; import of the owner file. Status todo.
 - [[task-518-audio-level-up-not-heard]] — The level up sound is heard in its file but not in game: make it audible in game. Status todo.

@@ -1,9 +1,9 @@
 ---
 id: task-515-audio-ore-pickup
 description: "Global task: Ore pickup plays the XP pickup sound for now, through its own event line so it can be swapped later."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Son du minerai ramassé (son d'XP pour l'instant)
 
@@ -23,14 +23,18 @@ Il faudrait aussi le son quand on creuse. » (owner 2026-11-13, answer to task-5
 - family: comportement
 - confirmed_by_owner: yes (owner 2026-11-13: direct instruction "Applique le son d'xp au minerai ramassé pour l'instant", no choice left; the relay may stop it before launch)
 - milestone: M2
-- next_step: task-515-01-ore-pickup-sound
+- next_step: none
 - started: 2026-11-13T08:54:25Z
 - waiting_for: none
-- result: open
+- executor_tokens: input 52, cache write 49188, cache read 1120163, output 8430
+- executor_usage: runs 1, turns 26, context start 16k peak 62k, resumes 0, 5 min, units 0.22 M, USD 0.64
+- planning_tokens: input 9, cache write 19978, cache read 191402, output 4783
+- planning_usage: aec6de57 "Plan shot and wall-impact sound changes" 1/8 (tasks 512, 513, 514, 515, 516, 517, 518, 519), units 0.07 M, USD 0.23
+- result: Done. Commit 6e9a89dc. A1: Config/DefaultGame.ini adds row OrePickup on SW_XPPickup, Volume 1.0, PitchJitter 0.05, MaxConcurrent 3, bSpatial False (centred), bUI False, copied from XPPickup (own cap of 3). A2: -game run on L_ArenaM1, Verbose LogRRAudio, rr.Debug.SpawnNear BP_PickupOre and BP_PickupXP at 40 uu: ore collected -> one 'Play OrePickup (row OrePickup) SW_XPPickup', XP collected -> one 'Play XPPickup' unchanged. A3: build green (RRPickup.cpp, RRAudioDebugCommands.cpp); no audio test family exists, so build only per build-toolchain Test scope. A4: sys-audio call_sites lists OrePickup in ARRPickup::Collect. Code: PlayEvent(OrePickup) in ARRPickup::Collect for PickupType Ore; rr.Audio.Play help lists OrePickup. Owner swap point: the OrePickup line in DefaultGame.ini.
 
 ## Subtasks
 1. task-515-01-ore-pickup-sound (vault/reference/tasks/task-515-audio-ore-pickup/task-515-01-ore-pickup-sound.md) — cpp: ore pickup event, table line on the XP sound, call; sys-audio line
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-515-01-ore-pickup-sound]] — step 1, cpp.
