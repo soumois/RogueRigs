@@ -805,6 +805,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Laser", meta = (ClampMin = 0, Units = "cm"))
 	float LaserDiameter = 8.f;
 
+	/** Loop sound event held on while the drone is in Dig (laser mining, task-517), faded in and out by its table row (sys-audio). None: silent. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Laser")
+	FName DigSoundEvent = TEXT("Dig");
+
 	/** Length of LaserMesh's mesh along its local Z at scale 1, in uu (engine cylinder: 100). */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Drone|Laser", meta = (ClampMin = 0.01, Units = "cm"))
 	float LaserMeshBaseHeight = 100.f;

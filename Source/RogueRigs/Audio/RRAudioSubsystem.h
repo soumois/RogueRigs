@@ -28,6 +28,7 @@ struct FRRSoundEventStats
  * - PlayEvent / PlayEventAt: finds the row of the event (dotted names fall back to their parent), plays its sound through the Effects
  *   class of URROptionsSettings, pitch jittered, placed (world rows) or centred, pause-proof (UI rows); a row capped at N stops its
  *   oldest play before the N+1th. A row with FadeOuter > 0 fades with the distance from the player pawn (silent from FadeOuter). No row or no sound: silent, no error.
+ * - SetLoop: loop rows (Dig), one play held while the caller says so, faded in and out (task-517).
  * - Buttons: a real-time ticker plays UIHover when the cursor enters an enabled Slate button of any screen (paused ones included), and
  *   a Slate input pre-processor plays UIClick on a left press on an enabled button. A button counts as disabled when it or a parent is.
  */
@@ -48,6 +49,19 @@ public:
 	 * distance fade is measured from the edge of that circle, distance to Location minus EdgeRadius, 0 inside.
 	 */
 	static void PlayEventAt(const UObject* WorldContextObject, FName Event, const FVector& Location, FName Variant = NAME_None, float EdgeRadius = 0.f);
+
+	/**
+	 * Loop rows (bLoop, task-517): call every tick with bOn = the looping state (true while the player mines, for Dig). Off -> on starts
+	 * one centred play, faded in over the row's LoopFadeIn; on -> off fades it out over LoopFadeOut. Repeated calls with the same state
+	 * do nothing. A paused game or a removed world stops the play at once (the caller restarts it when it ticks again).
+	 */
+	static void SetLoop(const UObject* WorldContextObject, FName Event, bool bOn);
+
+	/** SetLoop on this subsystem. */
+	void UpdateLoop(const UObject* WorldContextObject, FName Event, bool bOn);
+
+	/** True while the loop of Event is held on and its play is active. */
+	bool IsLoopPlaying(FName Event) const;
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
@@ -82,6 +96,12 @@ public:
 private:
 	bool TickHover(float DeltaTime);
 
+	/** Plays Event; bLoopStart: a SetLoop start (loop rows are refused otherwise), faded in over the row's LoopFadeIn. */
+	UAudioComponent* PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius, bool bLoopStart);
+
+	/** Stops loops of a paused or removed world at once, and logs the end of faded-out loops (core ticker, runs while paused). */
+	void TickLoops();
+
 	/** Enabled Slate button under ScreenPosition, or null; bOutDisabledButton tells a disabled button was found there instead. */
 	TSharedPtr<SWidget> FindButtonAt(const FVector2D& ScreenPosition, bool& bOutDisabledButton) const;
 
@@ -97,6 +117,12 @@ private:
 
 	/** Active plays per row event name, oldest first. */
 	TMap<FName, TArray<TWeakObjectPtr<UAudioComponent>>> ActivePlays;
+
+	/** Loop plays held on, per requested event name. */
+	TMap<FName, TWeakObjectPtr<UAudioComponent>> ActiveLoops;
+
+	/** Loop plays released and fading out, with their event name, until they end (logged). */
+	TArray<TPair<FName, TWeakObjectPtr<UAudioComponent>>> FadingLoops;
 
 	TMap<FName, FRRSoundEventStats> Stats;
 	TSet<FName> ReportedSilent;

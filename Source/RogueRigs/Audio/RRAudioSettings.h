@@ -17,7 +17,8 @@ struct FRRSoundEventRow
 	GENERATED_BODY()
 
 	/**
-	 * Event name the code plays (Shot, Impact, Impact.Wall, EnemyDeath, PlayerHit, XPPickup, LevelUp, UIHover, UIClick). A dotted name refines an
+	 * Event name the code plays (Shot, Impact, Impact.Wall, EnemyDeath, Explosion, PlayerHit, XPPickup, OrePickup, LevelUp, UIHover, UIClick;
+	 * loop: Dig). A dotted name refines an
 	 * event: a call for Shot.Shotgun uses row Shot.Shotgun when it exists, else row Shot.
 	 */
 	UPROPERTY(Config)
@@ -58,6 +59,22 @@ struct FRRSoundEventRow
 	/** Interface sound: also plays while the game is paused. */
 	UPROPERTY(Config)
 	bool bUI = false;
+
+	/**
+	 * Looping event (task-517, Dig): played only through URRAudioSubsystem::SetLoop, which keeps one play of it while its caller holds
+	 * it on (the sound asset loops), fading in over LoopFadeIn seconds and out over LoopFadeOut seconds. A one-shot PlayEvent of a loop row
+	 * is refused. Use MaxConcurrent 1 so a restart during the fade out stops the old play.
+	 */
+	UPROPERTY(Config)
+	bool bLoop = false;
+
+	/** Fade in of a loop row, in seconds (0 = starts at full volume). */
+	UPROPERTY(Config)
+	float LoopFadeIn = 0.f;
+
+	/** Fade out of a loop row when its caller releases it, in seconds (0 = stops at once). */
+	UPROPERTY(Config)
+	float LoopFadeOut = 0.f;
 };
 
 /**

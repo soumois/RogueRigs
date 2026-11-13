@@ -1,12 +1,18 @@
 // Rogue Rigs - audio debug console commands (task-511, compiled out of shipping): play an event, log the counters of the event
-// table, and press the left mouse button where the cursor is (a real Slate click, for -game log checks of the button sounds).
+// table, press the left mouse button where the cursor is (a real Slate click, for -game log checks of the button sounds), and put
+// the miner against a rock face so the drone mines (dig loop checks, task-517).
 
 #include "CoreMinimal.h"
 
 #if !UE_BUILD_SHIPPING
 
 #include "Audio/RRAudioSubsystem.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/Engine.h"
+#include "Grid/RRArenaGrid.h"
+#include "Grid/RRCellType.h"
+#include "Player/RRMiner.h"
+#include "World/RRWorld.h"
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
@@ -109,6 +115,82 @@ namespace RRAudioDebug
 					Subsystem->ResetStats();
 				}
 			}
+		}));
+
+	/** Miner location before the last rr.Audio.TouchRock, for rr.Audio.TouchRock back. */
+	static TOptional<FVector> TouchRockReturn;
+
+	/**
+	 * rr.Audio.TouchRock [back]: moves the player miner against the face of the nearest rock block (a floor cell beside it, the miner's
+	 * capsule touching the face), so the drone mines it as on a real contact (dig loop checks, task-517); back returns the miner where
+	 * it was, which ends the contact.
+	 */
+	FAutoConsoleCommand TouchRockCommand(
+		TEXT("rr.Audio.TouchRock"),
+		TEXT("rr.Audio.TouchRock [back]: moves the player miner against the nearest rock face so the drone mines (dig sound checks); back returns it where it was."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			UWorld* World = GEngine && GEngine->GameViewport ? GEngine->GameViewport->GetWorld() : nullptr;
+			ARRMiner* Miner = World ? Cast<ARRMiner>(UGameplayStatics::GetPlayerPawn(World, 0)) : nullptr;
+			const ARRArenaGrid* Grid = World ? RRWorld::FindArenaGrid(World) : nullptr;
+			if (Miner == nullptr || Grid == nullptr)
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.TouchRock: needs a player miner and a grid."));
+				return;
+			}
+			if (Args.Num() > 0 && Args[0].Equals(TEXT("back"), ESearchCase::IgnoreCase))
+			{
+				if (TouchRockReturn.IsSet())
+				{
+					Miner->SetActorLocation(TouchRockReturn.GetValue(), false, nullptr, ETeleportType::TeleportPhysics);
+					UE_LOG(LogRogueRigs, Log, TEXT("rr.Audio.TouchRock back: miner at %s."), *TouchRockReturn.GetValue().ToCompactString());
+					TouchRockReturn.Reset();
+				}
+				return;
+			}
+			const FVector Start = Miner->GetActorLocation();
+			const FIntPoint Center = Grid->GetCellAtWorld(Start);
+			static const FIntPoint Sides[] = { FIntPoint(1, 0), FIntPoint(-1, 0), FIntPoint(0, 1), FIntPoint(0, -1) };
+			double BestDistance = TNumericLimits<double>::Max();
+			FIntPoint BestFloor;
+			FIntPoint BestRock;
+			for (int32 Y = Center.Y - 15; Y <= Center.Y + 15; ++Y)
+			{
+				for (int32 X = Center.X - 15; X <= Center.X + 15; ++X)
+				{
+					const FIntPoint Rock(X, Y);
+					if (Grid->GetCellType(Rock) != ERRCellType::Rock)
+					{
+						continue;
+					}
+					for (const FIntPoint& Side : Sides)
+					{
+						const FIntPoint Floor = Rock + Side;
+						const FVector FloorCenter = Grid->GetCellCenter(Floor.X, Floor.Y);
+						const double Distance = FVector::Dist2D(FloorCenter, Start);
+						if (Grid->GetCellType(Floor) == ERRCellType::Floor && Distance < BestDistance)
+						{
+							BestDistance = Distance;
+							BestFloor = Floor;
+							BestRock = Rock;
+						}
+					}
+				}
+			}
+			if (BestDistance == TNumericLimits<double>::Max())
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Audio.TouchRock: no rock face within 15 cells."));
+				return;
+			}
+			// Capsule edge on the rock face: centre half a cell minus the capsule radius from the floor cell centre, toward the rock.
+			const FIntPoint Toward = BestRock - BestFloor;
+			const double Offset = 0.5 * Grid->GetCellSize() - Miner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+			FVector Destination = Grid->GetCellCenter(BestFloor.X, BestFloor.Y) + FVector(Toward.X, Toward.Y, 0.0) * FMath::Max(Offset, 0.0);
+			Destination.Z = Start.Z;
+			TouchRockReturn = Start;
+			Miner->SetActorLocation(Destination, false, nullptr, ETeleportType::TeleportPhysics);
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Audio.TouchRock: miner moved from %s to %s, against rock (%d, %d)."), *Start.ToCompactString(),
+				*Destination.ToCompactString(), BestRock.X, BestRock.Y);
 		}));
 
 	/** rr.Debug.Click: a left press and release at the cursor, through Slate as a real mouse click. */

@@ -2,6 +2,7 @@
 
 #include "Drone/RRDrone.h"
 
+#include "Audio/RRAudioSubsystem.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
@@ -574,6 +575,12 @@ void ARRDrone::Tick(float DeltaSeconds)
 		break;
 	}
 
+	// Laser mining sound (task-517): one loop held while the drone digs (only the player's drone digs), faded in and out by its row.
+	if (!DigSoundEvent.IsNone())
+	{
+		URRAudioSubsystem::SetLoop(this, DigSoundEvent, State == ERRDroneState::Dig);
+	}
+
 	// The impact effect plays only in Dig (UpdateDigImpact): it fades after a dig and never shows in Hack.
 	if (State == ERRDroneState::Orbit)
 	{
@@ -966,6 +973,10 @@ void ARRDrone::UpdateAttitude(float DeltaSeconds)
 void ARRDrone::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	StopDigImpact();
+	if (!DigSoundEvent.IsNone())
+	{
+		URRAudioSubsystem::SetLoop(this, DigSoundEvent, false);
+	}
 	if (State == ERRDroneState::Dig)
 	{
 		StopDig();

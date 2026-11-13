@@ -85,6 +85,90 @@ void URRAudioSubsystem::PlayEventAt(const UObject* WorldContextObject, FName Eve
 	}
 }
 
+void URRAudioSubsystem::SetLoop(const UObject* WorldContextObject, FName Event, bool bOn)
+{
+	if (URRAudioSubsystem* Subsystem = Get(WorldContextObject))
+	{
+		Subsystem->UpdateLoop(WorldContextObject, Event, bOn);
+	}
+}
+
+bool URRAudioSubsystem::IsLoopPlaying(FName Event) const
+{
+	const TWeakObjectPtr<UAudioComponent>* Loop = ActiveLoops.Find(Event);
+	return Loop && Loop->IsValid() && (*Loop)->IsPlaying();
+}
+
+void URRAudioSubsystem::UpdateLoop(const UObject* WorldContextObject, FName Event, bool bOn)
+{
+	if (bOn)
+	{
+		if (IsLoopPlaying(Event))
+		{
+			return;
+		}
+		// Held on and not playing (first call, after a pause, or a sound that does not loop and ended): one start.
+		ActiveLoops.Remove(Event);
+		if (UAudioComponent* Component = PlayInternal(WorldContextObject, Event, nullptr, 0.f, /*bLoopStart*/ true))
+		{
+			ActiveLoops.Add(Event, Component);
+		}
+		return;
+	}
+
+	TWeakObjectPtr<UAudioComponent> Loop;
+	if (!ActiveLoops.RemoveAndCopyValue(Event, Loop) || !Loop.IsValid() || !Loop->IsPlaying())
+	{
+		return;
+	}
+	const FRRSoundEventRow* Row = GetDefault<URRAudioSettings>()->FindRow(Event);
+	const float FadeOut = Row ? FMath::Max(Row->LoopFadeOut, 0.f) : 0.f;
+	if (FadeOut > 0.f)
+	{
+		Loop->FadeOut(FadeOut, 0.f);
+		FadingLoops.Emplace(Event, Loop);
+	}
+	else
+	{
+		Loop->Stop();
+	}
+	UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s: fade out %.2f s."), *Event.ToString(), FadeOut);
+}
+
+void URRAudioSubsystem::TickLoops()
+{
+	for (auto It = ActiveLoops.CreateIterator(); It; ++It)
+	{
+		UAudioComponent* Component = It->Value.Get();
+		const UWorld* World = Component ? Component->GetWorld() : nullptr;
+		if (Component == nullptr || World == nullptr || World->bIsTearingDown)
+		{
+			UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s: world removed."), *It->Key.ToString());
+			It.RemoveCurrent();
+		}
+		else if (World->IsPaused())
+		{
+			// A paused game stops the loop at once; the caller starts it again (faded in) when it ticks after the pause.
+			Component->Stop();
+			UE_LOG(LogRRAudio, Verbose, TEXT("Loop stop %s: game paused, stopped at once."), *It->Key.ToString());
+			It.RemoveCurrent();
+		}
+	}
+	for (int32 Index = FadingLoops.Num() - 1; Index >= 0; --Index)
+	{
+		UAudioComponent* Component = FadingLoops[Index].Value.Get();
+		if (Component == nullptr || !Component->IsPlaying())
+		{
+			UE_LOG(LogRRAudio, Verbose, TEXT("Loop %s ended."), *FadingLoops[Index].Key.ToString());
+			FadingLoops.RemoveAt(Index);
+		}
+		else if (const UWorld* World = Component->GetWorld(); World && World->IsPaused())
+		{
+			Component->Stop();
+		}
+	}
+}
+
 float URRAudioSubsystem::GetFadeDistance(const FVector& PlayerLocation, const FVector& Location, float EdgeRadius)
 {
 	return FMath::Max(FVector::Dist2D(PlayerLocation, Location) - FMath::Max(EdgeRadius, 0.f), 0.f);
@@ -122,6 +206,8 @@ void URRAudioSubsystem::Deinitialize()
 	}
 	ClickProcessor.Reset();
 	ActivePlays.Reset();
+	ActiveLoops.Reset();
+	FadingLoops.Reset();
 	Super::Deinitialize();
 }
 
@@ -163,7 +249,18 @@ int32 URRAudioSubsystem::GetActiveCount(FName Event)
 
 UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius)
 {
+	return PlayInternal(WorldContextObject, Event, Location, EdgeRadius, /*bLoopStart*/ false);
+}
+
+UAudioComponent* URRAudioSubsystem::PlayInternal(const UObject* WorldContextObject, FName Event, const FVector* Location, float EdgeRadius, bool bLoopStart)
+{
 	const FRRSoundEventRow* Row = GetDefault<URRAudioSettings>()->FindRow(Event);
+	if (Row && Row->bLoop && !bLoopStart)
+	{
+		// A loop row only plays through SetLoop, which stops it again; a one-shot play of it would never end.
+		UE_LOG(LogRRAudio, Verbose, TEXT("Sound event %s is a loop row (row %s): use SetLoop; not played."), *Event.ToString(), *Row->Event.ToString());
+		return nullptr;
+	}
 	USoundBase* Sound = Row ? ResolveSound(*Row) : nullptr;
 	if (Sound == nullptr)
 	{
@@ -240,15 +337,24 @@ UAudioComponent* URRAudioSubsystem::Play(const UObject* WorldContextObject, FNam
 		Component->AttenuationOverrides = Placement;
 		Component->SetWorldLocation(*Location);
 	}
-	Component->Play();
+	const float FadeIn = bLoopStart ? FMath::Max(Row->LoopFadeIn, 0.f) : 0.f;
+	if (FadeIn > 0.f)
+	{
+		Component->FadeIn(FadeIn, 1.f);
+	}
+	else
+	{
+		Component->Play();
+	}
 
 	Active.Add(Component);
 	++RowStats.Played;
 	RowStats.PeakActive = FMath::Max(RowStats.PeakActive, Active.Num());
 	const FString FadeText = PlayerDistance >= 0.f ? FString::Printf(TEXT(", %.0f uu from the player (edge radius %.0f), fade %.2f"), PlayerDistance, EdgeRadius, Fade) : FString();
-	UE_LOG(LogRRAudio, Verbose, TEXT("Play %s (row %s): %s, class %s, active %d/%d, pitch %.3f, volume %.3f%s, %s%s."), *Event.ToString(),
+	const FString LoopText = bLoopStart ? FString::Printf(TEXT(", loop start, fade in %.2f s"), FadeIn) : FString();
+	UE_LOG(LogRRAudio, Verbose, TEXT("Play %s (row %s): %s, class %s, active %d/%d, pitch %.3f, volume %.3f%s, %s%s%s."), *Event.ToString(),
 		*Row->Event.ToString(), *Sound->GetPathName(), *GetNameSafe(EffectsClass), Active.Num(), Row->MaxConcurrent, Pitch, Volume, *FadeText,
-		bPlaced ? TEXT("placed") : TEXT("centred"), Row->bUI ? TEXT(", plays paused") : TEXT(""));
+		bPlaced ? TEXT("placed") : TEXT("centred"), Row->bUI ? TEXT(", plays paused") : TEXT(""), *LoopText);
 	return Component;
 }
 
@@ -347,6 +453,7 @@ TSharedPtr<SWidget> URRAudioSubsystem::FindButtonAt(const FVector2D& ScreenPosit
 
 bool URRAudioSubsystem::TickHover(float DeltaTime)
 {
+	TickLoops();
 	if (!FSlateApplication::IsInitialized())
 	{
 		return true;
