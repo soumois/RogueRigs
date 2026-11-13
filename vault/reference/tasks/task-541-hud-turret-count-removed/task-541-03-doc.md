@@ -3,7 +3,7 @@ id: task-541-03-doc
 description: "Doc: Update the HUD doc node for the removed text"
 parent: task-541-hud-turret-count-removed
 kind: task
-status: todo
+status: in-progress
 ---
 # HUD: remove the "Turrets: 2 / 2" text above the health bar: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T23:13:54Z
 - waiting_for: none
 - result: open
 
