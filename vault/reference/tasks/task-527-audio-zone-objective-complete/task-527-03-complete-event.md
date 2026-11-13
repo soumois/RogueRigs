@@ -3,7 +3,7 @@ id: task-527-03-complete-event
 description: "Cpp: one distance sound at chest and console validation per Q12, Q13"
 parent: task-527-audio-zone-objective-complete
 kind: task
-status: todo
+status: in-progress
 ---
 # Son à la validation d'un coffre ou d'une console: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-13T16:16:57Z
 - waiting_for: none
 - result: open
 

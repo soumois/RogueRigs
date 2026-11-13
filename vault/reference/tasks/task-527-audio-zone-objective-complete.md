@@ -15,11 +15,11 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-13, "tout par défaut")
 - milestone: M2
-- next_step: task-527-02-sound-import
+- next_step: task-527-03-complete-event
 - started: 2026-11-13T16:15:32Z
 - waiting_for: none
-- executor_tokens: input 28, cache write 89253, cache read 369734, output 6393
-- executor_usage: runs 1, turns 12, context start 16k peak 58k, resumes 1, 92 min, units 0.18 M, USD 0.65
+- executor_tokens: input 56, cache write 103515, cache read 1285195, output 12180
+- executor_usage: runs 1, turns 26, context start 16k peak 72k, resumes 1, 94 min, units 0.32 M, USD 1.02
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
 - result: open
