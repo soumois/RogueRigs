@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 55, context start 16k peak 107k, resumes 0, 8 min, units 0.59 M, USD 1.63
 - planning_tokens: input 6, cache write 18666, cache read 174110, output 3853
 - planning_usage: a163c449 "Plan owner feedback batch" 1/9 (tasks 520, 521, 522, 523, 524, 525, 526, 527, 528), units 0.06 M, USD 0.21
-- result: Done. sys-options updated (commit 23950212): data line gives ActiveTabTransparentBorder 26 px and the margin basis; new gotcha on the tab size fix (commit 3548c421, same size for every tab, UV crop of the active plate); relation to task-521. sys-button-hover unchanged: the tabs are not attached to the hover subsystem. Lint clean.
+- result: Done. Cause: the selected tab plate T_Shop_ButtonContinue has a 26 px transparent border and another aspect than T_Options_Tab, so the selected tab drew smaller. Fix in C++ (3548c421, URROptionsWidget::StyleTabButton, no Blueprint change): every tab gets the inactive plate size and the active plate is cropped through the brush UV region (URROptionsSettings::ActiveTabTransparentBorder 26 px, provisional). A1 A2 seen at 1920x1080, 1280x720, 1920x1200, 2560x1080 after clicking each tab, Reset and Back; A3 tabs have no hover growth by design, their tint brightening is not visible on frames (unchanged); A4 frames Saved/Captures/task521_1080/tabs.png and Saved/Captures/task521_resolutions.png vs owner image 2; sys-options updated (23950212). Q2: no other screen checked; the cause is specific to the Options tab textures. Subtask 01 was planned bp but done in C++. Budget: 55 turns, 0.59 M units, within standard.
 
 ## Questions
 Decided 2026-11-13 (owner "tout par défaut"): every default below is accepted; values provisional, owner 2026-11-13.
