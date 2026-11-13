@@ -19,6 +19,7 @@ Works with any tool that can list a directory and read a file.
 ## Descent is the only lookup method
 - Never build a path by analogy. Use only paths from a directory listing, from `_paths.md`, or from a resolved `[[wikilink]]`.
 - Never search the vault (grep, glob, full-text) to locate a node.
+- `node vault/scripts/descend.js <index-id> [<index-id>...]` is descent, like `path-of.js` (owner 2026-11-13, [[task-534-descent-script]]): for exact index ids only, it prints in one call the `## Children` of each index and of its child indexes (one level, no deeper), each line as id, path, gloss. It has no text or topic parameter and prints no body and no `## Relations`; choose by the glosses, then open the node.
 - If descent does not reach what you need: STOP and report the trajectory (last node reached, and that no gloss matches). A failed descent is a defect in the tree; it must stay visible so the tree gets fixed.
 
 ## Execution exception (owner intent 2026-10-27, [[task-327-subtask-paths]])
