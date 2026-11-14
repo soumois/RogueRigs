@@ -1,9 +1,9 @@
 ---
 id: task-549-ui-shared-patterns
 description: "Global task: Audit of the UI widgets and UI build scripts after this batch; repeated patterns factored into shared pieces with no visible change, documented."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # UI: generalise the patterns and scripts used again and again
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-549-03-doc
+- next_step: none
 - started: 2026-11-14T04:37:35Z
 - waiting_for: none
-- executor_tokens: input 116, cache write 155400, cache read 6131888, output 37278
-- executor_usage: runs 1, turns 57, context start 17k peak 168k, resumes 1, 21 min, units 0.99 M, USD 2.75
+- executor_tokens: input 132, cache write 162199, cache read 7502798, output 42288
+- executor_usage: runs 1, turns 65, context start 17k peak 175k, resumes 1, 22 min, units 1.16 M, USD 3.16
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. 149401e4: new node ui-shared-pieces under tech-index (A1: shared pieces and tools, inventory table screen / pattern / where, kept-per-screen list with reasons); tool-capture gains ui-screens.js; sys-button-hover and sys-screen-entrance point to UI/RRUIDebugCommands.cpp. Lint clean (warnings only, none on these nodes).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 3. task-549-03-doc (vault/reference/tasks/task-549-ui-shared-patterns/task-549-03-doc.md) — doc: Write the UI shared pieces node with the inventory
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-549-01-factor]] — step 1, cpp.
 - [[task-549-02-capture]] — step 2, capture.
 - [[task-549-03-doc]] — step 3, doc.
