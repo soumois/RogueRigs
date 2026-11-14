@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Run/RRRunTransitionSubsystem.h"
+#include "UI/RRScreenEntrance.h"
 #include "RRIntermissionWidget.generated.h"
 
 class URRIntermissionShopSubsystem;
@@ -17,6 +18,8 @@ class URRIntermissionShopSubsystem;
  * damage per weapon, bRunWon); the Next level button calls NextLevel (levels 1-3: the cards shop screen, URRShopScreenWidget;
  * last level: the run won end screen). The shop helpers below are legacy (task-316 single screen): the shop now lives on
  * URRShopScreenWidget. No gameplay logic here.
+ * Appearance (task-547, intermission gdd): the shared entrance of the death screen (URRScreenEntrance), started right after
+ * OnRecapShown on the parts named in EntranceParts; a key or click skips it; ContinueButton cannot be pressed before its end state.
  */
 UCLASS(Abstract)
 class ROGUERIGS_API URRIntermissionWidget : public UUserWidget
@@ -24,6 +27,16 @@ class ROGUERIGS_API URRIntermissionWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	URRIntermissionWidget(const FObjectInitializer& ObjectInitializer);
+
+	/** Skips the entrance to its end state. False when it is not playing. */
+	UFUNCTION(BlueprintCallable, Category = "Run|Transition")
+	bool SkipEntrance();
+
+	/** True while the entrance plays. */
+	UFUNCTION(BlueprintPure, Category = "Run|Transition")
+	bool IsEntrancePlaying() const;
+
 	/** Stores Recap and calls OnRecapShown (the controller calls it right after AddToViewport). */
 	void ShowRecap(const FRRIntermissionRecap& InRecap);
 
@@ -54,8 +67,11 @@ protected:
 	/** Binds the shop's OnShopChanged to OnShopRefreshed, then runs the Blueprint Construct. */
 	virtual void NativeConstruct() override;
 
-	/** Unbinds the shop. */
+	/** Unbinds the shop and puts the level saturation back. */
 	virtual void NativeDestruct() override;
+
+	/** Advances the entrance (real time, also while paused). */
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	/** Shop OnShopChanged callback: calls OnShopRefreshed. */
 	UFUNCTION()
@@ -81,4 +97,12 @@ protected:
 
 	/** True once ShowRecap ran. */
 	bool bHasRecap = false;
+
+	/** Widgets the shared entrance drives (title group, frame and its content, ContinueButton). */
+	UPROPERTY(EditDefaultsOnly, Category = "Run|Transition")
+	FRRScreenEntranceParts EntranceParts;
+
+	/** The shared entrance effect of this screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRScreenEntrance> Entrance;
 };

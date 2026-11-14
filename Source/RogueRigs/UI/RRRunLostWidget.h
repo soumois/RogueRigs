@@ -1,24 +1,22 @@
 // Rogue Rigs - C++ base of the run-lost screen (WBP_RunLost, death-screen gdd, task-484): recap, Retry and Main Menu buttons,
-// appearance skip and level desaturation helpers for the Blueprint animation.
+// appearance (shared entrance effect URRScreenEntrance, task-547) with its skip, level desaturation.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Run/RRRunLostSubsystem.h"
+#include "UI/RRScreenEntrance.h"
 #include "RRRunLostWidget.generated.h"
 
 class UButton;
-class UCameraComponent;
 
 /**
  * Run-lost screen (death-screen gdd). Created by ARRPlayerController (RunLostWidgetClass) on URRRunLostSubsystem::OnRunLost, game
- * paused, HUD hidden. Layout, texts and the appearance animation (about 1.4 s, gdd Appearance) live in the Blueprint subclass:
- * implement OnRunLostShown to fill the title, subtitle and recap and start the animation; call FinishAppearance when it ends.
- * Skip: the Blueprint's OnPreviewKeyDown and OnPreviewMouseButtonDown overrides call RequestSkipAppearance and return Handled when
- * it is true (the input is consumed, so the buttons cannot fire during the animation); it calls OnSkipAppearanceRequested (jump to
- * the end state, then call FinishAppearance). The module has no SlateCore dependency, so the input hooks stay in Blueprint.
- * FinishAppearance gives keyboard and gamepad focus to RetryButton.
+ * paused, HUD hidden. Layout and texts live in the Blueprint subclass: implement OnRunLostShown to fill the title, subtitle and
+ * recap. The appearance (about 1.4 s, gdd Appearance) is the shared entrance URRScreenEntrance (task-547), started right after
+ * OnRunLostShown on the parts named in EntranceParts; a key or click (SkipButton) skips it to the end state, then FinishAppearance
+ * gives keyboard and gamepad focus to RetryButton.
  * Optional bound buttons RetryButton and MainMenuButton call Retry and ReturnToMainMenu (URRRunLostSubsystem).
  * SetLevelDesaturation drives the desaturation of the level behind (view target camera post process saturation).
  */
@@ -28,6 +26,8 @@ class ROGUERIGS_API URRRunLostWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	URRRunLostWidget(const FObjectInitializer& ObjectInitializer);
+
 	/** Stores Recap, resets the appearance state and calls OnRunLostShown. Called by the controller once the widget is in the viewport. */
 	void ShowRunLost(const FRRRunLostRecap& InRecap);
 
@@ -47,7 +47,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Run Lost")
 	void FinishAppearance();
 
-	/** Skip request from a key or click: during the appearance calls OnSkipAppearanceRequested and returns true (consume the input); false once it finished. */
+	/** Skip request: during the appearance jumps to its end state, calls OnSkipAppearanceRequested and returns true; false once it finished. */
 	UFUNCTION(BlueprintCallable, Category = "Run Lost")
 	bool RequestSkipAppearance();
 
@@ -70,14 +70,20 @@ public:
 	UWidget* GetRetryFocusWidget();
 
 protected:
-	/** Makes the widget focusable and binds RetryButton / MainMenuButton clicks. */
+	/** Makes the widget focusable, binds RetryButton / MainMenuButton clicks and sets up the entrance. */
 	virtual void NativeOnInitialized() override;
+
+	/** Advances the entrance (real time, also while paused). */
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	/** Puts the level saturation back. */
+	virtual void NativeDestruct() override;
 
 	/** Fill the screen from NewRecap and start the appearance animation. Implement in Blueprint. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Run Lost")
 	void OnRunLostShown(const FRRRunLostRecap& NewRecap);
 
-	/** A key or click came during the appearance: jump to the end state, then call FinishAppearance. Implement in Blueprint. */
+	/** A key or click skipped the appearance (already at its end state, FinishAppearance done). Optional Blueprint notification. */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Run Lost")
 	void OnSkipAppearanceRequested();
 
@@ -101,12 +107,14 @@ protected:
 	UPROPERTY(Transient)
 	FRRRunLostRecap Recap;
 
+	/** Widgets the shared entrance drives (title group, RecapBlock, the two buttons, SkipButton). */
+	UPROPERTY(EditDefaultsOnly, Category = "Run Lost")
+	FRRScreenEntranceParts EntranceParts;
+
+	/** The shared entrance effect of this screen. */
+	UPROPERTY(Transient)
+	TObjectPtr<URRScreenEntrance> Entrance;
+
 	/** True once FinishAppearance ran. */
 	bool bAppearanceFinished = false;
-
-	/** Camera whose saturation SetLevelDesaturation changes, and its values before the first change. */
-	TWeakObjectPtr<UCameraComponent> SavedCamera;
-	FVector4 SavedSaturation = FVector4(1.f, 1.f, 1.f, 1.f);
-	bool bSavedOverride = false;
-	bool bSaturationSaved = false;
 };

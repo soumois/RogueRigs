@@ -6,6 +6,15 @@
 #include "Run/RRIntermissionShopSubsystem.h"
 #include "UI/RRButtonHover.h"
 
+URRIntermissionWidget::URRIntermissionWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	EntranceParts.TitleGroup = {TEXT("Title"), TEXT("TitleBarL"), TEXT("TitleBarR"), TEXT("Subtitle"), TEXT("SubtitleLineL"), TEXT("SubtitleLineR")};
+	EntranceParts.FrameGroup = {TEXT("Frame"), TEXT("OreRow"), TEXT("DividerH"), TEXT("DividerV"), TEXT("KillsLine"), TEXT("DamageLine"),
+		TEXT("KillsRows"), TEXT("DamageRows"), TEXT("KillsLabel"), TEXT("DamageLabel")};
+	EntranceParts.Buttons = {TEXT("ContinueButton")};
+}
+
 URRIntermissionShopSubsystem* URRIntermissionWidget::GetShop() const
 {
 	return URRIntermissionShopSubsystem::Get(this);
@@ -15,6 +24,27 @@ void URRIntermissionWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	URRButtonHoverSubsystem::AttachNamed(this, {TEXT("ContinueButton")});
+	Entrance = NewObject<URRScreenEntrance>(this);
+	Entrance->Setup(this, EntranceParts);
+}
+
+void URRIntermissionWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	if (Entrance)
+	{
+		Entrance->Tick(InDeltaTime);
+	}
+}
+
+bool URRIntermissionWidget::SkipEntrance()
+{
+	return Entrance && Entrance->Skip();
+}
+
+bool URRIntermissionWidget::IsEntrancePlaying() const
+{
+	return Entrance && Entrance->IsPlaying();
 }
 
 void URRIntermissionWidget::NativeConstruct()
@@ -32,6 +62,10 @@ void URRIntermissionWidget::NativeDestruct()
 	{
 		Shop->OnShopChanged.RemoveDynamic(this, &URRIntermissionWidget::HandleShopChanged);
 	}
+	if (Entrance)
+	{
+		Entrance->Restore();
+	}
 	Super::NativeDestruct();
 }
 
@@ -45,6 +79,10 @@ void URRIntermissionWidget::ShowRecap(const FRRIntermissionRecap& InRecap)
 	Recap = InRecap;
 	bHasRecap = true;
 	OnRecapShown(Recap);
+	if (Entrance)
+	{
+		Entrance->Start();
+	}
 }
 
 bool URRIntermissionWidget::NextLevel()

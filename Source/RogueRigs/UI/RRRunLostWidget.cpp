@@ -2,11 +2,18 @@
 
 #include "UI/RRRunLostWidget.h"
 
-#include "Camera/CameraComponent.h"
 #include "Components/Button.h"
 #include "GameFramework/PlayerController.h"
 #include "RogueRigs.h"
 #include "UI/RRButtonHover.h"
+
+URRRunLostWidget::URRRunLostWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	EntranceParts.TitleGroup = {TEXT("Title"), TEXT("TitleBarL"), TEXT("TitleBarR"), TEXT("Subtitle"), TEXT("SubLineL"), TEXT("SubLineR")};
+	EntranceParts.FrameGroup = {TEXT("RecapBlock")};
+	EntranceParts.Buttons = {TEXT("RetryButton"), TEXT("MainMenuButton")};
+}
 
 void URRRunLostWidget::NativeOnInitialized()
 {
@@ -23,6 +30,28 @@ void URRRunLostWidget::NativeOnInitialized()
 	// Mouse hover of both plates (ui-button-hover, task-485-03); the invisible SkipButton gets none.
 	URRButtonHoverSubsystem::Attach(RetryButton);
 	URRButtonHoverSubsystem::Attach(MainMenuButton);
+	// Shared entrance (task-547): the end of the appearance, played or skipped, gives the focus to Retry.
+	Entrance = NewObject<URRScreenEntrance>(this);
+	Entrance->Setup(this, EntranceParts);
+	Entrance->OnFinished.BindUObject(this, &URRRunLostWidget::FinishAppearance);
+}
+
+void URRRunLostWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	if (Entrance)
+	{
+		Entrance->Tick(InDeltaTime);
+	}
+}
+
+void URRRunLostWidget::NativeDestruct()
+{
+	if (Entrance)
+	{
+		Entrance->Restore();
+	}
+	Super::NativeDestruct();
 }
 
 void URRRunLostWidget::ShowRunLost(const FRRRunLostRecap& InRecap)
@@ -32,6 +61,10 @@ void URRRunLostWidget::ShowRunLost(const FRRRunLostRecap& InRecap)
 	// The widget itself holds the focus during the appearance, so the first key reaches its OnPreviewKeyDown (skip).
 	SetFocus();
 	OnRunLostShown(Recap);
+	if (Entrance)
+	{
+		Entrance->Start();
+	}
 }
 
 bool URRRunLostWidget::Retry()
@@ -53,6 +86,10 @@ void URRRunLostWidget::FinishAppearance()
 		return;
 	}
 	bAppearanceFinished = true;
+	if (Entrance && Entrance->IsPlaying())
+	{
+		Entrance->Skip();
+	}
 	FocusRetry();
 	UE_LOG(LogRogueRigs, Log, TEXT("URRRunLostWidget: appearance finished, focus on %s."), RetryButton ? TEXT("RetryButton") : TEXT("the screen"));
 }
@@ -69,27 +106,7 @@ void URRRunLostWidget::FocusRetry()
 
 bool URRRunLostWidget::SetLevelDesaturation(float Amount)
 {
-	const APlayerController* Controller = GetOwningPlayer();
-	const AActor* ViewTarget = Controller ? Controller->GetViewTarget() : nullptr;
-	UCameraComponent* Camera = ViewTarget ? ViewTarget->FindComponentByClass<UCameraComponent>() : nullptr;
-	if (!Camera)
-	{
-		return false;
-	}
-	// Global saturation (W) scaled from the camera's own value: 1 - Amount of it, 0 = grey.
-	FPostProcessSettings& Settings = Camera->PostProcessSettings;
-	const FVector4 Base = Settings.bOverride_ColorSaturation ? Settings.ColorSaturation : FVector4(1.f, 1.f, 1.f, 1.f);
-	if (!bSaturationSaved || SavedCamera.Get() != Camera)
-	{
-		SavedCamera = Camera;
-		SavedSaturation = Base;
-		bSavedOverride = Settings.bOverride_ColorSaturation;
-		bSaturationSaved = true;
-	}
-	const float Keep = 1.f - FMath::Clamp(Amount, 0.f, 1.f);
-	Settings.bOverride_ColorSaturation = bSavedOverride || Keep < 1.f;
-	Settings.ColorSaturation = FVector4(SavedSaturation.X, SavedSaturation.Y, SavedSaturation.Z, SavedSaturation.W * Keep);
-	return true;
+	return Entrance && Entrance->SetLevelDesaturation(Amount);
 }
 
 bool URRRunLostWidget::RequestSkipAppearance()
@@ -98,6 +115,11 @@ bool URRRunLostWidget::RequestSkipAppearance()
 	{
 		return false;
 	}
+	if (Entrance)
+	{
+		Entrance->Skip();
+	}
+	FinishAppearance();
 	OnSkipAppearanceRequested();
 	return true;
 }
