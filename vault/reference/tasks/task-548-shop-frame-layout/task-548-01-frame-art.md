@@ -3,7 +3,7 @@ id: task-548-01-frame-art
 description: "Art: New shop panel frame image for its ratio, 9-slice ready, per Q14"
 parent: task-548-shop-frame-layout
 kind: task
-status: todo
+status: in-progress
 ---
 # Spare Parts shop: own panel frame, layout as owner image 8: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:19:49Z
 - waiting_for: none
 - result: open
 
