@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Enemies/RRWaveDirector.h"
 #include "RRHUDPanelWidget.generated.h"
 
 class ARREnemySpawner;
@@ -130,6 +131,17 @@ protected:
 
 	/** Native default: counts the call. Overrides call Super. */
 	virtual void BindToHUD_Implementation(URRHUDWidget* HUD, URRHUDWidget* PreviousHUD);
+
+	/**
+	 * Display event (task-544): the run flow's horde kill gauge changed (URRRunFlowSubsystem::OnHordeGaugeChanged, bound natively
+	 * in SetRunFlow), and once right after BindToRunFlow with the current values. State Hidden = no gauge; Fill 0..1 (1 when Full).
+	 */
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD|Panel")
+	void OnHordeGaugeChanged(ERRHordeGaugeState State, float Fill);
+
+	/** Run flow OnHordeGaugeChanged callback: calls OnHordeGaugeChanged. */
+	UFUNCTION()
+	void HandleHordeGaugeChanged(ERRHordeGaugeState State, float Fill);
 
 	/** Miner handed by the HUD root. */
 	TWeakObjectPtr<ARRMiner> BoundMiner;

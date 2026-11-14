@@ -38,7 +38,25 @@ void URRHUDPanelWidget::SetRunFlow(URRRunFlowSubsystem* RunFlow)
 	}
 	bRunFlowSet = true;
 	BoundRunFlow = RunFlow;
+	// Horde gauge (task-544): bound natively for every panel, so a Blueprint panel only implements OnHordeGaugeChanged.
+	if (Previous)
+	{
+		Previous->OnHordeGaugeChanged.RemoveDynamic(this, &URRHUDPanelWidget::HandleHordeGaugeChanged);
+	}
+	if (RunFlow)
+	{
+		RunFlow->OnHordeGaugeChanged.AddUniqueDynamic(this, &URRHUDPanelWidget::HandleHordeGaugeChanged);
+	}
 	BindToRunFlow(RunFlow, Previous);
+	if (RunFlow)
+	{
+		OnHordeGaugeChanged(RunFlow->GetHordeGaugeState(), RunFlow->GetHordeGaugeFill());
+	}
+}
+
+void URRHUDPanelWidget::HandleHordeGaugeChanged(ERRHordeGaugeState State, float Fill)
+{
+	OnHordeGaugeChanged(State, Fill);
 }
 
 void URRHUDPanelWidget::SetSpawner(ARREnemySpawner* Spawner)
