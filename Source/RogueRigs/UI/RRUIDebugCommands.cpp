@@ -1,23 +1,30 @@
-// Rogue Rigs - button hover debug console commands (task-485, compiled out of shipping): move the real mouse cursor so a -game
-// capture shows a button hovered by the mouse (ui-button-hover), and log the hover state of every attached button.
+// Rogue Rigs - UI input debug console commands for -game captures (compiled out of shipping): rr.Debug.Cursor and
+// rr.Debug.CursorOn move the real mouse cursor so a capture shows a button hovered by the mouse, rr.Debug.ButtonHover logs the
+// hover state of every attached button (task-485, ui-button-hover), rr.Debug.PressKey simulates a key press on the player input
+// (task-547, moved here from RRScreenEntranceDebugCommands.cpp by task-549: one file for the UI input of every screen).
 
 #include "CoreMinimal.h"
 
 #if !UE_BUILD_SHIPPING
 
 #include "Components/Button.h"
+#include "Containers/Ticker.h"
+#include "Debug/RRCheats.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "Framework/Application/SlateApplication.h"
+#include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "InputCoreTypes.h"
+#include "InputKeyEventArgs.h"
 #include "RogueRigs.h"
 #include "UI/RRButtonHover.h"
 #include "UObject/UObjectIterator.h"
 #include "Widgets/SViewport.h"
 
-namespace RRButtonHoverDebug
+namespace RRUIDebug
 {
 	static void MoveCursor(const FVector2D& Absolute, const FString& What)
 	{
@@ -102,6 +109,34 @@ namespace RRButtonHoverDebug
 					Subsystem->LogEntries();
 				}
 			}
+		}),
+		ECVF_Cheat);
+
+	/** rr.Debug.PressKey <Key>: the first player controller receives Key pressed, then released 0.1 s later (real time). */
+	FAutoConsoleCommand PressKeyCommand(
+		TEXT("rr.Debug.PressKey"),
+		TEXT("rr.Debug.PressKey <Key>: simulates a press of Key (e.g. SpaceBar, Enter) on the first player controller, released 0.1 s later."),
+		FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+		{
+			UWorld* World = RRCheats::FindCheatWorld();
+			APlayerController* Controller = World ? World->GetFirstPlayerController() : nullptr;
+			const FKey Key(Args.Num() > 0 ? FName(*Args[0]) : FName(TEXT("SpaceBar")));
+			if (!Controller || !Key.IsValid())
+			{
+				UE_LOG(LogRogueRigs, Warning, TEXT("rr.Debug.PressKey: no player controller or unknown key."));
+				return;
+			}
+			Controller->InputKey(FInputKeyEventArgs::CreateSimulated(Key, IE_Pressed, 1.f));
+			UE_LOG(LogRogueRigs, Log, TEXT("rr.Debug.PressKey: %s pressed."), *Key.ToString());
+			TWeakObjectPtr<APlayerController> WeakController = Controller;
+			FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([WeakController, Key](float)
+			{
+				if (APlayerController* PC = WeakController.Get())
+				{
+					PC->InputKey(FInputKeyEventArgs::CreateSimulated(Key, IE_Released, 0.f));
+				}
+				return false;
+			}), 0.1f);
 		}),
 		ECVF_Cheat);
 }
