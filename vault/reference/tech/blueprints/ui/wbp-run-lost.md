@@ -25,11 +25,11 @@ kind: doc
 | LevelValue, RobotsValue, DuskiteValue | point (0.874, same y), align (1,0.5) | 30, right |
 | RetryButton | point (0.367,0.765), align (0.5,0.5) | 440 x 108, T_Shop_ButtonContinue as in WBP_PauseMenu; RetryText "Retry" 30 |
 | MainMenuButton | point (0.634,0.765), align (0.5,0.5) | same; MainMenuText "Main Menu" 30 |
-| SkipButton | (0,0)-(1,1) | invisible (NoDrawType, alpha 0), not focusable, on top during the appearance |
+| SkipButton | (0,0)-(1,1) | invisible (NoDrawType, alpha 0), not focusable, on top during the appearance; shown, clicked and collapsed by [[sys-screen-entrance]] |
 
-- exposed_defaults: none on the widget. Variables Elapsed (float), Animating (bool).
-- events: OnRunLostShown(NewRecap): sets Title, Subtitle and the three values from the recap texts, ForceLayoutPrepass, places the rails and lines from the desired widths, SkipButton Visible, Elapsed 0, Animating true, ApplyAppearance(0). Tick: while Animating, Elapsed += delta; at 1.4 s or on WasInputKeyJustPressed(AnyKey) of the owning player calls RequestSkipAppearance, else ApplyAppearance(Elapsed). OnClicked(SkipButton) calls RequestSkipAppearance. OnSkipAppearanceRequested: Animating false, ApplyAppearance(1.4), SkipButton Collapsed, FinishAppearance (focus on RetryButton). Construct: SetShouldPerformFullTickWhenPaused(true) on the owning controller, so the paused camera keeps applying the desaturation. Retry and Main Menu clicks are bound by the C++ base.
-- functions: ApplyAppearance(T), values of [[death-screen]] Appearance: Backdrop opacity and SetLevelDesaturation over 0 to 0.6 s; Title, rails, Subtitle and lines opacity over 0.6 to 0.85 s, Title scale 1.4 to 1 and a shake (sin(T x 90) x 8 px, fading to 0 by 1.0 s); RecapBlock opacity and slide up 40 px over 0.85 to 1.15 s; both buttons opacity over 1.15 to 1.35 s.
+- exposed_defaults: none on the widget. Variables Elapsed (float), Animating (bool): unused leftovers since task-547.
+- events: OnRunLostShown(NewRecap): sets Title, Subtitle and the three values from the recap texts, ForceLayoutPrepass, places the rails and lines from the desired widths; the C++ base then starts the appearance. Construct: SetShouldPerformFullTickWhenPaused(true) on the owning controller. Retry and Main Menu clicks are bound by the C++ base. OnSkipAppearanceRequested not implemented.
+- functions: none. The appearance (values of [[death-screen]] Appearance) is the shared C++ [[sys-screen-entrance]] since task-547 (923df28a): the Tick event, the ApplyAppearance function, OnClicked(SkipButton) and the OnSkipAppearanceRequested graph were removed; frames identical before and after (Saved/Captures/t547_rl_before, t547_rl_after).
 - logic_in_bp: display only.
 - assets: the textures above; font Roboto Bold.
 - verified (task-484-04 to 06): compiled with warnings as errors, saved; -game death and missed shuttle at 1920x1080, 1280x720, 1920x1200, 2560x1080 (Saved/Captures/rl06_owner); no script error. Not verified on screen: non-zero recap values, gamepad confirm, skip by key.
@@ -43,3 +43,4 @@ kind: doc
 - [[death-screen]] — the design.
 - [[art-prompts-death-screen-mockup]] — the validated mockup and element mapping.
 - [[sys-button-hover]] — shared mouse hover of its buttons.
+- [[sys-screen-entrance]] — the shared appearance that drives it.

@@ -403,6 +403,7 @@ sys-run-shop  reference/tech/systems/world/sys-run/sys-run-shop.md
 sys-run-transition  reference/tech/systems/world/sys-run/sys-run-transition.md
 sys-run-transition-fade  reference/tech/systems/world/sys-run/sys-run-transition-fade.md
 sys-run-transition-preload  reference/tech/systems/world/sys-run/sys-run-transition-preload.md
+sys-screen-entrance  reference/tech/systems/ui/sys-screen-entrance.md
 sys-spawner  reference/tech/systems/enemies/sys-spawner.md
 sys-spawner-cells-heading  reference/tech/systems/enemies/sys-spawner/sys-spawner-cells-heading.md
 sys-spawner-director  reference/tech/systems/enemies/sys-spawner-director.md

@@ -16,6 +16,7 @@ HUD, minimap, pressure events, subtitles, text content: player-facing display sy
 - [[sys-pause-menu]] — pause menu: controller open/resume/exit, pause keys, stats struct and text formats, rr.Debug.PauseMenu.
 - [[sys-options]] — options: settings class, options subsystem (sound mix, keep-or-revert, focus loss), options widget base, rr.Options commands.
 - [[sys-button-hover]] — shared mouse hover of screen buttons: subsystem, plate material, settings, attach calls, rr.Debug.CursorOn.
+- [[sys-screen-entrance]] — shared entrance of the end screens: parts by name, timings, skip, desaturation, rr.Debug.PressKey.
 
 ## Relations
 - [[systems-index]] — parent index.
