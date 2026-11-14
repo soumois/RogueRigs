@@ -3,7 +3,7 @@ id: task-551-03-doc
 description: "Doc: Update the inventory and Blueprint docs: bolted bar now on pause, stats and options Graphics."
 parent: task-551-options-graphics-divider-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Options Graphics divider: bolts on the frame borders like the pause screen: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T08:47:34Z
 - waiting_for: none
 - result: open
 

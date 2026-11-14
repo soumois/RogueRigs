@@ -15,11 +15,11 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-14, "Tout par défaut")
 - milestone: M2
-- next_step: task-551-02-capture
+- next_step: task-551-03-doc
 - started: 2026-11-14T08:38:10Z
 - waiting_for: none
-- executor_tokens: input 66, cache write 92817, cache read 2149661, output 10450
-- executor_usage: runs 1, turns 33, context start 16k peak 93k, resumes 0, 8 min, units 0.38 M, USD 1.10
+- executor_tokens: input 84, cache write 102118, cache read 2919334, output 12443
+- executor_usage: runs 1, turns 41, context start 16k peak 102k, resumes 1, 10 min, units 0.48 M, USD 1.34
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
 - result: open
