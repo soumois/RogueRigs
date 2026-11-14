@@ -3,7 +3,7 @@ id: task-548-02-shop-layout
 description: "Bp: Apply the new frame and the image 8 layout to the shop screen"
 parent: task-548-shop-frame-layout
 kind: task
-status: todo
+status: in-progress
 ---
 # Spare Parts shop: own panel frame, layout as owner image 8: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:27:39Z
 - waiting_for: none
 - result: open
 
