@@ -3,7 +3,7 @@ id: task-545-02-pause-layout
 description: "Bp: Rebuild the pause frame grid with the bolt and bar pieces as shared pieces"
 parent: task-545-pause-screen-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause screen: grid and bolts on the frame bars as owner image 10: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T03:42:13Z
 - waiting_for: none
 - result: open
 

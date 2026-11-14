@@ -1342,21 +1342,22 @@ kind: note
 | [[task-544-03-gauge-widget]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-544-04-capture]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-544-05-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-545-01-bolt-art]] | opus | 1 | 0k | 84k | 153k | 16k | 0.20 | 16 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | USD | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|---|
-| All subtask rows above (workers) | 392.40 | 388.33 | 0k | 91.76 M | 1896.10 M | 16821k |
+| All subtask rows above (workers) | 393.17 | 388.53 | 0k | 91.84 M | 1896.25 M | 16837k |
 | model mixed | — | 9.51 | 0k | 3.29 M | 29.11 M | 497k |
 | model none | — | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
-| model opus | — | 210.40 | 0k | 47.08 M | 1049.80 M | 9320k |
+| model opus | — | 210.60 | 0k | 47.16 M | 1049.95 M | 9336k |
 | model sonnet | — | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 405.73 | 155.57 | 18k | 30.45 M | 890.32 M | 5692k |
-| Planning runs (planners and legacy planning passes) | 163.87 | 49.71 | 5k | 14.81 M | 174.84 M | 2742k |
+| Executors and legacy orchestrators that ran a task (pilot) | 408.48 | 156.58 | 18k | 30.58 M | 896.70 M | 5734k |
+| Planning runs (planners and legacy planning passes) | 165.60 | 50.18 | 5k | 15.12 M | 175.61 M | 2743k |
 | Agents without a subtask id (other) | 42.67 | 17.15 | 2k | 3.09 M | 104.59 M | 565k |
-| Main sessions (all of them, also chat outside tasks) | 1042.75 | 311.30 | 84k | 64.12 M | 1903.51 M | 8144k |
+| Main sessions (all of them, also chat outside tasks) | 1043.24 | 311.50 | 84k | 64.22 M | 1904.12 M | 8147k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.
