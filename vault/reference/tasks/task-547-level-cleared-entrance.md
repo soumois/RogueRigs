@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 94, context start 16k peak 196k, resumes 2, 19 min, units 1.65 M, USD 4.41
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. New sys-screen-entrance (systems-ui-index); updated sys-run-lost, sys-run-transition, wbp-run-lost (entrance graph removed, leftovers Elapsed/Animating noted), wbp-intermission (backdrop 0.75, entrance parts). Lint clean. Intermission gdd already carries the 2026-11-13 appearance line (edited at confirmation).
+- result: Done. One shared C++ entrance URRScreenEntrance (sys-screen-entrance) drives the run-lost and stats screens (and the level 4 CASH OUT variant); WBP_RunLost entrance graph removed, death screen frames identical before/after; stats backdrop now 75 %. A1-A4 seen in -game (Saved/Captures/t547_sheet.png); key skip via rr.Debug.PressKey leaves NEXT LEVEL unpressed; A5 targeted tests pass (DeathRunLostScreen, Player.GameOver, LevelUpChoiceAfterIntermission, ConsoleExtractionWin). Not verified on screen: mouse-click skip, resolutions other than 1920x1080/1280x720. ALERT: executor run 94 turns / 1.65 M units over the standard budget (90 / 1.5 M), well under the 4x batch limit; cause: BP graph surgery over JSON-RPC plus 6 capture launches (before frames, sequence, level 4, two skip runs).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
