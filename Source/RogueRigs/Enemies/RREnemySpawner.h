@@ -59,8 +59,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeStartedSignature, int32, 
 /** Horde HordeIndex: its front is over, Spawned robots spawned. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeFinishedSignature, int32, HordeIndex, int32, Spawned);
 
-/** The level entered overtime (hordes every 30 s, wave interval halving each overtime minute). */
+/** The level entered overtime (wave interval halving each overtime minute; faster kill gauge, or timed hordes with the older triggers). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRROnOvertimeStartedSignature);
+
+/** Horde kill gauge (task-544): its state or fill (0..1) changed: shown, a counted kill, full, emptied. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnHordeGaugeChangedSignature, ERRHordeGaugeState, State, float, Fill);
 
 /** Enemy was recycled: moved from far off screen back into the spawn band (same robot, class and health); called just after the move. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnEnemyRecycledSignature, ARREnemy*, Enemy);
@@ -507,7 +510,59 @@ public:
 	/** Spawns one robot of SpawnClass now (resolved, per-class cap and MaxAlive respected); none = weighted mix. Null when nothing spawned. */
 	ARREnemy* TrySpawnEnemyOfClass(TSubclassOf<ARREnemy> SpawnClass);
 
+	// --- Horde kill gauge (DirectorConfig.HordeTrigger KillGauge, task-544) ---
+
+	/** Gauge state or fill changed (shown at its "!", each counted kill, full, emptied after its horde). */
+	UPROPERTY(BlueprintAssignable, Category = "Spawner|HordeGauge")
+	FRROnHordeGaugeChangedSignature OnHordeGaugeChanged;
+
+	/**
+	 * A robot was killed (every kill source; URRRunFlowSubsystem::NotifyEnemyKilled forwards it, also while the bar is paused):
+	 * adds the current kill weight to the gauge while it fills, then broadcasts OnHordeGaugeChanged. Returns true when it counted.
+	 */
+	bool NotifyRobotKilled();
+
+	/** True when the hordes come from the kill gauge (director on, KillGauge trigger). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	bool UsesHordeGauge() const { return DirectorConfig.bEnabled && DirectorConfig.UsesKillGauge(); }
+
+	/** Gauge state (Hidden before its "!" is reached, or without the gauge). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	ERRHordeGaugeState GetHordeGaugeState() const { return Director.GetGaugeState(); }
+
+	/** Gauge fill, 0..1 (1 while full). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	float GetHordeGaugeFill() const { return Director.GetGaugeFill(DirectorConfig); }
+
+	/** Gauge units gathered toward the next horde (weighted kills). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	float GetHordeGaugeKills() const { return Director.GetGaugeKills(); }
+
+	/** Gauge units of a full gauge now (70 for the first horde, 150 after). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	int32 GetHordeGaugeTarget() const { return Director.GetGaugeTarget(DirectorConfig); }
+
+	/** Alert (0..1) of the gauge "!" on the alert bar: KillGauge.StartConsoleFraction x the run-flow console mark. */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	float GetHordeGaugeStartAlert() const;
+
+	/** Health factor applied to robots spawned now (1 + 0.2 per horde triggered in overtime). */
+	UFUNCTION(BlueprintPure, Category = "Spawner|HordeGauge")
+	float GetSpawnHealthMultiplier() const { return Director.GetSpawnHealthMultiplier(DirectorConfig); }
+
+	/** Robots of the current or last gauge horde still alive or pending in the pool (prunes the list). */
+	int32 GetHordeRobotCount();
+
 protected:
+	/** Broadcasts OnHordeGaugeChanged with the current state and fill. */
+	void BroadcastHordeGauge();
+
+	/** Robots of the current horde front (delivered); pruned like the alive list. */
+	TArray<TWeakObjectPtr<ARREnemy>> HordeRobots;
+
+	/** True while SpawnHordeUpTo requests robots (they join HordeRobots on delivery). */
+	bool bSpawningHordeRobots = false;
+
 	/** Runs the director for one frame and executes its orders. */
 	void TickDirector(float DeltaSeconds);
 
@@ -836,6 +891,8 @@ protected:
 		FRRPoolRequestHandle Handle;
 		/** Requested class (per-class caps count it). */
 		TSubclassOf<ARREnemy> Class;
+		/** True for a robot of a horde front. */
+		bool bHorde = false;
 	};
 
 	/** Robots pending in the actor pool (pruned on query). */

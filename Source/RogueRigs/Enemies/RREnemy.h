@@ -126,6 +126,12 @@ public:
 	/** True while the robot holds its spawner slot: not dead, or dead with a pending death (IsDeathPending). */
 	bool HoldsSpawnSlot() const { return !IsDead() || IsDeathPending(); }
 
+	/**
+	 * Sets MaxHealth and Health to the CSV MaxHealth x Multiplier (the spawner calls it on delivery; overtime hordes of the kill
+	 * gauge, task-544). A pooled robot gets its CSV stats back at its next life (ResetForNewLife).
+	 */
+	void ApplySpawnHealthMultiplier(float Multiplier);
+
 	/** Knockback resistance from the CSV stats, clamped to [0, 1] (0 = full knockback). */
 	UFUNCTION(BlueprintPure, Category = "Enemy")
 	float GetKnockbackResistance() const;

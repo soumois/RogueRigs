@@ -66,6 +66,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRROnAlertBarEventsChangedSignature,
 /** Relay of the registered spawner's horde announcement: horde HordeIndex starts in SecondsUntil seconds. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnRunFlowHordeIncomingSignature, int32, HordeIndex, float, SecondsUntil);
 
+/** Relay of the registered spawner's horde kill gauge (task-544): state and fill (0..1). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnRunFlowHordeGaugeChangedSignature, ERRHordeGaugeState, State, float, Fill);
+
 /** Fired when the objective locator target changed (None = hide the arrow). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRROnLocatorTargetChangedSignature, ERRLocatorTarget, Target, FVector, WorldLocation);
 
@@ -357,6 +360,21 @@ public:
 	FRROnRunFlowHordeIncomingSignature OnHordeIncoming;
 
 	/**
+	 * Relay of the registered spawner's OnHordeGaugeChanged (task-544): the horde gauge under the alert bar was shown, filled by a
+	 * counted kill, filled up (its horde comes) or emptied after its horde. Read GetHordeGaugeState / GetHordeGaugeFill when binding.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "RunFlow")
+	FRROnRunFlowHordeGaugeChangedSignature OnHordeGaugeChanged;
+
+	/** Horde gauge state of the run's spawner (Hidden without a spawner or without the kill gauge trigger). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	ERRHordeGaugeState GetHordeGaugeState() const;
+
+	/** Horde gauge fill (0..1) of the run's spawner (0 without one). */
+	UFUNCTION(BlueprintPure, Category = "RunFlow")
+	float GetHordeGaugeFill() const;
+
+	/**
 	 * Broadcast when the objective locator target (GetLocatorTarget) changed: console dropped, console hacked, shuttle landed, run
 	 * ended. The arrow needs per-frame placement only while Target is not None.
 	 */
@@ -440,7 +458,8 @@ public:
 
 	/**
 	 * Alert-bar icons of RunFlow (may be null: defaults) and Spawner (may be null: no horde icons): console, bonus chest (threshold
-	 * > 0), one horde (the first one not Done, i.e. whose front has not finished spawning; none after the last, task-525), shuttle.
+	 * > 0), one horde (the first one not Done, i.e. whose front has not finished spawning; none after the last, task-525; with the
+	 * kill gauge trigger, task-544: one "!" at the gauge start alert while the gauge is Hidden, none after), shuttle.
 	 * InOutDoneHordePositions freezes a started horde at the alert of that moment.
 	 */
 	static void ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFlow, const ARREnemySpawner* InSpawner, TMap<int32, float>& InOutDoneHordePositions, TArray<FRRAlertBarEvent>& OutEvents);
@@ -495,6 +514,10 @@ protected:
 	/** Spawner OnHordeFinished callback: refreshes the icons. */
 	UFUNCTION()
 	void HandleHordeFinished(int32 HordeIndex, int32 Spawned);
+
+	/** Spawner OnHordeGaugeChanged callback: relays OnHordeGaugeChanged and refreshes the icons (the "!" goes when the gauge shows). */
+	UFUNCTION()
+	void HandleHordeGaugeChanged(ERRHordeGaugeState State, float Fill);
 
 	/** The run's spawner (RegisterSpawner). */
 	TWeakObjectPtr<ARREnemySpawner> Spawner;

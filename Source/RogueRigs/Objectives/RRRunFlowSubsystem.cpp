@@ -146,6 +146,11 @@ void URRRunFlowSubsystem::NotifyEnemyKilled(AActor* Enemy, AActor* DeathInstigat
 	{
 		return;
 	}
+	// Horde kill gauge (task-544): every kill counts, also while the bar is paused by the console.
+	if (ARREnemySpawner* RunSpawner = Spawner.Get())
+	{
+		RunSpawner->NotifyRobotKilled();
+	}
 	++KillCount;
 	if (HasPendingObjective() || bExtractionReady)
 	{
@@ -1199,6 +1204,7 @@ void URRRunFlowSubsystem::RegisterSpawner(ARREnemySpawner* InSpawner)
 	InSpawner->OnHordeLull.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeLull);
 	InSpawner->OnHordeStarted.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeStarted);
 	InSpawner->OnHordeFinished.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeFinished);
+	InSpawner->OnHordeGaugeChanged.AddUniqueDynamic(this, &URRRunFlowSubsystem::HandleHordeGaugeChanged);
 	OnSpawnerRegistered.Broadcast(InSpawner);
 	RefreshAlertBarEvents();
 }
@@ -1254,7 +1260,20 @@ void URRRunFlowSubsystem::ComputeAlertBarEvents(const URRRunFlowSubsystem* RunFl
 		ChestIcon.bDone = Chest && Chest->IsComplete();
 	}
 
-	if (InSpawner && InSpawner->IsDirectorEnabled())
+	if (InSpawner && InSpawner->UsesHordeGauge())
+	{
+		// Kill gauge (task-544): one single "!" at half of the console mark until the bar reaches it; then the gauge under the bar
+		// replaces it (no horde mark on the bar any more).
+		if (InSpawner->GetHordeGaugeState() == ERRHordeGaugeState::Hidden)
+		{
+			FRRAlertBarEvent& HordeIcon = OutEvents.AddDefaulted_GetRef();
+			HordeIcon.Type = ERRAlertBarEventType::Horde;
+			HordeIcon.Index = 0;
+			HordeIcon.bDone = false;
+			HordeIcon.Position = InSpawner->GetHordeGaugeStartAlert();
+		}
+	}
+	else if (InSpawner && InSpawner->IsDirectorEnabled())
 	{
 		const bool bAlertTrigger = InSpawner->GetHordeTrigger() == ERRHordeTrigger::Alert;
 		const int32 ActiveHorde = InSpawner->GetActiveHorde();
@@ -1362,4 +1381,22 @@ void URRRunFlowSubsystem::HandleHordeStarted(int32 HordeIndex, ERRSpawnSide Side
 void URRRunFlowSubsystem::HandleHordeFinished(int32 HordeIndex, int32 Spawned)
 {
 	RefreshAlertBarEvents();
+}
+
+void URRRunFlowSubsystem::HandleHordeGaugeChanged(ERRHordeGaugeState State, float Fill)
+{
+	OnHordeGaugeChanged.Broadcast(State, Fill);
+	RefreshAlertBarEvents();
+}
+
+ERRHordeGaugeState URRRunFlowSubsystem::GetHordeGaugeState() const
+{
+	const ARREnemySpawner* RunSpawner = Spawner.Get();
+	return RunSpawner && RunSpawner->UsesHordeGauge() ? RunSpawner->GetHordeGaugeState() : ERRHordeGaugeState::Hidden;
+}
+
+float URRRunFlowSubsystem::GetHordeGaugeFill() const
+{
+	const ARREnemySpawner* RunSpawner = Spawner.Get();
+	return RunSpawner && RunSpawner->UsesHordeGauge() ? RunSpawner->GetHordeGaugeFill() : 0.f;
 }

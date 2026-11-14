@@ -257,6 +257,10 @@ public:
 	UFUNCTION()
 	void HandleHordeFinished(int32 HordeIndex, int32 Spawned) { DirectorEvents.Add(FString::Printf(TEXT("Finished:%d:%d"), HordeIndex, Spawned)); }
 
+	/** Bind to ARREnemySpawner or URRRunFlowSubsystem OnHordeGaugeChanged: appends "Gauge:<state>:<fill x 1000>" (task-544). */
+	UFUNCTION()
+	void HandleHordeGaugeChanged(ERRHordeGaugeState State, float Fill) { DirectorEvents.Add(FString::Printf(TEXT("Gauge:%d:%d"), static_cast<int32>(State), FMath::RoundToInt(Fill * 1000.f))); }
+
 	/** Wave director events received so far, in order. */
 	const TArray<FString>& GetDirectorEvents() const { return DirectorEvents; }
 

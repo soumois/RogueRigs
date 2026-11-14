@@ -47,13 +47,17 @@ const FRRDirectorHorde* FRRWaveDirectorConfig::FindHorde(int32 Index) const
 	{
 		return &Hordes[Index];
 	}
+	if (UsesKillGauge())
+	{
+		return Index >= 0 && !Hordes.IsEmpty() ? &Hordes.Last() : nullptr;
+	}
 	return Index >= 0 && IsOvertimeHorde(Index) ? &Overtime.Horde : nullptr;
 }
 
 float FRRWaveDirectorConfig::GetHordeFrontTime(int32 Index) const
 {
 	const FRRDirectorHorde* Horde = FindHorde(Index);
-	if (!Horde)
+	if (!Horde || UsesKillGauge())
 	{
 		return -1.f;
 	}
@@ -158,7 +162,25 @@ FRRWaveDirectorConfig FRRWaveDirectorConfig::MakeDefault()
 	Config.Overtime.Horde.TriggerAlert = 1.f;
 	// First horde (task-524, owner 2026-11-13, provisional): its front 20 s after the console landed, so it no longer falls on the
 	// console drop (40 % of the bar, about 1:36); the second keeps its run time. 95 s stays its time in a run without a console.
+	// Kept for the RunTime trigger; the default trigger is the kill gauge below.
 	Config.Hordes[0].ConsoleLandedDelaySeconds = 20.f;
+
+	// Kill gauge (task-544, owner 2026-11-13 UI batch, provisional): a single "!" at half of the console mark; then each horde
+	// comes when the gauge is full: 70 kills for the first, 150 for each next, every kill source; over when its robots are gone or
+	// 30 s after its front; overtime: a kill counts 2 from 3:30 and 3 from 4:30, +20 % base health per overtime horde.
+	Config.HordeTrigger = ERRHordeTrigger::KillGauge;
+	Config.KillGauge.StartConsoleFraction = 0.5f;
+	Config.KillGauge.FirstHordeKills = 70;
+	Config.KillGauge.NextHordeKills = 150;
+	Config.KillGauge.HordeEndSeconds = 30.f;
+	FRRDirectorKillWeightStep Double;
+	Double.StartTime = 210.f;
+	Double.Weight = 2.f;
+	FRRDirectorKillWeightStep Triple;
+	Triple.StartTime = 270.f;
+	Triple.Weight = 3.f;
+	Config.KillGauge.KillWeightSteps = { Double, Triple };
+	Config.KillGauge.OvertimeHealthStep = 0.2f;
 
 	// Shooter counter (owner 2026-10-06 fourth test, provisional): at most 4 alive; a pack drawn at the cap gets chasers in place
 	// of its shooters.
@@ -286,6 +308,72 @@ void FRRWaveDirector::Reset()
 	bOvertimeAnnounced = false;
 	bConsoleExpected = false;
 	ConsoleLandedTime = -1.f;
+	GaugeState = ERRHordeGaugeState::Hidden;
+	GaugeKills = 0.f;
+	GaugeHordeCount = 0;
+	OvertimeHordeCount = 0;
+	GaugeEndClock = 0.f;
+	bGaugeHordeCleared = false;
+}
+
+float FRRWaveDirector::GetGaugeStartAlert(const FRRWaveDirectorConfig& Config) const
+{
+	return FMath::Clamp(Config.KillGauge.StartConsoleFraction * ConsoleAlertThreshold, 0.f, 1.f);
+}
+
+int32 FRRWaveDirector::GetGaugeTarget(const FRRWaveDirectorConfig& Config) const
+{
+	// While full, the target of the horde it is full for (the one just triggered).
+	return Config.GetGaugeTarget(GaugeState == ERRHordeGaugeState::Full ? GaugeHordeCount - 1 : GaugeHordeCount);
+}
+
+float FRRWaveDirector::GetGaugeFill(const FRRWaveDirectorConfig& Config) const
+{
+	switch (GaugeState)
+	{
+	case ERRHordeGaugeState::Full:
+		return 1.f;
+	case ERRHordeGaugeState::Filling:
+		return FMath::Clamp(GaugeKills / static_cast<float>(GetGaugeTarget(Config)), 0.f, 1.f);
+	default:
+		return 0.f;
+	}
+}
+
+float FRRWaveDirector::GetKillWeight(const FRRWaveDirectorConfig& Config) const
+{
+	float Weight = 1.f;
+	for (const FRRDirectorKillWeightStep& Step : Config.KillGauge.KillWeightSteps)
+	{
+		if (RunTime >= Step.StartTime)
+		{
+			Weight = FMath::Max(Weight, Step.Weight);
+		}
+	}
+	return Weight;
+}
+
+bool FRRWaveDirector::AddGaugeKill(const FRRWaveDirectorConfig& Config)
+{
+	if (!Config.UsesKillGauge() || GaugeState != ERRHordeGaugeState::Filling)
+	{
+		return false;
+	}
+	GaugeKills += GetKillWeight(Config);
+	return true;
+}
+
+float FRRWaveDirector::GetSpawnHealthMultiplier(const FRRWaveDirectorConfig& Config) const
+{
+	return 1.f + FMath::Max(Config.KillGauge.OvertimeHealthStep, 0.f) * OvertimeHordeCount;
+}
+
+void FRRWaveDirector::SetGaugeState(ERRHordeGaugeState NewState, TArray<FRRDirectorAction>& OutActions)
+{
+	GaugeState = NewState;
+	FRRDirectorAction& Changed = OutActions.AddDefaulted_GetRef();
+	Changed.Type = FRRDirectorAction::EType::GaugeChanged;
+	Changed.Index = static_cast<int32>(NewState);
 }
 
 void FRRWaveDirector::NotifyConsoleLanded()
@@ -381,16 +469,17 @@ float FRRWaveDirector::GetSecondsUntilHordeFront(const FRRWaveDirectorConfig& Co
 
 void FRRWaveDirector::Advance(const FRRWaveDirectorConfig& Config, float DeltaSeconds, float Alert, FRandomStream& Stream, TArray<FRRDirectorAction>& OutActions)
 {
-	while (HordeStates.Num() < Config.Hordes.Num())
+	// Kill gauge: horde states are added as the gauge triggers them, never listed ahead.
+	while (!Config.UsesKillGauge() && HordeStates.Num() < Config.Hordes.Num())
 	{
 		HordeStates.Add(ERRHordeState::Pending);
 	}
 	RunTime += DeltaSeconds;
 	if (IsInOvertime(Config))
 	{
-		// One more overtime horde per HordeInterval begun.
+		// One more overtime horde per HordeInterval begun (timed triggers only).
 		const int32 OvertimeHordes = FMath::FloorToInt((RunTime - Config.Overtime.StartTime) / FMath::Max(Config.Overtime.HordeInterval, 1.f)) + 1;
-		while (HordeStates.Num() < Config.Hordes.Num() + OvertimeHordes)
+		while (!Config.UsesKillGauge() && HordeStates.Num() < Config.Hordes.Num() + OvertimeHordes)
 		{
 			HordeStates.Add(ERRHordeState::Pending);
 		}
@@ -482,8 +571,65 @@ void FRRWaveDirector::Advance(const FRRWaveDirectorConfig& Config, float DeltaSe
 	}
 }
 
+void FRRWaveDirector::AdvanceGauge(const FRRWaveDirectorConfig& Config, float DeltaSeconds, float Alert, TArray<FRRDirectorAction>& OutActions)
+{
+	// The single "!" of the bar: reaching it shows the gauge and starts no horde.
+	if (GaugeState == ERRHordeGaugeState::Hidden && Alert >= GetGaugeStartAlert(Config))
+	{
+		SetGaugeState(ERRHordeGaugeState::Filling, OutActions);
+	}
+	if (ActiveHorde != INDEX_NONE)
+	{
+		HordeClock += DeltaSeconds;
+		StepActiveHorde(Config, OutActions);
+		return;
+	}
+	if (GaugeState == ERRHordeGaugeState::Full)
+	{
+		// Front over: the horde runs until its robots are gone or HordeEndSeconds passed, then the gauge empties.
+		GaugeEndClock += DeltaSeconds;
+		if (bGaugeHordeCleared || GaugeEndClock >= FMath::Max(Config.KillGauge.HordeEndSeconds, 0.f))
+		{
+			bGaugeHordeCleared = false;
+			GaugeKills = 0.f;
+			GaugeEndClock = 0.f;
+			SetGaugeState(ERRHordeGaugeState::Filling, OutActions);
+		}
+		return;
+	}
+	if (GaugeState != ERRHordeGaugeState::Filling || GaugeKills < static_cast<float>(Config.GetGaugeTarget(GaugeHordeCount)) || !Config.FindHorde(GaugeHordeCount))
+	{
+		return;
+	}
+	// Full: the next horde's lull starts now.
+	const int32 Next = GaugeHordeCount++;
+	if (IsInOvertime(Config))
+	{
+		++OvertimeHordeCount;
+	}
+	GaugeEndClock = 0.f;
+	bGaugeHordeCleared = false;
+	SetGaugeState(ERRHordeGaugeState::Full, OutActions);
+	while (HordeStates.Num() <= Next)
+	{
+		HordeStates.Add(ERRHordeState::Pending);
+	}
+	ActiveHorde = Next;
+	HordeClock = 0.f;
+	HordeStates[Next] = ERRHordeState::Lull;
+	FRRDirectorAction& Lull = OutActions.AddDefaulted_GetRef();
+	Lull.Type = FRRDirectorAction::EType::HordeLull;
+	Lull.Index = Next;
+	StepActiveHorde(Config, OutActions);
+}
+
 void FRRWaveDirector::AdvanceHordes(const FRRWaveDirectorConfig& Config, float DeltaSeconds, float Alert, TArray<FRRDirectorAction>& OutActions)
 {
+	if (Config.UsesKillGauge())
+	{
+		AdvanceGauge(Config, DeltaSeconds, Alert, OutActions);
+		return;
+	}
 	if (ActiveHorde == INDEX_NONE)
 	{
 		// Only the first pending horde of the list may trigger (hordes come in order, one at a time); the first pending overtime
@@ -531,8 +677,18 @@ void FRRWaveDirector::AdvanceHordes(const FRRWaveDirectorConfig& Config, float D
 	{
 		HordeClock += DeltaSeconds;
 	}
+	StepActiveHorde(Config, OutActions);
+}
 
-	const FRRDirectorHorde& Horde = *Config.FindHorde(ActiveHorde);
+void FRRWaveDirector::StepActiveHorde(const FRRWaveDirectorConfig& Config, TArray<FRRDirectorAction>& OutActions)
+{
+	const FRRDirectorHorde* HordePtr = Config.FindHorde(ActiveHorde);
+	if (!HordePtr || !HordeStates.IsValidIndex(ActiveHorde))
+	{
+		ActiveHorde = INDEX_NONE;
+		return;
+	}
+	const FRRDirectorHorde& Horde = *HordePtr;
 	const float Lull = FMath::Max(Horde.LullSeconds, 0.f);
 	const float Warning = FMath::Clamp(Horde.WarningSeconds, 0.f, Lull);
 	ERRHordeState& State = HordeStates[ActiveHorde];

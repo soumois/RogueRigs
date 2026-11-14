@@ -3,6 +3,7 @@
 #include "Enemies/RREnemySpawner.h"
 #include "Objectives/RRRunFlowSubsystem.h"
 
+#include "Algo/Count.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
@@ -586,6 +587,10 @@ bool ARREnemySpawner::SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const F
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		OutEnemy = World->SpawnActor<ARREnemy>(SpawnClass, Location, FRotator::ZeroRotator, SpawnParams);
 		TrackSpawnedEnemy(OutEnemy);
+		if (bSpawningHordeRobots && OutEnemy)
+		{
+			HordeRobots.Add(OutEnemy);
+		}
 		return OutEnemy != nullptr;
 	}
 
@@ -597,25 +602,34 @@ bool ARREnemySpawner::SpawnEnemyOnCell(TSubclassOf<ARREnemy> SpawnClass, const F
 	{
 		OutEnemy = Pool->AcquireImmediate<ARREnemy>(TSubclassOf<ARREnemy>(SpawnClass), Transform, Params);
 		TrackSpawnedEnemy(OutEnemy);
+		if (bSpawningHordeRobots && OutEnemy)
+		{
+			HordeRobots.Add(OutEnemy);
+		}
 		return OutEnemy != nullptr;
 	}
 	Params.MaxFrames = SpawnMaxFrames;
 	// The robot joins the alive list only on delivery (at once for a reused robot, inside Acquire; later for a creation).
 	TSharedRef<TWeakObjectPtr<ARREnemy>> Delivered = MakeShared<TWeakObjectPtr<ARREnemy>>();
 	TWeakObjectPtr<ARREnemySpawner> WeakThis(this);
-	Params.OnReady = [WeakThis, Delivered](AActor* Actor)
+	const bool bHorde = bSpawningHordeRobots;
+	Params.OnReady = [WeakThis, Delivered, bHorde](AActor* Actor)
 	{
 		ARREnemy* Enemy = Cast<ARREnemy>(Actor);
 		*Delivered = Enemy;
 		if (ARREnemySpawner* Spawner = WeakThis.Get())
 		{
 			Spawner->TrackSpawnedEnemy(Enemy);
+			if (bHorde && Enemy)
+			{
+				Spawner->HordeRobots.Add(Enemy);
+			}
 		}
 	};
 	const FRRPoolRequestHandle Handle = Pool->Acquire(SpawnClass, Transform, MoveTemp(Params));
 	if (Handle.IsValid())
 	{
-		PendingSpawns.Add({ Handle, SpawnClass });
+		PendingSpawns.Add({ Handle, SpawnClass, bHorde });
 		return true;
 	}
 	OutEnemy = Delivered->Get();
@@ -631,6 +645,12 @@ void ARREnemySpawner::TrackSpawnedEnemy(ARREnemy* Enemy)
 	}
 	AliveEnemies.AddUnique(Enemy);
 	RecycleStates.Add(Enemy, FRecycleState());
+	// Overtime hordes of the kill gauge (task-544): +20 % base health per such horde, for robots spawned after it.
+	const float HealthMultiplier = Director.GetSpawnHealthMultiplier(DirectorConfig);
+	if (!FMath::IsNearlyEqual(HealthMultiplier, 1.f))
+	{
+		Enemy->ApplySpawnHealthMultiplier(HealthMultiplier);
+	}
 	UE_LOG(LogRogueRigs, Verbose, TEXT("ARREnemySpawner %s: %s spawned, %d alive, %d pending."), *GetName(), *Enemy->GetName(),
 		AliveEnemies.Num(), PendingSpawns.Num());
 }
@@ -673,6 +693,7 @@ void ARREnemySpawner::ResetForNextLevel()
 	HordeSpawned = 0;
 	HordePlanIndex = INDEX_NONE;
 	HordeSide = ERRSpawnSide::None;
+	HordeRobots.Reset();
 	RandomStream.GenerateNewSeed();
 	UE_LOG(LogRogueRigs, Log, TEXT("Spawner %s: reset for the next level in the same world (pool prewarm %s)."), *GetName(),
 		IsPoolPrewarmComplete() ? TEXT("complete, kept") : TEXT("not complete"));
@@ -1024,8 +1045,17 @@ void ARREnemySpawner::TickDirector(float DeltaSeconds)
 	{
 		Director.NotifyConsoleLanded();
 		const float FirstFront = Director.GetHordeFrontTime(DirectorConfig, 0);
-		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: console landed at %.1f s; horde 0 front at %.1f s%s."), *GetName(), RunTime, FirstFront,
-			Director.IsConsoleTimedHorde(DirectorConfig, 0) ? TEXT(" (timed from the landing)") : TEXT(" (its run time)"));
+		if (!DirectorConfig.UsesKillGauge())
+		{
+			UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: console landed at %.1f s; horde 0 front at %.1f s%s."), *GetName(), RunTime, FirstFront,
+				Director.IsConsoleTimedHorde(DirectorConfig, 0) ? TEXT(" (timed from the landing)") : TEXT(" (its run time)"));
+		}
+	}
+	// Kill gauge (task-544): its "!" follows the console mark; a running gauge horde is over once its robots are all gone.
+	Director.SetConsoleAlertThreshold(RunFlow ? RunFlow->GetConfig().ConsoleAlertThreshold : FRRRunFlowConfig().ConsoleAlertThreshold);
+	if (Director.IsGaugeHordeRunning() && GetHordeRobotCount() == 0)
+	{
+		Director.NotifyGaugeHordeCleared();
 	}
 	Director.Advance(DirectorConfig, DeltaSeconds, GetDirectorAlert(), RandomStream, DirectorActions);
 	for (const FRRDirectorAction& Action : DirectorActions)
@@ -1086,7 +1116,46 @@ void ARREnemySpawner::ExecuteDirectorAction(const FRRDirectorAction& Action)
 		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: overtime at %.1f s."), *GetName(), RunTime);
 		OnOvertimeStarted.Broadcast();
 		break;
+	case FRRDirectorAction::EType::GaugeChanged:
+		UE_LOG(LogRogueRigs, Log, TEXT("ARREnemySpawner %s: horde gauge %s at %.1f s (%.0f / %d, %d hordes, health x%.2f)."), *GetName(),
+			*UEnum::GetValueAsString(Director.GetGaugeState()), RunTime, Director.GetGaugeKills(), Director.GetGaugeTarget(DirectorConfig),
+			Director.GetGaugeHordeCount(), Director.GetSpawnHealthMultiplier(DirectorConfig));
+		BroadcastHordeGauge();
+		break;
 	}
+}
+
+bool ARREnemySpawner::NotifyRobotKilled()
+{
+	if (!DirectorConfig.bEnabled || !Director.AddGaugeKill(DirectorConfig))
+	{
+		return false;
+	}
+	BroadcastHordeGauge();
+	return true;
+}
+
+float ARREnemySpawner::GetHordeGaugeStartAlert() const
+{
+	const UWorld* World = GetWorld();
+	const URRRunFlowSubsystem* RunFlow = World ? World->GetSubsystem<URRRunFlowSubsystem>() : nullptr;
+	const float Threshold = RunFlow ? RunFlow->GetConfig().ConsoleAlertThreshold : FRRRunFlowConfig().ConsoleAlertThreshold;
+	return FMath::Clamp(DirectorConfig.KillGauge.StartConsoleFraction * Threshold, 0.f, 1.f);
+}
+
+int32 ARREnemySpawner::GetHordeRobotCount()
+{
+	HordeRobots.RemoveAll([](const TWeakObjectPtr<ARREnemy>& Enemy)
+	{
+		return !Enemy.IsValid() || Enemy->IsActorBeingDestroyed() || Enemy->IsDead() || !Enemy->HoldsSpawnSlot() || URRActorPoolSubsystem::IsPooledIdle(Enemy.Get());
+	});
+	PrunePending();
+	return HordeRobots.Num() + Algo::CountIf(PendingSpawns, [](const FPendingSpawn& Pending) { return Pending.bHorde; });
+}
+
+void ARREnemySpawner::BroadcastHordeGauge()
+{
+	OnHordeGaugeChanged.Broadcast(Director.GetGaugeState(), Director.GetGaugeFill(DirectorConfig));
 }
 
 void ARREnemySpawner::DrawMembers(const TArray<FRRDirectorPackMember>& Members, TMap<UClass*, int32>& Room, int32& ShooterRoom,
@@ -1522,6 +1591,7 @@ ERRSpawnSide ARREnemySpawner::PrepareHorde(int32 HordeIndex)
 	HordeSpawned = 0;
 	HordePlanIndex = HordeIndex;
 	HordeSide = ERRSpawnSide::None;
+	HordeRobots.Reset();
 	const ARRArenaGrid* Grid = GetGrid();
 	FBox2D View;
 	const int32 FreeSlots = MaxAlive - GetOccupiedCount();
@@ -1634,6 +1704,7 @@ void ARREnemySpawner::SpawnHordeUpTo(float Fraction)
 	FBox2D View;
 	const bool bHasView = Grid && GetViewRectangle(View);
 	const float MinDistance = SpawnBandMinDistance;
+	TGuardValue<bool> HordeSpawnGuard(bSpawningHordeRobots, true);
 	for (; HordePlanCursor < Target; ++HordePlanCursor)
 	{
 		if (GetOccupiedCount() >= MaxAlive)

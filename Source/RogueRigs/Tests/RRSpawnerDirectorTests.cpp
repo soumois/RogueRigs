@@ -5,8 +5,11 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "AbilitySystemComponent.h"
 #include "Algo/Count.h"
 #include "Enemies/RRChaser.h"
+#include "GAS/RRHealthAttributeSet.h"
+#include "Objectives/RRRunFlowSubsystem.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRHeavy.h"
 #include "Enemies/RRKamikaze.h"
@@ -144,6 +147,7 @@ namespace RRSpawnerDirectorTests
 	FRRWaveDirectorConfig ShortHordeConfig()
 	{
 		FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+		Config.HordeTrigger = ERRHordeTrigger::RunTime; // the former timed trigger (the default is the kill gauge since task-544)
 		Config.Phases.Reset();
 		Config.Hordes.SetNum(1);
 		FRRDirectorHorde& Horde = Config.Hordes[0];
@@ -180,7 +184,9 @@ bool FRRSpawnerDirectorPhaseTimesTest::RunTest(const FString& Parameters)
 		return false;
 	}
 	TestEqual(TEXT("no shooter-only pack type"), Config.FindPackType(TEXT("Shooters")), INDEX_NONE);
-	TestEqual(TEXT("horde trigger is run time"), Config.HordeTrigger, ERRHordeTrigger::RunTime);
+	// task-544: the default trigger is the kill gauge (own test, DirectorKillGauge); the timed hordes below run the RunTime trigger.
+	TestEqual(TEXT("horde trigger is the kill gauge"), Config.HordeTrigger, ERRHordeTrigger::KillGauge);
+	Config.HordeTrigger = ERRHordeTrigger::RunTime;
 	const TArray<FTimedAction> Actions = RunDirectorSchedule(Config, 240.f, [](float) { return 0.f; }, 20261005);
 
 	// Phases at 1, 15, 21, 60, 90 s (no calm; FlowShields and FlowWide keep the wave timer).
@@ -874,9 +880,11 @@ bool FRRSpawnerDirectorOvertimeTest::RunTest(const FString& Parameters)
 	using namespace RRSpawnerDirectorTests;
 	using EType = FRRDirectorAction::EType;
 
-	// Defaults (difficulty gdd, owner 2026-10-06 third test, provisional): from 3:30 a horde every 30 s, the wave interval
-	// halved at each overtime minute begun.
-	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	// Defaults (difficulty gdd, owner 2026-10-06 third test, provisional): the wave interval halved at each overtime minute begun;
+	// with the timed triggers (RunTime here) a horde every 30 s from 3:30. The default kill gauge has no timed horde (end of test).
+	const FRRWaveDirectorConfig Default = FRRWaveDirectorConfig::MakeDefault();
+	FRRWaveDirectorConfig Config = Default;
+	Config.HordeTrigger = ERRHordeTrigger::RunTime;
 	TestTrue(TEXT("overtime on"), Config.Overtime.bEnabled);
 	TestEqual(TEXT("overtime from 210 s (3:30)"), Config.Overtime.StartTime, 210.f);
 	TestEqual(TEXT("a horde every 30 s"), Config.Overtime.HordeInterval, 30.f);
@@ -957,6 +965,219 @@ bool FRRSpawnerDirectorOvertimeTest::RunTest(const FString& Parameters)
 	const TArray<FTimedAction> OffActions = RunDirectorSchedule(Off, 300.f, [](float) { return 0.f; }, 20261006);
 	TestEqual(TEXT("overtime off: no OvertimeStarted"), DirectorTimesOf(OffActions, EType::OvertimeStarted).Num(), 0);
 	TestEqual(TEXT("overtime off: two fronts"), DirectorTimesOf(OffActions, EType::HordeStarted).Num(), 2);
+
+	// Kill gauge default (task-544): overtime starts and halves the waves the same way, but no horde comes from time alone.
+	const TArray<FTimedAction> GaugeActions = RunDirectorSchedule(Default, 345.f, [](float RunTime) { return RunTime / 240.f; }, 20261006);
+	TestEqual(TEXT("kill gauge: one OvertimeStarted"), DirectorTimesOf(GaugeActions, EType::OvertimeStarted).Num(), 1);
+	TestEqual(TEXT("kill gauge: no horde without kills (no 30 s timer, no fixed time)"), DirectorTimesOf(GaugeActions, EType::HordeLull).Num(), 0);
+	TestEqual(TEXT("kill gauge: no timed overtime horde"), Default.GetHordeFrontTime(Default.Hordes.Num()), -1.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerDirectorKillGaugeTest, "RogueRigs.Spawner.DirectorKillGauge",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerDirectorKillGaugeTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerDirectorTests;
+	using EType = FRRDirectorAction::EType;
+
+	// task-544 (owner 2026-11-13, provisional): "!" at half of the console mark (20 %), 70 kills then 150, full until the horde is
+	// over (cleared or 30 s after its front), x2 kills from 3:30 and x3 from 4:30, +20 % health per overtime horde.
+	const FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	TestEqual(TEXT("default trigger: kill gauge"), Config.HordeTrigger, ERRHordeTrigger::KillGauge);
+	TestEqual(TEXT("first horde 70 kills"), Config.KillGauge.FirstHordeKills, 70);
+	TestEqual(TEXT("next hordes 150 kills"), Config.KillGauge.NextHordeKills, 150);
+	TestEqual(TEXT("horde over 30 s after its front"), Config.KillGauge.HordeEndSeconds, 30.f);
+	TestEqual(TEXT("+20 % health per overtime horde"), Config.KillGauge.OvertimeHealthStep, 0.2f);
+
+	FRRWaveDirector Director;
+	Director.Reset();
+	FRandomStream Stream(20261113);
+	TArray<FRRDirectorAction> Frame;
+	TArray<FTimedAction> Actions;
+	float Alert = 0.f;
+	const auto Step = [&](int32 Frames)
+	{
+		for (int32 Index = 0; Index < Frames; ++Index)
+		{
+			Frame.Reset();
+			Director.Advance(Config, 1.f / 60.f, Alert, Stream, Frame);
+			for (const FRRDirectorAction& Action : Frame)
+			{
+				Actions.Add({ Director.GetRunTime(), Action });
+			}
+		}
+	};
+	const auto Kill = [&](int32 Count)
+	{
+		int32 Counted = 0;
+		for (int32 Index = 0; Index < Count; ++Index)
+		{
+			Counted += Director.AddGaugeKill(Config) ? 1 : 0;
+		}
+		return Counted;
+	};
+
+	// Hidden below 20 % of the bar: kills do not count and no horde comes.
+	TestNearlyEqual(TEXT("gauge mark at half of C (0.2)"), Director.GetGaugeStartAlert(Config), 0.2f, KINDA_SMALL_NUMBER);
+	Alert = 0.19f;
+	Step(60);
+	TestEqual(TEXT("hidden below the mark"), Director.GetGaugeState(), ERRHordeGaugeState::Hidden);
+	TestEqual(TEXT("kills before the mark not counted"), Kill(100), 0);
+	// Reaching the mark: the gauge shows, no horde.
+	Alert = 0.2f;
+	Step(1);
+	TestEqual(TEXT("shown at the mark"), Director.GetGaugeState(), ERRHordeGaugeState::Filling);
+	TestEqual(TEXT("no horde at the mark"), DirectorTimesOf(Actions, EType::HordeLull).Num(), 0);
+	TestEqual(TEXT("one GaugeChanged (shown)"), DirectorTimesOf(Actions, EType::GaugeChanged).Num(), 1);
+	// 69 kills: still filling; the 70th fills it and the next frame starts the horde lull.
+	TestEqual(TEXT("69 kills counted"), Kill(69), 69);
+	TestNearlyEqual(TEXT("fill 69 / 70"), Director.GetGaugeFill(Config), 69.f / 70.f, KINDA_SMALL_NUMBER);
+	Step(1);
+	TestEqual(TEXT("no horde at 69"), DirectorTimesOf(Actions, EType::HordeLull).Num(), 0);
+	Kill(1);
+	Step(1);
+	TestEqual(TEXT("full at 70"), Director.GetGaugeState(), ERRHordeGaugeState::Full);
+	TestTrue(TEXT("horde 0 lull at 70 kills"), DirectorTimesOf(Actions, EType::HordeLull, 0).Num() == 1);
+	TestEqual(TEXT("kills while full not counted"), Kill(20), 0);
+	TestNearlyEqual(TEXT("fill 1 while full"), Director.GetGaugeFill(Config), 1.f, KINDA_SMALL_NUMBER);
+	// Lull 5 s, front 2 s, then 30 s with robots alive: empties at front end + 30 s.
+	Step(7 * 60 + 2);
+	const TArray<float> Finished = DirectorTimesOf(Actions, EType::HordeFinished, 0);
+	if (!TestEqual(TEXT("horde 0 front over"), Finished.Num(), 1))
+	{
+		return false;
+	}
+	TestEqual(TEXT("still full after the front"), Director.GetGaugeState(), ERRHordeGaugeState::Full);
+	TestTrue(TEXT("horde running"), Director.IsGaugeHordeRunning());
+	Step(29 * 60);
+	TestEqual(TEXT("still full 29 s after the front"), Director.GetGaugeState(), ERRHordeGaugeState::Full);
+	Step(62);
+	TestEqual(TEXT("empty and filling 30 s after the front"), Director.GetGaugeState(), ERRHordeGaugeState::Filling);
+	TestNearlyEqual(TEXT("empty"), Director.GetGaugeKills(), 0.f, KINDA_SMALL_NUMBER);
+	TestEqual(TEXT("next target 150"), Director.GetGaugeTarget(Config), 150);
+	TestNearlyEqual(TEXT("no health step before overtime"), Director.GetSpawnHealthMultiplier(Config), 1.f, KINDA_SMALL_NUMBER);
+
+	// The bar paused (alert frozen) does not stop the gauge: the second horde, cleared early by its robots.
+	TestEqual(TEXT("150 kills counted"), Kill(150), 150);
+	Step(1);
+	TestTrue(TEXT("horde 1 lull at 150 kills"), DirectorTimesOf(Actions, EType::HordeLull, 1).Num() == 1);
+	Step(7 * 60 + 2);
+	TestTrue(TEXT("horde 1 front over"), DirectorTimesOf(Actions, EType::HordeFinished, 1).Num() == 1);
+	Director.NotifyGaugeHordeCleared();
+	Step(1);
+	TestEqual(TEXT("cleared horde: empty at once"), Director.GetGaugeState(), ERRHordeGaugeState::Filling);
+
+	// Overtime: x2 from 210 s, x3 from 270 s; each horde triggered then adds 20 % health (additive).
+	Step(FMath::CeilToInt((210.5f - Director.GetRunTime()) * 60.f));
+	TestNearlyEqual(TEXT("kill counts 2 from 3:30"), Director.GetKillWeight(Config), 2.f, KINDA_SMALL_NUMBER);
+	Kill(75);
+	Step(1);
+	TestEqual(TEXT("75 kills x2 fill 150: full"), Director.GetGaugeState(), ERRHordeGaugeState::Full);
+	TestNearlyEqual(TEXT("health x1.2 after the first overtime horde"), Director.GetSpawnHealthMultiplier(Config), 1.2f, KINDA_SMALL_NUMBER);
+	Step(7 * 60 + 2);
+	Director.NotifyGaugeHordeCleared();
+	Step(FMath::CeilToInt((270.5f - Director.GetRunTime()) * 60.f));
+	TestNearlyEqual(TEXT("kill counts 3 from 4:30"), Director.GetKillWeight(Config), 3.f, KINDA_SMALL_NUMBER);
+	TestEqual(TEXT("filling again"), Director.GetGaugeState(), ERRHordeGaugeState::Filling);
+	Kill(50);
+	Step(1);
+	TestEqual(TEXT("50 kills x3 fill 150: full"), Director.GetGaugeState(), ERRHordeGaugeState::Full);
+	TestNearlyEqual(TEXT("health x1.4 after the second overtime horde"), Director.GetSpawnHealthMultiplier(Config), 1.4f, KINDA_SMALL_NUMBER);
+	TestEqual(TEXT("four gauge hordes"), Director.GetGaugeHordeCount(), 4);
+	TestEqual(TEXT("two overtime hordes"), Director.GetOvertimeHordeCount(), 2);
+	// No timed horde anywhere: every lull came from a full gauge.
+	TestEqual(TEXT("four lulls in all"), DirectorTimesOf(Actions, EType::HordeLull).Num(), 4);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRSpawnerDirectorKillGaugeWorldTest, "RogueRigs.Spawner.DirectorKillGaugeWorld",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRSpawnerDirectorKillGaugeWorldTest::RunTest(const FString& Parameters)
+{
+	using namespace RRSpawnerDirectorTests;
+	using namespace RRTestAccess;
+
+	// task-544 in a world: the run flow forwards kills to the gauge, a full gauge brings the horde, destroying every robot of its
+	// front empties the gauge at once; a horde triggered in overtime gives +20 % health to the robots spawned after it.
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRDirectorKillGaugeWorld"));
+	FDirectorSetup Setup;
+	if (!MakeDirectorSetup(*this, TestWorld, 150, Setup))
+	{
+		return false;
+	}
+	URRRunFlowSubsystem* RunFlow = TestWorld.Get()->GetSubsystem<URRRunFlowSubsystem>();
+	if (RunFlow)
+	{
+		RunFlow->RegisterSpawner(Setup.Spawner);
+	}
+	if (!TestNotNull(TEXT("run flow"), RunFlow) || !TestTrue(TEXT("spawner registered"), RunFlow->GetSpawner() == Setup.Spawner))
+	{
+		return false;
+	}
+	FRRWaveDirectorConfig& Config = FSpawnerAccess::DirectorOf(Setup.Spawner);
+	Config = FRRWaveDirectorConfig::MakeDefault();
+	Config.Phases.Reset();
+	Config.Hordes.SetNum(1);
+	Config.Hordes[0].LullSeconds = 1.f;
+	Config.Hordes[0].WarningSeconds = 0.5f;
+	Config.Hordes[0].SpreadSeconds = 1.f;
+	Config.KillGauge.FirstHordeKills = 3;
+	Config.Overtime.StartTime = 0.f; // every horde here is an overtime horde
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	Setup.Spawner->OnHordeFinished.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleHordeFinished);
+
+	// A robot before any horde: base health.
+	ARREnemy* Before = Setup.Spawner->TrySpawnEnemyOfClass(ARRChaser::StaticClass());
+	const UAbilitySystemComponent* BeforeASC = Before ? Before->GetAbilitySystemComponent() : nullptr;
+	const float BaseHealth = BeforeASC ? BeforeASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute()) : 0.f;
+	TestTrue(TEXT("base health read"), BaseHealth > 0.f);
+	if (Before)
+	{
+		Before->Destroy();
+	}
+
+	RunFlow->SetAlert(0.25f);
+	Setup.Spawner->SetSpawningEnabled(true);
+	TestWorld.Tick();
+	TestEqual(TEXT("gauge shown past its mark"), Setup.Spawner->GetHordeGaugeState(), ERRHordeGaugeState::Filling);
+	for (int32 Kill = 0; Kill < 3; ++Kill)
+	{
+		RunFlow->NotifyEnemyKilled(nullptr, nullptr);
+	}
+	TestNearlyEqual(TEXT("three kills forwarded by the run flow"), Setup.Spawner->GetHordeGaugeKills(), 3.f, KINDA_SMALL_NUMBER);
+	for (int32 Frame = 0; Frame < 200 && Recorder->GetDirectorEvents().IsEmpty(); ++Frame)
+	{
+		TestWorld.Tick();
+	}
+	TestEqual(TEXT("full while the horde runs"), Setup.Spawner->GetHordeGaugeState(), ERRHordeGaugeState::Full);
+	const int32 HordeRobots = Setup.Spawner->GetHordeRobotCount();
+	AddInfo(FString::Printf(TEXT("events %s, horde robots %d"), *FString::Join(Recorder->GetDirectorEvents(), TEXT(", ")), HordeRobots));
+	if (!TestTrue(TEXT("horde robots spawned"), HordeRobots > 0))
+	{
+		return false;
+	}
+	bool bStepped = true;
+	for (ARREnemy* Enemy : Setup.Spawner->GetAliveEnemies())
+	{
+		const UAbilitySystemComponent* ASC = Enemy->GetAbilitySystemComponent();
+		const float Health = ASC ? ASC->GetNumericAttribute(URRHealthAttributeSet::GetMaxHealthAttribute()) : 0.f;
+		bStepped &= !Enemy->IsA<ARRChaser>() || FMath::IsNearlyEqual(Health, BaseHealth * 1.2f, 0.01f);
+	}
+	TestTrue(TEXT("horde chasers at 120 % health"), bStepped);
+	TestEqual(TEXT("kills not counted while full"), Setup.Spawner->NotifyRobotKilled(), false);
+
+	TestWorld.Tick();
+	TestEqual(TEXT("still full while its robots live"), Setup.Spawner->GetHordeGaugeState(), ERRHordeGaugeState::Full);
+	for (ARREnemy* Enemy : Setup.Spawner->GetAliveEnemies())
+	{
+		Enemy->Destroy();
+	}
+	TestWorld.Tick();
+	TestEqual(TEXT("every horde robot gone: empty and filling"), Setup.Spawner->GetHordeGaugeState(), ERRHordeGaugeState::Filling);
+	TestNearlyEqual(TEXT("gauge empty"), Setup.Spawner->GetHordeGaugeFill(), 0.f, KINDA_SMALL_NUMBER);
 	return true;
 }
 
@@ -971,6 +1192,7 @@ bool FRRSpawnerDirectorConsoleTimedHordeTest::RunTest(const FString& Parameters)
 	// task-524 (owner 2026-11-13, provisional): with a console expected, the first front starts 20 s after the console landed
 	// (banner 4 s before), the second keeps 175 s. Console landed at 96 s (40 % of a 240 s bar).
 	FRRWaveDirectorConfig Config = FRRWaveDirectorConfig::MakeDefault();
+	Config.HordeTrigger = ERRHordeTrigger::RunTime; // the former timed trigger (the default is the kill gauge since task-544)
 	Config.Overtime.bEnabled = false;
 	if (!TestEqual(TEXT("two default hordes"), Config.Hordes.Num(), 2))
 	{

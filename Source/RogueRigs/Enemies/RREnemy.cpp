@@ -253,6 +253,13 @@ void ARREnemy::ApplyStats()
 	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetShieldAttribute(), Stats.Shield);
 }
 
+void ARREnemy::ApplySpawnHealthMultiplier(float Multiplier)
+{
+	const float Health = Stats.MaxHealth * FMath::Max(Multiplier, 0.01f);
+	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetMaxHealthAttribute(), Health);
+	AbilitySystemComponent->SetNumericAttributeBase(URRHealthAttributeSet::GetHealthAttribute(), Health);
+}
+
 void ARREnemy::HandleMoveSpeedChanged(const FOnAttributeChangeData& ChangeData)
 {
 	GetCharacterMovement()->MaxWalkSpeed = ChangeData.NewValue;

@@ -6,6 +6,8 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "AbilitySystemComponent.h"
+#include "Algo/Count.h"
+#include "Tests/RRTestEventRecorder.h"
 #include "Enemies/RREnemySpawner.h"
 #include "Enemies/RRWaveDirector.h"
 #include "GAS/RRHealthAttributeSet.h"
@@ -274,6 +276,84 @@ bool FRRHUDPressureHordeTest::RunTest(const FString& Parameters)
 	const int32 CallsBefore = Setup.HUD->AlertEventCalls.Num();
 	TestWorld.Tick();
 	TestEqual(TEXT("no call once unbound"), Setup.HUD->AlertEventCalls.Num(), CallsBefore);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRRHUDPressureHordeGaugeTest, "RogueRigs.HUD.PressureHordeGauge",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRRHUDPressureHordeGaugeTest::RunTest(const FString& Parameters)
+{
+	using namespace RRHUDPressureTests;
+	using namespace RRTestAccess;
+
+	// task-544: one "!" at half of the console mark (0.2); the bar reaching it starts no horde, the "!" goes and the gauge shows
+	// (OnHordeGaugeChanged relayed by the run flow); the gauge fills while the bar is paused by the console.
+	FRRRunFlowConfig RunConfig;
+	RunConfig.AlertFillSeconds = 20.f;
+	RRTestHarness::FTestWorld TestWorld(TEXT("RRHUDPressureHordeGauge"));
+	FPressureSetup Setup;
+	if (!MakePressureSetup(*this, TestWorld, RunConfig, Setup))
+	{
+		return false;
+	}
+	TStrongObjectPtr<URRTestHUDWidget> HUDRoot(Setup.HUD);
+	URRRunFlowSubsystem* RunFlow = Setup.RunFlow;
+	ARREnemySpawner* Spawner = TestWorld.Spawn<ARREnemySpawner>(ARREnemySpawner::StaticClass(), FVector::ZeroVector);
+	if (!TestNotNull(TEXT("spawner spawned"), Spawner))
+	{
+		return false;
+	}
+	Spawner->SetSpawningEnabled(false);
+	const FVector MinerLocation = Setup.Miner->GetActorLocation();
+	const FVector2D Center(MinerLocation.X, MinerLocation.Y);
+	Spawner->SetViewRectangleOverride(FBox2D(Center - FVector2D(1600.f, 1000.f), Center + FVector2D(1600.f, 1000.f)));
+	FRRWaveDirectorConfig& Director = FSpawnerAccess::DirectorOf(Spawner);
+	Director = FRRWaveDirectorConfig::MakeDefault();
+	Director.Phases.Reset();
+	RunFlow->RegisterSpawner(Spawner);
+	TStrongObjectPtr<URRTestEventRecorder> Recorder(NewObject<URRTestEventRecorder>());
+	RunFlow->OnHordeGaugeChanged.AddDynamic(Recorder.Get(), &URRTestEventRecorder::HandleHordeGaugeChanged);
+	Setup.HUD->BindToRunFlow(RunFlow);
+	Setup.HUD->BindToSpawner(Spawner);
+
+	const TArray<FRRAlertBarEvent> Initial = Setup.HUD->GetAlertBarEvents();
+	const FRRAlertBarEvent* Mark = FindPressureIcon(Initial, ERRAlertBarEventType::Horde);
+	TestEqual(TEXT("one horde mark"), static_cast<int32>(Algo::CountIf(Initial, [](const FRRAlertBarEvent& Event) { return Event.Type == ERRAlertBarEventType::Horde; })), 1);
+	TestTrue(TEXT("the mark at half of C (0.2)"), Mark && FMath::IsNearlyEqual(Mark->Position, 0.2f, KINDA_SMALL_NUMBER) && !Mark->bDone);
+	TestEqual(TEXT("gauge hidden"), RunFlow->GetHordeGaugeState(), ERRHordeGaugeState::Hidden);
+
+	// 4 s of a 20 s bar: the mark is reached.
+	Spawner->SetSpawningEnabled(true);
+	int32 ShownFrame = INDEX_NONE;
+	for (int32 Frame = 1; Frame <= 300 && ShownFrame == INDEX_NONE; ++Frame)
+	{
+		TestWorld.Tick();
+		if (RunFlow->GetHordeGaugeState() != ERRHordeGaugeState::Hidden)
+		{
+			ShownFrame = Frame;
+		}
+	}
+	TestTrue(*FString::Printf(TEXT("gauge shown when the bar reaches 0.2 (frame %d)"), ShownFrame), FMath::Abs(ShownFrame - 240) <= 2);
+	TestEqual(TEXT("gauge filling"), RunFlow->GetHordeGaugeState(), ERRHordeGaugeState::Filling);
+	TestNull(TEXT("the mark is gone"), FindPressureIcon(Setup.HUD->GetAlertBarEvents(), ERRAlertBarEventType::Horde));
+	TestEqual(TEXT("no horde at the mark"), Spawner->GetActiveHorde(), INDEX_NONE);
+	TestTrue(TEXT("relay: shown event"), Recorder->GetDirectorEvents().Contains(TEXT("Gauge:1:0")));
+
+	// The console pauses the bar: kills still fill the gauge.
+	if (!TestNotNull(TEXT("console dropped"), RunFlow->SkipToConsole()))
+	{
+		return false;
+	}
+	TestTrue(TEXT("bar paused"), RunFlow->HasPendingObjective());
+	for (int32 Kill = 0; Kill < 7; ++Kill)
+	{
+		RunFlow->NotifyEnemyKilled(nullptr, nullptr);
+	}
+	TestNearlyEqual(TEXT("7 of 70 while paused"), RunFlow->GetHordeGaugeFill(), 0.1f, KINDA_SMALL_NUMBER);
+	TestTrue(TEXT("relay: fill event"), Recorder->GetDirectorEvents().Contains(TEXT("Gauge:1:100")));
+	TestNull(TEXT("still no mark on the bar"), FindPressureIcon(Setup.HUD->GetAlertBarEvents(), ERRAlertBarEventType::Horde));
+	AddInfo(FString::Printf(TEXT("gauge events: %s"), *FString::Join(Recorder->GetDirectorEvents(), TEXT(", "))));
 	return true;
 }
 
