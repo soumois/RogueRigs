@@ -3,7 +3,7 @@ id: task-543-02-capture
 description: "Capture: Before/after capture of a wall block breaking"
 parent: task-543-wall-debris-less-white
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall destruction particles: rock colours instead of near white: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T00:14:54Z
 - waiting_for: none
 - result: open
 
