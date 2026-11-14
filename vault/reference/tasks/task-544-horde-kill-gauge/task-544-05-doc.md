@@ -3,7 +3,7 @@ id: task-544-05-doc
 description: "Doc: Document the horde gauge in the system and widget nodes"
 parent: task-544-horde-kill-gauge
 kind: task
-status: todo
+status: in-progress
 ---
 # Hordes: one "!" at half of C, then a kill gauge under the alert bar triggers each horde: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T00:50:23Z
 - waiting_for: none
 - result: open
 
