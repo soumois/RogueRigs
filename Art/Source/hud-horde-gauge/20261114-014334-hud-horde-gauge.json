@@ -1,0 +1,27 @@
+{
+  "run_id": "20261114-014334-hud-horde-gauge",
+  "asset": "hud-horde-gauge",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/hud-horde-gauge/prompts/02-gauge-attached.txt",
+  "prompt": "Keep this exact image: same game scene, same HUD, same orange alert bar with its riveted teal-grey frame and its letters C, B and S, same horde gauge look (dark track, red fill about 60 percent, small red \"!\" plate at its left end, slim riveted teal-grey frame). Change ONE thing: the horde gauge is attached directly under the alert bar frame, with no gap at all: its top edge touches the bottom edge of the alert bar frame, as if it hangs from it and had slid out from behind it. Keep it centred under the alert bar and about one third of the alert bar width, with a flat red fill (no gloss). Everything else stays exactly the same.",
+  "refs": [
+    "Art/Source/hud-horde-gauge/20261114-012917-hud-horde-gauge-1.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "258394b07ff4681c1341a4aa74c9413c",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000000e9081fdb8c5d0e55156c6e7.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/hud-horde-gauge/20261114-014334-hud-horde-gauge-1.png"
+  ]
+}
