@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 119, context start 16k peak 224k, resumes 2, 43 min, units 2.20 M, USD 5.55
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. Done. bp-dig-debris (three User colours, the Color HLSL, defaults, task-543 verification and the MCP compile pitfall) and bp-explosion-wall-debris (random rock tone per particle, capture note) state the new colours; lint clean.
+- result: Done. A1 rock debris (drone break and explosion) in lilac, mid and dark violet, none near white, no bloom (RRBlockColors::RockDebrisTones, provisional; NS_DigDebris three User colours with a per-particle HLSL). A2 count, size, speed, lifetime unchanged. A3 ore, heal ore, barrel debris and NS_DigImpact unchanged. A4 before/after: Saved/Captures/task543-after3/sheet_dig.png and sheet_bar.png. Tests RogueRigs.Dig.DigDebris + RogueRigs.Explosions.WallDebris pass. Note: after a barrel flash the violet rock debris has low contrast on the dark floor. Budget: over the light budget (about 120 turns, 2.2 M units, under 4x): Niagara HLSL edit not compiled by the MCP tool until a further stack edit, first tones too pale, three capture rounds.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
