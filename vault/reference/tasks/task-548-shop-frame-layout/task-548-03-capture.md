@@ -3,7 +3,7 @@ id: task-548-03-capture
 description: "Capture: Shop screen captures against image 8 at four resolutions"
 parent: task-548-shop-frame-layout
 kind: task
-status: todo
+status: in-progress
 ---
 # Spare Parts shop: own panel frame, layout as owner image 8: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:33:54Z
 - waiting_for: none
 - result: open
 
