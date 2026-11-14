@@ -23,10 +23,11 @@ kind: doc
 - events: none.
 - logic_in_bp: none.
 - assets (keep, Art/Source/ui-frame-pieces/): T_UI_Bolt.png 64x64, the octagonal teal nut cut from the level-end divider sprite (mirror-masked); T_UI_BarH.png 768x42 and T_UI_BarV.png 42x768, the divider bars recoloured olive teal-steel with edge rust streaks by `scripts/make_bars.py` (BarV is BarH turned 90 degrees). Imported to /Game/RogueRigs/UI/Shared/ (TEXTUREGROUP_UI, no mips). No Kie.ai credits. Style-guide: bolt pass; bars reviewed in 5 rounds, the last correction not re-reviewed (task-545-01 result).
-- used_by: [[wbp-pause-menu]].
+- used_by: [[wbp-pause-menu]]; [[wbp-intermission]] (task-546: DividerH frame side to side, DividerV from the mid junction to the bottom bar).
 - owner_agent: agent-bp
 
 ## Relations
 - [[blueprints-ui-index]] — parent index.
 - [[wbp-pause-menu]] — first screen that places it.
+- [[wbp-intermission]] — the level cleared screen that places it.
 - [[pause-menu]] — the grid and bolts design it builds.
