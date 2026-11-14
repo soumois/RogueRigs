@@ -479,6 +479,7 @@ wbp-shop-card  reference/tech/blueprints/ui/wbp-shop-card.md
 wbp-shop-screen  reference/tech/blueprints/ui/wbp-shop-screen.md
 wbp-shop-screen-indicator  reference/tech/blueprints/ui/wbp-shop-screen-indicator.md
 wbp-subtitles  reference/tech/blueprints/ui/wbp-subtitles.md
+wbp-ui-bolted-bar  reference/tech/blueprints/ui/wbp-ui-bolted-bar.md
 wbp-upgrade-choice  reference/tech/blueprints/ui/wbp-upgrade-choice.md
 wbp-weapons  reference/tech/blueprints/ui/wbp-weapons.md
 wbp-xp-status  reference/tech/blueprints/ui/wbp-xp-status.md

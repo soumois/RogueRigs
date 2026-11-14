@@ -29,6 +29,7 @@ WBP_HUD and its eight panels plus the HUD refactor audit.
 - [[wbp-main-menu]] — WBP_MainMenu, the main menu screen: background, title, New Run, Options, Exit.
 - [[wbp-options]] — WBP_Options, the options screen: tabs Sound, Graphics, Gameplay, keep-or-revert dialog, anchors table.
 - [[wbp-pause-menu]] — WBP_PauseMenu, the pause screen: miner stats, weapon blocks, Resume and Exit, anchors table.
+- [[wbp-ui-bolted-bar]] — WBP_UI_BoltedBarV/H, shared divider bars with a round bolt on each end for the framed screens, and their textures.
 - [[wbp-run-lost]] — WBP_RunLost, the run-lost screen after a death or a missed shuttle: recap, Retry, Main Menu, appearance, anchors table.
 
 ## Relations
