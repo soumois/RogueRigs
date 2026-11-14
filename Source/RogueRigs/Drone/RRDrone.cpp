@@ -16,6 +16,7 @@
 #include "GAS/RRAbilitySystemComponent.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
+#include "Grid/RRBlockColors.h"
 #include "Player/RRMiner.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
@@ -1530,12 +1531,23 @@ void ARRDrone::PlayDigDebris(FIntPoint Cell, ERRCellType Type)
 	}
 	const FVector Location = DigGrid->GetCellCenter(Cell.X, Cell.Y) + FVector(0.0, 0.0, DigDebrisSpawnHeight);
 	const FIntPoint FaceSide = GetDigFaceSide(Cell);
-	const FLinearColor Color = GetChipColorForType(Type);
-	FXPool->Spawn(DigDebrisSystem, Location, FRotator::ZeroRotator, DigDebrisPoolSize, [&FaceSide, &Color](UNiagaraComponent& Component)
+	// Three tones per burst, one per particle in turn (task-543): rock gives its lilac top and mid and dark violet sides
+	// (RRBlockColors::RockDebrisTones); the other types give their chip colour three times, so they look as before.
+	const bool bRockTones = RRBlockColors::ForType(Type).Equals(RRBlockColors::Rock);
+	FLinearColor Tones[3];
+	for (int32 Tone = 0; Tone < 3; ++Tone)
+	{
+		Tones[Tone] = bRockTones ? RRBlockColors::DebrisToneForType(ERRCellType::Rock, Tone) : GetChipColorForType(Type);
+	}
+	FXPool->Spawn(DigDebrisSystem, Location, FRotator::ZeroRotator, DigDebrisPoolSize, [&FaceSide, &Tones](UNiagaraComponent& Component)
 	{
 		static const FName ChipColorParameter(TEXT("User.ChipColor"));
+		static const FName ChipColor2Parameter(TEXT("User.ChipColor2"));
+		static const FName ChipColor3Parameter(TEXT("User.ChipColor3"));
 		static const FName ThrowDirectionParameter(TEXT("User.ThrowDirection"));
-		Component.SetVariableLinearColor(ChipColorParameter, Color);
+		Component.SetVariableLinearColor(ChipColorParameter, Tones[0]);
+		Component.SetVariableLinearColor(ChipColor2Parameter, Tones[1]);
+		Component.SetVariableLinearColor(ChipColor3Parameter, Tones[2]);
 		Component.SetVariableVec3(ThrowDirectionParameter, FVector(FaceSide.X, FaceSide.Y, 0.0));
 	});
 }

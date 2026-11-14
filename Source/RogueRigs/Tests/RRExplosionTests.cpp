@@ -693,7 +693,7 @@ bool FRRExplosionWallDebrisRequestTest::RunTest(const FString& Parameters)
 			const ERRCellType* Type = Blocks.Find(Cell);
 			if (TestNotNull(*FString::Printf(TEXT("particle %d starts on a broken block"), Index), Type))
 			{
-				TestTrue(TEXT("colour of its block"), Request.Colors[Index].Equals(RRBlockColors::ForType(*Type)));
+				TestTrue(TEXT("debris tone of its block"), RRBlockColors::IsDebrisToneOf(Request.Colors[Index], *Type));
 				OutCells.Add(Cell);
 			}
 		}

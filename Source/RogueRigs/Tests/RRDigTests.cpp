@@ -23,10 +23,16 @@
 #include "GAS/RRHealthAttributeSet.h"
 #include "GAS/RRPlayerAttributeSet.h"
 #include "Grid/RRArenaGrid.h"
+#include "Grid/RRBlockColors.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/App.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "NiagaraDataSetAccessor.h"
+#include "NiagaraEmitterInstance.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystemInstance.h"
+#include "NiagaraSystemInstanceController.h"
 #include "Pickups/RRPickup.h"
 #include "Pickups/RRPickupSubsystem.h"
 #include "Pool/RRActorPoolSubsystem.h"
@@ -2342,9 +2348,9 @@ bool FRRDigDebrisBurstTest::RunTest(const FString& Parameters)
 		}
 		return nullptr;
 	};
-	const auto ReadColor = [](const UNiagaraComponent* Component)
+	const auto ReadColor = [](const UNiagaraComponent* Component, const TCHAR* Name = TEXT("User.ChipColor"))
 	{
-		return Component->GetOverrideParameters().GetParameterValueOrDefault<FLinearColor>(FNiagaraVariable(FNiagaraTypeDefinition::GetColorDef(), TEXT("User.ChipColor")), FLinearColor::Transparent);
+		return Component->GetOverrideParameters().GetParameterValueOrDefault<FLinearColor>(FNiagaraVariable(FNiagaraTypeDefinition::GetColorDef(), Name), FLinearColor::Transparent);
 	};
 
 	// Rock: one burst per broken block, over the block, in the rock colour, thrown toward the side of the miner. Other break sources: none.
@@ -2368,7 +2374,10 @@ bool FRRDigDebrisBurstTest::RunTest(const FString& Parameters)
 			const UNiagaraComponent* Burst = FindBurst(FXPool, Grid, Cell);
 			if (TestNotNull(*FString::Printf(TEXT("burst over %s"), *Cell.ToString()), Burst))
 			{
-				TestTrue(TEXT("rock colour"), ReadColor(Burst).Equals(FDroneAccess::ChipColorOf(Drone, ERRCellType::Rock)));
+				// Rock debris tones (task-543): lilac top, mid violet, dark violet, one per particle in turn.
+				TestTrue(TEXT("rock tone 1 lilac"), ReadColor(Burst).Equals(RRBlockColors::RockDebrisTones[0]));
+				TestTrue(TEXT("rock tone 2 mid violet"), ReadColor(Burst, TEXT("User.ChipColor2")).Equals(RRBlockColors::RockDebrisTones[1]));
+				TestTrue(TEXT("rock tone 3 dark violet"), ReadColor(Burst, TEXT("User.ChipColor3")).Equals(RRBlockColors::RockDebrisTones[2]));
 				const FVector Throw(Burst->GetOverrideParameters().GetParameterValueOrDefault<FVector3f>(FNiagaraVariable(FNiagaraTypeDefinition::GetVec3Def(), TEXT("User.ThrowDirection")), FVector3f::ZeroVector));
 				TestTrue(TEXT("thrown toward the side of the miner"), Throw.Equals(-FVector::ForwardVector));
 			}
@@ -2460,6 +2469,8 @@ bool FRRDigDebrisBurstTest::RunTest(const FString& Parameters)
 			if (TestNotNull(*FString::Printf(TEXT("%s: burst over %s"), *TypeName, *Cell.ToString()), Burst))
 			{
 				TestTrue(*FString::Printf(TEXT("%s colour"), *TypeName), ReadColor(Burst).Equals(FDroneAccess::ChipColorOf(Drone, Type)));
+				TestTrue(*FString::Printf(TEXT("%s colour, tone 2 the same"), *TypeName), ReadColor(Burst, TEXT("User.ChipColor2")).Equals(FDroneAccess::ChipColorOf(Drone, Type)));
+				TestTrue(*FString::Printf(TEXT("%s colour, tone 3 the same"), *TypeName), ReadColor(Burst, TEXT("User.ChipColor3")).Equals(FDroneAccess::ChipColorOf(Drone, Type)));
 			}
 		}
 	}
@@ -2544,6 +2555,62 @@ bool FRRDigDebrisAssetTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("bursts back in the pool after %d frame(s) of %.4f s"), Frame, FrameSeconds));
 	TestEqual(TEXT("one-shot: back in the pool"), FXPool->GetInUseCount(Shipped), 0);
 	TestTrue(TEXT("gone within 0.8 s (two frames of margin for the pool callback)"), Frame * FrameSeconds <= 0.8f + 2.f * FrameSeconds);
+
+	// Particle colours (task-543): the three User colours, one per particle in turn, read from the simulation.
+	UNiagaraComponent* Probe = UNiagaraFunctionLibrary::SpawnSystemAtLocation(TestWorld.Get(), Shipped, FVector(0.0, 0.0, 500.0), FRotator::ZeroRotator, FVector::OneVector, false, false);
+	if (!TestNotNull(TEXT("probe burst spawned"), Probe))
+	{
+		return false;
+	}
+	for (int32 Tone = 0; Tone < 3; ++Tone)
+	{
+		static const FName Names[3] = { TEXT("User.ChipColor"), TEXT("User.ChipColor2"), TEXT("User.ChipColor3") };
+		Probe->SetVariableLinearColor(Names[Tone], RRBlockColors::RockDebrisTones[Tone]);
+	}
+	Probe->Activate(true);
+	const auto EmitterOf = [Probe]() -> FNiagaraEmitterInstance*
+	{
+		FNiagaraSystemInstanceControllerPtr Controller = Probe->GetSystemInstanceController();
+		FNiagaraSystemInstance* Instance = Controller.IsValid() ? Controller->GetSystemInstance_Unsafe() : nullptr;
+		if (!Instance)
+		{
+			return nullptr;
+		}
+		Controller->WaitForConcurrentTickAndFinalize();
+		return Instance->GetEmitters().Num() > 0 ? &Instance->GetEmitters()[0].Get() : nullptr;
+	};
+	FNiagaraEmitterInstance* Emitter = EmitterOf();
+	for (Frame = 0; (!Emitter || Emitter->GetNumParticles() == 0) && Frame < 600; ++Frame)
+	{
+		TestWorld.Tick();
+		Emitter = EmitterOf();
+	}
+	if (!TestTrue(TEXT("probe burst has particles"), Emitter && Emitter->GetNumParticles() > 0))
+	{
+		return false;
+	}
+	const auto Colors = FNiagaraDataSetAccessor<FLinearColor>::CreateReader(Emitter->GetParticleData(), TEXT("Color"));
+	if (!TestTrue(TEXT("particle colours readable"), Colors.IsValid()))
+	{
+		return false;
+	}
+	int32 PerTone[3] = { 0, 0, 0 };
+	for (int32 Index = 0; Index < Emitter->GetNumParticles(); ++Index)
+	{
+		bool bKnown = false;
+		for (int32 Tone = 0; Tone < 3; ++Tone)
+		{
+			if (Colors[Index].Equals(RRBlockColors::RockDebrisTones[Tone], 0.001f))
+			{
+				++PerTone[Tone];
+				bKnown = true;
+			}
+		}
+		TestTrue(*FString::Printf(TEXT("particle %d in one of the three tones (%s)"), Index, *Colors[Index].ToString()), bKnown);
+	}
+	AddInfo(FString::Printf(TEXT("tones: %d lilac, %d mid violet, %d dark violet"), PerTone[0], PerTone[1], PerTone[2]));
+	TestTrue(TEXT("all three tones present"), PerTone[0] > 0 && PerTone[1] > 0 && PerTone[2] > 0);
+	Probe->DestroyComponent();
 	return true;
 }
 

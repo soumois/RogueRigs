@@ -329,7 +329,8 @@ void URRExplosionSubsystem::PlayWallDebris(const FPendingExplosion& Explosion, c
 		const FRRExplosionBrokenBlock& Block = Blocks[int32(int64(Index) * Blocks.Num() / Count)];
 		const FVector Offset(FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(-Jitter, Jitter), FMath::FRandRange(WallDebrisMinHeight, WallDebrisMaxHeight));
 		Request.Positions.Add(CurrentGrid.GetCellCenter(Block.Cell.X, Block.Cell.Y) + Offset);
-		Request.Colors.Add(RRBlockColors::ForType(Block.Type));
+		// Rock gives one of its three debris tones per particle (task-543); other types keep their block colour.
+		Request.Colors.Add(RRBlockColors::DebrisToneForType(Block.Type, FMath::RandRange(0, 2)));
 	}
 
 	// Null = pool full: this link of the chain shows no debris.
