@@ -3,7 +3,7 @@ id: task-547-01-shared-entrance
 description: "Cpp: Extract the death screen entrance into one shared effect, death screen unchanged"
 parent: task-547-level-cleared-entrance
 kind: task
-status: todo
+status: in-progress
 ---
 # Level cleared screen appears with the death screen entrance effect: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T03:59:58Z
 - waiting_for: none
 - result: open
 
