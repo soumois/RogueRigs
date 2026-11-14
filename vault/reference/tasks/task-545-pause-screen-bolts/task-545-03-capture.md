@@ -3,7 +3,7 @@ id: task-545-03-capture
 description: "Capture: Pause screen captures against image 10 at four resolutions"
 parent: task-545-pause-screen-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause screen: grid and bolts on the frame bars as owner image 10: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T03:48:00Z
 - waiting_for: none
 - result: open
 
