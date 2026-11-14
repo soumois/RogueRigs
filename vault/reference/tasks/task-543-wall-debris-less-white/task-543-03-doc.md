@@ -3,7 +3,7 @@ id: task-543-03-doc
 description: "Doc: Update the debris effect doc node"
 parent: task-543-wall-debris-less-white
 kind: task
-status: todo
+status: in-progress
 ---
 # Wall destruction particles: rock colours instead of near white: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T00:15:05Z
 - waiting_for: none
 - result: open
 
