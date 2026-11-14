@@ -3,7 +3,7 @@ id: task-544-02-gauge-render
 description: "Art: render of the horde gauge in the HUD with GPT Image 2 (the ChatGPT image model) through the project image API, then its elements."
 parent: task-544-horde-kill-gauge
 kind: task
-status: todo
+status: in-progress
 ---
 # Hordes: one "!" at half of C, then a kill gauge under the alert bar triggers each horde: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T00:28:41Z
 - waiting_for: none
 - result: open
 
