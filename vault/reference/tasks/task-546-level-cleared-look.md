@@ -1,9 +1,9 @@
 ---
 id: task-546-level-cleared-look
 description: "Global task: stats screen to owner image 6: vertical divider from a bolt junction to the bottom bar, shared unstretched bolts."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level cleared screen: dividers and bolts as owner image 6
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-546-03-doc
+- next_step: none
 - started: 2026-11-14T03:52:08Z
 - waiting_for: none
-- executor_tokens: input 100, cache write 116603, cache read 3571157, output 20121
-- executor_usage: runs 1, turns 50, context start 16k peak 117k, resumes 0, 7 min, units 0.60 M, USD 1.70
+- executor_tokens: input 106, cache write 121736, cache read 3924865, output 22230
+- executor_usage: runs 1, turns 53, context start 16k peak 122k, resumes 0, 7 min, units 0.66 M, USD 1.84
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. wbp-intermission updated (components, DividerH/V anchors, assets, bolted_dividers entry, relation) and wbp-ui-bolted-bar used_by and relation; lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 3. task-546-03-doc (vault/reference/tasks/task-546-level-cleared-look/task-546-03-doc.md) — doc: Update the stats screen widget doc
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-546-01-stats-layout]] — step 1, bp.
 - [[task-546-02-capture]] — step 2, capture.
 - [[task-546-03-doc]] — step 3, doc.

@@ -554,4 +554,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-543-wall-debris-less-white]] — Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow. Status done.
 - [[task-544-horde-kill-gauge]] — The horde "!" moves to half the C position and no longer triggers a horde; it starts a kill gauge under the alert bar; full gauge = horde, full until the horde is over, then empties and refills. Status done.
 - [[task-545-pause-screen-bolts]] — Pause screen rebuilt to owner image 10: dividers from bar to bar, horizontal divider, bolts on every end and junction as a separate unstretched image. Status done.
+- [[task-546-level-cleared-look]] — Stats screen adjusted to owner image 6: vertical divider from a bolt junction on the horizontal divider to the bottom bar, shared unstretched bolts. Status done.
 - [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status done.
