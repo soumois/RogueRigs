@@ -1341,6 +1341,7 @@ kind: note
 | [[task-544-02-gauge-render]] | opus | 1 | 0k | 20k | 7k | 3k | 0.04 | 2 | 0 |
 | [[task-544-03-gauge-widget]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-544-04-capture]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-544-05-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
@@ -1352,7 +1353,7 @@ Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list pr
 | model none | — | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | — | 210.40 | 0k | 47.08 M | 1049.80 M | 9320k |
 | model sonnet | — | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 405.29 | 155.38 | 18k | 30.44 M | 888.62 M | 5689k |
+| Executors and legacy orchestrators that ran a task (pilot) | 405.73 | 155.57 | 18k | 30.45 M | 890.32 M | 5692k |
 | Planning runs (planners and legacy planning passes) | 163.87 | 49.71 | 5k | 14.81 M | 174.84 M | 2742k |
 | Agents without a subtask id (other) | 42.67 | 17.15 | 2k | 3.09 M | 104.59 M | 565k |
 | Main sessions (all of them, also chat outside tasks) | 1042.75 | 311.30 | 84k | 64.12 M | 1903.51 M | 8144k |

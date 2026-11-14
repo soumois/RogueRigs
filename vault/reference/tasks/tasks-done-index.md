@@ -552,4 +552,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-541-hud-turret-count-removed]] — The turret count text above the health bar goes; the launcher charges stay shown in its weapon slot. Status done.
 - [[task-542-ground-particle-edges]] — The white ground particle sprites of image 2 (boss scene) show their quad edges; the edges must not show, look otherwise kept. Status done.
 - [[task-543-wall-debris-less-white]] — Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow. Status done.
+- [[task-544-horde-kill-gauge]] — The horde "!" moves to half the C position and no longer triggers a horde; it starts a kill gauge under the alert bar; full gauge = horde, full until the horde is over, then empties and refills. Status done.
 - [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status done.

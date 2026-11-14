@@ -1,9 +1,9 @@
 ---
 id: task-544-horde-kill-gauge
 description: "Global task: a mark at half of C starts a kill gauge under the alert bar; each full gauge brings a horde."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Hordes: one "!" at half of C, then a kill gauge under the alert bar triggers each horde
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-544-05-doc
+- next_step: none
 - started: 2026-11-14T00:16:24Z
 - waiting_for: none
-- executor_tokens: input 322, cache write 412480, cache read 43567564, output 125576
-- executor_usage: runs 1, turns 158, context start 16k peak 425k, resumes 0, 34 min, units 5.50 M, USD 13.29
+- executor_tokens: input 330, cache write 418967, cache read 45274304, output 128949
+- executor_usage: runs 1, turns 162, context start 16k peak 432k, resumes 0, 35 min, units 5.70 M, USD 13.73
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Commit 6cec7356: sys-difficulty gains the horde kill gauge bullet (trigger, FRRDirectorKillGauge values, kill forwarding, clear rule, overtime weights and health step, events, debug command, tests); wbp-alert-objectives gains horde_gauge (tree, anchors, offsets, z-order, graphs ShowHordeGauge / RevealHordeGauge / SlideHordeGauge / PulseHordeGauge, hide paths) and lists the render and art files of Art/Source/hud-horde-gauge/. Lint clean. Not edited (executor must_not change a gdd node): level-flow M1 still says the gauge is 'centred under' the bar; the owner addition (attached to the bar, slides out from behind it) is to be written there by the planner or the main session. ALERT: executor over the standard budget (about 5.6 M units, under 4x).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): Q5 to Q7 defaults accepted; Q8 and Q9 changed by the owner answer written on each; values provisional, owner 2026-11-13.
@@ -40,7 +40,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 5. task-544-05-doc (vault/reference/tasks/task-544-horde-kill-gauge/task-544-05-doc.md) — doc: Document the horde gauge in the system and widget nodes
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-544-01-gauge-logic]] — step 1, cpp.
 - [[task-544-02-gauge-render]] — step 2, art.
 - [[task-544-03-gauge-widget]] — step 3, bp.
