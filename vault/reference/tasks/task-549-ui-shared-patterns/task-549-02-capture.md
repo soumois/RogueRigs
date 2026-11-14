@@ -3,7 +3,7 @@ id: task-549-02-capture
 description: "Capture: Before/after captures of every game screen at 1920 x 1080"
 parent: task-549-ui-shared-patterns
 kind: task
-status: todo
+status: in-progress
 ---
 # UI: generalise the patterns and scripts used again and again: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:55:13Z
 - waiting_for: none
 - result: open
 
