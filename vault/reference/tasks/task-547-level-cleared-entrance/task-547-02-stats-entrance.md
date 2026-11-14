@@ -3,7 +3,7 @@ id: task-547-02-stats-entrance
 description: "Bp: Wire the shared entrance to the stats screen and its level 4 variant"
 parent: task-547-level-cleared-entrance
 kind: task
-status: todo
+status: in-progress
 ---
 # Level cleared screen appears with the death screen entrance effect: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:11:56Z
 - waiting_for: none
 - result: open
 
