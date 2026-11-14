@@ -556,4 +556,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-545-pause-screen-bolts]] — Pause screen rebuilt to owner image 10: dividers from bar to bar, horizontal divider, bolts on every end and junction as a separate unstretched image. Status done.
 - [[task-546-level-cleared-look]] — Stats screen adjusted to owner image 6: vertical divider from a bolt junction on the horizontal divider to the bottom bar, shared unstretched bolts. Status done.
 - [[task-547-level-cleared-entrance]] — The death screen entrance becomes one shared effect; the level cleared screen (and its level 4 variant) uses it; the death screen looks the same. Status done.
+- [[task-548-shop-frame-layout]] — The shop card panel gets a frame image made for its ratio (no stretched button frame) and the layout of owner image 8. Status done.
 - [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status done.

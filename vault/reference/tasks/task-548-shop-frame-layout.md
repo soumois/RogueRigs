@@ -1,9 +1,9 @@
 ---
 id: task-548-shop-frame-layout
 description: "Global task: The shop card panel gets a frame image made for its ratio (no stretched button frame) and the layout of owner image 8."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Spare Parts shop: own panel frame, layout as owner image 8
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-548-04-doc
+- next_step: none
 - started: 2026-11-14T04:19:49Z
 - waiting_for: none
-- executor_tokens: input 156, cache write 161448, cache read 7638686, output 48199
-- executor_usage: runs 1, turns 76, context start 17k peak 174k, resumes 0, 16 min, units 1.21 M, USD 3.30
+- executor_tokens: input 168, cache write 169331, cache read 8705920, output 52132
+- executor_usage: runs 1, turns 82, context start 17k peak 182k, resumes 0, 17 min, units 1.34 M, USD 3.63
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. e3f9a1a6: wbp-shop-screen updated (ShopPanel frame brush and padding, PanelDeco tree and anchors, task-548 textures, panel_frame_art listing of Art/Source/shop-panel-frame with credits and style-guide verdict, verified_panel_frame, relation to task-548); wbp-shop-card slot padding and anchors note. Lint clean (warnings only).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -35,7 +35,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 4. task-548-04-doc (vault/reference/tasks/task-548-shop-frame-layout/task-548-04-doc.md) — doc: Update the shop widget doc and list the new frame art
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-548-01-frame-art]] — step 1, art.
 - [[task-548-02-shop-layout]] — step 2, bp.
 - [[task-548-03-capture]] — step 3, capture.
