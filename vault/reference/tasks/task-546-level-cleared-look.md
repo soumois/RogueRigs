@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 53, context start 16k peak 122k, resumes 0, 7 min, units 0.66 M, USD 1.84
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. wbp-intermission updated (components, DividerH/V anchors, assets, bolted_dividers entry, relation) and wbp-ui-bolted-bar used_by and relation; lint clean.
+- result: Stats screen dividers rebuilt with the shared pause bolted bars (WBP_Intermission 7e8b0309): DividerH frame side to side with end bolts on the frame side bars, DividerV from a bolt junction mid DividerH to a bolt on the bottom frame bar. A1-A4 seen -game at four resolutions and on level 4 (Saved/Captures/t546_c_sheet.png, t546_c_bolt_crops.png). Bars and bolts are the pause sizes, thinner than image 6 (Q12). Pre-existing level 4 subtitle overlap left as is. Image 6 kept in Art/Source/level-end-screen/reference. Docs 2455319a. Within budget (53 turns, 0.66 M units at the last closing).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
