@@ -1,0 +1,27 @@
+{
+  "run_id": "20261114-012917-hud-horde-gauge",
+  "asset": "hud-horde-gauge",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/hud-horde-gauge/prompts/01-gauge-under-alert-bar.txt",
+  "prompt": "Keep this exact image: same game scene, same camera, same HUD, same minimap, same ore counter, same weapon bar, same level bar, same riveted teal-grey metal frames with rust and bolts, same orange alert bar at the top centre with its letters C, B and S. Change ONE thing: add a small horde gauge just under the orange alert bar.\n\nThe horde gauge:\n- a thin horizontal bar, about one third of the alert bar width, centred under the alert bar, with a small gap between them;\n- a dark, almost black track inside a slim riveted metal frame in the same teal-grey worn style as the alert bar frame (two small bolts at the ends);\n- a red fill (pure warning red, the colour of a horde \"!\" mark) filling the track from left to right, shown about 60 percent filled, the empty part stays dark;\n- a small bold red \"!\" icon on a tiny dark metal plate attached to the left end of the gauge;\n- a soft red glow on the fill, as if it pulses when full; flat game UI, crisp edges, readable at a glance, no text other than the \"!\".\n\nEverything else in the image stays exactly the same.",
+  "refs": [
+    "Saved/Scratch/owner-ui-batch-2026-11-13/4.webp"
+  ],
+  "tasks": [
+    {
+      "task_id": "c4724f6f4f76f24f8c814e63e5d7bfbf",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_000000009c9481fd87ca4abda4551c1d.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/hud-horde-gauge/20261114-012917-hud-horde-gauge-1.png"
+  ]
+}

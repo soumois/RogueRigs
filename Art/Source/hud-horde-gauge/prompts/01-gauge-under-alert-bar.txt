@@ -1,0 +1,10 @@
+Keep this exact image: same game scene, same camera, same HUD, same minimap, same ore counter, same weapon bar, same level bar, same riveted teal-grey metal frames with rust and bolts, same orange alert bar at the top centre with its letters C, B and S. Change ONE thing: add a small horde gauge just under the orange alert bar.
+
+The horde gauge:
+- a thin horizontal bar, about one third of the alert bar width, centred under the alert bar, with a small gap between them;
+- a dark, almost black track inside a slim riveted metal frame in the same teal-grey worn style as the alert bar frame (two small bolts at the ends);
+- a red fill (pure warning red, the colour of a horde "!" mark) filling the track from left to right, shown about 60 percent filled, the empty part stays dark;
+- a small bold red "!" icon on a tiny dark metal plate attached to the left end of the gauge;
+- a soft red glow on the fill, as if it pulses when full; flat game UI, crisp edges, readable at a glance, no text other than the "!".
+
+Everything else in the image stays exactly the same.
