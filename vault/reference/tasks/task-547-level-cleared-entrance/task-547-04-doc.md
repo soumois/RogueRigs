@@ -3,7 +3,7 @@ id: task-547-04-doc
 description: "Doc: Document the shared entrance effect"
 parent: task-547-level-cleared-entrance
 kind: task
-status: todo
+status: in-progress
 ---
 # Level cleared screen appears with the death screen entrance effect: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:18:04Z
 - waiting_for: none
 - result: open
 
