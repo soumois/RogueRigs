@@ -3,7 +3,7 @@ id: task-544-01-gauge-logic
 description: "Cpp: Single "!" at half of C, kill gauge state and horde trigger replacing the fixed horde times"
 parent: task-544-horde-kill-gauge
 kind: task
-status: todo
+status: in-progress
 ---
 # Hordes: one "!" at half of C, then a kill gauge under the alert bar triggers each horde: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T00:16:24Z
 - waiting_for: none
 - result: open
 
