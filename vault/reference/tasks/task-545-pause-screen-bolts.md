@@ -1,9 +1,9 @@
 ---
 id: task-545-pause-screen-bolts
 description: "Global task: pause screen to owner image 10: dividers from bar to bar, bolts on every end and junction as a separate unstretched image."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Pause screen: grid and bolts on the frame bars as owner image 10
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-545-04-doc
+- next_step: none
 - started: 2026-11-14T03:32:00Z
 - waiting_for: none
-- executor_tokens: input 212, cache write 184877, cache read 10894457, output 64553
-- executor_usage: runs 1, turns 101, context start 16k peak 181k, resumes 2, 178 min, units 1.64 M, USD 4.40
+- executor_tokens: input 228, cache write 195631, cache read 12384044, output 69356
+- executor_usage: runs 1, turns 109, context start 16k peak 192k, resumes 2, 179 min, units 1.83 M, USD 4.84
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Commit 1f7c96e4. New node wbp-ui-bolted-bar (both shared widgets, layout table, how to place, Art/Source/ui-frame-pieces assets listed as keep, style-guide state); wbp-pause-menu anchors table, grid_and_bolts entry and relation updated; blueprints-ui-index child added; lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -36,7 +36,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 4. task-545-04-doc (vault/reference/tasks/task-545-pause-screen-bolts/task-545-04-doc.md) — doc: Update the pause widget doc and document the shared bolt and bar pieces
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-545-01-bolt-art]] — step 1, art.
 - [[task-545-02-pause-layout]] — step 2, bp.
 - [[task-545-03-capture]] — step 3, capture.
