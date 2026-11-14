@@ -559,3 +559,4 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-548-shop-frame-layout]] — The shop card panel gets a frame image made for its ratio (no stretched button frame) and the layout of owner image 8. Status done.
 - [[task-549-ui-shared-patterns]] — Audit of the UI widgets and UI build scripts after this batch; repeated patterns factored into shared pieces with no visible change, documented. Status done.
 - [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status done.
+- [[task-551-options-graphics-divider-bolts]] — Options Graphics tab divider end bolts float inside the panel; make it the shared bolted bar with bolts on the frame borders, as the pause screen. Status done.

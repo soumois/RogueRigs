@@ -1362,6 +1362,7 @@ kind: note
 | [[task-549-03-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-551-01-bp-divider]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-551-02-capture]] | opus | 4 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
+| [[task-551-03-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
@@ -1373,7 +1374,7 @@ Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list pr
 | model none | — | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | — | 210.72 | 0k | 47.21 M | 1050.03 M | 9345k |
 | model sonnet | — | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 426.72 | 163.46 | 19k | 31.40 M | 943.10 M | 5975k |
+| Executors and legacy orchestrators that ran a task (pilot) | 426.96 | 163.55 | 19k | 31.41 M | 943.74 M | 5979k |
 | Planning runs (planners and legacy planning passes) | 166.03 | 50.30 | 5k | 15.16 M | 175.89 M | 2751k |
 | Agents without a subtask id (other) | 42.67 | 17.15 | 2k | 3.09 M | 104.59 M | 565k |
 | Main sessions (all of them, also chat outside tasks) | 1043.83 | 311.88 | 84k | 64.28 M | 1906.54 M | 8158k |

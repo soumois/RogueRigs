@@ -1,9 +1,9 @@
 ---
 id: task-551-options-graphics-divider-bolts
 description: "Global task: Options Graphics divider bolts float inside the panel; use the shared bolted bar, bolts on the frame borders as on pause."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Options Graphics divider: bolts on the frame borders like the pause screen
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-14, "Tout par défaut")
 - milestone: M2
-- next_step: task-551-03-doc
+- next_step: none
 - started: 2026-11-14T08:38:10Z
 - waiting_for: none
-- executor_tokens: input 84, cache write 102118, cache read 2919334, output 12443
-- executor_usage: runs 1, turns 41, context start 16k peak 102k, resumes 1, 10 min, units 0.48 M, USD 1.34
+- executor_tokens: input 96, cache write 110228, cache read 3553679, output 16023
+- executor_usage: runs 1, turns 47, context start 16k peak 110k, resumes 1, 10 min, units 0.57 M, USD 1.58
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Doc commit above: wbp-options GraphicsDividerV row (WBP_UI_BoltedBarV, anchors, offsets) and verification line; wbp-ui-bolted-bar used_by wbp-options; ui-shared-pieces lists the options Graphics divider under bolted bars, T_LevelEnd_DividerV now unreferenced (kept). options-screen gdd line already written by the planner, unchanged. Lint clean.
 
 ## Questions
 Decided 2026-11-14 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-14.
@@ -35,7 +35,7 @@ Decided 2026-11-14 (owner "Tout par défaut"): every default below is accepted; 
 3. task-551-03-doc (vault/reference/tasks/task-551-options-graphics-divider-bolts/task-551-03-doc.md) — doc: Update the inventory and Blueprint docs: bolted bar now on pause, stats and options Graphics.
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-551-01-bp-divider]] — step 1, bp.
 - [[task-551-02-capture]] — step 2, capture.
 - [[task-551-03-doc]] — step 3, doc.
