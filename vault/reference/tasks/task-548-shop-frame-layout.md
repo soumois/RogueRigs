@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 82, context start 17k peak 182k, resumes 0, 17 min, units 1.34 M, USD 3.63
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. e3f9a1a6: wbp-shop-screen updated (ShopPanel frame brush and padding, PanelDeco tree and anchors, task-548 textures, panel_frame_art listing of Art/Source/shop-panel-frame with credits and style-guide verdict, verified_panel_frame, relation to task-548); wbp-shop-card slot padding and anchors note. Lint clean (warnings only).
+- result: A1 to A4 pass with notes. New 9-slice panel frame T_Shop_PanelFrame (Kie.ai, 2 rounds, 12 credits) with separate rivet and clamp sprites (PanelDeco), so nothing round is stretched at 1920x1080, 1280x720, 1920x1200, 2560x1080; dark uniform interior; panel and card margins after image 8 (cards 278 x 400 at 1080p vs about 310 x 417 in image 8, card ratio kept, so wider gaps). States SOLD, NEED n MORE, BUY unchanged; no entrance effect (Q13). Image 8 kept in Art/Source/shop-panel-frame/reference. Style-guide: round 2 fails A6 (patch plates not mismatched, no white plate), kept per Q14. Comparison sheet Saved/Captures/task548_sheet/comparison_sheet.png. Within budget (no ALERT).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
