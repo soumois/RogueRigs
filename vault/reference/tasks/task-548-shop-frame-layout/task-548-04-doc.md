@@ -3,7 +3,7 @@ id: task-548-04-doc
 description: "Doc: Update the shop widget doc and list the new frame art"
 parent: task-548-shop-frame-layout
 kind: task
-status: todo
+status: in-progress
 ---
 # Spare Parts shop: own panel frame, layout as owner image 8: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:35:48Z
 - waiting_for: none
 - result: open
 
