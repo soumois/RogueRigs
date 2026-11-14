@@ -1,0 +1,54 @@
+{
+  "run_id": "20261114-052340",
+  "items": [
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "pass",
+      "rule": "A1",
+      "reason": "Chunky chamfered corner plates, bevelled bars and faceted hex rivet heads with visible flat facets; the mottled teal, gunmetal and rust paint is a painted base colour allowed by A1 and hides neither the facets nor the dark outline.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "pass",
+      "rule": "A2",
+      "reason": "Rigid metal bars, plates, clamps and bolts only, nothing organic or cloth.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "fail",
+      "rule": "A6",
+      "reason": "The round 1 fail is fixed (seven evenly spaced rivets on the top and bottom bars, two on each side bar, a bolted clamp in the middle of the left and right sides, a stitched patch plate next to each corner on the top and bottom bars), but the four patch plates are the same grey as the bars and only about rivet-sized, so they barely read as mismatched welded repairs, the side bars get only thin weld seams near the corners, and no white plate appears anywhere (A6 says mismatched white and teal plates; the owner target is also teal and gunmetal with no white, so this may be a deviation he keeps on purpose).",
+      "correction": "Make the four corner patch plates clearly mismatched: larger, a different metal with chipped off-white paint and a visible weld bead around their edge, kept inside the corner cut area; or, if the owner keeps the all-gunmetal look of his target, only ask for a darker weld bead so the plates read as welded repairs."
+    },
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "pass",
+      "rule": "A7",
+      "reason": "Player-side piece in teal, gunmetal and rust with no red, yellow, acid green or steel blue; rust is right for the Rigs side.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "pass",
+      "rule": "A14",
+      "reason": "No text, caption or stray UI anywhere in the image.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "pass",
+      "rule": "color-code",
+      "reason": "Teal plus rust as main colours matches the player-side rows and the teal shop buttons of the owner target; rust orange stays a small detail, not the 'explodes' orange; the magenta key does not bleed into the frame, which has a clean dark outline.",
+      "correction": null
+    },
+    {
+      "file": "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png",
+      "verdict": "pass",
+      "rule": "readability-rules",
+      "reason": "No rarity colour and no enemy-reserved colour on the frame; the near-black interior keeps the green and grey rarity card frames and white card text readable.",
+      "correction": null
+    }
+  ]
+}

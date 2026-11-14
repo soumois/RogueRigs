@@ -1,0 +1,28 @@
+{
+  "run_id": "20261114-052340-shop-panel-frame",
+  "asset": "shop-panel-frame",
+  "model": "gpt-image-2-image-to-image",
+  "aspect_ratio": "16:9",
+  "resolution": "1K",
+  "variants": 1,
+  "prompt_file": "Art/Source/shop-panel-frame/prompts/02-shop-panel-frame-rivets.txt",
+  "prompt": "Image 1 is the previous version of this frame, Image 2 is the target look of the shop screen panel. Keep the layout of Image 1: same wide rectangular frame filling about 92 percent of the image width and 85 percent of its height, same corner brackets with two faceted bolts each, same flat uniform very dark gunmetal interior (#0E1014) with nothing inside, same flat magenta FF00FF background outside, no shadow, no glow. Change the bars to match Image 2 and make them Rigs patchwork: the four bars are mostly weathered gunmetal grey steel with worn teal paint patches and orange rust chips and streaks, slightly thicker (about 7 percent of the image height). Along every bar, small round domed rivets at a fixed, even spacing (about one rivet every 9 percent of the image width on the long bars), all rivets identical. On each bar, right next to each corner bracket, one small welded mismatched patch plate with a weld seam. In the middle of the left side and of the right side, one bolted clamp bracket sticking out of the bar, like in Image 2. Between the rivets the bar surface is plain. Flat-shaded low-poly look, visible facets, strong directional light from the top left with lifted shadows so everything stays readable. No text, no letters, no numbers, no icons, no characters.",
+  "refs": [
+    "Art/Source/shop-panel-frame/20261114-052107-shop-panel-frame-1.png",
+    "Saved/Scratch/task-548/ref8_panel.png"
+  ],
+  "tasks": [
+    {
+      "task_id": "300813dfef87e115488a406b855a9eef",
+      "state": "success",
+      "credits": 6,
+      "error": null,
+      "result_urls": [
+        "https://tempfile.aiquickdraw.com/images/chatgpt/file_00000000c37882129640391c36c0c6d9.png"
+      ]
+    }
+  ],
+  "files": [
+    "Art/Source/shop-panel-frame/20261114-052340-shop-panel-frame-1.png"
+  ]
+}
