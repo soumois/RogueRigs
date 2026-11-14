@@ -11,7 +11,7 @@ Built by [[task-549-ui-shared-patterns]] (commit 685bc5ea). Rule (Q15, owner 202
 ## Shared (use these)
 - Plate button hover, all screen buttons: C++ [[sys-button-hover]].
 - End-screen entrance, run-lost and stats: C++ [[sys-screen-entrance]].
-- Bolted bars, pause and stats dividers: [[wbp-ui-bolted-bar]].
+- Bolted bars, pause, stats and options Graphics dividers: [[wbp-ui-bolted-bar]].
 - `Tools/unreal/mcp-client.js` (Node, editor open): the JSON-RPC MCP client that tasks 541, 545, 546, 547 and 548 each rewrote. CLI `list`, `call <toolset> <tool> [json]`, `batch <calls.json>`, `tree <WBP>`, `brushes [WBP...]` (every textured brush grouped by texture; about 6 min for the 14 screens). Library: `call`, `json`, `getProps`, `setProps`, `slotOf`, `brush`, `point`, `stretch`, `addWidget`, `addImage`, `compile`, `save`, and `UI` presets: `frameBrush()`, `titleBarBrush(size, box)`, `plateStyle(size)`, the bolted bar classes. Toolset aliases umg, obj, asset, bp, tex, app, logs; shapes in `Tools/unreal/mcp-tool-sheet.md`.
 - `Tools/capture/ui-screens.js`: captures of the seven screens, with before/after comparison ([[tool-capture]]).
 - `UI/RRUIDebugCommands.cpp`: `rr.Debug.Cursor`, `CursorOn`, `ButtonHover`, `PressKey`, the UI input of captures.
@@ -28,8 +28,7 @@ Built by [[task-549-ui-shared-patterns]] (commit 685bc5ea). Rule (Q15, owner 202
 ## Kept per screen, with the reason
 - Frame, plate and title bar stay plain brushes in each widget: a wrapper widget would change the widget type and names that graphs and the entrance read ("Frame", "TitleBarL"), for no visible gain. Sizes differ on purpose: plates 640 x 163, 416 x 106 (stats and shop Continue), 302 x 77 (options tabs); title bars 210 x 29 (death, options), 356 x 48 (stats, shop), pause Box 276 x 38. Hovered and disabled tints differ (main menu disabled 0.5 at alpha 0.85; options tab hover 1.15; shop Continue 1.25).
 - Entrance: 2 screens; the shop has none (Q13 of task-548).
-- Bolted bars: 2 screens; the options graphics divider keeps T_LevelEnd_DividerV (a swap would be visible).
-- T_LevelEnd_DividerH: no longer referenced; kept, not deleted (art source rule).
+- T_LevelEnd_DividerH and T_LevelEnd_DividerV: no longer referenced (the options Graphics divider became a bolted bar in [[task-551-options-graphics-divider-bolts]], owner 2026-11-14); kept, not deleted (art source rule).
 - Key presses through Windows (task-540 script): replaced by `rr.Debug.PressKey` (2 tasks). `rr.Debug.Click` stays in the audio debug file.
 - `rr.Debug.HordeGauge`: one system, stays in `Debug/`.
 - Sprite cut scripts (`Art/Source/*/scripts/*.py`): one asset each (2 tasks).
@@ -43,3 +42,4 @@ Built by [[task-549-ui-shared-patterns]] (commit 685bc5ea). Rule (Q15, owner 202
 - [[tool-capture]] — ui-screens.js beside capture.js and sheet.js.
 - [[umg-layout]] — layout rule the presets follow.
 - [[task-549-ui-shared-patterns]] — the task that made this inventory.
+- [[task-551-options-graphics-divider-bolts]] — moved the options Graphics divider to the bolted bar.
