@@ -22,7 +22,7 @@ status: done
 - executor_usage: runs 1, turns 47, context start 16k peak 110k, resumes 1, 10 min, units 0.57 M, USD 1.58
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: Done. Doc commit above: wbp-options GraphicsDividerV row (WBP_UI_BoltedBarV, anchors, offsets) and verification line; wbp-ui-bolted-bar used_by wbp-options; ui-shared-pieces lists the options Graphics divider under bolted bars, T_LevelEnd_DividerV now unreferenced (kept). options-screen gdd line already written by the planner, unchanged. Lint clean.
+- result: A1-A6 passed. WBP_Options GraphicsDividerV is now the shared WBP_UI_BoltedBarV (ead4fde1), placed with the pause values: x 0.5, frame span y 0.255-0.7991, offsets (0,20,34,25). Bolts on the top and bottom frame bars, bar continuous, rows unchanged, 100% value clear of the bar, pause unchanged (PSNR 59.9 dB), at 1920x1080, 1280x720, 1920x1200, 2560x1080. Sheet: Saved/Captures/t551_sheet.png. Docs e8baca07.
 
 ## Questions
 Decided 2026-11-14 (owner "Tout par défaut"): every default below is accepted; values provisional, owner 2026-11-14.
