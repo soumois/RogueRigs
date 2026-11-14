@@ -3,7 +3,7 @@ id: task-551-options-graphics-divider-bolts
 description: "Global task: Options Graphics divider bolts float inside the panel; use the shared bolted bar, bolts on the frame borders as on pause."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Options Graphics divider: bolts on the frame borders like the pause screen
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-14, "Tout par défaut")
 - milestone: M2
 - next_step: task-551-01-bp-divider
-- started: open
+- started: 2026-11-14T08:38:10Z
 - waiting_for: none
 - result: open
 

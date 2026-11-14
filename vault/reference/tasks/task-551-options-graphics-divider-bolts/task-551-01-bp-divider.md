@@ -3,7 +3,7 @@ id: task-551-01-bp-divider
 description: "Bp: Options widget, Graphics tab: replace the column divider by the shared bolted bar, bolts on the frame borders as on the pause screen."
 parent: task-551-options-graphics-divider-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Options Graphics divider: bolts on the frame borders like the pause screen: bp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T08:38:10Z
 - waiting_for: none
 - result: open
 
