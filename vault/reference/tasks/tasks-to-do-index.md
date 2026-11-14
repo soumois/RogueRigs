@@ -14,7 +14,7 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
-- [[task-545-pause-screen-bolts]] — Pause screen rebuilt to owner image 10: dividers from bar to bar, horizontal divider, bolts on every end and junction as a separate unstretched image. Status todo.
+- [[task-545-pause-screen-bolts]] — Pause screen rebuilt to owner image 10: dividers from bar to bar, horizontal divider, bolts on every end and junction as a separate unstretched image. Status in-progress.
 - [[task-546-level-cleared-look]] — Stats screen adjusted to owner image 6: vertical divider from a bolt junction on the horizontal divider to the bottom bar, shared unstretched bolts. Status todo.
 - [[task-547-level-cleared-entrance]] — The death screen entrance becomes one shared effect; the level cleared screen (and its level 4 variant) uses it; the death screen looks the same. Status todo.
 - [[task-548-shop-frame-layout]] — The shop card panel gets a frame image made for its ratio (no stretched button frame) and the layout of owner image 8. Status todo.

@@ -3,7 +3,7 @@ id: task-545-01-bolt-art
 description: "Art: Separate bolt image and unstretchable divider bar pieces, from existing sprites or Kie.ai per Q11"
 parent: task-545-pause-screen-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause screen: grid and bolts on the frame bars as owner image 10: art
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T03:32:00Z
 - waiting_for: none
 - result: open
 
