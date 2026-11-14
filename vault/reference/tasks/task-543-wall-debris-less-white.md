@@ -1,9 +1,9 @@
 ---
 id: task-543-wall-debris-less-white
 description: "Global task: Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Wall destruction particles: rock colours instead of near white
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-543-03-doc
+- next_step: none
 - started: 2026-11-13T23:32:36Z
 - waiting_for: none
-- executor_tokens: input 238, cache write 207805, cache read 15748236, output 60142
-- executor_usage: runs 1, turns 117, context start 16k peak 220k, resumes 2, 43 min, units 2.14 M, USD 5.39
+- executor_tokens: input 242, cache write 211743, cache read 16189851, output 62562
+- executor_usage: runs 1, turns 119, context start 16k peak 224k, resumes 2, 43 min, units 2.20 M, USD 5.55
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. Done. bp-dig-debris (three User colours, the Color HLSL, defaults, task-543 verification and the MCP compile pitfall) and bp-explosion-wall-debris (random rock tone per particle, capture note) state the new colours; lint clean.
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -34,7 +34,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 3. task-543-03-doc (vault/reference/tasks/task-543-wall-debris-less-white/task-543-03-doc.md) — doc: Update the debris effect doc node
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-543-01-debris-colour]] — step 1, bp.
 - [[task-543-02-capture]] — step 2, capture.
 - [[task-543-03-doc]] — step 3, doc.

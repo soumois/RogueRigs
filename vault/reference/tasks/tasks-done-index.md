@@ -551,4 +551,5 @@ Archive: it exceeds the index size limits of [[_authoring]] on purpose (owner, 2
 - [[task-540-main-menu-no-focus-outline]] — Remove the orange keyboard-focus outline drawn around the focused main menu button; focus and Enter unchanged. Status done.
 - [[task-541-hud-turret-count-removed]] — The turret count text above the health bar goes; the launcher charges stay shown in its weapon slot. Status done.
 - [[task-542-ground-particle-edges]] — The white ground particle sprites of image 2 (boss scene) show their quad edges; the edges must not show, look otherwise kept. Status done.
+- [[task-543-wall-debris-less-white]] — Rock destruction debris take the rock colours (lilac and violets) instead of near white, no glow. Status done.
 - [[task-550-layout-generator-back-pre-537]] — the C++ layout generator gives again the maps it gave before task-537 (stale pocket guard kept), task-536 speed-up kept; old hashes back, docs say what is true. Status done.
