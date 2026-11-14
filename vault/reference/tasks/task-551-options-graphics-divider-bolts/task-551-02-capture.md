@@ -3,7 +3,7 @@ id: task-551-02-capture
 description: "Capture: In-game check of the Options Graphics tab against the pause screen, at the resolutions decided in Q2."
 parent: task-551-options-graphics-divider-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Options Graphics divider: bolts on the frame borders like the pause screen: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T08:45:51Z
 - waiting_for: none
 - result: open
 

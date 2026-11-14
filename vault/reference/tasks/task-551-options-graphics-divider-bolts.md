@@ -15,9 +15,13 @@ status: in-progress
 - family: comportement
 - confirmed_by_owner: yes (2026-11-14, "Tout par défaut")
 - milestone: M2
-- next_step: task-551-01-bp-divider
+- next_step: task-551-02-capture
 - started: 2026-11-14T08:38:10Z
 - waiting_for: none
+- executor_tokens: input 66, cache write 92817, cache read 2149661, output 10450
+- executor_usage: runs 1, turns 33, context start 16k peak 93k, resumes 0, 8 min, units 0.38 M, USD 1.10
+- planning_tokens: none (no planner run attributed)
+- planning_usage: none
 - result: open
 
 ## Questions
