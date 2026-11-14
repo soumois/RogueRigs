@@ -16,6 +16,7 @@ Requested by the owner 2026-11-12 ([[task-510-options-screen]]). Values provisio
 ## Layout
 - Title "OPTIONS"; tabs "Sound", "Graphics", "Gameplay"; buttons "Reset to defaults" (current tab) and "Back". English labels hardcoded in the widget, like [[main-menu]]. Buttons take [[ui-button-hover]]. The three tabs keep the same size, selected or not (owner 2026-11-13, task-521).
 - Black backdrop as the pause menu, over the main menu image or the paused arena; [[umg-layout]].
+- Graphics tab column divider: the same bolted bar as the [[pause-menu]] divider, its two bolts on the top and bottom frame borders (owner 2026-11-14, provisional).
 
 ## Sound
 - Sliders Master, Music, Effects, 0 to 100 % in steps of 5, 100 % at start, applied live. They drive the Master, Music and Effects volume groups of every sound and music track ([[audio-direction]]). Moving Effects plays a sample effect at the new level (owner 2026-11-13, provisional, task-520, see [[audio-direction]]).
