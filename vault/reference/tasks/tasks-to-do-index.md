@@ -14,3 +14,4 @@ A global task moves to [[tasks-done-index]] when it is done or cancelled (`vault
 
 
 
+- [[task-551-options-graphics-divider-bolts]] — Options Graphics tab divider end bolts float inside the panel; make it the shared bolted bar with bolts on the frame borders, as the pause screen. Status wait-answers.
