@@ -14,6 +14,7 @@ Engine: Unreal Engine 5.8, C++ first. Project created from the Top Down template
 - [[blueprints-index]] — one doc per Blueprint, so nobody has to open a binary asset to know what it does.
 - [[performance-index]] — performance risks at 150–200 enemies and the M1 stress test.
 - [[pipelines-index]] — asset pipeline, run logs, build.
+- [[ui-shared-pieces]] — inventory of the UI patterns and UI build scripts shared across screens, and what stays per screen. Open before building a screen.
 
 ## Relations
 - [[root]] — the vault map.

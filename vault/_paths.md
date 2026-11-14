@@ -457,6 +457,7 @@ tool-capture  reference/tech/pipelines/tool-capture.md
 tool-unreal-reimport  reference/tech/pipelines/tool-unreal-reimport.md
 turret  reference/gdd/weapons/turret.md
 ui-button-hover  reference/gdd/art-audio/ui-button-hover.md
+ui-shared-pieces  reference/tech/ui-shared-pieces.md
 umg-layout  reference/tech/conventions/umg-layout.md
 unreal-mcp  reference/tech/pipelines/unreal-mcp.md
 unreal-mcp-epic-plugin  reference/tech/pipelines/unreal-mcp-epic-plugin.md

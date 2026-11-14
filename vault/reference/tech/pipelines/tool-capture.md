@@ -15,6 +15,7 @@ Node 18+, no dependencies. Source: task-359 ([[task-359-capture-tooling]]).
 - ffmpeg.js: shared by capture.js and sheet.js. `findFfmpeg()` tries PATH, then the first WinGet `ffmpeg.exe` under `%LOCALAPPDATA%/Microsoft/WinGet/Packages`, result cached; `imageSize()` reads the size from the PNG header, else from ffmpeg.
 - aim-dependent captures (task-423): the aim follows the mouse or stick, so fix it with `rr.Debug.Aim <YawDegrees>` in the case commands (world yaw 0 = +X, 90 = +Y; `off` clears it; [[sys-aim-indicator]]). The camera command must be in the command list of each case: the camera persists across cases within a run.
 - UI screen captures (task-424): open the screen by debug command, then shoot with the UI: `node Tools/capture/capture.js --map /Game/RogueRigs/Maps/L_ArenaM1 --res WxH --force-res --prefix pm --expect 1 --exec "rr.Cheat.Invulnerable 1,rr.Debug.Delayed 4 rr.Debug.PauseMenu open,rr.Debug.Delayed 6 rr.Debug.Shots 0 1 1 pm 1,rr.Debug.Delayed 9 Quit"`; the command is `rr.Debug.PauseMenu open|resume|exit` ([[sys-pause-menu]]).
+- ui-screens.js (task-549): `node Tools/capture/ui-screens.js --name <Name> [--screens mainmenu,pause,options,stats,shop,death,runwon] [--res 1920x1080] [--compare <BeforeName>] [--list]`. One capture.js run per group (menu; pause+options; stats+shop; death; runwon = level 4 stats), cursor parked in a corner; frames as `Saved/Captures/<Name>/<screen>.png`. `--compare` writes `compare-<screen>.png` (before | after) and prints the PSNR per screen (inf = identical; shop cards and the level behind run-won are random, so judge those by eye). 5 launches, about 4 min at 1920 x 1080. Inventory of the shared UI pieces: [[ui-shared-pieces]].
 - rules for agents: capture count and image limits are in [[agent-cpp]] (`capture_rules`).
 
 ## Relations
@@ -23,4 +24,5 @@ Node 18+, no dependencies. Source: task-359 ([[task-359-capture-tooling]]).
 - [[sys-cheats]] — the in-game cheats commands.js lists beside the other rr.* entries.
 - [[sys-pause-menu]] — owner of rr.Debug.PauseMenu.
 - [[sys-aim-indicator]] — owner of `rr.Debug.Aim`.
+- [[ui-shared-pieces]] — ui-screens.js and the shared UI pieces it checks.
 - [[task-359-capture-tooling]] — task that added sheet.js, commands.js and ffmpeg.js.
