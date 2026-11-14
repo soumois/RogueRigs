@@ -3,7 +3,7 @@ id: task-545-04-doc
 description: "Doc: Update the pause widget doc and document the shared bolt and bar pieces"
 parent: task-545-pause-screen-bolts
 kind: task
-status: todo
+status: in-progress
 ---
 # Pause screen: grid and bolts on the frame bars as owner image 10: doc
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T03:50:00Z
 - waiting_for: none
 - result: open
 
