@@ -3,7 +3,7 @@ id: task-546-02-capture
 description: "Capture: Stats screen captures against image 6 at four resolutions"
 parent: task-546-level-cleared-look
 kind: task
-status: todo
+status: in-progress
 ---
 # Level cleared screen: dividers and bolts as owner image 6: capture
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T03:55:23Z
 - waiting_for: none
 - result: open
 
