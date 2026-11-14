@@ -3,7 +3,7 @@ id: task-546-level-cleared-look
 description: "Global task: stats screen to owner image 6: vertical divider from a bolt junction to the bottom bar, shared unstretched bolts."
 parent: tasks-to-do-index
 kind: task
-status: todo
+status: in-progress
 ---
 # Level cleared screen: dividers and bolts as owner image 6
 
@@ -16,7 +16,7 @@ status: todo
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
 - next_step: task-546-01-stats-layout
-- started: open
+- started: 2026-11-14T03:52:08Z
 - waiting_for: none
 - result: open
 
