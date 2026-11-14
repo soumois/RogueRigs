@@ -3,7 +3,7 @@ id: task-549-01-factor
 description: "Cpp: Inventory and factor the repeated UI patterns and build scripts, screens unchanged"
 parent: task-549-ui-shared-patterns
 kind: task
-status: todo
+status: in-progress
 ---
 # UI: generalise the patterns and scripts used again and again: cpp
 
@@ -20,7 +20,7 @@ status: todo
 - usage: open
 - runs: open
 - milestone: M2
-- started: open
+- started: 2026-11-14T04:37:35Z
 - waiting_for: none
 - result: open
 
