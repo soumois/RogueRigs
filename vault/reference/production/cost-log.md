@@ -1339,21 +1339,22 @@ kind: note
 | [[task-543-03-doc]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-544-01-gauge-logic]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 | [[task-544-02-gauge-render]] | opus | 1 | 0k | 20k | 7k | 3k | 0.04 | 2 | 0 |
+| [[task-544-03-gauge-widget]] | opus | 1 | 0k | 0k | 0k | 0k | 0.00 | 0 | 0 |
 
 ## Totals
 Rebuilt by `record-cost.js` at each closing; do not edit. USD is the API list price of each model (`prices` in `vault/scripts/cost-rates.json`, the API equivalent on a subscription); units are the legacy input-token equivalents that `token_ceiling` and the executor budgets are written in. Subtask rows are rounded to k; the lines below them come from the usage snapshot (exact).
 
 | Scope | USD | Units (M) | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|---|
-| All subtask rows above (workers) | 392.25 | 388.33 | 0k | 91.76 M | 1896.10 M | 16821k |
+| All subtask rows above (workers) | 392.40 | 388.33 | 0k | 91.76 M | 1896.10 M | 16821k |
 | model mixed | — | 9.51 | 0k | 3.29 M | 29.11 M | 497k |
 | model none | — | 0.00 | 0k | 0.00 M | 0.00 M | 0k |
 | model opus | — | 210.40 | 0k | 47.08 M | 1049.80 M | 9320k |
 | model sonnet | — | 168.42 | 0k | 41.39 M | 817.20 M | 7004k |
-| Executors and legacy orchestrators that ran a task (pilot) | 398.73 | 152.50 | 18k | 30.32 M | 863.98 M | 5638k |
+| Executors and legacy orchestrators that ran a task (pilot) | 405.19 | 155.33 | 18k | 30.44 M | 888.19 M | 5688k |
 | Planning runs (planners and legacy planning passes) | 163.87 | 49.71 | 5k | 14.81 M | 174.84 M | 2742k |
 | Agents without a subtask id (other) | 42.67 | 17.15 | 2k | 3.09 M | 104.59 M | 565k |
-| Main sessions (all of them, also chat outside tasks) | 1042.71 | 311.27 | 84k | 64.12 M | 1903.25 M | 8143k |
+| Main sessions (all of them, also chat outside tasks) | 1042.75 | 311.30 | 84k | 64.12 M | 1903.51 M | 8144k |
 
 ## Lessons for estimates
 - Per C++ subtask: output 20k to 115k, cache write 50k to 250k, cache read 0.5 M to 11 M.
