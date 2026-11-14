@@ -1,9 +1,9 @@
 ---
 id: task-547-level-cleared-entrance
 description: "Global task: the death screen entrance becomes one shared effect, used by the level cleared screen; death screen unchanged."
-parent: tasks-to-do-index
+parent: tasks-done-index
 kind: task
-status: in-progress
+status: done
 ---
 # Level cleared screen appears with the death screen entrance effect
 
@@ -15,14 +15,14 @@ status: in-progress
 - family: gros
 - confirmed_by_owner: yes (2026-11-13, "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste")
 - milestone: M2
-- next_step: task-547-04-doc
+- next_step: none
 - started: 2026-11-14T03:59:58Z
 - waiting_for: none
-- executor_tokens: input 176, cache write 170536, cache read 9466740, output 58629
-- executor_usage: runs 1, turns 86, context start 16k peak 183k, resumes 2, 18 min, units 1.45 M, USD 3.92
+- executor_tokens: input 192, cache write 183462, cache read 10980276, output 64855
+- executor_usage: runs 1, turns 94, context start 16k peak 196k, resumes 2, 19 min, units 1.65 M, USD 4.41
 - planning_tokens: none (no planner run attributed)
 - planning_usage: none
-- result: open
+- result: Done. New sys-screen-entrance (systems-ui-index); updated sys-run-lost, sys-run-transition, wbp-run-lost (entrance graph removed, leftovers Elapsed/Animating noted), wbp-intermission (backdrop 0.75, entrance parts). Lint clean. Intermission gdd already carries the 2026-11-13 appearance line (edited at confirmation).
 
 ## Questions
 Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3:30, puis 3 fois plus vite aprés 4:30 et les pv des monstres augmentent de 20% à chaque vagues aprés 3:30 / Q9 : J'attends un rendu avec chatgpt, utilise l'API / ok pour le reste"): every default below is accepted; values provisional, owner 2026-11-13.
@@ -35,7 +35,7 @@ Decided 2026-11-13 (owner "Q8 en overtime, cela se remplit 2 fois plus vite à 3
 4. task-547-04-doc (vault/reference/tasks/task-547-level-cleared-entrance/task-547-04-doc.md) — doc: Document the shared entrance effect
 
 ## Relations
-- [[tasks-to-do-index]] — parent index.
+- [[tasks-done-index]] — parent index.
 - [[task-547-01-shared-entrance]] — step 1, cpp.
 - [[task-547-02-stats-entrance]] — step 2, bp.
 - [[task-547-03-capture]] — step 3, capture.
